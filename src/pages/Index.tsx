@@ -12,7 +12,8 @@ import {
   AlertTriangle,
   ArrowRight,
   ArrowDown,
-  MapPin
+  MapPin,
+  ExternalLink
 } from 'lucide-react';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
 import bayfrontSketch from '@/assets/bayfront-sketch.jpg';
@@ -174,6 +175,25 @@ export default function Index() {
                 Explore Menu
               </Link>
             </Button>
+          </motion.div>
+          
+          {/* OpenTable Reviews Link */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.6, duration: 0.6 }}
+            className="mt-8"
+          >
+            <a 
+              href="https://www.opentable.com/r/ce-soir-naples" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-cream/60 hover:text-copper transition-colors text-sm tracking-wide group"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>View OpenTable Reviews</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+            </a>
           </motion.div>
         </motion.div>
         
