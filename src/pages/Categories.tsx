@@ -238,16 +238,16 @@ export default function CategoriesPage() {
                       transition-all duration-500
                       ${isLarge ? 'p-8 md:p-10' : 'p-6 md:p-8'}
                     `}>
-                      {/* Background Icon */}
+                      {/* Background Icon - Full Coverage */}
                       {getCategoryIcon(category.id) && (
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="absolute inset-0 pointer-events-none overflow-hidden">
                           <img 
                             src={getCategoryIcon(category.id)} 
                             alt=""
-                            className="w-32 h-32 md:w-40 md:h-40 object-contain opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500"
+                            className="w-full h-full object-cover opacity-10 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500"
                           />
                           {/* Gradient Overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-transparent to-white/40" />
+                          <div className="absolute inset-0 bg-gradient-to-br from-card/80 via-card/60 to-card/80" />
                         </div>
                       )}
 
