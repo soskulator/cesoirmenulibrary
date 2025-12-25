@@ -57,20 +57,30 @@ export default function AuthPage() {
   const checkInvite = async () => {
     if (!inviteToken) return;
     
-    const { data, error } = await supabase
-      .from('invitations')
-      .select('*')
-      .eq('token', inviteToken)
-      .is('accepted_at', null)
-      .gt('expires_at', new Date().toISOString())
-      .maybeSingle();
-    
-    if (error || !data) {
+    try {
+      const response = await supabase.functions.invoke('validate-invite', {
+        body: { token: inviteToken }
+      });
+      
+      if (response.error) {
+        setInviteValid(false);
+        setError('Unable to validate invitation. Please try again.');
+        return;
+      }
+      
+      const data = response.data;
+      
+      if (!data.valid) {
+        setInviteValid(false);
+        setError(data.error || 'This invitation link is invalid or has expired.');
+      } else {
+        setInviteValid(true);
+        setEmail(data.email);
+      }
+    } catch (err) {
+      console.error('Invite validation error');
       setInviteValid(false);
-      setError('This invitation link is invalid or has expired.');
-    } else {
-      setInviteValid(true);
-      setEmail(data.email);
+      setError('Unable to validate invitation. Please try again.');
     }
   };
 
@@ -91,10 +101,16 @@ export default function AuthPage() {
         const { error } = await signUp(email, password, fullName);
         
         if (error) {
-          if (error.message.includes('already registered')) {
+          // Map errors to generic user-friendly messages
+          if (error.message.includes('already registered') || error.message.includes('already been registered')) {
             setError('This email is already registered. Please sign in instead.');
+          } else if (error.message.includes('invalid') || error.message.includes('Invalid')) {
+            setError('Please check your information and try again.');
+          } else if (error.message.includes('weak') || error.message.includes('password')) {
+            setError('Password does not meet requirements. Please use a stronger password.');
           } else {
-            setError(error.message);
+            // Generic fallback - don't expose raw error details
+            setError('Unable to create account. Please try again.');
           }
         } else {
           toast({
@@ -114,10 +130,14 @@ export default function AuthPage() {
         const { error } = await signIn(email, password);
         
         if (error) {
-          if (error.message.includes('Invalid login')) {
+          // Map all auth errors to generic message - don't reveal if email exists
+          if (error.message.includes('Invalid login') || error.message.includes('invalid') || error.message.includes('credentials')) {
             setError('Invalid email or password. Please try again.');
+          } else if (error.message.includes('rate') || error.message.includes('limit')) {
+            setError('Too many attempts. Please try again later.');
           } else {
-            setError(error.message);
+            // Generic fallback - don't expose raw error details
+            setError('Unable to sign in. Please try again.');
           }
         } else {
           toast({
