@@ -1,12 +1,13 @@
 import { Link, useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { AllergenList } from '@/components/AllergenBadge';
 import { categories, menuItems, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { getCategoryIcon } from '@/data/categoryIcons';
-import { ArrowLeft, CreditCard, ChevronRight } from 'lucide-react';
+import { ArrowLeft, CreditCard, ChevronRight, ChevronDown } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 // Spirit subcategories with their IDs
@@ -75,36 +76,86 @@ const spiritSubcategories = {
 
 const subcategoryOrder = ['vodka', 'gin', 'rum', 'tequila', 'mezcal', 'scotch', 'bourbon', 'rye', 'cordials'] as const;
 
-const container = {
-  hidden: {
-    opacity: 0
-  },
+// Smoother animation variants for mobile
+const pageTransition = {
+  hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      duration: 0.4,
+      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+      staggerChildren: 0.06,
       delayChildren: 0.1
     }
   }
 };
-const item = {
-  hidden: {
-    opacity: 0,
-    y: 20
+
+const cascadeButton = {
+  hidden: { 
+    opacity: 0, 
+    y: 16,
+    scale: 0.95
   },
+  show: (i: number) => ({
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      delay: i * 0.08,
+      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number]
+    }
+  })
+};
+
+const itemReveal = {
+  hidden: { 
+    opacity: 0, 
+    x: -12,
+    scale: 0.98
+  },
+  show: (i: number) => ({
+    opacity: 1, 
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.35,
+      delay: i * 0.04,
+      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number]
+    }
+  }),
+  exit: {
+    opacity: 0,
+    x: -8,
+    transition: { duration: 0.2 }
+  }
+};
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.08
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 16 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
-      ease: "easeOut" as const
+      duration: 0.4,
+      ease: [0.25, 0.46, 0.45, 0.94] as const
     }
   }
 };
 export default function CategoriesPage() {
-  const {
-    categoryId
-  } = useParams();
+  const { categoryId } = useParams();
+  const [expandedSubcategory, setExpandedSubcategory] = useState<string | null>(null);
 
   // Show single category if specified
   if (categoryId) {
@@ -125,6 +176,10 @@ export default function CategoriesPage() {
     // Special handling for spirits category with subcategories
     const isSpirits = categoryId === 'spirits';
 
+    const toggleSubcategory = (key: string) => {
+      setExpandedSubcategory(expandedSubcategory === key ? null : key);
+    };
+
     return <Layout>
         {/* Background - Category Icon */}
         <div className="fixed inset-0 -z-10 bg-cream">
@@ -137,22 +192,23 @@ export default function CategoriesPage() {
 
         <div className="min-h-screen">
           {/* Elegant Header */}
-          <motion.header className="pt-6 pb-12 px-6" initial={{
-          opacity: 0,
-          y: -20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.6
-        }}>
+          <motion.header 
+            className="pt-6 pb-8 md:pb-12 px-6" 
+            initial={{ opacity: 0, y: -20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
             <div className="max-w-5xl mx-auto">
-              <Link to="/categories" className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal transition-colors mb-8 group">
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <Link to="/categories" className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal transition-colors duration-300 mb-6 md:mb-8 group">
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
                 <span className="text-sm tracking-wide uppercase">All Categories</span>
               </Link>
 
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
                 <h1 className="font-serif text-3xl md:text-5xl font-bold text-charcoal tracking-tight">
                   {category.name}
                 </h1>
@@ -164,135 +220,237 @@ export default function CategoriesPage() {
                     {items.length} {isSpirits ? 'spirits' : 'dishes'}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-charcoal/30" />
-                  <Button variant="ghost" size="sm" asChild className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2">
+                  <Button variant="ghost" size="sm" asChild className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2 transition-all duration-300">
                     <Link to={`/flashcards?category=${categoryId}`}>
                       <CreditCard className="w-4 h-4 mr-2" />
                       Study Flashcards
                     </Link>
                   </Button>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.header>
 
-          {/* Spirits with Subcategories */}
+          {/* Spirits with Cascade Subcategory Buttons */}
           {isSpirits ? (
             <div className="px-6 pb-24">
-              <div className="max-w-5xl mx-auto space-y-12">
-                {subcategoryOrder.map((subcatKey) => {
-                  const subcat = spiritSubcategories[subcatKey];
-                  const subcatItems = subcat.ids
-                    .map((id) => items.find((i) => i.id === id))
-                    .filter(Boolean);
-
-                  if (subcatItems.length === 0) return null;
-
-                  return (
-                    <motion.section
-                      key={subcatKey}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: '-50px' }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      {/* Subcategory Header */}
-                      <div className="mb-6 pb-3 border-b border-charcoal/10">
-                        <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
-                          {subcat.title}
-                        </h2>
-                        <p className="text-copper font-serif italic text-base mt-1">
-                          {subcat.subtitle}
-                        </p>
-                      </div>
-
-                      {/* Subcategory Items */}
-                      <motion.div
-                        variants={container}
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true }}
-                        className="space-y-3"
+              <div className="max-w-5xl mx-auto">
+                {/* Cascade Subcategory Buttons */}
+                <motion.div 
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8"
+                  initial="hidden"
+                  animate="show"
+                  variants={pageTransition}
+                >
+                  {subcategoryOrder.map((subcatKey, index) => {
+                    const subcat = spiritSubcategories[subcatKey];
+                    const subcatItems = subcat.ids
+                      .map((id) => items.find((i) => i.id === id))
+                      .filter(Boolean);
+                    
+                    if (subcatItems.length === 0) return null;
+                    
+                    const isExpanded = expandedSubcategory === subcatKey;
+                    
+                    return (
+                      <motion.button
+                        key={subcatKey}
+                        custom={index}
+                        variants={cascadeButton}
+                        onClick={() => toggleSubcategory(subcatKey)}
+                        className={`
+                          relative overflow-hidden rounded-2xl p-4 text-left
+                          border transition-all duration-500 ease-out
+                          ${isExpanded 
+                            ? 'bg-copper text-white border-copper shadow-lg shadow-copper/20 scale-[1.02]' 
+                            : 'bg-white/80 backdrop-blur-sm text-charcoal border-charcoal/10 hover:border-copper/30 hover:bg-white hover:shadow-md'
+                          }
+                        `}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        {subcatItems.map((menuItem) => {
-                          if (!menuItem) return null;
-                          const dishImage = getDishImage(menuItem.id);
-                          return (
-                            <motion.div key={menuItem.id} variants={item}>
-                              <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
-                                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300">
-                                  {/* Image */}
-                                  <div className="w-14 h-18 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
-                                    {dishImage ? (
-                                      <img 
-                                        src={dishImage} 
-                                        alt={menuItem.name} 
-                                        className="w-auto h-full max-h-16 md:max-h-18 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-sm" 
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center text-2xl">
-                                        🥃
+                        <div className="flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <h3 className={`font-serif font-semibold text-base md:text-lg truncate transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal'}`}>
+                              {subcat.title}
+                            </h3>
+                            <p className={`text-xs md:text-sm font-serif italic mt-0.5 truncate transition-colors duration-300 ${isExpanded ? 'text-white/80' : 'text-copper'}`}>
+                              {subcatItems.length} spirits
+                            </p>
+                          </div>
+                          <motion.div
+                            animate={{ rotate: isExpanded ? 180 : 0 }}
+                            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                          >
+                            <ChevronDown className={`w-5 h-5 shrink-0 ml-2 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal/40'}`} />
+                          </motion.div>
+                        </div>
+                        
+                        {/* Subtle glow effect when expanded */}
+                        {isExpanded && (
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-copper-light/20 to-transparent pointer-events-none"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </motion.div>
+
+                {/* Expanded Subcategory Items */}
+                <AnimatePresence mode="wait">
+                  {expandedSubcategory && (
+                    <motion.section
+                      key={expandedSubcategory}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      className="overflow-hidden"
+                    >
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -10, opacity: 0 }}
+                        transition={{ duration: 0.35, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        className="pb-8"
+                      >
+                        {/* Subcategory Header */}
+                        <div className="mb-6 pb-3 border-b border-charcoal/10">
+                          <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
+                            {spiritSubcategories[expandedSubcategory as keyof typeof spiritSubcategories].title}
+                          </h2>
+                          <p className="text-copper font-serif italic text-base mt-1">
+                            {spiritSubcategories[expandedSubcategory as keyof typeof spiritSubcategories].subtitle}
+                          </p>
+                        </div>
+
+                        {/* Items Grid */}
+                        <div className="space-y-2 md:space-y-3">
+                          {spiritSubcategories[expandedSubcategory as keyof typeof spiritSubcategories].ids
+                            .map((id) => items.find((i) => i.id === id))
+                            .filter(Boolean)
+                            .map((menuItem, idx) => {
+                              if (!menuItem) return null;
+                              const dishImage = getDishImage(menuItem.id);
+                              return (
+                                <motion.div 
+                                  key={menuItem.id}
+                                  custom={idx}
+                                  variants={itemReveal}
+                                  initial="hidden"
+                                  animate="show"
+                                  exit="exit"
+                                >
+                                  <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
+                                    <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-300 ease-out active:scale-[0.99]">
+                                      {/* Image */}
+                                      <div className="w-12 h-14 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
+                                        {dishImage ? (
+                                          <img 
+                                            src={dishImage} 
+                                            alt={menuItem.name} 
+                                            className="w-auto h-full max-h-12 md:max-h-18 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-sm" 
+                                          />
+                                        ) : (
+                                          <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl">
+                                            🥃
+                                          </div>
+                                        )}
                                       </div>
-                                    )}
-                                  </div>
 
-                                  {/* Content */}
-                                  <div className="flex-1 min-w-0">
-                                    <h3 className="font-serif text-lg font-semibold text-charcoal group-hover:text-copper transition-colors">
-                                      {menuItem.name}
-                                    </h3>
-                                    <p className="text-sm text-copper font-medium mt-0.5">
-                                      {menuItem.shortDescription}
-                                    </p>
-                                  </div>
+                                      {/* Content */}
+                                      <div className="flex-1 min-w-0">
+                                        <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-300 truncate">
+                                          {menuItem.name}
+                                        </h3>
+                                        <p className="text-xs md:text-sm text-copper font-medium mt-0.5 line-clamp-1">
+                                          {menuItem.shortDescription}
+                                        </p>
+                                      </div>
 
-                                  {/* Arrow */}
-                                  <ChevronRight className="w-5 h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all shrink-0" />
-                                </div>
-                              </Link>
-                            </motion.div>
-                          );
-                        })}
+                                      {/* Arrow */}
+                                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                                    </div>
+                                  </Link>
+                                </motion.div>
+                              );
+                            })}
+                        </div>
                       </motion.div>
                     </motion.section>
-                  );
-                })}
+                  )}
+                </AnimatePresence>
+
+                {/* Hint when no subcategory selected */}
+                <AnimatePresence>
+                  {!expandedSubcategory && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3, delay: 0.3 }}
+                      className="text-center text-charcoal/40 font-serif italic mt-4"
+                    >
+                      Tap a category to explore spirits
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           ) : (
             /* Regular Menu Items - Clean List */
             <motion.div variants={container} initial="hidden" animate="show" className="px-6 pb-24">
               <div className="max-w-4xl mx-auto space-y-3">
-                {items.map(menuItem => {
-                const dishImage = getDishImage(menuItem.id);
-                return <motion.div key={menuItem.id} variants={item}>
+                {items.map((menuItem, idx) => {
+                  const dishImage = getDishImage(menuItem.id);
+                  return (
+                    <motion.div 
+                      key={menuItem.id} 
+                      custom={idx}
+                      variants={item}
+                    >
                       <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
-                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300">
+                        <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300 active:scale-[0.99]">
                           {/* Image */}
-                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 bg-cream">
-                            {dishImage ? <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full flex items-center justify-center text-2xl">
+                          <div className="w-14 h-14 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 bg-cream">
+                            {dishImage ? (
+                              <img 
+                                src={dishImage} 
+                                alt={menuItem.name} 
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-2xl">
                                 🍽️
-                              </div>}
+                              </div>
+                            )}
                           </div>
 
                           {/* Content */}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-serif text-lg md:text-xl font-semibold text-charcoal group-hover:text-copper transition-colors">
+                            <h3 className="font-serif text-base md:text-xl font-semibold text-charcoal group-hover:text-copper transition-colors duration-300">
                               {menuItem.name}
                             </h3>
                             <p className="text-sm text-charcoal/60 line-clamp-1 mt-0.5">
                               {menuItem.shortDescription}
                             </p>
-                            {menuItem.allergens.length > 0 && <div className="mt-2">
+                            {menuItem.allergens.length > 0 && (
+                              <div className="mt-2">
                                 <AllergenList allergens={menuItem.allergens} size="sm" showIcons={false} />
-                              </div>}
+                              </div>
+                            )}
                           </div>
 
                           {/* Arrow */}
-                          <ChevronRight className="w-5 h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all shrink-0" />
+                          <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                         </div>
                       </Link>
-                    </motion.div>;
-              })}
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
           )}
