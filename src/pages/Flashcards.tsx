@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { FlashCard } from '@/components/FlashCard';
+import { BeverageFlashCard } from '@/components/BeverageFlashCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -289,16 +290,29 @@ export default function FlashcardsPage() {
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.2 }}
               >
-                <FlashCard 
-                  item={currentItem} 
-                  showPrepNotes={true}
-                  onSwipeLeft={goToNext}
-                  onSwipeRight={goToPrev}
-                  className={cn(
-                    (localKnown.has(currentItem.id) || isKnown(currentItem.name)) && "ring-2 ring-sage",
-                    (localReview.has(currentItem.id) || (isStudied(currentItem.name) && !isKnown(currentItem.name))) && "ring-2 ring-gold"
-                  )}
-                />
+              {/* Use BeverageFlashCard for wine, spirits, cocktails */}
+                {['wine', 'spirits', 'cocktails'].includes(currentItem.categoryId) ? (
+                  <BeverageFlashCard 
+                    item={currentItem}
+                    onSwipeLeft={goToNext}
+                    onSwipeRight={goToPrev}
+                    className={cn(
+                      (localKnown.has(currentItem.id) || isKnown(currentItem.name)) && "ring-2 ring-sage",
+                      (localReview.has(currentItem.id) || (isStudied(currentItem.name) && !isKnown(currentItem.name))) && "ring-2 ring-gold"
+                    )}
+                  />
+                ) : (
+                  <FlashCard 
+                    item={currentItem} 
+                    showPrepNotes={true}
+                    onSwipeLeft={goToNext}
+                    onSwipeRight={goToPrev}
+                    className={cn(
+                      (localKnown.has(currentItem.id) || isKnown(currentItem.name)) && "ring-2 ring-sage",
+                      (localReview.has(currentItem.id) || (isStudied(currentItem.name) && !isKnown(currentItem.name))) && "ring-2 ring-gold"
+                    )}
+                  />
+                )}
               </motion.div>
             </AnimatePresence>
           </div>

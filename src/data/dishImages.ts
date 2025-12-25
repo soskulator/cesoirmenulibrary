@@ -171,7 +171,7 @@ export const dishImages: Record<string, string> = {
   'wine-8': wineDomPerignon, // Dom Pérignon Brut
   'wine-9': wineAceOfSpades, // Armand de Brignac Brut Gold
   'wine-10': wineKrug, // Krug Grand Cuvée
-  'wine-11': wineInniskillin, // Quintessa Rutherford / Inniskillin Icewine
+  'wine-11': wineQuintessa, // Quintessa Rutherford
 
   // Spirits - Vodka
   'spirit-1': spiritGreyGoose, // Grey Goose
