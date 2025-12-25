@@ -15,9 +15,8 @@ import {
   MapPin
 } from 'lucide-react';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
-import bayfrontSketch from '@/assets/bayfront-sketch.jpg';
+import bayfrontSketch from '@/assets/bayfront-sketch-white.jpg';
 import logoImage from '@/assets/cesoir-logo.png';
-import { OpenTableLogo } from '@/components/OpenTableLogo';
 
 const features = [
   {
@@ -81,37 +80,18 @@ export default function Index() {
 
   return (
     <Layout>
-      {/* Hero Section - Full Screen Minimalist */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-charcoal">
-        {/* Sketch background image with opacity */}
+      {/* Hero Section - Full Screen with White Sketch */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-cream">
+        {/* Sketch background image */}
         <div className="absolute inset-0">
           <img 
             src={bayfrontSketch} 
             alt="Bayfront Place Naples Sketch" 
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover"
           />
-          {/* Copper tint overlay */}
-          <div className="absolute inset-0 bg-copper/15 mix-blend-overlay" />
-          {/* Gradient overlay for depth */}
-          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/30 via-copper/5 to-charcoal/70" />
+          {/* Subtle gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/20 via-transparent to-cream/40" />
         </div>
-        
-        {/* Animated Pulsing Vignette */}
-        <motion.div 
-          className="absolute inset-0 pointer-events-none"
-          animate={{
-            background: [
-              'radial-gradient(ellipse at center, transparent 0%, transparent 35%, hsl(30 15% 12% / 0.7) 100%)',
-              'radial-gradient(ellipse at center, transparent 0%, transparent 45%, hsl(30 15% 12% / 0.85) 100%)',
-              'radial-gradient(ellipse at center, transparent 0%, transparent 35%, hsl(30 15% 12% / 0.7) 100%)',
-            ]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
         
         {/* Main Content */}
         <motion.div 
@@ -119,7 +99,7 @@ export default function Index() {
           style={{ opacity: heroOpacity }}
         >
           <motion.p 
-            className="text-cream/80 text-lg md:text-xl font-light tracking-[0.3em] uppercase mb-8"
+            className="text-charcoal/70 text-lg md:text-xl font-light tracking-[0.3em] uppercase mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -136,12 +116,12 @@ export default function Index() {
             <img 
               src={logoImage} 
               alt="Ce Soir" 
-              className="h-24 md:h-32 lg:h-40 mx-auto drop-shadow-2xl"
+              className="h-24 md:h-32 lg:h-40 mx-auto"
             />
           </motion.div>
           
           <motion.div 
-            className="flex items-center justify-center gap-2 text-cream/50 mb-12"
+            className="flex items-center justify-center gap-2 text-charcoal/60 mb-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.6 }}
@@ -158,7 +138,7 @@ export default function Index() {
           >
             <Button 
               size="lg" 
-              className="bg-copper hover:bg-copper-light text-charcoal font-semibold px-8 py-6 text-base tracking-wide shadow-lg"
+              className="bg-copper text-charcoal font-semibold px-8 py-6 text-base tracking-wide"
               asChild
             >
               <Link to="/flashcards">
@@ -167,8 +147,7 @@ export default function Index() {
             </Button>
             <Button 
               size="lg" 
-              variant="hero-outline"
-              className="px-8 py-6 text-base tracking-wide"
+              className="bg-cream text-charcoal font-semibold px-8 py-6 text-base tracking-wide border-0"
               asChild
             >
               <Link to="/categories">
@@ -176,30 +155,12 @@ export default function Index() {
               </Link>
             </Button>
           </motion.div>
-          
-          {/* OpenTable Reviews Link */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.6, duration: 0.6 }}
-            className="mt-8"
-          >
-            <a 
-              href="https://www.opentable.com/r/ce-soir-naples" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 text-cream/60 hover:text-cream transition-colors group"
-            >
-              <OpenTableLogo className="w-6 h-6" />
-              <span className="text-sm tracking-wide">View Reviews</span>
-            </a>
-          </motion.div>
         </motion.div>
         
         {/* Scroll Indicator */}
         <motion.button
           onClick={scrollToContent}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-cream/40 hover:text-cream/80 transition-colors cursor-pointer"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-charcoal/40 hover:text-charcoal/80 transition-colors cursor-pointer"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, y: [0, 8, 0] }}
           transition={{ 
