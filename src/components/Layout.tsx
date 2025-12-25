@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Header } from './Header';
+import { Footer } from './Footer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,12 +13,7 @@ export function Layout({ children }: LayoutProps) {
       <main className="flex-1">
         {children}
       </main>
-      <footer className="border-t border-border py-6 mt-auto">
-        <div className="container text-center text-sm text-muted-foreground">
-          <p className="font-serif">Ce Soir • Staff Training Portal</p>
-          <p className="text-xs mt-1">© {new Date().getFullYear()} Ce Soir Restaurant</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
