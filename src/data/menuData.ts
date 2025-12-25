@@ -73,6 +73,9 @@ export const categories: Category[] = [
   { id: 'desserts', name: 'Desserts', nameFrench: 'Les Desserts', sortOrder: 3, icon: '🍫' },
   { id: 'sides', name: 'Sides', nameFrench: 'Les Accompagnements', sortOrder: 4, icon: '🍟' },
   { id: 'specials', name: 'Specials', nameFrench: 'Les Spécialités', sortOrder: 5, icon: '👨‍🍳' },
+  { id: 'wine', name: 'Wine', nameFrench: 'Les Vins', sortOrder: 6, icon: '🍷' },
+  { id: 'spirits', name: 'Spirits', nameFrench: 'Les Spiritueux', sortOrder: 7, icon: '🥃' },
+  { id: 'cocktails', name: 'Cocktails', nameFrench: 'Les Cocktails', sortOrder: 8, icon: '🍸' },
 ];
 
 export const menuItems: MenuItem[] = [
