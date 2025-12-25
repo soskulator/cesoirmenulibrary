@@ -80,66 +80,59 @@ export default function Index() {
 
   return (
     <Layout>
-      {/* SVG Filter Definitions for Sketch Effect */}
+      {/* SVG Filter Definitions for B&W Sketch Effect */}
       <svg className="absolute w-0 h-0" aria-hidden="true">
         <defs>
           <filter id="pencilSketch" x="-10%" y="-10%" width="120%" height="120%">
-            {/* Convert to grayscale base */}
-            <feColorMatrix type="saturate" values="0.15" result="desaturated" />
+            {/* Convert to pure grayscale */}
+            <feColorMatrix type="saturate" values="0" result="grayscale" />
             
-            {/* Edge detection using convolution */}
+            {/* High contrast adjustment */}
+            <feComponentTransfer in="grayscale" result="highContrast">
+              <feFuncR type="linear" slope="2.5" intercept="-0.6" />
+              <feFuncG type="linear" slope="2.5" intercept="-0.6" />
+              <feFuncB type="linear" slope="2.5" intercept="-0.6" />
+            </feComponentTransfer>
+            
+            {/* Edge detection for sketch lines */}
             <feConvolveMatrix
-              in="desaturated"
+              in="highContrast"
               order="3"
-              kernelMatrix="0 -1 0 -1 5 -1 0 -1 0"
+              kernelMatrix="-1 -1 -1 -1 9 -1 -1 -1 -1"
               result="edges"
             />
             
-            {/* Add paper grain texture */}
+            {/* Paper grain texture */}
             <feTurbulence
               type="fractalNoise"
-              baseFrequency="0.04"
-              numOctaves="5"
+              baseFrequency="0.03"
+              numOctaves="4"
               result="noise"
             />
             
-            {/* Displacement for hand-drawn wobble */}
+            {/* Hand-drawn wobble effect */}
             <feDisplacementMap
               in="edges"
               in2="noise"
-              scale="2"
+              scale="1.5"
               xChannelSelector="R"
               yChannelSelector="G"
               result="displaced"
             />
             
-            {/* Blend noise with the image for texture */}
-            <feBlend in="displaced" in2="noise" mode="multiply" result="textured" />
-            
-            {/* Boost contrast for sketch look */}
-            <feComponentTransfer in="textured" result="contrast">
-              <feFuncR type="linear" slope="1.3" intercept="-0.1" />
-              <feFuncG type="linear" slope="1.3" intercept="-0.1" />
-              <feFuncB type="linear" slope="1.3" intercept="-0.1" />
+            {/* Final contrast boost for stark B&W */}
+            <feComponentTransfer in="displaced" result="final">
+              <feFuncR type="linear" slope="1.8" intercept="-0.3" />
+              <feFuncG type="linear" slope="1.8" intercept="-0.3" />
+              <feFuncB type="linear" slope="1.8" intercept="-0.3" />
             </feComponentTransfer>
-            
-            {/* Add warm sepia tone */}
-            <feColorMatrix
-              in="contrast"
-              type="matrix"
-              values="0.95 0.15 0.05 0 0.02
-                      0.10 0.85 0.05 0 0.01
-                      0.05 0.10 0.75 0 0.00
-                      0    0    0    1 0"
-              result="sepia"
-            />
           </filter>
         </defs>
       </svg>
 
       {/* Hero Section - Full Screen Minimalist */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background with Parallax and Sketch Effect */}
+        {/* Background with Parallax and B&W Sketch Effect */}
         <motion.div 
           className="absolute inset-0"
           style={{ scale: heroScale }}
@@ -150,13 +143,26 @@ export default function Index() {
             className="w-full h-full object-cover"
             style={{ filter: 'url(#pencilSketch)' }}
           />
-          {/* Warm color overlay to blend with copper/cream palette */}
-          <div className="absolute inset-0 bg-gradient-to-br from-copper/25 via-charcoal/40 to-jade/15" />
-          {/* Vignette effect */}
-          <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, hsl(var(--charcoal) / 0.6) 100%)'
-          }} />
+          {/* Subtle warm tint overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-copper/10 via-transparent to-jade/10 mix-blend-overlay" />
         </motion.div>
+        
+        {/* Animated Pulsing Vignette */}
+        <motion.div 
+          className="absolute inset-0 pointer-events-none"
+          animate={{
+            background: [
+              'radial-gradient(ellipse at center, transparent 0%, transparent 35%, hsl(30 15% 12% / 0.7) 100%)',
+              'radial-gradient(ellipse at center, transparent 0%, transparent 45%, hsl(30 15% 12% / 0.85) 100%)',
+              'radial-gradient(ellipse at center, transparent 0%, transparent 35%, hsl(30 15% 12% / 0.7) 100%)',
+            ]
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
         
         {/* Main Content */}
         <motion.div 
