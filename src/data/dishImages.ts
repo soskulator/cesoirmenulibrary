@@ -98,11 +98,21 @@ import spiritAmaroMontenegro from '@/assets/drinks/spirit-amaro-montenegro.png';
 import spiritFrangelico from '@/assets/drinks/spirit-frangelico.png';
 // New Scotch and Tequila images
 import spiritTalisker10 from '@/assets/drinks/spirit-talisker10.png';
-import spiritArran18 from '@/assets/drinks/spirit-arran18.jpg';
+import spiritArran18 from '@/assets/drinks/spirit-arran18-new.png';
 import spiritTrombaReposado from '@/assets/drinks/spirit-tromba-reposado.jpg';
 import spiritG4Reposado from '@/assets/drinks/spirit-g4-reposado.png';
 import spiritPatronReposado from '@/assets/drinks/spirit-patron-reposado.jpg';
 import spiritHerraduraReposado from '@/assets/drinks/spirit-herradura-reposado.png';
+// Additional bottle images
+import spiritTrumanVodka from '@/assets/drinks/spirit-truman-vodka.png';
+import spiritNo3Gin from '@/assets/drinks/spirit-no3-gin.png';
+import spiritTanqueray10 from '@/assets/drinks/spirit-tanqueray10.jpg';
+import spiritZacapaXO from '@/assets/drinks/spirit-zacapa-xo.jpg';
+import spiritTrombaAnejo from '@/assets/drinks/spirit-tromba-anejo.jpg';
+import spiritCentenarioAnejo from '@/assets/drinks/spirit-centenario-anejo.png';
+import spiritMijentaBlanco from '@/assets/drinks/spirit-mijenta-blanco.png';
+import spiritLalo from '@/assets/drinks/spirit-lalo.png';
+import spiritDalmoreCigar from '@/assets/drinks/spirit-dalmore-cigar.jpg';
 
 // Drink images - Cocktails
 import cocktailEspressoMartini from '@/assets/drinks/cocktail-espresso-martini-new.jpg';
@@ -184,20 +194,20 @@ export const dishImages: Record<string, string> = {
   'spirit-1': spiritGreyGoose, // Grey Goose
   'spirit-2': spiritTitos, // Tito's
   'spirit-3': spiritChopinPotato, // Chopin
-  'spirit-4': spiritChopinPotato, // Truman (using Chopin as placeholder)
+  'spirit-4': spiritTrumanVodka, // Truman
   'spirit-5': spiritZubrowka, // Zubrowka
   'spirit-6': spiritBelugaGold, // Beluga Noble
   'spirit-7': spiritBelugaGold, // Beluga Gold
   
   // Spirits - Gin
-  'spirit-8': spiritBotanist, // No. 3 London Dry
+  'spirit-8': spiritNo3Gin, // No. 3 London Dry
   'spirit-9': spiritBotanist, // The Botanist
   'spirit-10': spiritEmpress, // Empress 1908
   'spirit-11': spiritHendricks, // Hendrick's Gin
   'spirit-12': spiritMare, // Mare
   'spirit-13': spiritNordes, // Nordés
   'spirit-14': spiritMonkey47, // Monkey 47 Gin
-  'spirit-15': spiritMonkey47, // Tanqueray No. Ten
+  'spirit-15': spiritTanqueray10, // Tanqueray No. Ten
   
   // Spirits - Rum
   'spirit-16': spiritSailorJerry, // Bacardi Superior
@@ -207,7 +217,7 @@ export const dishImages: Record<string, string> = {
   'spirit-20': spiritDiplomatico, // Diplomatico Reserva Exclusiva
   'spirit-21': spiritZacapa23, // Zacapa 23
   'spirit-22': spiritElDorado15, // El Dorado 15
-  'spirit-23': spiritZacapa23, // Zacapa XO
+  'spirit-23': spiritZacapaXO, // Zacapa XO
   'spirit-24': spiritElDorado15, // Foursquare
   'spirit-25': spiritBrugalAnejo, // Brugal Maestro Reserva
   
@@ -216,12 +226,12 @@ export const dishImages: Record<string, string> = {
   'spirit-27': spiritTrombaBlanco, // Tromba Blanco
   'spirit-28': spiritTrombaReposado, // Tromba Reposado
   'spirit-29': spiritG4Blanco, // G4 Blanco
-  'spirit-30': spiritG4Blanco, // Mijenita Blanco
-  'spirit-31': spiritTrombaBlanco, // Tromba Añejo
-  'spirit-32': spiritClaseAzul, // Centenario Añejo
+  'spirit-30': spiritMijentaBlanco, // Mijenita Blanco
+  'spirit-31': spiritTrombaAnejo, // Tromba Añejo
+  'spirit-32': spiritCentenarioAnejo, // Centenario Añejo
   'spirit-33': spiritG4Blanco, // Casa Maestri Blanco
   'spirit-34': spiritG4Reposado, // G4 Reposado
-  'spirit-35': spiritG4Blanco, // Lalo
+  'spirit-35': spiritLalo, // Lalo
   'spirit-36': spiritG4Blanco, // Mijenita Reposado
   'spirit-37': spiritG4Blanco, // Casa Maestri Reposado
   'spirit-38': spiritClaseAzul, // Cenote Añejo
@@ -261,7 +271,7 @@ export const dishImages: Record<string, string> = {
   'spirit-68': spiritBalvenie12, // Glenfiddich 18
   'spirit-69': spiritJohnnieBlue, // Johnnie Walker Blue Label
   'spirit-70': spiritArran18, // Arran 18
-  'spirit-71': spiritDalmore15, // Dalmore Cigar Malt
+  'spirit-71': spiritDalmoreCigar, // Dalmore Cigar Malt
   'spirit-72': spiritBalvenie12, // Glenfiddich 23
   'spirit-73': spiritMacallan18, // Macallan 18
   'spirit-74': spiritMacallan18, // Macallan M
