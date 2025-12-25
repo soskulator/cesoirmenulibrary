@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -42,33 +42,38 @@ export default function FlashcardsPage() {
 
   // Filter items
   const filteredItems = useMemo(() => {
-    let items = menuItems.filter(i => i.isPublished);
-    
+    let items = menuItems.filter((i) => i.isPublished);
+
     if (selectedCategory) {
-      items = items.filter(i => i.categoryId === selectedCategory);
+      items = items.filter((i) => i.categoryId === selectedCategory);
     }
-    
+
     if (searchQuery) {
-      items = searchMenuItems(searchQuery);
+      items = searchMenuItems(searchQuery).filter((i) => i.isPublished);
       if (selectedCategory) {
-        items = items.filter(i => i.categoryId === selectedCategory);
+        items = items.filter((i) => i.categoryId === selectedCategory);
       }
     }
-    
+
     if (excludeAllergens.length > 0) {
       items = filterByAllergen(items, excludeAllergens);
     }
 
-    // If initial item is specified, find its index
-    if (initialItem) {
-      const itemIndex = items.findIndex(i => i.id === initialItem);
-      if (itemIndex >= 0 && currentIndex === 0) {
-        setCurrentIndex(itemIndex);
-      }
-    }
-    
     return items;
-  }, [selectedCategory, searchQuery, excludeAllergens, initialItem]);
+  }, [selectedCategory, searchQuery, excludeAllergens]);
+
+  useEffect(() => {
+    if (!initialItem) return;
+    const idx = filteredItems.findIndex((i) => i.id === initialItem);
+    if (idx >= 0) setCurrentIndex(idx);
+  }, [initialItem, filteredItems]);
+
+  useEffect(() => {
+    if (filteredItems.length === 0) return;
+    if (currentIndex >= filteredItems.length) {
+      setCurrentIndex(filteredItems.length - 1);
+    }
+  }, [currentIndex, filteredItems.length]);
 
   const currentItem = filteredItems[currentIndex];
 
@@ -85,24 +90,31 @@ export default function FlashcardsPage() {
   };
 
   const markAsKnown = () => {
-    if (currentItem) {
-      setKnownItems(prev => new Set(prev).add(currentItem.id));
-      reviewItems.delete(currentItem.id);
-      setReviewItems(new Set(reviewItems));
-      goToNext();
-    }
+    if (!currentItem) return;
+
+    setKnownItems((prev) => new Set(prev).add(currentItem.id));
+    setReviewItems((prev) => {
+      const next = new Set(prev);
+      next.delete(currentItem.id);
+      return next;
+    });
+    goToNext();
   };
 
   const markForReview = () => {
-    if (currentItem) {
-      setReviewItems(prev => new Set(prev).add(currentItem.id));
-      knownItems.delete(currentItem.id);
-      setKnownItems(new Set(knownItems));
-      goToNext();
-    }
+    if (!currentItem) return;
+
+    setReviewItems((prev) => new Set(prev).add(currentItem.id));
+    setKnownItems((prev) => {
+      const next = new Set(prev);
+      next.delete(currentItem.id);
+      return next;
+    });
+    goToNext();
   };
 
   const shuffle = () => {
+    if (filteredItems.length === 0) return;
     const randomIndex = Math.floor(Math.random() * filteredItems.length);
     setCurrentIndex(randomIndex);
   };
