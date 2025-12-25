@@ -55,22 +55,41 @@ export default {
           DEFAULT: "hsl(var(--cream))",
           dark: "hsl(var(--cream-dark))",
         },
-        burgundy: {
-          DEFAULT: "hsl(var(--burgundy))",
-          light: "hsl(var(--burgundy-light))",
-          dark: "hsl(var(--burgundy-dark))",
+        copper: {
+          DEFAULT: "hsl(var(--copper))",
+          light: "hsl(var(--copper-light))",
+          dark: "hsl(var(--copper-dark))",
         },
-        gold: {
-          DEFAULT: "hsl(var(--gold))",
-          light: "hsl(var(--gold-light))",
+        "rose-gold": {
+          DEFAULT: "hsl(var(--rose-gold))",
+          light: "hsl(var(--rose-gold-light))",
+        },
+        jade: {
+          DEFAULT: "hsl(var(--jade))",
+          light: "hsl(var(--jade-light))",
+          dark: "hsl(var(--jade-dark))",
+        },
+        wood: {
+          DEFAULT: "hsl(var(--wood))",
+          light: "hsl(var(--wood-light))",
         },
         charcoal: {
           DEFAULT: "hsl(var(--charcoal))",
           light: "hsl(var(--charcoal-light))",
         },
+        // Legacy aliases for compatibility
+        burgundy: {
+          DEFAULT: "hsl(var(--copper))",
+          light: "hsl(var(--copper-light))",
+          dark: "hsl(var(--copper-dark))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          light: "hsl(var(--gold-light))",
+        },
         sage: {
-          DEFAULT: "hsl(var(--sage))",
-          light: "hsl(var(--sage-light))",
+          DEFAULT: "hsl(var(--jade))",
+          light: "hsl(var(--jade-light))",
         },
         allergen: {
           gluten: "hsl(var(--allergen-gluten))",

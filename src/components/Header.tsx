@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import cesoirLogo from '@/assets/cesoir-logo.png';
 
 const navItems = [
   { path: '/', label: 'Home', icon: Home },
@@ -36,13 +37,14 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-burgundy flex items-center justify-center">
-            <span className="text-primary-foreground font-serif text-lg font-bold">CS</span>
-          </div>
+        <Link to="/" className="flex items-center gap-3">
+          <img 
+            src={cesoirLogo} 
+            alt="Ce Soir" 
+            className="h-10 w-auto"
+          />
           <div className="hidden sm:block">
-            <h1 className="font-serif text-xl font-semibold text-foreground">Ce Soir</h1>
-            <p className="text-xs text-muted-foreground -mt-1">Staff Training</p>
+            <p className="text-xs text-muted-foreground">Staff Training</p>
           </div>
         </Link>
 
