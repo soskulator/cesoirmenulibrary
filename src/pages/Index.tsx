@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
+import { getCategoryIcon } from '@/data/categoryIcons';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 import logoImage from '@/assets/cesoir-logo.png';
 
@@ -312,15 +313,36 @@ export default function Index() {
             whileInView="show"
             viewport={{ once: true, margin: "-50px" }}
           >
-            {categories.slice(0, 3).map((category) => {
+          {categories.slice(0, 3).map((category) => {
               const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
+              const categoryIcon = getCategoryIcon(category.id);
               return (
                 <motion.div key={category.id} variants={item}>
                   <Link to={`/categories/${category.id}`}>
-                    <Card className="group border-0 bg-card/50 hover:bg-card hover:shadow-elevated transition-all duration-500">
-                      <CardContent className="p-8">
+                    <Card className="group border-0 bg-card/50 hover:bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden relative">
+                      {/* Background icon */}
+                      {categoryIcon && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <img 
+                            src={categoryIcon} 
+                            alt="" 
+                            className="w-full h-full object-cover opacity-10 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 drop-shadow-sm"
+                          />
+                          {/* Gradient overlay for text readability */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-card/80 via-card/60 to-card/80" />
+                        </div>
+                      )}
+                      <CardContent className="p-8 relative z-10">
                         <div className="flex items-center gap-6">
-                          <span className="text-5xl">{category.icon}</span>
+                          {categoryIcon ? (
+                            <img 
+                              src={categoryIcon} 
+                              alt={category.name} 
+                              className="w-14 h-14 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
+                            />
+                          ) : (
+                            <span className="text-5xl">{category.icon}</span>
+                          )}
                           <div>
                             <h3 className="font-serif text-2xl font-semibold group-hover:text-copper transition-colors">
                               {category.name}
