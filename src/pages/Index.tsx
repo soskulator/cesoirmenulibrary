@@ -12,12 +12,12 @@ import {
   AlertTriangle,
   ArrowRight,
   ArrowDown,
-  MapPin,
-  ExternalLink
+  MapPin
 } from 'lucide-react';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
 import bayfrontSketch from '@/assets/bayfront-sketch.jpg';
 import logoImage from '@/assets/cesoir-logo.png';
+import { OpenTableLogo } from '@/components/OpenTableLogo';
 
 const features = [
   {
@@ -188,11 +188,10 @@ export default function Index() {
               href="https://www.opentable.com/r/ce-soir-naples" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-cream/60 hover:text-copper transition-colors text-sm tracking-wide group"
+              className="inline-flex items-center gap-3 text-cream/60 hover:text-cream transition-colors group"
             >
-              <ExternalLink className="w-4 h-4" />
-              <span>View OpenTable Reviews</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              <OpenTableLogo className="w-6 h-6" />
+              <span className="text-sm tracking-wide">View Reviews</span>
             </a>
           </motion.div>
         </motion.div>
