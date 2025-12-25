@@ -15,7 +15,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
-import bayfrontImage from '@/assets/bayfront-naples.jpg';
+import bayfrontSketch from '@/assets/bayfront-sketch.jpg';
 import logoImage from '@/assets/cesoir-logo.png';
 
 const features = [
@@ -82,8 +82,16 @@ export default function Index() {
     <Layout>
       {/* Hero Section - Full Screen Minimalist */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-charcoal">
-        {/* Elegant gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-charcoal via-charcoal-light/20 to-charcoal" />
+        {/* Sketch background image with opacity */}
+        <div className="absolute inset-0">
+          <img 
+            src={bayfrontSketch} 
+            alt="Bayfront Place Naples Sketch" 
+            className="w-full h-full object-cover opacity-15"
+          />
+          {/* Gradient overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-transparent to-charcoal/60" />
+        </div>
         
         {/* Animated Pulsing Vignette */}
         <motion.div 
