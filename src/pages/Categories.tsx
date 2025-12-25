@@ -50,13 +50,23 @@ export default function CategoriesPage() {
 
     return (
       <Layout>
-        {/* Background */}
+        {/* Background - Category Icon */}
         <div className="fixed inset-0 -z-10 bg-cream">
-          <img 
-            src={bayfrontSketch} 
-            alt="" 
-            className="w-full h-full object-cover opacity-[0.08]"
-          />
+          {getCategoryIcon(category.id) ? (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img 
+                src={getCategoryIcon(category.id)} 
+                alt="" 
+                className="w-full h-full object-contain opacity-30 scale-110"
+              />
+            </div>
+          ) : (
+            <img 
+              src={bayfrontSketch} 
+              alt="" 
+              className="w-full h-full object-cover opacity-[0.08]"
+            />
+          )}
         </div>
 
         <div className="min-h-screen">
@@ -76,47 +86,29 @@ export default function CategoriesPage() {
                 <span className="text-sm tracking-wide uppercase">All Categories</span>
               </Link>
 
-              <div className="flex items-start gap-6">
-                <motion.div 
-                  className="w-16 h-16 md:w-20 md:h-20 shrink-0"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.4 }}
-                >
-                  {getCategoryIcon(category.id) ? (
-                    <img 
-                      src={getCategoryIcon(category.id)} 
-                      alt={category.name}
-                      className="w-full h-full object-contain drop-shadow-lg"
-                    />
-                  ) : (
-                    <span className="text-6xl md:text-7xl">{category.icon}</span>
-                  )}
-                </motion.div>
-                <div className="flex-1">
-                  <h1 className="font-serif text-3xl md:text-5xl font-bold text-charcoal tracking-tight">
-                    {category.name}
-                  </h1>
-                  <p className="text-xl md:text-2xl text-charcoal/50 font-serif italic mt-1">
-                    {category.nameFrench}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3 mt-4">
-                    <span className="text-sm text-charcoal/60 tracking-wide">
-                      {items.length} dishes
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-charcoal/30" />
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      asChild
-                      className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2"
-                    >
-                      <Link to={`/flashcards?category=${categoryId}`}>
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        Study Flashcards
-                      </Link>
-                    </Button>
-                  </div>
+              <div>
+                <h1 className="font-serif text-3xl md:text-5xl font-bold text-charcoal tracking-tight">
+                  {category.name}
+                </h1>
+                <p className="text-xl md:text-2xl text-charcoal/50 font-serif italic mt-1">
+                  {category.nameFrench}
+                </p>
+                <div className="flex flex-wrap items-center gap-3 mt-4">
+                  <span className="text-sm text-charcoal/60 tracking-wide">
+                    {items.length} dishes
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-charcoal/30" />
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    asChild
+                    className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2"
+                  >
+                    <Link to={`/flashcards?category=${categoryId}`}>
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Study Flashcards
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
