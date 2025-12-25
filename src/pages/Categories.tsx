@@ -87,7 +87,7 @@ export default function CategoriesPage() {
                     <img 
                       src={getCategoryIcon(category.id)} 
                       alt={category.name}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain drop-shadow-lg"
                     />
                   ) : (
                     <span className="text-6xl md:text-7xl">{category.icon}</span>
@@ -256,7 +256,7 @@ export default function CategoriesPage() {
                           <img 
                             src={getCategoryIcon(category.id)} 
                             alt={category.name}
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-contain drop-shadow-lg"
                           />
                         ) : (
                           <span className={`block ${isLarge ? 'text-6xl md:text-7xl' : 'text-4xl md:text-5xl'}`}>

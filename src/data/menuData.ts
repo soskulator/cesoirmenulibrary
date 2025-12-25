@@ -68,8 +68,8 @@ export const allergens: Allergen[] = [
 ];
 
 export const categories: Category[] = [
-  { id: 'appetizers', name: 'Appetizers', nameFrench: 'Les Entrées', sortOrder: 1, icon: '🦪' },
-  { id: 'entrees', name: 'Entrées', nameFrench: 'Les Plats', sortOrder: 2, icon: '🥩' },
+  { id: 'appetizers', name: 'Appetizers', nameFrench: 'Les Petites', sortOrder: 1, icon: '🦪' },
+  { id: 'entrees', name: 'Entrées', nameFrench: 'Les Entrées', sortOrder: 2, icon: '🥩' },
   { id: 'desserts', name: 'Desserts', nameFrench: 'Les Desserts', sortOrder: 3, icon: '🍫' },
   { id: 'sides', name: 'Sides', nameFrench: 'Les Accompagnements', sortOrder: 4, icon: '🍟' },
   { id: 'specials', name: 'Specials', nameFrench: 'Les Spécialités', sortOrder: 5, icon: '👨‍🍳' },
