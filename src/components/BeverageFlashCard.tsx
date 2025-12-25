@@ -19,25 +19,33 @@ const getBeverageType = (categoryId: string) => {
   switch (categoryId) {
     case 'wine':
       return {
-        bgGradient: 'from-[#2d1f1f] via-[#3d2828] to-[#1a1414]',
+        frontBg: 'bg-gradient-to-b from-[#2d1f1f] via-[#3d2828] to-[#1a1414]',
+        backBg: 'bg-gradient-to-b from-[#2d1f1f] via-[#3d2828] to-[#1a1414]',
+        frontTextColor: 'text-cream',
         accentColor: 'text-copper',
         icon: Wine,
       };
     case 'spirits':
       return {
-        bgGradient: 'from-[#1a1a2e] via-[#232340] to-[#0f0f1a]',
+        frontBg: 'bg-gradient-to-b from-white via-cream to-cream-dark',
+        backBg: 'bg-gradient-to-b from-[#1a1a2e] via-[#232340] to-[#0f0f1a]',
+        frontTextColor: 'text-charcoal',
         accentColor: 'text-gold',
         icon: GlassWater,
       };
     case 'cocktails':
       return {
-        bgGradient: 'from-[#1f2d2d] via-[#283d3d] to-[#141a1a]',
+        frontBg: 'bg-gradient-to-b from-[#1f2d2d] via-[#283d3d] to-[#141a1a]',
+        backBg: 'bg-gradient-to-b from-[#1f2d2d] via-[#283d3d] to-[#141a1a]',
+        frontTextColor: 'text-cream',
         accentColor: 'text-jade-light',
         icon: GlassWater,
       };
     default:
       return {
-        bgGradient: 'from-charcoal via-charcoal-light to-charcoal',
+        frontBg: 'bg-gradient-to-b from-charcoal via-charcoal-light to-charcoal',
+        backBg: 'bg-gradient-to-b from-charcoal via-charcoal-light to-charcoal',
+        frontTextColor: 'text-cream',
         accentColor: 'text-copper',
         icon: Wine,
       };
@@ -101,20 +109,20 @@ export function BeverageFlashCard({
         {/* Front: Bottle Image + Name */}
         <div
           className={cn(
-            'flip-card-front absolute inset-0 rounded-2xl overflow-hidden shadow-elevated flex flex-col',
-            `bg-gradient-to-b ${beverageType.bgGradient}`
+            'flip-card-front absolute inset-0 rounded-2xl overflow-hidden shadow-elevated flex flex-col border border-border/20',
+            beverageType.frontBg
           )}
         >
           {/* Bottle Display Area - Fixed height for uniformity */}
           <div className="flex-1 relative flex items-center justify-center p-4 sm:p-6">
             {/* Subtle radial gradient backdrop */}
-            <div className="absolute inset-0 bg-gradient-radial from-white/5 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-radial from-copper/5 via-transparent to-transparent" />
             
             {dishImage ? (
               <div className="relative h-full flex items-center justify-center">
                 {/* Bottle shadow/glow effect */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white/5 blur-3xl" />
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-charcoal/5 blur-3xl" />
                 </div>
                 
                 {/* Bottle image - constrained to show label clearly */}
@@ -123,12 +131,14 @@ export function BeverageFlashCard({
                   alt={item.name}
                   className="relative z-10 h-full max-h-[180px] sm:max-h-[220px] md:max-h-[280px] w-auto object-contain drop-shadow-2xl pointer-events-none"
                   style={{ 
-                    filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.4))'
+                    filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))'
                   }}
                 />
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-3 text-cream/30">
+              <div className={cn("flex flex-col items-center justify-center gap-3", 
+                item.categoryId === 'spirits' ? 'text-charcoal/30' : 'text-cream/30'
+              )}>
                 <BeverageIcon className="w-16 h-16 sm:w-20 sm:h-20" />
                 <span className="text-sm">No image</span>
               </div>
@@ -136,7 +146,12 @@ export function BeverageFlashCard({
           </div>
 
           {/* Name overlay with elegant styling */}
-          <div className="bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 sm:p-5 md:p-6">
+          <div className={cn(
+            "p-4 sm:p-5 md:p-6",
+            item.categoryId === 'spirits' 
+              ? "bg-gradient-to-t from-charcoal via-charcoal/90 to-charcoal/70" 
+              : "bg-gradient-to-t from-black/90 via-black/60 to-transparent"
+          )}>
             <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-cream/50 mb-1.5 text-center">
               Swipe up to flip
             </p>
@@ -153,7 +168,7 @@ export function BeverageFlashCard({
         <div
           className={cn(
             'flip-card-back absolute inset-0 rounded-2xl overflow-hidden shadow-elevated flex flex-col',
-            `bg-gradient-to-b ${beverageType.bgGradient}`
+            beverageType.backBg
           )}
         >
           <div className="flex-1 overflow-y-auto scrollbar-hide p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
