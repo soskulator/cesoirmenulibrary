@@ -40,6 +40,7 @@ const navItems = [
   { path: '/cocktails', label: 'Cocktails', icon: GlassWater },
   { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
   { path: '/quiz', label: 'Quiz', icon: HelpCircle },
+  { path: '/wine-quiz', label: 'Wine Quiz', icon: Wine },
   { path: '/daily-focus', label: 'Daily Focus', icon: Star },
   { path: '/allergy-check', label: 'Allergy Check', icon: AlertTriangle },
 ];

@@ -24,14 +24,18 @@ const getBeverageType = (categoryId: string) => {
         frontTextColor: 'text-cream',
         accentColor: 'text-copper',
         icon: Wine,
+        imageBg: '#2d1f1f',
+        imageGradient: 'from-[#2d1f1f] via-transparent to-[#2d1f1f]',
       };
     case 'spirits':
       return {
-        frontBg: 'bg-gradient-to-b from-white via-cream to-cream-dark',
+        frontBg: 'bg-gradient-to-b from-[#f8f6f3] via-[#f0ebe4] to-[#e8e2d9]',
         backBg: 'bg-gradient-to-b from-[#1a1a2e] via-[#232340] to-[#0f0f1a]',
         frontTextColor: 'text-charcoal',
         accentColor: 'text-gold',
         icon: GlassWater,
+        imageBg: '#f8f6f3',
+        imageGradient: 'from-[#f8f6f3] via-transparent to-[#f8f6f3]',
       };
     case 'cocktails':
       return {
@@ -40,6 +44,8 @@ const getBeverageType = (categoryId: string) => {
         frontTextColor: 'text-cream',
         accentColor: 'text-jade-light',
         icon: GlassWater,
+        imageBg: '#1f2d2d',
+        imageGradient: 'from-[#1f2d2d] via-transparent to-[#1f2d2d]',
       };
     default:
       return {
@@ -48,6 +54,8 @@ const getBeverageType = (categoryId: string) => {
         frontTextColor: 'text-cream',
         accentColor: 'text-copper',
         icon: Wine,
+        imageBg: '#2a2a2a',
+        imageGradient: 'from-charcoal via-transparent to-charcoal',
       };
   }
 };
@@ -114,26 +122,49 @@ export function BeverageFlashCard({
           )}
         >
           {/* Bottle Display Area - Fixed height for uniformity */}
-          <div className="flex-1 relative flex items-center justify-center p-4 sm:p-6">
-            {/* Subtle radial gradient backdrop */}
-            <div className="absolute inset-0 bg-gradient-radial from-copper/5 via-transparent to-transparent" />
+          <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+            {/* Multi-layer background blend */}
+            <div 
+              className="absolute inset-0"
+              style={{ backgroundColor: beverageType.imageBg }}
+            />
+            
+            {/* Radial gradient for depth */}
+            <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/10" />
             
             {dishImage ? (
-              <div className="relative h-full flex items-center justify-center">
-                {/* Bottle shadow/glow effect */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-charcoal/5 blur-3xl" />
-                </div>
-                
-                {/* Bottle image - constrained to show label clearly */}
-                <img
-                  src={dishImage}
-                  alt={item.name}
-                  className="relative z-10 h-full max-h-[180px] sm:max-h-[220px] md:max-h-[280px] w-auto object-contain drop-shadow-2xl pointer-events-none"
+              <div className="relative h-full w-full flex items-center justify-center p-4 sm:p-6">
+                {/* Soft ambient glow behind bottle */}
+                <div 
+                  className="absolute inset-0 flex items-center justify-center opacity-40"
                   style={{ 
-                    filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.15))'
+                    background: `radial-gradient(ellipse 60% 40% at 50% 50%, ${beverageType.imageBg === '#f8f6f3' ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.05)'} 0%, transparent 70%)`
                   }}
                 />
+                
+                {/* Main bottle image with professional masking */}
+                <div className="relative z-10 h-full flex items-center justify-center">
+                  {/* Edge fade overlays for seamless blending */}
+                  <div 
+                    className="absolute inset-0 pointer-events-none z-20"
+                    style={{
+                      background: `
+                        linear-gradient(to right, ${beverageType.imageBg} 0%, transparent 8%, transparent 92%, ${beverageType.imageBg} 100%),
+                        linear-gradient(to bottom, ${beverageType.imageBg} 0%, transparent 5%, transparent 95%, ${beverageType.imageBg} 100%)
+                      `
+                    }}
+                  />
+                  
+                  <img
+                    src={dishImage}
+                    alt={item.name}
+                    className="relative h-full max-h-[180px] sm:max-h-[220px] md:max-h-[280px] w-auto object-contain pointer-events-none"
+                    style={{ 
+                      filter: `drop-shadow(0 8px 24px ${beverageType.imageBg === '#f8f6f3' ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.4)'})`,
+                      mixBlendMode: 'normal',
+                    }}
+                  />
+                </div>
               </div>
             ) : (
               <div className={cn("flex flex-col items-center justify-center gap-3", 
