@@ -80,72 +80,10 @@ export default function Index() {
 
   return (
     <Layout>
-      {/* SVG Filter Definitions for B&W Sketch Effect */}
-      <svg className="absolute w-0 h-0" aria-hidden="true">
-        <defs>
-          <filter id="pencilSketch" x="-10%" y="-10%" width="120%" height="120%">
-            {/* Convert to pure grayscale */}
-            <feColorMatrix type="saturate" values="0" result="grayscale" />
-            
-            {/* High contrast adjustment */}
-            <feComponentTransfer in="grayscale" result="highContrast">
-              <feFuncR type="linear" slope="2.5" intercept="-0.6" />
-              <feFuncG type="linear" slope="2.5" intercept="-0.6" />
-              <feFuncB type="linear" slope="2.5" intercept="-0.6" />
-            </feComponentTransfer>
-            
-            {/* Edge detection for sketch lines */}
-            <feConvolveMatrix
-              in="highContrast"
-              order="3"
-              kernelMatrix="-1 -1 -1 -1 9 -1 -1 -1 -1"
-              result="edges"
-            />
-            
-            {/* Paper grain texture */}
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.03"
-              numOctaves="4"
-              result="noise"
-            />
-            
-            {/* Hand-drawn wobble effect */}
-            <feDisplacementMap
-              in="edges"
-              in2="noise"
-              scale="1.5"
-              xChannelSelector="R"
-              yChannelSelector="G"
-              result="displaced"
-            />
-            
-            {/* Final contrast boost for stark B&W */}
-            <feComponentTransfer in="displaced" result="final">
-              <feFuncR type="linear" slope="1.8" intercept="-0.3" />
-              <feFuncG type="linear" slope="1.8" intercept="-0.3" />
-              <feFuncB type="linear" slope="1.8" intercept="-0.3" />
-            </feComponentTransfer>
-          </filter>
-        </defs>
-      </svg>
-
       {/* Hero Section - Full Screen Minimalist */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background with Parallax and B&W Sketch Effect */}
-        <motion.div 
-          className="absolute inset-0"
-          style={{ scale: heroScale }}
-        >
-          <img 
-            src={bayfrontImage} 
-            alt="Bayfront Place Naples" 
-            className="w-full h-full object-cover"
-            style={{ filter: 'url(#pencilSketch)' }}
-          />
-          {/* Subtle warm tint overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-copper/10 via-transparent to-jade/10 mix-blend-overlay" />
-        </motion.div>
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-charcoal">
+        {/* Elegant gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-charcoal via-charcoal-light/20 to-charcoal" />
         
         {/* Animated Pulsing Vignette */}
         <motion.div 
