@@ -8,6 +8,73 @@ import { getDishImage } from '@/data/dishImages';
 import { getCategoryIcon } from '@/data/categoryIcons';
 import { ArrowLeft, CreditCard, ChevronRight } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
+
+// Spirit subcategories with their IDs
+const spiritSubcategories = {
+  vodka: {
+    title: 'Vodka',
+    subtitle: 'Pur & Élégant',
+    ids: ['spirit-1', 'spirit-2', 'spirit-3', 'spirit-4', 'spirit-5', 'spirit-6', 'spirit-7'],
+  },
+  gin: {
+    title: 'Gin',
+    subtitle: 'Botanique & Aromatique',
+    ids: ['spirit-8', 'spirit-9', 'spirit-10', 'spirit-11', 'spirit-12', 'spirit-13', 'spirit-14', 'spirit-15'],
+  },
+  rum: {
+    title: 'Rum',
+    subtitle: 'Canne & Côte',
+    ids: ['spirit-16', 'spirit-17', 'spirit-18', 'spirit-19', 'spirit-20', 'spirit-21', 'spirit-22', 'spirit-23', 'spirit-24', 'spirit-25'],
+  },
+  tequila: {
+    title: 'Tequila',
+    subtitle: "Esprit d'Agave",
+    ids: [
+      'spirit-26', 'spirit-27', 'spirit-28', 'spirit-29', 'spirit-30', 'spirit-31', 'spirit-32',
+      'spirit-33', 'spirit-34', 'spirit-35', 'spirit-36', 'spirit-37', 'spirit-38', 'spirit-39',
+      'spirit-40', 'spirit-41', 'spirit-42', 'spirit-43', 'spirit-44', 'spirit-45', 'spirit-46'
+    ],
+  },
+  mezcal: {
+    title: 'Mezcal',
+    subtitle: 'Fumé & Terreux',
+    ids: ['spirit-47', 'spirit-48', 'spirit-49', 'spirit-50', 'spirit-51', 'spirit-52'],
+  },
+  scotch: {
+    title: 'Scotch',
+    subtitle: 'Malt & Héritage',
+    ids: [
+      'spirit-53', 'spirit-54', 'spirit-55', 'spirit-56', 'spirit-57', 'spirit-58', 'spirit-59',
+      'spirit-60', 'spirit-61', 'spirit-62', 'spirit-63', 'spirit-64', 'spirit-65', 'spirit-66',
+      'spirit-67', 'spirit-68', 'spirit-69', 'spirit-70', 'spirit-71', 'spirit-72', 'spirit-73', 'spirit-74'
+    ],
+  },
+  bourbon: {
+    title: 'Bourbon',
+    subtitle: 'Riche & Robuste',
+    ids: [
+      'spirit-75', 'spirit-76', 'spirit-77', 'spirit-78', 'spirit-79', 'spirit-80', 'spirit-81',
+      'spirit-82', 'spirit-83', 'spirit-84', 'spirit-85', 'spirit-86', 'spirit-87', 'spirit-88', 'spirit-89'
+    ],
+  },
+  rye: {
+    title: 'Rye & Other Whiskeys',
+    subtitle: 'Boisé & Épicé',
+    ids: ['spirit-90', 'spirit-91', 'spirit-92', 'spirit-93', 'spirit-94', 'spirit-95', 'spirit-96'],
+  },
+  cordials: {
+    title: 'Cordials & Liqueurs',
+    subtitle: 'La Touche Finale',
+    ids: [
+      'spirit-97', 'spirit-98', 'spirit-99', 'spirit-100', 'spirit-101', 'spirit-102', 'spirit-103',
+      'spirit-104', 'spirit-105', 'spirit-106', 'spirit-107', 'spirit-108', 'spirit-109', 'spirit-110',
+      'spirit-111', 'spirit-112', 'spirit-113', 'spirit-114', 'spirit-115'
+    ],
+  },
+};
+
+const subcategoryOrder = ['vodka', 'gin', 'rum', 'tequila', 'mezcal', 'scotch', 'bourbon', 'rye', 'cordials'] as const;
+
 const container = {
   hidden: {
     opacity: 0
@@ -54,6 +121,10 @@ export default function CategoriesPage() {
           </div>
         </Layout>;
     }
+
+    // Special handling for spirits category with subcategories
+    const isSpirits = categoryId === 'spirits';
+
     return <Layout>
         {/* Background - Category Icon */}
         <div className="fixed inset-0 -z-10 bg-cream">
@@ -75,7 +146,7 @@ export default function CategoriesPage() {
         }} transition={{
           duration: 0.6
         }}>
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <Link to="/categories" className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal transition-colors mb-8 group">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 <span className="text-sm tracking-wide uppercase">All Categories</span>
@@ -90,7 +161,7 @@ export default function CategoriesPage() {
                 </p>
                 <div className="flex flex-wrap items-center gap-3 mt-4">
                   <span className="text-sm text-charcoal/60 tracking-wide">
-                    {items.length} dishes
+                    {items.length} {isSpirits ? 'spirits' : 'dishes'}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-charcoal/30" />
                   <Button variant="ghost" size="sm" asChild className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2">
@@ -104,42 +175,127 @@ export default function CategoriesPage() {
             </div>
           </motion.header>
 
-          {/* Menu Items - Clean List */}
-          <motion.div variants={container} initial="hidden" animate="show" className="px-6 pb-24">
-            <div className="max-w-4xl mx-auto space-y-3">
-              {items.map(menuItem => {
-              const dishImage = getDishImage(menuItem.id);
-              return <motion.div key={menuItem.id} variants={item}>
-                    <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
-                      <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300">
-                        {/* Image */}
-                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 bg-cream">
-                          {dishImage ? <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full flex items-center justify-center text-2xl">
-                              🍽️
-                            </div>}
-                        </div>
+          {/* Spirits with Subcategories */}
+          {isSpirits ? (
+            <div className="px-6 pb-24">
+              <div className="max-w-5xl mx-auto space-y-12">
+                {subcategoryOrder.map((subcatKey) => {
+                  const subcat = spiritSubcategories[subcatKey];
+                  const subcatItems = subcat.ids
+                    .map((id) => items.find((i) => i.id === id))
+                    .filter(Boolean);
 
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-serif text-lg md:text-xl font-semibold text-charcoal group-hover:text-copper transition-colors">
-                            {menuItem.name}
-                          </h3>
-                          <p className="text-sm text-charcoal/60 line-clamp-1 mt-0.5">
-                            {menuItem.shortDescription}
-                          </p>
-                          {menuItem.allergens.length > 0 && <div className="mt-2">
-                              <AllergenList allergens={menuItem.allergens} size="sm" showIcons={false} />
-                            </div>}
-                        </div>
+                  if (subcatItems.length === 0) return null;
 
-                        {/* Arrow */}
-                        <ChevronRight className="w-5 h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all shrink-0" />
+                  return (
+                    <motion.section
+                      key={subcatKey}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: '-50px' }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {/* Subcategory Header */}
+                      <div className="mb-6 pb-3 border-b border-charcoal/10">
+                        <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
+                          {subcat.title}
+                        </h2>
+                        <p className="text-copper font-serif italic text-base mt-1">
+                          {subcat.subtitle}
+                        </p>
                       </div>
-                    </Link>
-                  </motion.div>;
-            })}
+
+                      {/* Subcategory Items */}
+                      <motion.div
+                        variants={container}
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true }}
+                        className="space-y-3"
+                      >
+                        {subcatItems.map((menuItem) => {
+                          if (!menuItem) return null;
+                          const dishImage = getDishImage(menuItem.id);
+                          return (
+                            <motion.div key={menuItem.id} variants={item}>
+                              <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
+                                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300">
+                                  {/* Image */}
+                                  <div className="w-14 h-18 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
+                                    {dishImage ? (
+                                      <img 
+                                        src={dishImage} 
+                                        alt={menuItem.name} 
+                                        className="w-auto h-full max-h-16 md:max-h-18 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-sm" 
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-2xl">
+                                        🥃
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Content */}
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="font-serif text-lg font-semibold text-charcoal group-hover:text-copper transition-colors">
+                                      {menuItem.name}
+                                    </h3>
+                                    <p className="text-sm text-copper font-medium mt-0.5">
+                                      {menuItem.shortDescription}
+                                    </p>
+                                  </div>
+
+                                  {/* Arrow */}
+                                  <ChevronRight className="w-5 h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all shrink-0" />
+                                </div>
+                              </Link>
+                            </motion.div>
+                          );
+                        })}
+                      </motion.div>
+                    </motion.section>
+                  );
+                })}
+              </div>
             </div>
-          </motion.div>
+          ) : (
+            /* Regular Menu Items - Clean List */
+            <motion.div variants={container} initial="hidden" animate="show" className="px-6 pb-24">
+              <div className="max-w-4xl mx-auto space-y-3">
+                {items.map(menuItem => {
+                const dishImage = getDishImage(menuItem.id);
+                return <motion.div key={menuItem.id} variants={item}>
+                      <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
+                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300">
+                          {/* Image */}
+                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 bg-cream">
+                            {dishImage ? <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full flex items-center justify-center text-2xl">
+                                🍽️
+                              </div>}
+                          </div>
+
+                          {/* Content */}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-serif text-lg md:text-xl font-semibold text-charcoal group-hover:text-copper transition-colors">
+                              {menuItem.name}
+                            </h3>
+                            <p className="text-sm text-charcoal/60 line-clamp-1 mt-0.5">
+                              {menuItem.shortDescription}
+                            </p>
+                            {menuItem.allergens.length > 0 && <div className="mt-2">
+                                <AllergenList allergens={menuItem.allergens} size="sm" showIcons={false} />
+                              </div>}
+                          </div>
+
+                          {/* Arrow */}
+                          <ChevronRight className="w-5 h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all shrink-0" />
+                        </div>
+                      </Link>
+                    </motion.div>;
+              })}
+              </div>
+            </motion.div>
+          )}
         </div>
       </Layout>;
   }
