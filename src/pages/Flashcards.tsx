@@ -194,30 +194,53 @@ export default function FlashcardsPage() {
           </div>
 
           {/* Category Pills */}
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant={selectedCategory === '' ? "burgundy" : "secondary"}
-              size="sm"
+          <div className="flex flex-wrap gap-2 justify-center">
+            <motion.button
               onClick={() => {
                 setSelectedCategory('');
                 setCurrentIndex(0);
               }}
+              className={cn(
+                "w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex flex-col items-center justify-center gap-1 transition-colors border",
+                selectedCategory === '' 
+                  ? "bg-burgundy text-burgundy-foreground border-burgundy shadow-lg" 
+                  : "bg-muted/50 text-muted-foreground border-border/50 hover:bg-muted"
+              )}
+              animate={{ scale: selectedCategory === '' ? 1.1 : 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              All
-            </Button>
-            {categories.map((cat) => (
-              <Button
-                key={cat.id}
-                variant={selectedCategory === cat.id ? "burgundy" : "secondary"}
-                size="sm"
-                onClick={() => {
-                  setSelectedCategory(cat.id);
-                  setCurrentIndex(0);
-                }}
-              >
-                {cat.icon} {cat.name}
-              </Button>
-            ))}
+              <span className="text-xl sm:text-2xl">◇</span>
+              <span className="text-[10px] sm:text-xs font-medium">All</span>
+            </motion.button>
+            {categories.map((cat) => {
+              const icons: Record<string, string> = {
+                appetizers: '◯',
+                entrees: '△',
+                desserts: '◇',
+                sides: '□',
+                specials: '☆'
+              };
+              return (
+                <motion.button
+                  key={cat.id}
+                  onClick={() => {
+                    setSelectedCategory(cat.id);
+                    setCurrentIndex(0);
+                  }}
+                  className={cn(
+                    "w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex flex-col items-center justify-center gap-1 transition-colors border",
+                    selectedCategory === cat.id 
+                      ? "bg-burgundy text-burgundy-foreground border-burgundy shadow-lg" 
+                      : "bg-muted/50 text-muted-foreground border-border/50 hover:bg-muted"
+                  )}
+                  animate={{ scale: selectedCategory === cat.id ? 1.1 : 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <span className="text-xl sm:text-2xl">{icons[cat.id] || '○'}</span>
+                  <span className="text-[10px] sm:text-xs font-medium">{cat.name}</span>
+                </motion.button>
+              );
+            })}
           </div>
 
           {/* Allergen Filters */}
