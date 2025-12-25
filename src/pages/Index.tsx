@@ -87,10 +87,12 @@ export default function Index() {
           <img 
             src={bayfrontSketch} 
             alt="Bayfront Place Naples Sketch" 
-            className="w-full h-full object-cover opacity-15"
+            className="w-full h-full object-cover opacity-20"
           />
+          {/* Copper tint overlay */}
+          <div className="absolute inset-0 bg-copper/15 mix-blend-overlay" />
           {/* Gradient overlay for depth */}
-          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-transparent to-charcoal/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/30 via-copper/5 to-charcoal/70" />
         </div>
         
         {/* Animated Pulsing Vignette */}
