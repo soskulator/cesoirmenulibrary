@@ -33,7 +33,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 const navItems = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/categories', label: 'Categories', icon: Layers },
-  { path: '/wine-list', label: 'Wine List', icon: Wine },
+  { path: '/wine-list', label: 'Wine', icon: Wine },
   { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
   { path: '/quiz', label: 'Quiz', icon: HelpCircle },
   { path: '/daily-focus', label: 'Daily Focus', icon: Star },
