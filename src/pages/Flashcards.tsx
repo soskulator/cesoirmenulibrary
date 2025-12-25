@@ -136,38 +136,40 @@ export default function FlashcardsPage() {
 
   return (
     <Layout>
-      <div className="container py-8 max-w-4xl">
+      <div className="container py-4 sm:py-6 md:py-8 max-w-4xl px-3 sm:px-4">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="font-serif text-3xl font-bold mb-2">Flashcards</h1>
-          <p className="text-muted-foreground">
+        <div className="mb-3 sm:mb-4 md:mb-6">
+          <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-1">Flashcards</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Study menu items with interactive flash cards
           </p>
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-6 space-y-4">
+        <div className="mb-3 sm:mb-4 md:mb-6 space-y-2 sm:space-y-3">
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Search menu items..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setCurrentIndex(0);
                 }}
-                className="pl-10"
+                className="pl-10 h-9 sm:h-10 text-sm"
               />
             </div>
             <Button
               variant={showFilters ? "secondary" : "outline"}
               onClick={() => setShowFilters(!showFilters)}
+              size="sm"
+              className="h-9 sm:h-10 px-2 sm:px-3"
             >
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
+              <Filter className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Filters</span>
               {excludeAllergens.length > 0 && (
-                <Badge variant="burgundy" className="ml-2">
+                <Badge variant="burgundy" className="ml-1 sm:ml-2 text-xs">
                   {excludeAllergens.length}
                 </Badge>
               )}
@@ -234,26 +236,26 @@ export default function FlashcardsPage() {
         </div>
 
         {/* Progress */}
-        <div className="mb-6 flex items-center justify-between text-sm">
-          <div className="flex gap-4">
+        <div className="mb-3 sm:mb-4 md:mb-6 flex items-center justify-between text-xs sm:text-sm">
+          <div className="flex gap-2 sm:gap-4 flex-wrap">
             <span className="text-muted-foreground">
-              Card {currentIndex + 1} of {filteredItems.length}
+              {currentIndex + 1}/{filteredItems.length}
             </span>
             <span className="text-sage">
-              ✓ Known: {knownItems.size}
+              ✓ {knownItems.size}
             </span>
             <span className="text-gold">
-              ↻ Review: {reviewItems.size}
+              ↻ {reviewItems.size}
             </span>
           </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={shuffle}>
-              <Shuffle className="w-4 h-4 mr-1" />
-              Shuffle
+          <div className="flex gap-1 sm:gap-2">
+            <Button variant="ghost" size="sm" onClick={shuffle} className="h-8 px-2 sm:px-3">
+              <Shuffle className="w-4 h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Shuffle</span>
             </Button>
-            <Button variant="ghost" size="sm" onClick={resetProgress}>
-              <RotateCcw className="w-4 h-4 mr-1" />
-              Reset
+            <Button variant="ghost" size="sm" onClick={resetProgress} className="h-8 px-2 sm:px-3">
+              <RotateCcw className="w-4 h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Reset</span>
             </Button>
           </div>
         </div>
@@ -299,50 +301,52 @@ export default function FlashcardsPage() {
 
         {/* Navigation */}
         {currentItem && (
-          <div className="mt-8 space-y-4">
-            {/* Arrow Navigation - Larger touch targets for mobile */}
-            <div className="flex justify-between items-center gap-4">
+          <div className="mt-3 sm:mt-4 md:mt-6 space-y-2 sm:space-y-3">
+            {/* Arrow Navigation */}
+            <div className="flex justify-between items-center gap-2 sm:gap-4">
               <Button
                 variant="outline"
-                size="lg"
+                size="sm"
                 onClick={goToPrev}
                 disabled={currentIndex === 0}
-                className="flex-1 h-14 md:h-12 text-base active:scale-95 transition-transform"
+                className="flex-1 h-10 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"
               >
-                <ChevronLeft className="w-6 h-6 md:w-5 md:h-5 mr-2" />
-                Previous
+                <ChevronLeft className="w-5 h-5 sm:mr-1" />
+                <span className="hidden sm:inline">Previous</span>
               </Button>
               <Button
                 variant="outline"
-                size="lg"
+                size="sm"
                 onClick={goToNext}
                 disabled={currentIndex >= filteredItems.length - 1}
-                className="flex-1 h-14 md:h-12 text-base active:scale-95 transition-transform"
+                className="flex-1 h-10 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"
               >
-                Next
-                <ChevronRight className="w-6 h-6 md:w-5 md:h-5 ml-2" />
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="w-5 h-5 sm:ml-1" />
               </Button>
             </div>
 
-            {/* Action Buttons - Larger touch targets for mobile */}
-            <div className="flex gap-4 justify-center">
+            {/* Action Buttons */}
+            <div className="flex gap-2 sm:gap-4 justify-center">
               <Button
                 variant="burgundy-outline"
-                size="lg"
+                size="sm"
                 onClick={markForReview}
-                className="flex-1 max-w-xs h-14 md:h-12 text-base active:scale-95 transition-transform"
+                className="flex-1 max-w-xs h-10 sm:h-12 text-xs sm:text-base active:scale-95 transition-transform"
               >
-                <RotateCcw className="w-6 h-6 md:w-5 md:h-5 mr-2" />
-                Need to Review
+                <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-2" />
+                <span className="hidden sm:inline">Need to Review</span>
+                <span className="sm:hidden">Review</span>
               </Button>
               <Button
                 variant="success"
-                size="lg"
+                size="sm"
                 onClick={markAsKnown}
-                className="flex-1 max-w-xs h-14 md:h-12 text-base active:scale-95 transition-transform"
+                className="flex-1 max-w-xs h-10 sm:h-12 text-xs sm:text-base active:scale-95 transition-transform"
               >
-                <Check className="w-6 h-6 md:w-5 md:h-5 mr-2" />
-                I Know This
+                <Check className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-2" />
+                <span className="hidden sm:inline">I Know This</span>
+                <span className="sm:hidden">Know It</span>
               </Button>
             </div>
           </div>
