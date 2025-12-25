@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { menuItems, categories } from '@/data/menuData';
+import { getCategoryIcon } from '@/data/categoryIcons';
 import { 
   Check, 
   X, 
@@ -115,9 +116,24 @@ export default function QuizPage() {
   // Quiz complete screen
   if (isComplete) {
     const percentage = Math.round((score.correct / shuffledQuestions.length) * 100);
+    // Get current category icon for background
+    const categoryIcon = selectedCategory ? getCategoryIcon(selectedCategory) : null;
+    
     return (
       <Layout>
-        <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
+        <div className="relative container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
+          {/* Full-page Background Icon */}
+          {categoryIcon && (
+            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+              <img 
+                src={categoryIcon} 
+                alt=""
+                className="w-full h-full object-cover opacity-[0.30] scale-110"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/40 to-cream/90" />
+            </div>
+          )}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -166,11 +182,26 @@ export default function QuizPage() {
     );
   }
 
+  // Get current category icon for background (start screen)
+  const startScreenCategoryIcon = selectedCategory ? getCategoryIcon(selectedCategory) : null;
+
   // Quiz start screen
   if (!quizStarted) {
     return (
       <Layout>
-        <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
+        <div className="relative container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
+          {/* Full-page Background Icon */}
+          {startScreenCategoryIcon && (
+            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+              <img 
+                src={startScreenCategoryIcon} 
+                alt=""
+                className="w-full h-full object-cover opacity-[0.30] scale-110"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/40 to-cream/90" />
+            </div>
+          )}
           <div className="text-center mb-6 sm:mb-8">
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-burgundy" />
@@ -236,10 +267,25 @@ export default function QuizPage() {
     );
   }
 
+  // Get active quiz category icon for background
+  const activeQuizCategoryIcon = selectedCategory ? getCategoryIcon(selectedCategory) : null;
+
   // Active quiz
   return (
     <Layout>
-      <div className="container py-4 sm:py-6 md:py-8 max-w-2xl px-3 sm:px-4">
+      <div className="relative container py-4 sm:py-6 md:py-8 max-w-2xl px-3 sm:px-4">
+        {/* Full-page Background Icon */}
+        {activeQuizCategoryIcon && (
+          <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+            <img 
+              src={activeQuizCategoryIcon} 
+              alt=""
+              className="w-full h-full object-cover opacity-[0.30] scale-110"
+            />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/40 to-cream/90" />
+          </div>
+        )}
         {/* Progress */}
         <div className="mb-4 sm:mb-6">
           <div className="flex justify-between text-xs sm:text-sm mb-2">
