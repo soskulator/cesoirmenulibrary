@@ -96,6 +96,13 @@ import spiritFernetBranca from '@/assets/drinks/spirit-fernet-branca.jpg';
 import spiritDisaronno from '@/assets/drinks/spirit-disaronno.jpg';
 import spiritAmaroMontenegro from '@/assets/drinks/spirit-amaro-montenegro.png';
 import spiritFrangelico from '@/assets/drinks/spirit-frangelico.png';
+// New Scotch and Tequila images
+import spiritTalisker10 from '@/assets/drinks/spirit-talisker10.png';
+import spiritArran18 from '@/assets/drinks/spirit-arran18.jpg';
+import spiritTrombaReposado from '@/assets/drinks/spirit-tromba-reposado.jpg';
+import spiritG4Reposado from '@/assets/drinks/spirit-g4-reposado.png';
+import spiritPatronReposado from '@/assets/drinks/spirit-patron-reposado.jpg';
+import spiritHerraduraReposado from '@/assets/drinks/spirit-herradura-reposado.png';
 
 // Drink images - Cocktails
 import cocktailEspressoMartini from '@/assets/drinks/cocktail-espresso-martini-new.jpg';
@@ -207,13 +214,13 @@ export const dishImages: Record<string, string> = {
   // Spirits - Tequila
   'spirit-26': spiritDobelDiamante, // Dobel Diamante
   'spirit-27': spiritTrombaBlanco, // Tromba Blanco
-  'spirit-28': spiritTrombaBlanco, // Tromba Reposado
+  'spirit-28': spiritTrombaReposado, // Tromba Reposado
   'spirit-29': spiritG4Blanco, // G4 Blanco
   'spirit-30': spiritG4Blanco, // Mijenita Blanco
   'spirit-31': spiritTrombaBlanco, // Tromba Añejo
   'spirit-32': spiritClaseAzul, // Centenario Añejo
   'spirit-33': spiritG4Blanco, // Casa Maestri Blanco
-  'spirit-34': spiritG4Blanco, // G4 Reposado
+  'spirit-34': spiritG4Reposado, // G4 Reposado
   'spirit-35': spiritG4Blanco, // Lalo
   'spirit-36': spiritG4Blanco, // Mijenita Reposado
   'spirit-37': spiritG4Blanco, // Casa Maestri Reposado
@@ -243,7 +250,7 @@ export const dishImages: Record<string, string> = {
   'spirit-57': spiritLagavulin8, // Lagavulin 8
   'spirit-58': spiritMacallan12, // Macallan 12
   'spirit-59': spiritOban14, // Oban 14
-  'spirit-60': spiritLagavulin8, // Talisker 10
+  'spirit-60': spiritTalisker10, // Talisker 10
   'spirit-61': spiritHibikiHarmony, // Hibiki Harmony
   'spirit-62': spiritMacallan12, // Macallan 15
   'spirit-63': spiritBalvenie12, // Glenrothes 12
@@ -253,7 +260,7 @@ export const dishImages: Record<string, string> = {
   'spirit-67': spiritDalmore15, // Dalmore 15
   'spirit-68': spiritBalvenie12, // Glenfiddich 18
   'spirit-69': spiritJohnnieBlue, // Johnnie Walker Blue Label
-  'spirit-70': spiritBalvenie12, // Arran 18
+  'spirit-70': spiritArran18, // Arran 18
   'spirit-71': spiritDalmore15, // Dalmore Cigar Malt
   'spirit-72': spiritBalvenie12, // Glenfiddich 23
   'spirit-73': spiritMacallan18, // Macallan 18
