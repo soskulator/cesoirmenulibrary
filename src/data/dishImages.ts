@@ -87,11 +87,21 @@ import spiritRemyVsop from '@/assets/drinks/spirit-remy-vsop.png';
 import spiritDelMagueyVida from '@/assets/drinks/spirit-del-maguey-vida.jpg';
 
 // Drink images - Cocktails
-import cocktailFrench75 from '@/assets/drinks/cocktail-french-75.jpg';
-import cocktailMartini from '@/assets/drinks/cocktail-martini.jpg';
-import cocktailLavenderSpritz from '@/assets/drinks/cocktail-lavender-spritz.jpg';
-import cocktailOldFashioned from '@/assets/drinks/cocktail-old-fashioned.jpg';
-import cocktailEspressoMartini from '@/assets/drinks/cocktail-espresso-martini.jpg';
+import cocktailEspressoMartini from '@/assets/drinks/cocktail-espresso-martini-new.jpg';
+import cocktailMoscowMule from '@/assets/drinks/cocktail-moscow-mule.jpg';
+import cocktailOldFashioned from '@/assets/drinks/cocktail-old-fashioned-new.jpg';
+import cocktailManhattan from '@/assets/drinks/cocktail-manhattan.jpg';
+import cocktailNegroni from '@/assets/drinks/cocktail-negroni.jpg';
+import cocktailMargarita from '@/assets/drinks/cocktail-margarita.jpg';
+import cocktailAperolSpritz from '@/assets/drinks/cocktail-aperol-spritz.jpg';
+import cocktailWhiskeySour from '@/assets/drinks/cocktail-whiskey-sour.jpg';
+import cocktailCosmopolitan from '@/assets/drinks/cocktail-cosmopolitan.jpg';
+import cocktailMojito from '@/assets/drinks/cocktail-mojito.jpg';
+import cocktailVodkaMartini from '@/assets/drinks/cocktail-vodka-martini.jpg';
+import cocktailBoulevardier from '@/assets/drinks/cocktail-boulevardier.jpg';
+import cocktailIrishCoffee from '@/assets/drinks/cocktail-irish-coffee.jpg';
+import cocktailDaiquiri from '@/assets/drinks/cocktail-daiquiri.jpg';
+import cocktailPiscoSour from '@/assets/drinks/cocktail-pisco-sour.jpg';
 
 // Map menu item IDs to their images
 export const dishImages: Record<string, string> = {
@@ -286,21 +296,21 @@ export const dishImages: Record<string, string> = {
   'spirit-115': spiritLouisXIII, // Louis XIII Cognac
 
   // Cocktails
-  'cocktail-1': cocktailFrench75,
-  'cocktail-2': cocktailMartini,
-  'cocktail-3': cocktailLavenderSpritz,
-  'cocktail-4': cocktailOldFashioned, // Smoke & Honey
-  'cocktail-5': cocktailMartini, // Vesper
-  'cocktail-6': cocktailEspressoMartini,
-  'cocktail-7': cocktailOldFashioned, // Sazerac
-  'cocktail-8': cocktailLavenderSpritz, // Aperol Spritz
-  'cocktail-9': cocktailMartini, // Negroni
-  'cocktail-10': cocktailLavenderSpritz, // Elderflower Collins
-  'cocktail-11': cocktailOldFashioned, // Manhattan
-  'cocktail-12': cocktailMartini, // Boulevardier
-  'cocktail-13': cocktailLavenderSpritz, // Hemingway Daiquiri
-  'cocktail-14': cocktailOldFashioned, // Vieux Carré
-  'cocktail-15': cocktailMartini, // Aviation
+  'cocktail-1': cocktailEspressoMartini, // Espresso Martini
+  'cocktail-2': cocktailMoscowMule, // Moscow Mule
+  'cocktail-3': cocktailOldFashioned, // Old Fashioned
+  'cocktail-4': cocktailManhattan, // Manhattan
+  'cocktail-5': cocktailNegroni, // Negroni
+  'cocktail-6': cocktailMargarita, // Margarita
+  'cocktail-7': cocktailAperolSpritz, // Aperol Spritz
+  'cocktail-8': cocktailWhiskeySour, // Whiskey Sour
+  'cocktail-9': cocktailCosmopolitan, // Cosmopolitan
+  'cocktail-10': cocktailMojito, // Mojito
+  'cocktail-11': cocktailVodkaMartini, // Vodka Martini
+  'cocktail-12': cocktailBoulevardier, // Boulevardier
+  'cocktail-13': cocktailIrishCoffee, // Irish Coffee
+  'cocktail-14': cocktailDaiquiri, // Daiquiri
+  'cocktail-15': cocktailPiscoSour, // Pisco Sour
 };
 
 export const getDishImage = (itemId: string): string | undefined => {
