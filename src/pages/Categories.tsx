@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { AllergenList } from '@/components/AllergenBadge';
 import { categories, menuItems, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
+import { getCategoryIcon } from '@/data/categoryIcons';
 import { ArrowLeft, CreditCard, ChevronRight } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
@@ -76,14 +77,22 @@ export default function CategoriesPage() {
               </Link>
 
               <div className="flex items-start gap-6">
-                <motion.span 
-                  className="text-6xl md:text-7xl"
+                <motion.div 
+                  className="w-16 h-16 md:w-20 md:h-20 shrink-0"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.4 }}
                 >
-                  {category.icon}
-                </motion.span>
+                  {getCategoryIcon(category.id) ? (
+                    <img 
+                      src={getCategoryIcon(category.id)} 
+                      alt={category.name}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-6xl md:text-7xl">{category.icon}</span>
+                  )}
+                </motion.div>
                 <div className="flex-1">
                   <h1 className="font-serif text-3xl md:text-5xl font-bold text-charcoal tracking-tight">
                     {category.name}
@@ -236,15 +245,25 @@ export default function CategoriesPage() {
                       ${isLarge ? 'p-8 md:p-10' : 'p-6 md:p-8'}
                     `}>
                       {/* Icon */}
-                      <motion.span 
+                      <motion.div 
                         className={`
-                          block mb-4 
-                          ${isLarge ? 'text-6xl md:text-7xl' : 'text-4xl md:text-5xl'}
+                          mb-4 
+                          ${isLarge ? 'w-16 h-16 md:w-20 md:h-20' : 'w-12 h-12 md:w-14 md:h-14'}
                           group-hover:scale-110 transition-transform duration-500
                         `}
                       >
-                        {category.icon}
-                      </motion.span>
+                        {getCategoryIcon(category.id) ? (
+                          <img 
+                            src={getCategoryIcon(category.id)} 
+                            alt={category.name}
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <span className={`block ${isLarge ? 'text-6xl md:text-7xl' : 'text-4xl md:text-5xl'}`}>
+                            {category.icon}
+                          </span>
+                        )}
+                      </motion.div>
 
                       {/* Text */}
                       <h2 className={`
