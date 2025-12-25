@@ -171,43 +171,39 @@ export default function CategoriesPage() {
         {/* Categories Grid - Artistic Layout */}
         <motion.div variants={container} initial="hidden" animate="show" className="px-6 pb-24">
           <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-            {categories.map((category, index) => {
+            {categories.map((category) => {
             const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
-            const isLarge = index === 0 || index === 5;
-            return <motion.div key={category.id} variants={item} className={isLarge ? 'col-span-2 md:col-span-1' : ''}>
+            const iconSrc = getCategoryIcon(category.id);
+            return <motion.div key={category.id} variants={item}>
                   <Link to={`/categories/${category.id}`} className="group block h-full">
-                    <div className={`
-                      relative overflow-hidden rounded-3xl bg-white/40 backdrop-blur-sm 
-                      border border-charcoal/5 hover:border-charcoal/10
-                      hover:bg-white/60 hover:shadow-xl
-                      transition-all duration-500
-                      ${isLarge ? 'p-8 md:p-10' : 'p-6 md:p-8'}
-                    `}>
-                      {/* Background Icon */}
-                      {getCategoryIcon(category.id) && <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <img src={getCategoryIcon(category.id)} alt="" className="w-32 h-32 md:w-40 md:h-40 object-contain opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500" />
-                          {/* Gradient Overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-transparent to-white/40" />
-                        </div>}
+                    <div className="relative overflow-hidden rounded-3xl h-32 md:h-40 border border-charcoal/10 hover:border-copper/30 hover:shadow-xl transition-all duration-500">
+                      {/* Background Image - Full Cover */}
+                      {iconSrc && (
+                        <img 
+                          src={iconSrc} 
+                          alt="" 
+                          className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" 
+                        />
+                      )}
+                      
+                      {/* Dark Gradient Overlay for Text Readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-charcoal/20 group-hover:from-charcoal/95 transition-colors duration-500" />
 
-                      {/* Text */}
-                      <div className="relative z-10">
-                        <h2 className={`
-                          font-serif font-bold text-charcoal group-hover:text-copper transition-colors duration-300
-                          ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
-                        `}>
+                      {/* Text Content - Bottom Aligned */}
+                      <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6">
+                        <h2 className="font-serif text-xl md:text-2xl font-bold text-white drop-shadow-lg group-hover:text-copper-light transition-colors duration-300">
                           {category.name}
                         </h2>
-                        <p className="text-charcoal/40 font-serif italic mt-1 text-sm md:text-base">
+                        <p className="text-white/70 font-serif italic text-sm md:text-base mt-0.5">
                           {category.nameFrench}
                         </p>
 
                         {/* Count */}
-                        <div className="mt-4 flex items-center gap-2">
-                          <span className="text-xs text-charcoal/50 tracking-widest uppercase">
-                            {itemCount} dishes
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="text-xs text-white/60 tracking-widest uppercase">
+                            {itemCount} {itemCount === 1 ? 'item' : 'items'}
                           </span>
-                          <ChevronRight className="w-4 h-4 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all" />
+                          <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-copper-light group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>
                     </div>
