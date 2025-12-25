@@ -62,8 +62,8 @@ const adminSections = [
     description: 'Manage admin and staff access',
     icon: Users,
     path: '/admin/users',
-    badge: 'Coming Soon',
-    disabled: true,
+    badge: null,
+    disabled: false,
   },
 ];
 

@@ -26,19 +26,24 @@ import {
   Shuffle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useStudyProgress } from '@/hooks/useStudyProgress';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function FlashcardsPage() {
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || '';
   const initialItem = searchParams.get('item') || '';
 
+  const { user } = useAuth();
+  const { markAsKnown: saveKnown, markForReview: saveReview, isKnown, isStudied, getStats } = useStudyProgress();
+
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [excludeAllergens, setExcludeAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [knownItems, setKnownItems] = useState<Set<string>>(new Set());
-  const [reviewItems, setReviewItems] = useState<Set<string>>(new Set());
+  const [localKnown, setLocalKnown] = useState<Set<string>>(new Set());
+  const [localReview, setLocalReview] = useState<Set<string>>(new Set());
 
   // Filter items
   const filteredItems = useMemo(() => {
@@ -92,8 +97,13 @@ export default function FlashcardsPage() {
   const markAsKnown = () => {
     if (!currentItem) return;
 
-    setKnownItems((prev) => new Set(prev).add(currentItem.id));
-    setReviewItems((prev) => {
+    // Save to database if logged in
+    if (user) {
+      saveKnown(currentItem.name);
+    }
+    
+    setLocalKnown((prev) => new Set(prev).add(currentItem.id));
+    setLocalReview((prev) => {
       const next = new Set(prev);
       next.delete(currentItem.id);
       return next;
@@ -104,8 +114,13 @@ export default function FlashcardsPage() {
   const markForReview = () => {
     if (!currentItem) return;
 
-    setReviewItems((prev) => new Set(prev).add(currentItem.id));
-    setKnownItems((prev) => {
+    // Save to database if logged in
+    if (user) {
+      saveReview(currentItem.name);
+    }
+
+    setLocalReview((prev) => new Set(prev).add(currentItem.id));
+    setLocalKnown((prev) => {
       const next = new Set(prev);
       next.delete(currentItem.id);
       return next;
@@ -120,10 +135,12 @@ export default function FlashcardsPage() {
   };
 
   const resetProgress = () => {
-    setKnownItems(new Set());
-    setReviewItems(new Set());
+    setLocalKnown(new Set());
+    setLocalReview(new Set());
     setCurrentIndex(0);
   };
+
+  const stats = getStats();
 
   const toggleAllergen = (id: AllergenType) => {
     setExcludeAllergens(prev => 
@@ -242,10 +259,10 @@ export default function FlashcardsPage() {
               {currentIndex + 1}/{filteredItems.length}
             </span>
             <span className="text-sage">
-              ✓ {knownItems.size}
+              ✓ {user ? stats.known : localKnown.size}
             </span>
             <span className="text-gold">
-              ↻ {reviewItems.size}
+              ↻ {user ? stats.review : localReview.size}
             </span>
           </div>
           <div className="flex gap-1 sm:gap-2">
@@ -277,8 +294,8 @@ export default function FlashcardsPage() {
                   onSwipeLeft={goToNext}
                   onSwipeRight={goToPrev}
                   className={cn(
-                    knownItems.has(currentItem.id) && "ring-2 ring-sage",
-                    reviewItems.has(currentItem.id) && "ring-2 ring-gold"
+                    (localKnown.has(currentItem.id) || isKnown(currentItem.name)) && "ring-2 ring-sage",
+                    (localReview.has(currentItem.id) || (isStudied(currentItem.name) && !isKnown(currentItem.name))) && "ring-2 ring-gold"
                   )}
                 />
               </motion.div>
