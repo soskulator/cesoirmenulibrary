@@ -70,6 +70,21 @@ import spiritSailorJerry from '@/assets/drinks/spirit-sailor-jerry.jpg';
 import spiritElDorado15 from '@/assets/drinks/spirit-eldorado15.jpg';
 import spiritBalvenie12 from '@/assets/drinks/spirit-balvenie12.png';
 import spiritLagavulin8 from '@/assets/drinks/spirit-lagavulin8.png';
+// New spirit images
+import spiritChopinPotato from '@/assets/drinks/spirit-chopin-potato.png';
+import spiritNordes from '@/assets/drinks/spirit-nordes.jpg';
+import spiritBrugalAnejo from '@/assets/drinks/spirit-brugal-anejo.jpg';
+import spiritKraken from '@/assets/drinks/spirit-kraken.jpg';
+import spiritTrombaBlanco from '@/assets/drinks/spirit-tromba-blanco.jpg';
+import spiritG4Blanco from '@/assets/drinks/spirit-g4-blanco.png';
+import spiritMacallan12 from '@/assets/drinks/spirit-macallan12.png';
+import spiritCrownRoyal from '@/assets/drinks/spirit-crown-royal.png';
+import spiritCaolIla12 from '@/assets/drinks/spirit-caol-ila12.jpg';
+import spiritDalmore15 from '@/assets/drinks/spirit-dalmore15.jpg';
+import spiritFourRoses from '@/assets/drinks/spirit-four-roses.jpg';
+import spiritOldForester1920 from '@/assets/drinks/spirit-old-forester1920.jpg';
+import spiritRemyVsop from '@/assets/drinks/spirit-remy-vsop.png';
+import spiritDelMagueyVida from '@/assets/drinks/spirit-del-maguey-vida.jpg';
 
 // Drink images - Cocktails
 import cocktailFrench75 from '@/assets/drinks/cocktail-french-75.jpg';
@@ -137,29 +152,138 @@ export const dishImages: Record<string, string> = {
   'wine-10': wineKrug, // Krug Grand Cuvée
   'wine-11': wineInniskillin, // Quintessa Rutherford / Inniskillin Icewine
 
-  // Spirits
+  // Spirits - Vodka
   'spirit-1': spiritGreyGoose, // Grey Goose
   'spirit-2': spiritTitos, // Tito's
+  'spirit-3': spiritChopinPotato, // Chopin
+  'spirit-4': spiritChopinPotato, // Truman (using Chopin as placeholder)
   'spirit-5': spiritZubrowka, // Zubrowka
   'spirit-6': spiritBelugaGold, // Beluga Noble
   'spirit-7': spiritBelugaGold, // Beluga Gold
+  
+  // Spirits - Gin
+  'spirit-8': spiritBotanist, // No. 3 London Dry
   'spirit-9': spiritBotanist, // The Botanist
   'spirit-10': spiritEmpress, // Empress 1908
   'spirit-11': spiritHendricks, // Hendrick's Gin
   'spirit-12': spiritMare, // Mare
+  'spirit-13': spiritNordes, // Nordés
   'spirit-14': spiritMonkey47, // Monkey 47 Gin
+  'spirit-15': spiritMonkey47, // Tanqueray No. Ten
+  
+  // Spirits - Rum
+  'spirit-16': spiritSailorJerry, // Bacardi Superior
+  'spirit-17': spiritBrugalAnejo, // Brugal Añejo
   'spirit-18': spiritSailorJerry, // Sailor Jerry
-  'spirit-19': spiritDiplomatico, // Diplomatico Reserva Exclusiva
+  'spirit-19': spiritKraken, // Kraken Black Spiced
+  'spirit-20': spiritDiplomatico, // Diplomatico Reserva Exclusiva
   'spirit-21': spiritZacapa23, // Zacapa 23
   'spirit-22': spiritElDorado15, // El Dorado 15
-  'spirit-42': spiritClaseAzul, // Clase Azul Reposado
+  'spirit-23': spiritZacapa23, // Zacapa XO
+  'spirit-24': spiritElDorado15, // Foursquare
+  'spirit-25': spiritBrugalAnejo, // Brugal Maestro Reserva
+  
+  // Spirits - Tequila
+  'spirit-26': spiritClaseAzul, // Dobel Diamante
+  'spirit-27': spiritTrombaBlanco, // Tromba Blanco
+  'spirit-28': spiritTrombaBlanco, // Tromba Reposado
+  'spirit-29': spiritG4Blanco, // G4 Blanco
+  'spirit-30': spiritG4Blanco, // Mijenita Blanco
+  'spirit-31': spiritTrombaBlanco, // Tromba Añejo
+  'spirit-32': spiritClaseAzul, // Centenario Añejo
+  'spirit-33': spiritG4Blanco, // Casa Maestri Blanco
+  'spirit-34': spiritG4Blanco, // G4 Reposado
+  'spirit-35': spiritG4Blanco, // Lalo
+  'spirit-36': spiritG4Blanco, // Mijenita Reposado
+  'spirit-37': spiritG4Blanco, // Casa Maestri Reposado
+  'spirit-38': spiritClaseAzul, // Cenote Añejo
+  'spirit-39': spiritG4Blanco, // Casa Maestri Añejo
+  'spirit-40': spiritClaseAzul, // Clase Azul Reposado
+  'spirit-41': spiritG4Blanco, // Fuenteseca Blanco
+  'spirit-42': spiritClaseAzul, // Gran Centenario Cristalino
+  'spirit-43': spiritClaseAzul, // Clase Azul Añejo
+  'spirit-44': spiritClaseAzul, // Grand Mayan Extra Añejo
+  'spirit-45': spiritClaseAzul, // Clase Azul Gold
+  'spirit-46': spiritClaseAzul, // Jose Cuervo Reserva
+  
+  // Spirits - Mezcal
+  'spirit-47': spiritDelMagueyVida, // Conejos Espadin
+  'spirit-48': spiritDelMagueyVida, // Palomo Espadin
+  'spirit-49': spiritDelMagueyVida, // Conejos 400 Tobalá
+  'spirit-50': spiritDelMagueyVida, // Convite Espadin
+  'spirit-51': spiritDelMagueyVida, // Legacia
+  'spirit-52': spiritDelMagueyVida, // Creyente Azul Cristalino
+  
+  // Spirits - Scotch
+  'spirit-53': spiritJohnnieBlue, // Johnnie Walker Black Label
+  'spirit-54': spiritYamazaki12, // Nikka Coffey Grain
+  'spirit-55': spiritYamazaki12, // Nikka From The Barrel
   'spirit-56': spiritBalvenie12, // Balvenie 12
   'spirit-57': spiritLagavulin8, // Lagavulin 8
+  'spirit-58': spiritMacallan12, // Macallan 12
+  'spirit-59': spiritLagavulin8, // Oban 14
+  'spirit-60': spiritLagavulin8, // Talisker 10
+  'spirit-61': spiritYamazaki12, // Hibiki Harmony
+  'spirit-62': spiritMacallan12, // Macallan 15
+  'spirit-63': spiritBalvenie12, // Glenrothes 12
   'spirit-64': spiritYamazaki12, // Yamazaki 12
+  'spirit-65': spiritCaolIla12, // Caol Ila 12
+  'spirit-66': spiritBalvenie12, // Balvenie 14 Caribbean Cask
+  'spirit-67': spiritDalmore15, // Dalmore 15
+  'spirit-68': spiritBalvenie12, // Glenfiddich 18
   'spirit-69': spiritJohnnieBlue, // Johnnie Walker Blue Label
+  'spirit-70': spiritBalvenie12, // Arran 18
+  'spirit-71': spiritDalmore15, // Dalmore Cigar Malt
+  'spirit-72': spiritBalvenie12, // Glenfiddich 23
   'spirit-73': spiritMacallan18, // Macallan 18
+  'spirit-74': spiritMacallan18, // Macallan M
+  
+  // Spirits - Bourbon
+  'spirit-75': spiritWoodford, // Angel's Envy
+  'spirit-76': spiritWoodford, // Elijah Craig
+  'spirit-77': spiritWoodford, // Basil Hayden's
+  'spirit-78': spiritWoodford, // Buffalo Trace
+  'spirit-79': spiritWoodford, // Heaven Hill
+  'spirit-80': spiritWoodford, // Larceny
   'spirit-81': spiritWoodford, // Woodford Reserve
-  'spirit-112': spiritLouisXIII, // Louis XIII Cognac
+  'spirit-82': spiritFourRoses, // Four Roses Small Batch
+  'spirit-83': spiritOldForester1920, // Old Forester 1920
+  'spirit-84': spiritWoodford, // Maker's Mark Rich & Toasty
+  'spirit-85': spiritWoodford, // Michter's Sour Mash
+  'spirit-86': spiritWoodford, // Michter's Toasted Barrel
+  'spirit-87': spiritWoodford, // Michter's 10 Year
+  'spirit-88': spiritWoodford, // WhistlePig 12
+  'spirit-89': spiritWoodford, // Woodford Reserve Double Oaked
+  
+  // Spirits - Rye & Other Whiskeys
+  'spirit-90': spiritCrownRoyal, // Crown Royal
+  'spirit-91': spiritWoodford, // Jack Daniel's
+  'spirit-92': spiritWoodford, // Jameson
+  'spirit-93': spiritWoodford, // Angel's Envy Rye
+  'spirit-94': spiritWoodford, // Bulleit Rye
+  'spirit-95': spiritWoodford, // Michter's Straight Rye
+  'spirit-96': spiritWoodford, // Pendleton 1910 Rye
+  
+  // Spirits - Cordials
+  'spirit-97': spiritRemyVsop, // Amaro Montenegro
+  'spirit-98': spiritRemyVsop, // Baileys
+  'spirit-99': spiritRemyVsop, // Campari
+  'spirit-100': spiritRemyVsop, // Disaronno
+  'spirit-101': spiritRemyVsop, // Fernet Branca
+  'spirit-102': spiritRemyVsop, // Frangelico
+  'spirit-103': spiritRemyVsop, // Lillet Blanc
+  'spirit-104': spiritRemyVsop, // Lillet Rosé
+  'spirit-105': spiritRemyVsop, // Nonino Grappa
+  'spirit-106': spiritRemyVsop, // Pisco
+  'spirit-107': spiritRemyVsop, // Sambuca
+  'spirit-108': spiritRemyVsop, // Southern Comfort
+  'spirit-109': spiritRemyVsop, // Calvados VSOP
+  'spirit-110': spiritRemyVsop, // Grand Marnier
+  'spirit-111': spiritRemyVsop, // Armagnac
+  'spirit-112': spiritRemyVsop, // Hennessy VS
+  'spirit-113': spiritRemyVsop, // Rémy Martin VSOP
+  'spirit-114': spiritRemyVsop, // Hennessy XO
+  'spirit-115': spiritLouisXIII, // Louis XIII Cognac
 
   // Cocktails
   'cocktail-1': cocktailFrench75,
