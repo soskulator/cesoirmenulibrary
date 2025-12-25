@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { AllergenList } from './AllergenBadge';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface FlashCardProps {
@@ -15,168 +11,126 @@ interface FlashCardProps {
   className?: string;
 }
 
+// Category background themes
+const categoryBackgrounds: Record<string, string> = {
+  appetizers: 'bg-gradient-to-br from-copper/20 via-rose-gold/10 to-cream',
+  entrees: 'bg-gradient-to-br from-jade/20 via-jade-light/10 to-cream',
+  desserts: 'bg-gradient-to-br from-rose-gold/25 via-copper-light/10 to-cream',
+  sides: 'bg-gradient-to-br from-wood/15 via-wood-light/10 to-cream',
+  specials: 'bg-gradient-to-br from-gold/20 via-copper/10 to-cream',
+};
+
+const categoryAccents: Record<string, string> = {
+  appetizers: 'border-copper/30',
+  entrees: 'border-jade/30',
+  desserts: 'border-rose-gold/30',
+  sides: 'border-wood/30',
+  specials: 'border-gold/30',
+};
+
 export function FlashCard({ item, showAllergens = true, showPrepNotes = false, className }: FlashCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped);
-    setShowDetails(false);
-  };
-
   const dishImage = getDishImage(item.id);
 
+  const bgClass = categoryBackgrounds[item.categoryId] || categoryBackgrounds.appetizers;
+  const borderClass = categoryAccents[item.categoryId] || categoryAccents.appetizers;
+
+  const handleFlip = () => setIsFlipped((prev) => !prev);
+
   return (
-    <div 
-      className={cn("flip-card w-full max-w-md mx-auto cursor-pointer", className)}
-      style={{ minHeight: '500px' }}
+    <div
+      className={cn('flip-card w-full max-w-md mx-auto cursor-pointer select-none', className)}
+      style={{ height: 520 }}
+      onClick={handleFlip}
+      onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
+      tabIndex={0}
+      role="button"
+      aria-label={`Flash card for ${item.name}. Click to flip.`}
     >
-      <motion.div
-        className="flip-card-inner w-full h-full relative"
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-        style={{ transformStyle: 'preserve-3d' }}
+      <div
+        className={cn('flip-card-inner relative w-full h-full', isFlipped && 'flipped')}
       >
-        {/* Front of card - Dish name and image only */}
-        <Card 
-          variant="elevated"
-          className="flip-card-front absolute inset-0 flex flex-col overflow-hidden"
-          style={{ backfaceVisibility: 'hidden' }}
-          onClick={handleFlip}
-          role="button"
-          aria-label={`Flash card for ${item.name}. Click to flip.`}
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
+        {/* Front: Image + Name */}
+        <div
+          className={cn(
+            'flip-card-front absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated flex flex-col',
+            bgClass,
+            borderClass
+          )}
         >
-          {/* Full image */}
+          {/* Image area */}
           <div className="flex-1 relative">
             {dishImage ? (
-              <img 
-                src={dishImage} 
+              <img
+                src={dishImage}
                 alt={item.name}
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-cream to-cream-dark flex items-center justify-center">
-                <span className="text-8xl opacity-50">🍽️</span>
+              <div className="w-full h-full flex items-center justify-center bg-muted">
+                <span className="text-7xl opacity-40">🍽️</span>
               </div>
             )}
-            {/* Gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/30 to-transparent" />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/20 to-transparent" />
           </div>
 
-          {/* Dish name overlay at bottom */}
+          {/* Name overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-            <p className="text-xs uppercase tracking-widest text-cream/70 mb-2">
-              Tap to reveal details
-            </p>
-            <h2 className="font-serif text-3xl md:text-4xl font-semibold text-cream">
+            <p className="text-xs uppercase tracking-widest text-cream/70 mb-1">Tap to flip</p>
+            <h2 className="font-serif text-2xl md:text-3xl font-semibold text-cream drop-shadow-md">
               {item.name}
             </h2>
           </div>
+        </div>
 
-          {/* Flip indicator */}
-          <div className="absolute top-4 right-4 text-cream/60">
-            <RotateCcw className="w-5 h-5" />
-          </div>
-        </Card>
-
-        {/* Back of card - Full menu description */}
-        <Card 
-          variant="elevated"
-          className="flip-card-back absolute inset-0 p-6 flex flex-col overflow-hidden bg-card"
-          style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-          onClick={handleFlip}
-          role="button"
-          aria-label={`Details for ${item.name}. Click to flip back.`}
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
+        {/* Back: Description */}
+        <div
+          className={cn(
+            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-6 flex flex-col',
+            bgClass,
+            borderClass
+          )}
         >
-          <div className="flex-1 overflow-y-auto scrollbar-hide" onClick={(e) => e.stopPropagation()}>
-            {/* Header */}
-            <div className="mb-4">
-              <h2 className="font-serif text-2xl font-semibold text-foreground mb-1">
-                {item.name}
-              </h2>
-              <p className="text-sm text-copper font-medium mb-3">
-                {item.shortDescription}
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                {item.longDescription}
-              </p>
-            </div>
+          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4">
+            {/* Title */}
+            <h2 className="font-serif text-2xl font-semibold text-foreground">{item.name}</h2>
+            <p className="text-copper font-medium text-sm">{item.shortDescription}</p>
+            <p className="text-muted-foreground leading-relaxed">{item.longDescription}</p>
 
             {/* Ingredients */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-jade mb-2">
-                Ingredients
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {item.ingredientsText}
-              </p>
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-jade mb-1">Ingredients</h3>
+              <p className="text-sm text-muted-foreground">{item.ingredientsText}</p>
             </div>
 
             {/* Selling Points */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-copper mb-2">
-                Selling Points
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {item.sellingPointsText}
-              </p>
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-copper mb-1">Selling Points</h3>
+              <p className="text-sm text-muted-foreground">{item.sellingPointsText}</p>
             </div>
 
             {/* Allergens */}
             {showAllergens && item.allergens.length > 0 && (
-              <div className="mb-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-destructive mb-2">
-                  Allergens
-                </h3>
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-destructive mb-1">Allergens</h3>
                 <AllergenList allergens={item.allergens} size="sm" />
               </div>
             )}
 
-            {/* Prep Notes Toggle */}
+            {/* Prep Notes */}
             {showPrepNotes && item.prepNotes && (
-              <div className="mb-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-between text-muted-foreground"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowDetails(!showDetails);
-                  }}
-                >
-                  <span className="text-sm font-semibold uppercase tracking-wider">
-                    Prep Notes (Manager)
-                  </span>
-                  {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </Button>
-                <AnimatePresence>
-                  {showDetails && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <p className="text-sm text-muted-foreground mt-2 p-3 bg-muted rounded-lg">
-                        {item.prepNotes}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Prep Notes</h3>
+                <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">{item.prepNotes}</p>
               </div>
             )}
           </div>
 
-          {/* Flip indicator */}
-          <div className="absolute top-4 right-4 text-muted-foreground">
-            <RotateCcw className="w-5 h-5" />
-          </div>
-        </Card>
-      </motion.div>
+          {/* Flip hint */}
+          <p className="text-xs text-center text-muted-foreground mt-3">Tap to flip back</p>
+        </div>
+      </div>
     </div>
   );
 }
