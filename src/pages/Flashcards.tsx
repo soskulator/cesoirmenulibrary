@@ -15,7 +15,7 @@ import {
   filterByAllergen,
   searchMenuItems 
 } from '@/data/menuData';
-import { getCategoryIcon } from '@/data/categoryIcons';
+
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -152,24 +152,9 @@ export default function FlashcardsPage() {
     setCurrentIndex(0);
   };
 
-  // Get current category icon for background
-  const currentCategoryIcon = selectedCategory ? getCategoryIcon(selectedCategory) : null;
-
   return (
     <Layout>
-      <div className="relative container py-4 sm:py-6 md:py-8 max-w-4xl px-3 sm:px-4">
-        {/* Full-page Background Icon */}
-        {currentCategoryIcon && (
-          <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-            <img 
-              src={currentCategoryIcon} 
-              alt=""
-              className="w-full h-full object-cover opacity-[0.30] scale-110"
-            />
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/40 to-cream/90" />
-          </div>
-        )}
+      <div className="container py-4 sm:py-6 md:py-8 max-w-4xl px-3 sm:px-4">
         {/* Header */}
         <div className="mb-3 sm:mb-4 md:mb-6">
           <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-1">Flashcards</h1>
