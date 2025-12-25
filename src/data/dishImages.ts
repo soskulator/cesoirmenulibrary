@@ -34,6 +34,20 @@ import roastedBranzino from '@/assets/dishes/roasted-branzino.jpg';
 import oysters from '@/assets/dishes/oysters.jpg';
 import charcuterieBoard from '@/assets/dishes/charcuterie-board.jpg';
 
+// Drink images
+import champagneMoet from '@/assets/drinks/champagne-moet.jpg';
+import champagneDomPerignon from '@/assets/drinks/champagne-dom-perignon.jpg';
+import champagneAceOfSpades from '@/assets/drinks/champagne-ace-of-spades.jpg';
+import wineCabernet from '@/assets/drinks/wine-cabernet.jpg';
+import vodkaGreyGoose from '@/assets/drinks/vodka-grey-goose.jpg';
+import tequilaDonJulio from '@/assets/drinks/tequila-don-julio.jpg';
+import cognacHennessy from '@/assets/drinks/cognac-hennessy.jpg';
+import cocktailFrench75 from '@/assets/drinks/cocktail-french-75.jpg';
+import cocktailMartini from '@/assets/drinks/cocktail-martini.jpg';
+import cocktailLavenderSpritz from '@/assets/drinks/cocktail-lavender-spritz.jpg';
+import cocktailOldFashioned from '@/assets/drinks/cocktail-old-fashioned.jpg';
+import cocktailEspressoMartini from '@/assets/drinks/cocktail-espresso-martini.jpg';
+
 // Map menu item IDs to their images
 export const dishImages: Record<string, string> = {
   // Appetizers
@@ -79,6 +93,50 @@ export const dishImages: Record<string, string> = {
   'spec-4': roastedBranzino,
   'spec-5': oysters,
   'spec-6': charcuterieBoard,
+
+  // Wines
+  'wine-1': champagneMoet,
+  'wine-2': champagneDomPerignon,
+  'wine-3': champagneAceOfSpades,
+  'wine-4': wineCabernet,
+  'wine-5': champagneMoet, // Laurent-Perrier (using Moet as placeholder)
+  'wine-6': champagneDomPerignon, // Krug (using Dom as placeholder)
+  'wine-7': wineCabernet, // Chateau Margaux
+  'wine-8': wineCabernet, // Opus One
+  'wine-9': wineCabernet, // Sassicaia
+  'wine-10': wineCabernet, // Brunello
+  'wine-11': wineCabernet, // Tignanello
+
+  // Spirits
+  'spirit-1': vodkaGreyGoose,
+  'spirit-2': vodkaGreyGoose, // Belvedere
+  'spirit-3': tequilaDonJulio,
+  'spirit-4': tequilaDonJulio, // Clase Azul
+  'spirit-5': cognacHennessy,
+  'spirit-6': cognacHennessy, // Rémy Martin
+  'spirit-7': cognacHennessy, // Louis XIII (using Hennessy)
+  'spirit-8': cognacHennessy, // Macallan
+  'spirit-9': cognacHennessy, // Johnnie Walker Blue
+  'spirit-10': cognacHennessy, // Hibiki
+  'spirit-11': cognacHennessy, // Yamazaki
+  'spirit-12': cognacHennessy, // Woodford Reserve
+
+  // Cocktails
+  'cocktail-1': cocktailFrench75,
+  'cocktail-2': cocktailMartini,
+  'cocktail-3': cocktailLavenderSpritz,
+  'cocktail-4': cocktailOldFashioned, // Smoke & Honey
+  'cocktail-5': cocktailMartini, // Vesper
+  'cocktail-6': cocktailEspressoMartini,
+  'cocktail-7': cocktailOldFashioned, // Sazerac
+  'cocktail-8': cocktailLavenderSpritz, // Aperol Spritz
+  'cocktail-9': cocktailMartini, // Negroni
+  'cocktail-10': cocktailLavenderSpritz, // Elderflower Collins
+  'cocktail-11': cocktailOldFashioned, // Manhattan
+  'cocktail-12': cocktailMartini, // Boulevardier
+  'cocktail-13': cocktailLavenderSpritz, // Hemingway Daiquiri
+  'cocktail-14': cocktailOldFashioned, // Vieux Carré
+  'cocktail-15': cocktailMartini, // Aviation
 };
 
 export const getDishImage = (itemId: string): string | undefined => {
