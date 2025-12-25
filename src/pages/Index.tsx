@@ -333,27 +333,16 @@ export default function Index() {
                         </div>
                       )}
                       <CardContent className="p-8 relative z-10">
-                        <div className="flex items-center gap-6">
-                          {categoryIcon ? (
-                            <img 
-                              src={categoryIcon} 
-                              alt={category.name} 
-                              className="w-14 h-14 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                            />
-                          ) : (
-                            <span className="text-5xl">{category.icon}</span>
-                          )}
-                          <div>
-                            <h3 className="font-serif text-2xl font-semibold group-hover:text-copper transition-colors">
-                              {category.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground italic mb-2">
-                              {category.nameFrench}
-                            </p>
-                            <Badge variant="secondary" className="bg-muted">
-                              {itemCount} items
-                            </Badge>
-                          </div>
+                        <div>
+                          <h3 className="font-serif text-2xl font-semibold group-hover:text-copper transition-colors">
+                            {category.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground italic mb-2">
+                            {category.nameFrench}
+                          </p>
+                          <Badge variant="secondary" className="bg-muted">
+                            {itemCount} items
+                          </Badge>
                         </div>
                       </CardContent>
                     </Card>
