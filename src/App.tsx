@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Categories from "./pages/Categories";
+import WineList from "./pages/WineList";
 import Flashcards from "./pages/Flashcards";
 import Quiz from "./pages/Quiz";
 import DailyFocus from "./pages/DailyFocus";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/categories/:categoryId" element={<Categories />} />
+            <Route path="/wine-list" element={<WineList />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/daily-focus" element={<DailyFocus />} />
