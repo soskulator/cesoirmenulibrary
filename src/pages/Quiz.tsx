@@ -14,8 +14,10 @@ import {
   RotateCcw, 
   Trophy,
   ArrowRight,
-  HelpCircle
+  HelpCircle,
+  Wine
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 interface QuizQuestion {
@@ -218,7 +220,7 @@ export default function QuizPage() {
             </CardContent>
           </Card>
 
-          <div className="text-center">
+          <div className="text-center space-y-4">
             <p className="text-muted-foreground mb-3 sm:mb-4 text-xs sm:text-sm">
               {allQuestions.length} questions available
             </p>
@@ -232,6 +234,17 @@ export default function QuizPage() {
               Start Quiz
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
             </Button>
+            
+            {/* Wine Quiz Link */}
+            <div className="pt-4 border-t border-border mt-6">
+              <p className="text-xs text-muted-foreground mb-3">Looking for wine-specific training?</p>
+              <Button variant="outline" size="sm" asChild className="h-9">
+                <Link to="/wine-quiz">
+                  <Wine className="w-4 h-4 mr-2" />
+                  Take Wine Quiz
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </Layout>
