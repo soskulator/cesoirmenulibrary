@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
-import bayfrontSketch from '@/assets/bayfront-sketch-white.jpg';
+import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 import logoImage from '@/assets/cesoir-logo.png';
 
 const features = [
@@ -90,7 +90,7 @@ export default function Index() {
           <img 
             src={bayfrontSketch} 
             alt="Bayfront Place Naples Sketch" 
-            className="w-full h-full object-cover opacity-25"
+            className="w-full h-full object-cover opacity-20"
           />
           {/* Subtle gradient overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-cream/30 via-transparent to-cream/40" />

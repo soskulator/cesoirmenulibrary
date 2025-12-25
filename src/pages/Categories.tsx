@@ -8,6 +8,7 @@ import { AllergenList } from '@/components/AllergenBadge';
 import { categories, menuItems, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { ArrowLeft, ArrowRight, CreditCard } from 'lucide-react';
+import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 const container = {
   hidden: { opacity: 0 },
@@ -45,6 +46,14 @@ export default function CategoriesPage() {
 
     return (
       <Layout>
+        {/* Background Image */}
+        <div className="fixed inset-0 -z-10">
+          <img 
+            src={bayfrontSketch} 
+            alt="Bayfront Place Naples Sketch" 
+            className="w-full h-full object-cover opacity-10"
+          />
+        </div>
         <div className="container py-8">
           {/* Back button */}
           <Button variant="ghost" size="sm" asChild className="mb-6">
@@ -135,6 +144,14 @@ export default function CategoriesPage() {
   // Show all categories
   return (
     <Layout>
+      {/* Background Image */}
+      <div className="fixed inset-0 -z-10">
+        <img 
+          src={bayfrontSketch} 
+          alt="Bayfront Place Naples Sketch" 
+          className="w-full h-full object-cover opacity-10"
+        />
+      </div>
       <div className="container py-8">
         <div className="mb-8">
           <h1 className="font-serif text-3xl md:text-4xl font-bold mb-2">
