@@ -34,11 +34,20 @@ import roastedBranzino from '@/assets/dishes/roasted-branzino.jpg';
 import oysters from '@/assets/dishes/oysters.jpg';
 import charcuterieBoard from '@/assets/dishes/charcuterie-board.jpg';
 
-// Drink images
-import champagneMoet from '@/assets/drinks/champagne-moet.jpg';
-import champagneDomPerignon from '@/assets/drinks/champagne-dom-perignon.jpg';
-import champagneAceOfSpades from '@/assets/drinks/champagne-ace-of-spades.jpg';
-import wineCabernet from '@/assets/drinks/wine-cabernet.jpg';
+// Drink images - Wines
+import wineMoetImperial from '@/assets/drinks/wine-moet-imperial.jpg';
+import wineLaurentPerrier from '@/assets/drinks/wine-laurent-perrier.jpg';
+import wineSancerre from '@/assets/drinks/wine-sancerre.jpg';
+import wineChablis from '@/assets/drinks/wine-chablis.png';
+import wineLaboureRoi from '@/assets/drinks/wine-laboure-roi-pinot.jpg';
+import wineDomPerignon from '@/assets/drinks/wine-dom-perignon.jpg';
+import wineAceOfSpades from '@/assets/drinks/wine-ace-of-spades.jpg';
+import wineKrug from '@/assets/drinks/wine-krug.jpg';
+import wineQuintessa from '@/assets/drinks/wine-quintessa.jpg';
+import wineSancerreRose from '@/assets/drinks/wine-sancerre-rose.jpg';
+import wineInniskillin from '@/assets/drinks/wine-inniskillin-icewine.png';
+
+// Drink images - Spirits & Cocktails
 import vodkaGreyGoose from '@/assets/drinks/vodka-grey-goose.jpg';
 import tequilaDonJulio from '@/assets/drinks/tequila-don-julio.jpg';
 import cognacHennessy from '@/assets/drinks/cognac-hennessy.jpg';
@@ -95,17 +104,17 @@ export const dishImages: Record<string, string> = {
   'spec-6': charcuterieBoard,
 
   // Wines
-  'wine-1': champagneMoet,
-  'wine-2': champagneDomPerignon,
-  'wine-3': champagneAceOfSpades,
-  'wine-4': wineCabernet,
-  'wine-5': champagneMoet, // Laurent-Perrier (using Moet as placeholder)
-  'wine-6': champagneDomPerignon, // Krug (using Dom as placeholder)
-  'wine-7': wineCabernet, // Chateau Margaux
-  'wine-8': wineCabernet, // Opus One
-  'wine-9': wineCabernet, // Sassicaia
-  'wine-10': wineCabernet, // Brunello
-  'wine-11': wineCabernet, // Tignanello
+  'wine-1': wineMoetImperial, // Moët Chandon Impérial Brut
+  'wine-2': wineLaurentPerrier, // Laurent-Perrier Brut
+  'wine-3': wineSancerre, // Domaine Fouassier Sancerre
+  'wine-4': wineChablis, // Moillard Chablis
+  'wine-5': wineLaboureRoi, // Labouré-Roi Bourgogne Pinot Noir
+  'wine-6': wineQuintessa, // Baca Kathryn Hall Cabernet (using Quintessa)
+  'wine-7': wineSancerreRose, // Domaine Roc de l'Abbaye Sancerre Rosé
+  'wine-8': wineDomPerignon, // Dom Pérignon Brut
+  'wine-9': wineAceOfSpades, // Armand de Brignac Brut Gold
+  'wine-10': wineKrug, // Krug Grand Cuvée
+  'wine-11': wineInniskillin, // Quintessa Rutherford / Inniskillin Icewine
 
   // Spirits
   'spirit-1': vodkaGreyGoose,
