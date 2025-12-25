@@ -224,16 +224,16 @@ export default function WineListPage() {
                       >
                         <div className="flex flex-col md:flex-row">
                           {/* Wine Image */}
-                          <div className="relative w-full md:w-48 h-48 md:h-auto flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-transparent">
+                          <div className="relative w-32 md:w-36 h-44 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center p-4">
                             {getDishImage(wine.id) ? (
                               <img
                                 src={getDishImage(wine.id)}
                                 alt={wine.name}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                className="w-auto h-full max-h-36 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-lg"
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
-                                <Wine className="w-16 h-16 text-copper/30" />
+                                <Wine className="w-12 h-12 text-copper/30" />
                               </div>
                             )}
                           </div>
