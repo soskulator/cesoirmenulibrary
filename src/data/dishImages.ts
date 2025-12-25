@@ -48,10 +48,21 @@ import wineKathrynHall from '@/assets/drinks/wine-kathryn-hall.jpg';
 import wineSancerreRose from '@/assets/drinks/wine-sancerre-rose.jpg';
 import wineInniskillin from '@/assets/drinks/wine-inniskillin-icewine.png';
 
-// Drink images - Spirits & Cocktails
-import vodkaGreyGoose from '@/assets/drinks/vodka-grey-goose.jpg';
-import tequilaDonJulio from '@/assets/drinks/tequila-don-julio.jpg';
-import cognacHennessy from '@/assets/drinks/cognac-hennessy.jpg';
+// Drink images - Spirits
+import spiritGreyGoose from '@/assets/drinks/spirit-grey-goose.png';
+import spiritBelugaGold from '@/assets/drinks/spirit-beluga-gold.png';
+import spiritHendricks from '@/assets/drinks/spirit-hendricks.png';
+import spiritMonkey47 from '@/assets/drinks/spirit-monkey47.png';
+import spiritDiplomatico from '@/assets/drinks/spirit-diplomatico.png';
+import spiritZacapa23 from '@/assets/drinks/spirit-zacapa23.jpg';
+import spiritClaseAzul from '@/assets/drinks/spirit-clase-azul.png';
+import spiritMacallan18 from '@/assets/drinks/spirit-macallan18.jpg';
+import spiritYamazaki12 from '@/assets/drinks/spirit-yamazaki12.jpg';
+import spiritJohnnieBlue from '@/assets/drinks/spirit-johnnie-blue.png';
+import spiritWoodford from '@/assets/drinks/spirit-woodford.jpg';
+import spiritLouisXIII from '@/assets/drinks/spirit-louisxiii.jpg';
+
+// Drink images - Cocktails
 import cocktailFrench75 from '@/assets/drinks/cocktail-french-75.jpg';
 import cocktailMartini from '@/assets/drinks/cocktail-martini.jpg';
 import cocktailLavenderSpritz from '@/assets/drinks/cocktail-lavender-spritz.jpg';
@@ -118,18 +129,18 @@ export const dishImages: Record<string, string> = {
   'wine-11': wineInniskillin, // Quintessa Rutherford / Inniskillin Icewine
 
   // Spirits
-  'spirit-1': vodkaGreyGoose,
-  'spirit-2': vodkaGreyGoose, // Belvedere
-  'spirit-3': tequilaDonJulio,
-  'spirit-4': tequilaDonJulio, // Clase Azul
-  'spirit-5': cognacHennessy,
-  'spirit-6': cognacHennessy, // Rémy Martin
-  'spirit-7': cognacHennessy, // Louis XIII (using Hennessy)
-  'spirit-8': cognacHennessy, // Macallan
-  'spirit-9': cognacHennessy, // Johnnie Walker Blue
-  'spirit-10': cognacHennessy, // Hibiki
-  'spirit-11': cognacHennessy, // Yamazaki
-  'spirit-12': cognacHennessy, // Woodford Reserve
+  'spirit-1': spiritGreyGoose, // Grey Goose
+  'spirit-2': spiritBelugaGold, // Beluga Gold
+  'spirit-3': spiritHendricks, // Hendrick's Gin
+  'spirit-4': spiritMonkey47, // Monkey 47 Gin
+  'spirit-5': spiritDiplomatico, // Diplomatico Reserva Exclusiva
+  'spirit-6': spiritZacapa23, // Zacapa 23
+  'spirit-7': spiritClaseAzul, // Clase Azul Reposado
+  'spirit-8': spiritMacallan18, // Macallan 18
+  'spirit-9': spiritYamazaki12, // Yamazaki 12
+  'spirit-10': spiritJohnnieBlue, // Johnnie Walker Blue Label
+  'spirit-11': spiritWoodford, // Woodford Reserve
+  'spirit-12': spiritLouisXIII, // Louis XIII Cognac
 
   // Cocktails
   'cocktail-1': cocktailFrench75,
