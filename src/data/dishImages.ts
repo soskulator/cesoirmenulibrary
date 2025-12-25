@@ -85,6 +85,17 @@ import spiritFourRoses from '@/assets/drinks/spirit-four-roses.jpg';
 import spiritOldForester1920 from '@/assets/drinks/spirit-old-forester1920.jpg';
 import spiritRemyVsop from '@/assets/drinks/spirit-remy-vsop.png';
 import spiritDelMagueyVida from '@/assets/drinks/spirit-del-maguey-vida.jpg';
+// Additional spirit images
+import spiritDobelDiamante from '@/assets/drinks/spirit-dobel-diamante.png';
+import spiritCampari from '@/assets/drinks/spirit-campari.jpg';
+import spiritHibikiHarmony from '@/assets/drinks/spirit-hibiki-harmony.png';
+import spiritOban14 from '@/assets/drinks/spirit-oban14.jpg';
+import spiritGrandMarnier from '@/assets/drinks/spirit-grand-marnier.webp';
+import spiritLilletBlanc from '@/assets/drinks/spirit-lillet-blanc.jpg';
+import spiritFernetBranca from '@/assets/drinks/spirit-fernet-branca.jpg';
+import spiritDisaronno from '@/assets/drinks/spirit-disaronno.jpg';
+import spiritAmaroMontenegro from '@/assets/drinks/spirit-amaro-montenegro.png';
+import spiritFrangelico from '@/assets/drinks/spirit-frangelico.png';
 
 // Drink images - Cocktails
 import cocktailEspressoMartini from '@/assets/drinks/cocktail-espresso-martini-new.jpg';
@@ -194,7 +205,7 @@ export const dishImages: Record<string, string> = {
   'spirit-25': spiritBrugalAnejo, // Brugal Maestro Reserva
   
   // Spirits - Tequila
-  'spirit-26': spiritClaseAzul, // Dobel Diamante
+  'spirit-26': spiritDobelDiamante, // Dobel Diamante
   'spirit-27': spiritTrombaBlanco, // Tromba Blanco
   'spirit-28': spiritTrombaBlanco, // Tromba Reposado
   'spirit-29': spiritG4Blanco, // G4 Blanco
@@ -231,9 +242,9 @@ export const dishImages: Record<string, string> = {
   'spirit-56': spiritBalvenie12, // Balvenie 12
   'spirit-57': spiritLagavulin8, // Lagavulin 8
   'spirit-58': spiritMacallan12, // Macallan 12
-  'spirit-59': spiritLagavulin8, // Oban 14
+  'spirit-59': spiritOban14, // Oban 14
   'spirit-60': spiritLagavulin8, // Talisker 10
-  'spirit-61': spiritYamazaki12, // Hibiki Harmony
+  'spirit-61': spiritHibikiHarmony, // Hibiki Harmony
   'spirit-62': spiritMacallan12, // Macallan 15
   'spirit-63': spiritBalvenie12, // Glenrothes 12
   'spirit-64': spiritYamazaki12, // Yamazaki 12
@@ -275,20 +286,20 @@ export const dishImages: Record<string, string> = {
   'spirit-96': spiritWoodford, // Pendleton 1910 Rye
   
   // Spirits - Cordials
-  'spirit-97': spiritRemyVsop, // Amaro Montenegro
+  'spirit-97': spiritAmaroMontenegro, // Amaro Montenegro
   'spirit-98': spiritRemyVsop, // Baileys
-  'spirit-99': spiritRemyVsop, // Campari
-  'spirit-100': spiritRemyVsop, // Disaronno
-  'spirit-101': spiritRemyVsop, // Fernet Branca
-  'spirit-102': spiritRemyVsop, // Frangelico
-  'spirit-103': spiritRemyVsop, // Lillet Blanc
-  'spirit-104': spiritRemyVsop, // Lillet Rosé
+  'spirit-99': spiritCampari, // Campari
+  'spirit-100': spiritDisaronno, // Disaronno
+  'spirit-101': spiritFernetBranca, // Fernet Branca
+  'spirit-102': spiritFrangelico, // Frangelico
+  'spirit-103': spiritLilletBlanc, // Lillet Blanc
+  'spirit-104': spiritLilletBlanc, // Lillet Rosé
   'spirit-105': spiritRemyVsop, // Nonino Grappa
   'spirit-106': spiritRemyVsop, // Pisco
   'spirit-107': spiritRemyVsop, // Sambuca
   'spirit-108': spiritRemyVsop, // Southern Comfort
   'spirit-109': spiritRemyVsop, // Calvados VSOP
-  'spirit-110': spiritRemyVsop, // Grand Marnier
+  'spirit-110': spiritGrandMarnier, // Grand Marnier
   'spirit-111': spiritRemyVsop, // Armagnac
   'spirit-112': spiritRemyVsop, // Hennessy VS
   'spirit-113': spiritRemyVsop, // Rémy Martin VSOP
