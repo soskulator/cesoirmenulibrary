@@ -13,7 +13,8 @@ import {
   X,
   LogIn,
   LogOut,
-  Wine
+  Wine,
+  GlassWater
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -34,6 +35,7 @@ const navItems = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/categories', label: 'Categories', icon: Layers },
   { path: '/wine-list', label: 'Wine', icon: Wine },
+  { path: '/cocktails', label: 'Cocktails', icon: GlassWater },
   { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
   { path: '/quiz', label: 'Quiz', icon: HelpCircle },
   { path: '/daily-focus', label: 'Daily Focus', icon: Star },
