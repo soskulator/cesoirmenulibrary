@@ -43,7 +43,8 @@ import wineLaboureRoi from '@/assets/drinks/wine-laboure-roi-pinot.jpg';
 import wineDomPerignon from '@/assets/drinks/wine-dom-perignon.jpg';
 import wineAceOfSpades from '@/assets/drinks/wine-ace-of-spades.jpg';
 import wineKrug from '@/assets/drinks/wine-krug.jpg';
-import wineQuintessa from '@/assets/drinks/wine-quintessa.jpg';
+import wineQuintessa from '@/assets/drinks/wine-quintessa-rutherford.webp';
+import wineKathrynHall from '@/assets/drinks/wine-kathryn-hall.jpg';
 import wineSancerreRose from '@/assets/drinks/wine-sancerre-rose.jpg';
 import wineInniskillin from '@/assets/drinks/wine-inniskillin-icewine.png';
 
@@ -109,7 +110,7 @@ export const dishImages: Record<string, string> = {
   'wine-3': wineSancerre, // Domaine Fouassier Sancerre
   'wine-4': wineChablis, // Moillard Chablis
   'wine-5': wineLaboureRoi, // Labouré-Roi Bourgogne Pinot Noir
-  'wine-6': wineQuintessa, // Baca Kathryn Hall Cabernet (using Quintessa)
+  'wine-6': wineKathrynHall, // Baca Kathryn Hall Cabernet
   'wine-7': wineSancerreRose, // Domaine Roc de l'Abbaye Sancerre Rosé
   'wine-8': wineDomPerignon, // Dom Pérignon Brut
   'wine-9': wineAceOfSpades, // Armand de Brignac Brut Gold
