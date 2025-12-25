@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { AllergenList } from './AllergenBadge';
@@ -9,6 +10,8 @@ interface FlashCardProps {
   showAllergens?: boolean;
   showPrepNotes?: boolean;
   className?: string;
+  onSwipeLeft?: () => void;
+  onSwipeRight?: () => void;
 }
 
 // Category background themes
@@ -28,27 +31,64 @@ const categoryAccents: Record<string, string> = {
   specials: 'border-gold/30',
 };
 
-export function FlashCard({ item, showAllergens = true, showPrepNotes = false, className }: FlashCardProps) {
+const SWIPE_THRESHOLD = 50;
+
+export function FlashCard({ 
+  item, 
+  showAllergens = true, 
+  showPrepNotes = false, 
+  className,
+  onSwipeLeft,
+  onSwipeRight 
+}: FlashCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const dishImage = getDishImage(item.id);
 
   const bgClass = categoryBackgrounds[item.categoryId] || categoryBackgrounds.appetizers;
   const borderClass = categoryAccents[item.categoryId] || categoryAccents.appetizers;
 
+  // Swipe gesture handling
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-100, 100], [10, -10]);
+  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+
   const handleFlip = () => setIsFlipped((prev) => !prev);
 
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const { offset, velocity } = info;
+    
+    // Check for vertical swipe to flip
+    if (Math.abs(offset.y) > SWIPE_THRESHOLD && Math.abs(offset.y) > Math.abs(offset.x)) {
+      handleFlip();
+    }
+    // Check for horizontal swipe to navigate
+    else if (Math.abs(offset.x) > SWIPE_THRESHOLD) {
+      if (offset.x > 0 && onSwipeRight) {
+        onSwipeRight();
+      } else if (offset.x < 0 && onSwipeLeft) {
+        onSwipeLeft();
+      }
+    }
+  };
+
   return (
-    <div
-      className={cn('flip-card w-full max-w-md mx-auto cursor-pointer select-none', className)}
-      style={{ height: 520 }}
-      onClick={handleFlip}
-      onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
+    <motion.div
+      className={cn('flip-card w-full max-w-md mx-auto cursor-pointer select-none touch-none', className)}
+      style={{ height: 520, x, y, rotateX, rotateY, perspective: 1000 }}
+      drag
+      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+      dragElastic={0.1}
+      onDragEnd={handleDragEnd}
+      whileTap={{ scale: 0.98 }}
       tabIndex={0}
       role="button"
-      aria-label={`Flash card for ${item.name}. Click to flip.`}
+      aria-label={`Flash card for ${item.name}. Swipe up/down to flip, left/right to navigate.`}
     >
       <div
         className={cn('flip-card-inner relative w-full h-full', isFlipped && 'flipped')}
+        onClick={handleFlip}
+        onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
       >
         {/* Front: Image + Name */}
         <div
@@ -64,7 +104,7 @@ export function FlashCard({ item, showAllergens = true, showPrepNotes = false, c
               <img
                 src={dishImage}
                 alt={item.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover pointer-events-none"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -72,12 +112,14 @@ export function FlashCard({ item, showAllergens = true, showPrepNotes = false, c
               </div>
             )}
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/20 to-transparent pointer-events-none" />
           </div>
 
-          {/* Name overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-            <p className="text-xs uppercase tracking-widest text-cream/70 mb-1">Tap to flip</p>
+          {/* Name overlay with larger touch target */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-center min-h-[120px] flex flex-col justify-end">
+            <p className="text-xs uppercase tracking-widest text-cream/70 mb-2">
+              Swipe up to flip • Swipe left/right to navigate
+            </p>
             <h2 className="font-serif text-2xl md:text-3xl font-semibold text-cream drop-shadow-md">
               {item.name}
             </h2>
@@ -87,7 +129,7 @@ export function FlashCard({ item, showAllergens = true, showPrepNotes = false, c
         {/* Back: Description */}
         <div
           className={cn(
-            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-6 flex flex-col',
+            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-6 md:p-8 flex flex-col',
             bgClass,
             borderClass
           )}
@@ -128,9 +170,11 @@ export function FlashCard({ item, showAllergens = true, showPrepNotes = false, c
           </div>
 
           {/* Flip hint */}
-          <p className="text-xs text-center text-muted-foreground mt-3">Tap to flip back</p>
+          <p className="text-xs text-center text-muted-foreground mt-3 min-h-[24px]">
+            Swipe down to flip back
+          </p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

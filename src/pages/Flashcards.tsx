@@ -272,6 +272,8 @@ export default function FlashcardsPage() {
                 <FlashCard 
                   item={currentItem} 
                   showPrepNotes={true}
+                  onSwipeLeft={goToNext}
+                  onSwipeRight={goToPrev}
                   className={cn(
                     knownItems.has(currentItem.id) && "ring-2 ring-sage",
                     reviewItems.has(currentItem.id) && "ring-2 ring-gold"
@@ -298,15 +300,16 @@ export default function FlashcardsPage() {
         {/* Navigation */}
         {currentItem && (
           <div className="mt-8 space-y-4">
-            {/* Arrow Navigation */}
-            <div className="flex justify-between items-center">
+            {/* Arrow Navigation - Larger touch targets for mobile */}
+            <div className="flex justify-between items-center gap-4">
               <Button
                 variant="outline"
                 size="lg"
                 onClick={goToPrev}
                 disabled={currentIndex === 0}
+                className="flex-1 h-14 md:h-12 text-base active:scale-95 transition-transform"
               >
-                <ChevronLeft className="w-5 h-5 mr-2" />
+                <ChevronLeft className="w-6 h-6 md:w-5 md:h-5 mr-2" />
                 Previous
               </Button>
               <Button
@@ -314,30 +317,31 @@ export default function FlashcardsPage() {
                 size="lg"
                 onClick={goToNext}
                 disabled={currentIndex >= filteredItems.length - 1}
+                className="flex-1 h-14 md:h-12 text-base active:scale-95 transition-transform"
               >
                 Next
-                <ChevronRight className="w-5 h-5 ml-2" />
+                <ChevronRight className="w-6 h-6 md:w-5 md:h-5 ml-2" />
               </Button>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons - Larger touch targets for mobile */}
             <div className="flex gap-4 justify-center">
               <Button
                 variant="burgundy-outline"
                 size="lg"
                 onClick={markForReview}
-                className="flex-1 max-w-xs"
+                className="flex-1 max-w-xs h-14 md:h-12 text-base active:scale-95 transition-transform"
               >
-                <RotateCcw className="w-5 h-5 mr-2" />
+                <RotateCcw className="w-6 h-6 md:w-5 md:h-5 mr-2" />
                 Need to Review
               </Button>
               <Button
                 variant="success"
                 size="lg"
                 onClick={markAsKnown}
-                className="flex-1 max-w-xs"
+                className="flex-1 max-w-xs h-14 md:h-12 text-base active:scale-95 transition-transform"
               >
-                <Check className="w-5 h-5 mr-2" />
+                <Check className="w-6 h-6 md:w-5 md:h-5 mr-2" />
                 I Know This
               </Button>
             </div>
