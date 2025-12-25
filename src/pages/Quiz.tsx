@@ -117,46 +117,46 @@ export default function QuizPage() {
     const percentage = Math.round((score.correct / shuffledQuestions.length) * 100);
     return (
       <Layout>
-        <div className="container py-12 max-w-2xl">
+        <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <div className="w-24 h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-6">
-              <Trophy className="w-12 h-12 text-gold" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gold" />
             </div>
-            <h1 className="font-serif text-4xl font-bold mb-4">Quiz Complete!</h1>
-            <p className="text-xl text-muted-foreground mb-8">
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Quiz Complete!</h1>
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8">
               You scored {score.correct} out of {shuffledQuestions.length}
             </p>
             
-            <div className="grid grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 mb-6 sm:mb-8">
               <Card className="bg-sage/10 border-sage/20">
-                <CardContent className="p-6 text-center">
-                  <p className="text-4xl font-bold text-sage">{score.correct}</p>
-                  <p className="text-sm text-sage">Correct</p>
+                <CardContent className="p-3 sm:p-6 text-center">
+                  <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-sage">{score.correct}</p>
+                  <p className="text-xs sm:text-sm text-sage">Correct</p>
                 </CardContent>
               </Card>
               <Card className="bg-destructive/10 border-destructive/20">
-                <CardContent className="p-6 text-center">
-                  <p className="text-4xl font-bold text-destructive">{score.incorrect}</p>
-                  <p className="text-sm text-destructive">Incorrect</p>
+                <CardContent className="p-3 sm:p-6 text-center">
+                  <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-destructive">{score.incorrect}</p>
+                  <p className="text-xs sm:text-sm text-destructive">Incorrect</p>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="mb-8">
-              <Progress value={percentage} className="h-4 mb-2" />
-              <p className="text-2xl font-bold text-burgundy">{percentage}%</p>
+            <div className="mb-6 sm:mb-8">
+              <Progress value={percentage} className="h-3 sm:h-4 mb-2" />
+              <p className="text-xl sm:text-2xl font-bold text-burgundy">{percentage}%</p>
             </div>
 
-            <div className="flex gap-4 justify-center">
-              <Button variant="burgundy" size="lg" onClick={startQuiz}>
-                <RotateCcw className="w-5 h-5 mr-2" />
+            <div className="flex gap-2 sm:gap-4 justify-center">
+              <Button variant="burgundy" size="sm" onClick={startQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
+                <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Try Again
               </Button>
-              <Button variant="outline" size="lg" onClick={resetQuiz}>
+              <Button variant="outline" size="sm" onClick={resetQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
                 Change Category
               </Button>
             </div>
@@ -170,26 +170,28 @@ export default function QuizPage() {
   if (!quizStarted) {
     return (
       <Layout>
-        <div className="container py-12 max-w-2xl">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-4">
-              <HelpCircle className="w-8 h-8 text-burgundy" />
+        <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-burgundy" />
             </div>
-            <h1 className="font-serif text-3xl font-bold mb-2">Quiz Mode</h1>
-            <p className="text-muted-foreground">
+            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Quiz Mode</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm">
               Test your knowledge of menu items, ingredients, and selling points
             </p>
           </div>
 
-          <Card className="mb-8">
-            <CardContent className="p-6">
-              <h2 className="font-semibold mb-4">Select a Category</h2>
-              <div className="flex flex-wrap gap-2">
+          <Card className="mb-6 sm:mb-8">
+            <CardContent className="p-3 sm:p-4 md:p-6">
+              <h2 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Select a Category</h2>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 <Button
                   variant={selectedCategory === '' ? "burgundy" : "secondary"}
                   onClick={() => setSelectedCategory('')}
+                  size="sm"
+                  className="h-8 sm:h-9 text-xs sm:text-sm"
                 >
-                  All Categories
+                  All
                 </Button>
                 {categories.map((cat) => {
                   const questionCount = menuItems
@@ -200,9 +202,11 @@ export default function QuizPage() {
                       key={cat.id}
                       variant={selectedCategory === cat.id ? "burgundy" : "secondary"}
                       onClick={() => setSelectedCategory(cat.id)}
+                      size="sm"
+                      className="h-8 sm:h-9 text-xs sm:text-sm"
                     >
-                      {cat.icon} {cat.name}
-                      <Badge variant="cream" className="ml-2">
+                      {cat.icon} <span className="hidden sm:inline ml-1">{cat.name}</span>
+                      <Badge variant="cream" className="ml-1 sm:ml-2 text-[10px] sm:text-xs">
                         {questionCount}
                       </Badge>
                     </Button>
@@ -213,17 +217,18 @@ export default function QuizPage() {
           </Card>
 
           <div className="text-center">
-            <p className="text-muted-foreground mb-4">
+            <p className="text-muted-foreground mb-3 sm:mb-4 text-xs sm:text-sm">
               {allQuestions.length} questions available
             </p>
             <Button 
               variant="burgundy" 
-              size="xl" 
+              size="sm"
               onClick={startQuiz}
               disabled={allQuestions.length === 0}
+              className="h-10 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
             >
               Start Quiz
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
             </Button>
           </div>
         </div>
@@ -234,19 +239,19 @@ export default function QuizPage() {
   // Active quiz
   return (
     <Layout>
-      <div className="container py-8 max-w-2xl">
+      <div className="container py-4 sm:py-6 md:py-8 max-w-2xl px-3 sm:px-4">
         {/* Progress */}
-        <div className="mb-6">
-          <div className="flex justify-between text-sm mb-2">
+        <div className="mb-4 sm:mb-6">
+          <div className="flex justify-between text-xs sm:text-sm mb-2">
             <span className="text-muted-foreground">
-              Question {currentIndex + 1} of {shuffledQuestions.length}
+              {currentIndex + 1}/{shuffledQuestions.length}
             </span>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               <span className="text-sage">✓ {score.correct}</span>
               <span className="text-destructive">✗ {score.incorrect}</span>
             </div>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-1.5 sm:h-2" />
         </div>
 
         {/* Question Card */}
@@ -258,20 +263,20 @@ export default function QuizPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Card variant="elevated" className="mb-6">
-                <CardContent className="p-6">
+              <Card variant="elevated" className="mb-4 sm:mb-6">
+                <CardContent className="p-3 sm:p-4 md:p-6">
                   {/* Question Header */}
-                  <div className="flex items-center gap-2 mb-4">
-                    <Badge className={getTypeLabel(currentQuestion.type).color}>
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
+                    <Badge className={cn(getTypeLabel(currentQuestion.type).color, "text-[10px] sm:text-xs")}>
                       {getTypeLabel(currentQuestion.type).label}
                     </Badge>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-xs sm:text-sm text-muted-foreground truncate">
                       {currentQuestion.menuItemName}
                     </span>
                   </div>
 
                   {/* Question */}
-                  <h2 className="font-serif text-2xl font-semibold mb-6">
+                  <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6">
                     {currentQuestion.prompt}
                   </h2>
 
@@ -282,19 +287,19 @@ export default function QuizPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="p-4 bg-muted rounded-lg"
+                        className="p-3 sm:p-4 bg-muted rounded-lg"
                       >
-                        <p className="text-sm font-medium text-muted-foreground mb-1">
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                           Answer:
                         </p>
-                        <p className="text-lg">
+                        <p className="text-sm sm:text-base md:text-lg">
                           {currentQuestion.answer}
                         </p>
                       </motion.div>
                     ) : (
                       <Button
                         variant="secondary"
-                        className="w-full"
+                        className="w-full h-10 sm:h-11 text-sm"
                         onClick={() => setShowAnswer(true)}
                       >
                         <Eye className="w-4 h-4 mr-2" />
@@ -310,25 +315,27 @@ export default function QuizPage() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex gap-4"
+                  className="flex gap-2 sm:gap-4"
                 >
                   <Button
                     variant="outline"
-                    size="lg"
-                    className="flex-1 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    size="sm"
+                    className="flex-1 h-10 sm:h-12 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground text-xs sm:text-sm"
                     onClick={handleIncorrect}
                   >
-                    <X className="w-5 h-5 mr-2" />
-                    Got it Wrong
+                    <X className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Got it Wrong</span>
+                    <span className="sm:hidden">Wrong</span>
                   </Button>
                   <Button
                     variant="success"
-                    size="lg"
-                    className="flex-1"
+                    size="sm"
+                    className="flex-1 h-10 sm:h-12 text-xs sm:text-sm"
                     onClick={handleCorrect}
                   >
-                    <Check className="w-5 h-5 mr-2" />
-                    Got it Right
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Got it Right</span>
+                    <span className="sm:hidden">Right</span>
                   </Button>
                 </motion.div>
               )}
@@ -337,8 +344,8 @@ export default function QuizPage() {
         )}
 
         {/* Reset Button */}
-        <div className="mt-8 text-center">
-          <Button variant="ghost" onClick={resetQuiz}>
+        <div className="mt-6 sm:mt-8 text-center">
+          <Button variant="ghost" onClick={resetQuiz} size="sm" className="h-9 text-xs sm:text-sm">
             <RotateCcw className="w-4 h-4 mr-2" />
             End Quiz
           </Button>
