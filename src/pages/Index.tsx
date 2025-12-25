@@ -11,9 +11,11 @@ import {
   Star, 
   AlertTriangle,
   ArrowRight,
-  ChefHat
+  ChefHat,
+  MapPin
 } from 'lucide-react';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
+import bayfrontImage from '@/assets/bayfront-naples.jpg';
 
 const features = [
   {
@@ -68,43 +70,103 @@ export default function Index() {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-burgundy/5 via-transparent to-gold/5" />
-        <div className="container py-16 md:py-24 relative">
+      {/* Hero Section with Bayfront Naples */}
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+        {/* Background Image with Overlay Effects */}
+        <div className="absolute inset-0">
+          <img 
+            src={bayfrontImage} 
+            alt="Bayfront Place Naples" 
+            className="w-full h-full object-cover"
+          />
+          {/* Dark overlay with gradient for readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/80 via-charcoal/60 to-charcoal/90" />
+          {/* Copper/Rose-gold accent overlay */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-copper/20 via-transparent to-rose-gold/10" />
+          {/* Subtle texture overlay */}
+          <div className="absolute inset-0 bg-texture opacity-30" />
+        </div>
+        
+        <div className="container relative z-10 py-20 md:py-32">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto"
           >
-            <Badge variant="gold" className="mb-4">
-              <ChefHat className="w-3 h-3 mr-1" />
-              Staff Training Portal
-            </Badge>
-            <h1 className="font-serif text-4xl md:text-6xl font-bold text-foreground mb-4">
-              Bienvenue to{' '}
-              <span className="text-burgundy">Ce Soir</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              <Badge className="mb-6 bg-copper/20 text-cream border-copper/40 backdrop-blur-sm">
+                <ChefHat className="w-3 h-3 mr-1" />
+                Staff Training Portal
+              </Badge>
+            </motion.div>
+            
+            <motion.h1 
+              className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-cream mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              Welcome to{' '}
+              <span className="text-gradient-gold">Ce Soir</span>
+            </motion.h1>
+            
+            <motion.p 
+              className="text-lg md:text-xl text-cream/80 mb-4 font-light tracking-wide"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
               Master the menu, delight the guests. Your comprehensive guide to every dish, 
               ingredient, and story behind our French bistro cuisine.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Button variant="burgundy" size="lg" asChild>
+            </motion.p>
+            
+            <motion.div 
+              className="flex items-center justify-center gap-2 text-cream/60 mb-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+            >
+              <MapPin className="w-4 h-4 text-copper" />
+              <span className="text-sm tracking-wider">492 Bayfront Pl, 3402 · Naples, Florida</span>
+            </motion.div>
+            
+            <motion.div 
+              className="flex flex-wrap gap-4 justify-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+            >
+              <Button 
+                size="lg" 
+                className="bg-copper hover:bg-copper-light text-charcoal font-semibold shadow-lg hover:shadow-xl transition-all"
+                asChild
+              >
                 <Link to="/flashcards">
                   Start Training
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
-              <Button variant="burgundy-outline" size="lg" asChild>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-cream/30 text-cream hover:bg-cream/10 backdrop-blur-sm"
+                asChild
+              >
                 <Link to="/categories">
                   Browse Menu
                 </Link>
               </Button>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
+        
+        {/* Bottom fade to blend with next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Daily Focus */}
