@@ -11,15 +11,16 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-burgundy-light shadow-sm hover:shadow-md",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        outline: "border border-input bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground hover:bg-cream-dark shadow-sm",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "text-foreground hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         gold: "bg-gold text-charcoal hover:bg-gold-light shadow-sm hover:shadow-md font-semibold",
         burgundy: "bg-burgundy text-primary-foreground hover:bg-burgundy-light shadow-sm hover:shadow-md",
         "burgundy-outline": "border-2 border-burgundy text-burgundy bg-transparent hover:bg-burgundy hover:text-primary-foreground",
         success: "bg-sage text-primary-foreground hover:bg-sage/90 shadow-sm",
         cream: "bg-cream text-charcoal hover:bg-cream-dark shadow-sm",
+        "hero-outline": "border border-cream/30 text-cream bg-transparent hover:bg-cream/10 font-medium",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -82,7 +82,7 @@ export default function Index() {
     <Layout>
       {/* Hero Section - Full Screen Minimalist */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background with Parallax */}
+        {/* Background with Parallax and Sketch Effect */}
         <motion.div 
           className="absolute inset-0"
           style={{ scale: heroScale }}
@@ -90,9 +90,14 @@ export default function Index() {
           <img 
             src={bayfrontImage} 
             alt="Bayfront Place Naples" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover sepia-[0.3] saturate-[0.7] contrast-[1.1]"
           />
-          <div className="absolute inset-0 bg-charcoal/70" />
+          {/* Warm color overlay to blend with copper/cream palette */}
+          <div className="absolute inset-0 bg-gradient-to-br from-copper/30 via-charcoal/60 to-jade/20" />
+          {/* Sketch/artistic texture overlay */}
+          <div className="absolute inset-0 bg-charcoal/50 mix-blend-multiply" />
+          {/* Subtle grain texture for sketch feel */}
+          <div className="absolute inset-0 bg-texture opacity-40" />
         </motion.div>
         
         {/* Main Content */}
@@ -140,7 +145,7 @@ export default function Index() {
           >
             <Button 
               size="lg" 
-              className="bg-copper hover:bg-copper-light text-charcoal font-medium px-8 py-6 text-base tracking-wide"
+              className="bg-copper hover:bg-copper-light text-charcoal font-semibold px-8 py-6 text-base tracking-wide shadow-lg"
               asChild
             >
               <Link to="/flashcards">
@@ -149,8 +154,8 @@ export default function Index() {
             </Button>
             <Button 
               size="lg" 
-              variant="outline"
-              className="border-cream/20 text-cream hover:bg-cream/5 px-8 py-6 text-base tracking-wide"
+              variant="hero-outline"
+              className="px-8 py-6 text-base tracking-wide"
               asChild
             >
               <Link to="/categories">
