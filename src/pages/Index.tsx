@@ -146,7 +146,7 @@ export default function Index() {
           >
             <Button 
               size="lg" 
-              className="bg-charcoal text-cream font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300"
+              className="bg-charcoal text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300"
               asChild
             >
               <Link to="/flashcards">
@@ -155,7 +155,7 @@ export default function Index() {
             </Button>
             <Button 
               size="lg" 
-              className="bg-copper text-charcoal font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300"
+              className="bg-copper text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300"
               asChild
             >
               <Link to="/categories">
