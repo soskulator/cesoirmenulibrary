@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AllergenList } from '@/components/AllergenBadge';
 import { dailyFocus, getMenuItemById, getCategoryById } from '@/data/menuData';
+import { getDishImage } from '@/data/dishImages';
 import { Star, CreditCard, Calendar, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -22,6 +22,7 @@ const item = {
 };
 
 export default function DailyFocusPage() {
+  const navigate = useNavigate();
   const focusItems = dailyFocus.menuItemIds
     .map(id => getMenuItemById(id))
     .filter(Boolean);
@@ -32,7 +33,6 @@ export default function DailyFocusPage() {
     month: 'long',
     day: 'numeric',
   });
-
   return (
     <Layout>
       <div className="container py-8 max-w-4xl">
@@ -74,19 +74,38 @@ export default function DailyFocusPage() {
         >
           {focusItems.map((menuItem, index) => {
             const category = getCategoryById(menuItem!.categoryId);
+            const dishImage = getDishImage(menuItem!.id);
             return (
               <motion.div key={menuItem!.id} variants={item}>
                 <Card variant="elevated" className="overflow-hidden">
+                  {/* Dish Image */}
+                  {dishImage && (
+                    <div className="relative h-48 overflow-hidden">
+                      <img 
+                        src={dishImage} 
+                        alt={menuItem!.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent" />
+                      <Badge variant="gold" className="absolute top-4 left-4">
+                        Focus #{index + 1}
+                      </Badge>
+                    </div>
+                  )}
                   <CardHeader className="pb-2">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-cream-dark flex items-center justify-center">
-                          <span className="text-2xl">{category?.icon || '🍽️'}</span>
-                        </div>
+                        {!dishImage && (
+                          <div className="w-12 h-12 rounded-full bg-cream-dark flex items-center justify-center">
+                            <span className="text-2xl">{category?.icon || '🍽️'}</span>
+                          </div>
+                        )}
                         <div>
-                          <Badge variant="gold" className="mb-1">
-                            Focus #{index + 1}
-                          </Badge>
+                          {!dishImage && (
+                            <Badge variant="gold" className="mb-1">
+                              Focus #{index + 1}
+                            </Badge>
+                          )}
                           <CardTitle className="text-2xl">
                             {menuItem!.name}
                           </CardTitle>
@@ -95,11 +114,13 @@ export default function DailyFocusPage() {
                           </p>
                         </div>
                       </div>
-                      <Button variant="burgundy-outline" size="sm" asChild>
-                        <Link to={`/flashcards?item=${menuItem!.id}`}>
-                          <CreditCard className="w-4 h-4 mr-2" />
-                          Study
-                        </Link>
+                      <Button 
+                        variant="burgundy-outline" 
+                        size="sm" 
+                        onClick={() => navigate(`/flashcards?item=${menuItem!.id}`)}
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Study
                       </Button>
                     </div>
                   </CardHeader>
@@ -173,16 +194,20 @@ export default function DailyFocusPage() {
             Ready to test your knowledge?
           </p>
           <div className="flex gap-4 justify-center">
-            <Button variant="burgundy" size="lg" asChild>
-              <Link to="/quiz">
-                Start Quiz
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
+            <Button 
+              variant="burgundy" 
+              size="lg" 
+              onClick={() => navigate('/quiz')}
+            >
+              Start Quiz
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link to="/flashcards">
-                Study All Cards
-              </Link>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              onClick={() => navigate('/flashcards')}
+            >
+              Study All Cards
             </Button>
           </div>
         </div>
