@@ -129,33 +129,33 @@ export function FlashCard({
         {/* Back: Description */}
         <div
           className={cn(
-            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-3 sm:p-4 md:p-6 flex flex-col',
+            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-2.5 sm:p-4 md:p-6 flex flex-col',
             bgClass,
             borderClass
           )}
         >
-          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-2 sm:space-y-3">
+          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1.5 sm:space-y-3">
             {/* Title */}
-            <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold text-foreground">{item.name}</h2>
-            <p className="text-copper font-medium text-xs sm:text-sm">{item.shortDescription}</p>
-            <p className="text-muted-foreground leading-relaxed text-xs sm:text-sm line-clamp-3 sm:line-clamp-none">{item.longDescription}</p>
+            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-semibold text-foreground leading-tight">{item.name}</h2>
+            <p className="text-copper font-medium text-[11px] sm:text-sm leading-snug">{item.shortDescription}</p>
+            <p className="text-muted-foreground leading-snug text-[11px] sm:text-sm line-clamp-2 sm:line-clamp-none">{item.longDescription}</p>
 
             {/* Ingredients */}
             <div>
-              <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-jade mb-0.5">Ingredients</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">{item.ingredientsText}</p>
+              <h3 className="text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-jade mb-0.5">Ingredients</h3>
+              <p className="text-[11px] sm:text-sm text-muted-foreground leading-snug line-clamp-2 sm:line-clamp-none">{item.ingredientsText}</p>
             </div>
 
             {/* Selling Points */}
             <div>
-              <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-copper mb-0.5">Selling Points</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">{item.sellingPointsText}</p>
+              <h3 className="text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-copper mb-0.5">Selling Points</h3>
+              <p className="text-[11px] sm:text-sm text-muted-foreground leading-snug line-clamp-2 sm:line-clamp-none">{item.sellingPointsText}</p>
             </div>
 
             {/* Allergens */}
             {showAllergens && item.allergens.length > 0 && (
               <div>
-                <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-destructive mb-0.5">Allergens</h3>
+                <h3 className="text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-destructive mb-0.5">Allergens</h3>
                 <AllergenList allergens={item.allergens} size="sm" />
               </div>
             )}
@@ -170,7 +170,7 @@ export function FlashCard({
           </div>
 
           {/* Flip hint */}
-          <p className="text-[10px] sm:text-xs text-center text-muted-foreground mt-2">
+          <p className="text-[9px] sm:text-xs text-center text-muted-foreground mt-1.5 sm:mt-2">
             Swipe down to flip back
           </p>
         </div>
