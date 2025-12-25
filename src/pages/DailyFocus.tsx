@@ -1,12 +1,13 @@
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AllergenList } from '@/components/AllergenBadge';
-import { dailyFocus, getMenuItemById, getCategoryById } from '@/data/menuData';
+import { dailyFocus, getMenuItemById, getCategoryById, menuItems } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
-import { Star, CreditCard, Calendar, ArrowRight } from 'lucide-react';
+import { Star, CreditCard, Calendar, ArrowRight, RefreshCw } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 const container = {
   hidden: { opacity: 0 },
@@ -23,9 +24,25 @@ const item = {
 
 export default function DailyFocusPage() {
   const navigate = useNavigate();
-  const focusItems = dailyFocus.menuItemIds
+  const [refreshKey, setRefreshKey] = useState(0);
+  
+  // Get random focus items on refresh
+  const getRandomFocusItems = useCallback(() => {
+    const publishedItems = menuItems.filter(item => item.isPublished);
+    const shuffled = [...publishedItems].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 5);
+  }, []);
+  
+  const [customFocusItems, setCustomFocusItems] = useState<typeof menuItems | null>(null);
+  
+  const focusItems = customFocusItems || dailyFocus.menuItemIds
     .map(id => getMenuItemById(id))
     .filter(Boolean);
+
+  const handleRefresh = () => {
+    setCustomFocusItems(getRandomFocusItems());
+    setRefreshKey(prev => prev + 1);
+  };
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -45,9 +62,20 @@ export default function DailyFocusPage() {
             <div className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
               <Star className="w-8 h-8 text-gold" />
             </div>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold mb-2">
-              Today's Focus
-            </h1>
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <h1 className="font-serif text-3xl md:text-4xl font-bold">
+                Today's Focus
+              </h1>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={handleRefresh}
+                className="h-10 w-10 rounded-full hover:bg-gold/20 active:scale-95 transition-transform"
+                aria-label="Refresh daily focus items"
+              >
+                <RefreshCw className="w-5 h-5 text-gold" />
+              </Button>
+            </div>
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <Calendar className="w-4 h-4" />
               <span>{today}</span>
