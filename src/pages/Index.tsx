@@ -87,27 +87,27 @@ export default function Index() {
           <img 
             src={bayfrontSketch} 
             alt="Bayfront Place Naples Sketch" 
-            className="w-full h-full object-cover opacity-60"
+            className="w-full h-full object-cover opacity-25"
           />
           {/* Subtle gradient overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/30 via-transparent to-cream/40" />
         </div>
         
         <motion.div 
           className="relative z-10 text-center px-6"
           style={{ opacity: heroOpacity }}
         >
-          <motion.p 
-            className="text-charcoal text-sm md:text-base font-bold tracking-[0.4em] uppercase mb-6 drop-shadow-sm"
-            initial={{ opacity: 0, y: 20 }}
+          <motion.h1 
+            className="text-charcoal text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight mb-4"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 1, delay: 0.2 }}
           >
             Welcome to
-          </motion.p>
+          </motion.h1>
           
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
             className="mb-6"
