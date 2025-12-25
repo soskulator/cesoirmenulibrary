@@ -67,6 +67,8 @@ export default function CategoriesPage() {
               className="w-full h-full object-cover opacity-[0.08]"
             />
           )}
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/40 to-cream/90" />
         </div>
 
         <div className="min-h-screen">
@@ -244,6 +246,8 @@ export default function CategoriesPage() {
                             alt=""
                             className="w-32 h-32 md:w-40 md:h-40 object-contain opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500"
                           />
+                          {/* Gradient Overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-transparent to-white/40" />
                         </div>
                       )}
 
