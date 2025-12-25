@@ -129,48 +129,49 @@ export function FlashCard({
         {/* Back: Description */}
         <div
           className={cn(
-            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-3 sm:p-4 flex flex-col',
+            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-3 sm:p-4 md:p-6 flex flex-col',
             bgClass,
             borderClass
           )}
         >
-          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1.5 sm:space-y-2">
+          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-2 sm:space-y-3">
             {/* Title */}
-            <h2 className="font-serif text-base sm:text-lg font-semibold text-foreground leading-tight">{item.name}</h2>
-            <p className="text-copper font-medium text-[11px] sm:text-xs leading-tight">{item.shortDescription}</p>
+            <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold text-foreground">{item.name}</h2>
+            <p className="text-copper font-medium text-xs sm:text-sm">{item.shortDescription}</p>
+            <p className="text-muted-foreground leading-relaxed text-xs sm:text-sm line-clamp-3 sm:line-clamp-none">{item.longDescription}</p>
 
-            {/* Key Ingredients - Condensed */}
+            {/* Ingredients */}
             <div>
-              <h3 className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-jade mb-0.5">Key Ingredients</h3>
-              <p className="text-[11px] sm:text-xs text-muted-foreground leading-snug line-clamp-2">
-                {item.ingredientsText.split(',').slice(0, 5).join(', ')}
-              </p>
+              <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-jade mb-0.5">Ingredients</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">{item.ingredientsText}</p>
             </div>
 
-            {/* Selling Points - Bullet format */}
+            {/* Selling Points */}
             <div>
-              <h3 className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-copper mb-0.5">Why It's Special</h3>
-              <p className="text-[11px] sm:text-xs text-muted-foreground leading-snug">
-                {item.sellingPointsText.split('•').filter(Boolean).slice(0, 3).join(' • ').trim()}
-              </p>
+              <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-copper mb-0.5">Selling Points</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">{item.sellingPointsText}</p>
             </div>
 
-            {/* Allergens - Compact inline */}
+            {/* Allergens */}
             {showAllergens && item.allergens.length > 0 && (
-              <div className="pt-1 border-t border-border/30">
-                <div className="flex items-center gap-1 flex-wrap">
-                  <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-destructive">⚠</span>
-                  <span className="text-[10px] sm:text-[11px] text-muted-foreground">
-                    {item.allergens.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(', ')}
-                  </span>
-                </div>
+              <div>
+                <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-destructive mb-0.5">Allergens</h3>
+                <AllergenList allergens={item.allergens} size="sm" />
+              </div>
+            )}
+
+            {/* Prep Notes */}
+            {showPrepNotes && item.prepNotes && (
+              <div className="hidden sm:block">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Prep Notes</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground bg-muted/50 p-2 rounded-lg">{item.prepNotes}</p>
               </div>
             )}
           </div>
 
           {/* Flip hint */}
-          <p className="text-[9px] sm:text-[10px] text-center text-muted-foreground/70 mt-1">
-            ↓ flip back
+          <p className="text-[10px] sm:text-xs text-center text-muted-foreground mt-2">
+            Swipe down to flip back
           </p>
         </div>
       </div>
