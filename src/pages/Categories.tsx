@@ -1,26 +1,28 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { AllergenList } from '@/components/AllergenBadge';
 import { categories, menuItems, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
-import { ArrowLeft, ArrowRight, CreditCard } from 'lucide-react';
+import { ArrowLeft, CreditCard, ChevronRight } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.05 },
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 20 },
+  show: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" as const }
+  },
 };
 
 export default function CategoriesPage() {
@@ -34,9 +36,10 @@ export default function CategoriesPage() {
     if (!category) {
       return (
         <Layout>
-          <div className="container py-12 text-center">
-            <h1 className="font-serif text-2xl">Category not found</h1>
-            <Button variant="link" asChild className="mt-4">
+          <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
+            <span className="text-6xl mb-4">🍽️</span>
+            <h1 className="font-serif text-2xl text-charcoal mb-2">Category not found</h1>
+            <Button variant="link" asChild className="text-copper">
               <Link to="/categories">Back to categories</Link>
             </Button>
           </div>
@@ -46,163 +49,230 @@ export default function CategoriesPage() {
 
     return (
       <Layout>
-        {/* Background Image */}
-        <div className="fixed inset-0 -z-10">
+        {/* Background */}
+        <div className="fixed inset-0 -z-10 bg-cream">
           <img 
             src={bayfrontSketch} 
-            alt="Bayfront Place Naples Sketch" 
-            className="w-full h-full object-cover opacity-10"
+            alt="" 
+            className="w-full h-full object-cover opacity-[0.08]"
           />
         </div>
-        <div className="container py-8">
-          {/* Back button */}
-          <Button variant="ghost" size="sm" asChild className="mb-6">
-            <Link to="/categories">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              All Categories
-            </Link>
-          </Button>
 
-          {/* Category Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-4 mb-2">
-              <span className="text-5xl">{category.icon}</span>
-              <div>
-                <h1 className="font-serif text-3xl md:text-4xl font-bold">
-                  {category.name}
-                </h1>
-                <p className="text-lg text-muted-foreground italic">
-                  {category.nameFrench}
-                </p>
+        <div className="min-h-screen">
+          {/* Elegant Header */}
+          <motion.header 
+            className="pt-6 pb-12 px-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="max-w-4xl mx-auto">
+              <Link 
+                to="/categories" 
+                className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal transition-colors mb-8 group"
+              >
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                <span className="text-sm tracking-wide uppercase">All Categories</span>
+              </Link>
+
+              <div className="flex items-start gap-6">
+                <motion.span 
+                  className="text-6xl md:text-7xl"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
+                >
+                  {category.icon}
+                </motion.span>
+                <div className="flex-1">
+                  <h1 className="font-serif text-3xl md:text-5xl font-bold text-charcoal tracking-tight">
+                    {category.name}
+                  </h1>
+                  <p className="text-xl md:text-2xl text-charcoal/50 font-serif italic mt-1">
+                    {category.nameFrench}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 mt-4">
+                    <span className="text-sm text-charcoal/60 tracking-wide">
+                      {items.length} dishes
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-charcoal/30" />
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      asChild
+                      className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2"
+                    >
+                      <Link to={`/flashcards?category=${categoryId}`}>
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Study Flashcards
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex gap-2 mt-4">
-              <Badge variant="secondary">{items.length} items</Badge>
-              <Button variant="burgundy" size="sm" asChild>
-                <Link to={`/flashcards?category=${categoryId}`}>
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Study Flashcards
-                </Link>
-              </Button>
-            </div>
-          </div>
+          </motion.header>
 
-          {/* Menu Items Grid */}
+          {/* Menu Items - Clean List */}
           <motion.div
             variants={container}
             initial="hidden"
             animate="show"
-            className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+            className="px-6 pb-24"
           >
-            {items.map((menuItem) => {
-              const dishImage = getDishImage(menuItem.id);
-              return (
-                <motion.div key={menuItem.id} variants={item}>
-                  <Link to={`/flashcards?item=${menuItem.id}`}>
-                    <Card className="group h-full hover:shadow-card-hover transition-all hover:-translate-y-1">
-                      <CardContent className="p-5">
-                        <div className="flex gap-4">
-                          <div className="w-16 h-16 rounded-lg bg-cream-dark flex items-center justify-center shrink-0 overflow-hidden">
-                            {dishImage ? (
-                              <img 
-                                src={dishImage} 
-                                alt={menuItem.name}
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                              />
-                            ) : (
-                              <span className="text-2xl">🍽️</span>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-serif text-lg font-semibold group-hover:text-burgundy transition-colors truncate">
-                              {menuItem.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                              {menuItem.shortDescription}
-                            </p>
-                            {menuItem.allergens.length > 0 && (
+            <div className="max-w-4xl mx-auto space-y-3">
+              {items.map((menuItem) => {
+                const dishImage = getDishImage(menuItem.id);
+                return (
+                  <motion.div key={menuItem.id} variants={item}>
+                    <Link 
+                      to={`/flashcards?item=${menuItem.id}`}
+                      className="group block"
+                    >
+                      <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300">
+                        {/* Image */}
+                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 bg-cream">
+                          {dishImage ? (
+                            <img 
+                              src={dishImage} 
+                              alt={menuItem.name}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-2xl">
+                              🍽️
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-serif text-lg md:text-xl font-semibold text-charcoal group-hover:text-copper transition-colors">
+                            {menuItem.name}
+                          </h3>
+                          <p className="text-sm text-charcoal/60 line-clamp-1 mt-0.5">
+                            {menuItem.shortDescription}
+                          </p>
+                          {menuItem.allergens.length > 0 && (
+                            <div className="mt-2">
                               <AllergenList 
                                 allergens={menuItem.allergens} 
                                 size="sm" 
                                 showIcons={false}
                               />
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </motion.div>
-              );
-            })}
+
+                        {/* Arrow */}
+                        <ChevronRight className="w-5 h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all shrink-0" />
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
           </motion.div>
         </div>
       </Layout>
     );
   }
 
-  // Show all categories
+  // Show all categories - Artistic Grid
   return (
     <Layout>
-      {/* Background Image */}
-      <div className="fixed inset-0 -z-10">
+      {/* Background */}
+      <div className="fixed inset-0 -z-10 bg-cream">
         <img 
           src={bayfrontSketch} 
-          alt="Bayfront Place Naples Sketch" 
-          className="w-full h-full object-cover opacity-10"
+          alt="" 
+          className="w-full h-full object-cover opacity-[0.08]"
         />
       </div>
-      <div className="container py-8">
-        <div className="mb-8">
-          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-2">
-            Menu Categories
-          </h1>
-          <p className="text-muted-foreground">
-            Explore our menu by category
-          </p>
-        </div>
 
+      <div className="min-h-screen">
+        {/* Minimal Header */}
+        <motion.header 
+          className="pt-12 md:pt-20 pb-12 px-6 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="font-serif text-4xl md:text-6xl font-bold text-charcoal tracking-tight">
+            The Menu
+          </h1>
+          <p className="text-charcoal/50 mt-3 text-lg font-serif italic">
+            Explore our culinary categories
+          </p>
+        </motion.header>
+
+        {/* Categories Grid - Artistic Layout */}
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          className="px-6 pb-24"
         >
-          {categories.map((category) => {
-            const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
-            return (
-              <motion.div key={category.id} variants={item}>
-                <Link to={`/categories/${category.id}`}>
-                  <Card className="group h-full hover:shadow-card-hover transition-all hover:-translate-y-1">
-                    <CardContent className="p-8">
-                      <div className="flex flex-col items-center text-center">
-                        <span className="text-6xl mb-4 group-hover:scale-110 transition-transform">
-                          {category.icon}
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {categories.map((category, index) => {
+              const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
+              const isLarge = index === 0 || index === 5;
+              
+              return (
+                <motion.div 
+                  key={category.id} 
+                  variants={item}
+                  className={isLarge ? 'col-span-2 md:col-span-1' : ''}
+                >
+                  <Link 
+                    to={`/categories/${category.id}`}
+                    className="group block h-full"
+                  >
+                    <div className={`
+                      relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-sm 
+                      border border-charcoal/5 hover:border-charcoal/10
+                      hover:bg-white hover:shadow-xl
+                      transition-all duration-500
+                      ${isLarge ? 'p-8 md:p-10' : 'p-6 md:p-8'}
+                    `}>
+                      {/* Icon */}
+                      <motion.span 
+                        className={`
+                          block mb-4 
+                          ${isLarge ? 'text-6xl md:text-7xl' : 'text-4xl md:text-5xl'}
+                          group-hover:scale-110 transition-transform duration-500
+                        `}
+                      >
+                        {category.icon}
+                      </motion.span>
+
+                      {/* Text */}
+                      <h2 className={`
+                        font-serif font-bold text-charcoal group-hover:text-copper transition-colors duration-300
+                        ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
+                      `}>
+                        {category.name}
+                      </h2>
+                      <p className="text-charcoal/40 font-serif italic mt-1 text-sm md:text-base">
+                        {category.nameFrench}
+                      </p>
+
+                      {/* Count */}
+                      <div className="mt-4 flex items-center gap-2">
+                        <span className="text-xs text-charcoal/50 tracking-widest uppercase">
+                          {itemCount} dishes
                         </span>
-                        <h2 className="font-serif text-2xl font-semibold group-hover:text-burgundy transition-colors">
-                          {category.name}
-                        </h2>
-                        <p className="text-muted-foreground italic mb-3">
-                          {category.nameFrench}
-                        </p>
-                        <Badge variant="secondary">
-                          {itemCount} items
-                        </Badge>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          View Items
-                          <ArrowRight className="w-4 h-4 ml-1" />
-                        </Button>
+                        <ChevronRight className="w-4 h-4 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all" />
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            );
-          })}
+
+                      {/* Decorative Corner */}
+                      <div className="absolute -bottom-8 -right-8 w-24 h-24 rounded-full bg-copper/5 group-hover:bg-copper/10 transition-colors duration-500" />
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
         </motion.div>
       </div>
     </Layout>
