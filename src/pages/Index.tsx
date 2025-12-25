@@ -12,8 +12,10 @@ import {
   AlertTriangle,
   ArrowRight,
   ArrowDown,
-  MapPin
+  MapPin,
+  LogIn
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
 import bayfrontSketch from '@/assets/bayfront-sketch-white.jpg';
 import logoImage from '@/assets/cesoir-logo.png';
@@ -66,6 +68,7 @@ const item = {
 };
 
 export default function Index() {
+  const { user } = useAuth();
   const focusItems = dailyFocus.menuItemIds
     .map(id => getMenuItemById(id))
     .filter(Boolean);
@@ -97,19 +100,10 @@ export default function Index() {
           className="relative z-10 text-center px-6"
           style={{ opacity: heroOpacity }}
         >
-          <motion.h1 
-            className="text-charcoal text-4xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight mb-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-          >
-            Welcome to
-          </motion.h1>
-          
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            transition={{ duration: 1, delay: 0.3 }}
             className="mb-6"
           >
             <img 
@@ -120,19 +114,19 @@ export default function Index() {
           </motion.div>
           
           <motion.p
-            className="text-charcoal/80 text-lg md:text-xl font-serif italic mb-8 max-w-md mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
+            className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-semibold tracking-wide mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
           >
-            French Mediterranean Cuisine
+            Menu Library
           </motion.p>
           
           <motion.div 
             className="flex items-center justify-center gap-2 text-charcoal mb-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.6 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
           >
             <MapPin className="w-4 h-4" />
             <span className="text-sm font-semibold tracking-widest uppercase">Naples, Florida</span>
@@ -142,7 +136,7 @@ export default function Index() {
             className="flex flex-col sm:flex-row gap-4 justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
+            transition={{ delay: 1, duration: 0.6 }}
           >
             <Button 
               size="lg" 
@@ -162,6 +156,18 @@ export default function Index() {
                 Explore Menu
               </Link>
             </Button>
+            {!user && (
+              <Button 
+                size="lg" 
+                className="bg-white text-charcoal border border-charcoal/20 font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-cream hover:shadow-xl transition-all duration-300"
+                asChild
+              >
+                <Link to="/auth">
+                  <LogIn className="w-5 h-5 mr-2" />
+                  Login
+                </Link>
+              </Button>
+            )}
           </motion.div>
         </motion.div>
         
