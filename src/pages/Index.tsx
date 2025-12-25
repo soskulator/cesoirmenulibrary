@@ -80,6 +80,63 @@ export default function Index() {
 
   return (
     <Layout>
+      {/* SVG Filter Definitions for Sketch Effect */}
+      <svg className="absolute w-0 h-0" aria-hidden="true">
+        <defs>
+          <filter id="pencilSketch" x="-10%" y="-10%" width="120%" height="120%">
+            {/* Convert to grayscale base */}
+            <feColorMatrix type="saturate" values="0.15" result="desaturated" />
+            
+            {/* Edge detection using convolution */}
+            <feConvolveMatrix
+              in="desaturated"
+              order="3"
+              kernelMatrix="0 -1 0 -1 5 -1 0 -1 0"
+              result="edges"
+            />
+            
+            {/* Add paper grain texture */}
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.04"
+              numOctaves="5"
+              result="noise"
+            />
+            
+            {/* Displacement for hand-drawn wobble */}
+            <feDisplacementMap
+              in="edges"
+              in2="noise"
+              scale="2"
+              xChannelSelector="R"
+              yChannelSelector="G"
+              result="displaced"
+            />
+            
+            {/* Blend noise with the image for texture */}
+            <feBlend in="displaced" in2="noise" mode="multiply" result="textured" />
+            
+            {/* Boost contrast for sketch look */}
+            <feComponentTransfer in="textured" result="contrast">
+              <feFuncR type="linear" slope="1.3" intercept="-0.1" />
+              <feFuncG type="linear" slope="1.3" intercept="-0.1" />
+              <feFuncB type="linear" slope="1.3" intercept="-0.1" />
+            </feComponentTransfer>
+            
+            {/* Add warm sepia tone */}
+            <feColorMatrix
+              in="contrast"
+              type="matrix"
+              values="0.95 0.15 0.05 0 0.02
+                      0.10 0.85 0.05 0 0.01
+                      0.05 0.10 0.75 0 0.00
+                      0    0    0    1 0"
+              result="sepia"
+            />
+          </filter>
+        </defs>
+      </svg>
+
       {/* Hero Section - Full Screen Minimalist */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Background with Parallax and Sketch Effect */}
@@ -90,14 +147,15 @@ export default function Index() {
           <img 
             src={bayfrontImage} 
             alt="Bayfront Place Naples" 
-            className="w-full h-full object-cover sepia-[0.3] saturate-[0.7] contrast-[1.1]"
+            className="w-full h-full object-cover"
+            style={{ filter: 'url(#pencilSketch)' }}
           />
           {/* Warm color overlay to blend with copper/cream palette */}
-          <div className="absolute inset-0 bg-gradient-to-br from-copper/30 via-charcoal/60 to-jade/20" />
-          {/* Sketch/artistic texture overlay */}
-          <div className="absolute inset-0 bg-charcoal/50 mix-blend-multiply" />
-          {/* Subtle grain texture for sketch feel */}
-          <div className="absolute inset-0 bg-texture opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-br from-copper/25 via-charcoal/40 to-jade/15" />
+          {/* Vignette effect */}
+          <div className="absolute inset-0" style={{
+            background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, hsl(var(--charcoal) / 0.6) 100%)'
+          }} />
         </motion.div>
         
         {/* Main Content */}
