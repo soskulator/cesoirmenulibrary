@@ -11,16 +11,13 @@ import {
   AlertTriangle,
   Menu,
   X,
-  Instagram,
-  Facebook,
   LogIn,
-  LogOut,
-  User
+  LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import cesoirLogo from '@/assets/cesoir-logo.png';
-import { OpenTableLogo } from './OpenTableLogo';
+
 import { useAuth } from '@/contexts/AuthContext';
 import {
   DropdownMenu,
@@ -68,37 +65,6 @@ export function Header() {
             <p className="text-xs text-muted-foreground">Staff Training</p>
           </div>
         </Link>
-
-        {/* Social Links - Desktop */}
-        <div className="hidden md:flex items-center gap-3">
-          <a 
-            href="https://www.instagram.com/cesoirnaples" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-copper transition-colors"
-            aria-label="Instagram"
-          >
-            <Instagram className="w-5 h-5" />
-          </a>
-          <a 
-            href="https://www.facebook.com/cesoirnaples" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-copper transition-colors"
-            aria-label="Facebook"
-          >
-            <Facebook className="w-5 h-5" />
-          </a>
-          <a 
-            href="https://www.opentable.com/r/ce-soir-naples" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-copper transition-colors"
-            aria-label="OpenTable Reviews"
-          >
-            <OpenTableLogo className="w-5 h-5" />
-          </a>
-        </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
@@ -298,37 +264,6 @@ export function Header() {
             </>
           )}
           
-          {/* Social Links - Mobile */}
-          <div className="h-px bg-border my-2" />
-          <div className="flex items-center justify-center gap-6 py-3">
-            <a 
-              href="https://www.instagram.com/cesoirnaples" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-copper transition-colors"
-              aria-label="Instagram"
-            >
-              <Instagram className="w-6 h-6" />
-            </a>
-            <a 
-              href="https://www.facebook.com/cesoirnaples" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-copper transition-colors"
-              aria-label="Facebook"
-            >
-              <Facebook className="w-6 h-6" />
-            </a>
-            <a 
-              href="https://www.opentable.com/r/ce-soir-naples" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-copper transition-colors"
-              aria-label="OpenTable Reviews"
-            >
-              <OpenTableLogo className="w-6 h-6" />
-            </a>
-          </div>
         </nav>
       </motion.div>
     </header>
