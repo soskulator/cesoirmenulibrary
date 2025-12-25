@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AllergenList } from '@/components/AllergenBadge';
 import { categories, menuItems, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
+import { getDishImage } from '@/data/dishImages';
 import { ArrowLeft, ArrowRight, CreditCard } from 'lucide-react';
 
 const container = {
@@ -84,36 +85,47 @@ export default function CategoriesPage() {
             animate="show"
             className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
           >
-            {items.map((menuItem) => (
-              <motion.div key={menuItem.id} variants={item}>
-                <Link to={`/flashcards?item=${menuItem.id}`}>
-                  <Card className="group h-full hover:shadow-card-hover transition-all hover:-translate-y-1">
-                    <CardContent className="p-5">
-                      <div className="flex gap-4">
-                        <div className="w-16 h-16 rounded-lg bg-cream-dark flex items-center justify-center shrink-0">
-                          <span className="text-2xl">🍽️</span>
+            {items.map((menuItem) => {
+              const dishImage = getDishImage(menuItem.id);
+              return (
+                <motion.div key={menuItem.id} variants={item}>
+                  <Link to={`/flashcards?item=${menuItem.id}`}>
+                    <Card className="group h-full hover:shadow-card-hover transition-all hover:-translate-y-1">
+                      <CardContent className="p-5">
+                        <div className="flex gap-4">
+                          <div className="w-16 h-16 rounded-lg bg-cream-dark flex items-center justify-center shrink-0 overflow-hidden">
+                            {dishImage ? (
+                              <img 
+                                src={dishImage} 
+                                alt={menuItem.name}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              />
+                            ) : (
+                              <span className="text-2xl">🍽️</span>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-serif text-lg font-semibold group-hover:text-burgundy transition-colors truncate">
+                              {menuItem.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                              {menuItem.shortDescription}
+                            </p>
+                            {menuItem.allergens.length > 0 && (
+                              <AllergenList 
+                                allergens={menuItem.allergens} 
+                                size="sm" 
+                                showIcons={false}
+                              />
+                            )}
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-serif text-lg font-semibold group-hover:text-burgundy transition-colors truncate">
-                            {menuItem.name}
-                          </h3>
-                          <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                            {menuItem.shortDescription}
-                          </p>
-                          {menuItem.allergens.length > 0 && (
-                            <AllergenList 
-                              allergens={menuItem.allergens} 
-                              size="sm" 
-                              showIcons={false}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </Layout>
