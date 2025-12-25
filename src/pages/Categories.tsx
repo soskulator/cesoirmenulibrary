@@ -219,25 +219,16 @@ export default function CategoriesPage() {
           <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {categories.map((category, index) => {
               const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
-              const isLarge = index === 0 || index === 5;
-              
               return (
                 <motion.div 
                   key={category.id} 
                   variants={item}
-                  className={isLarge ? 'col-span-2 md:col-span-1' : ''}
                 >
                   <Link 
                     to={`/categories/${category.id}`}
                     className="group block h-full"
                   >
-                    <div className={`
-                      relative overflow-hidden rounded-3xl bg-white/40 backdrop-blur-sm 
-                      border border-charcoal/5 hover:border-charcoal/10
-                      hover:bg-white/60 hover:shadow-xl
-                      transition-all duration-500
-                      ${isLarge ? 'p-8 md:p-10' : 'p-6 md:p-8'}
-                    `}>
+                    <div className="relative overflow-hidden rounded-3xl bg-white/30 backdrop-blur-sm border border-charcoal/5 hover:border-charcoal/10 hover:bg-white/50 hover:shadow-xl transition-all duration-500 p-6 md:p-8 h-32 md:h-40">
                       {/* Background Icon - Full Coverage */}
                       {getCategoryIcon(category.id) && (
                         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -253,18 +244,15 @@ export default function CategoriesPage() {
 
                       {/* Text */}
                       <div className="relative z-10">
-                        <h2 className={`
-                          font-serif font-bold text-charcoal group-hover:text-copper transition-colors duration-300
-                          ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
-                        `}>
+                        <h2 className="font-serif font-bold text-charcoal group-hover:text-copper transition-colors duration-300 text-xl md:text-2xl">
                           {category.name}
                         </h2>
-                        <p className="text-charcoal/40 font-serif italic mt-1 text-sm md:text-base">
+                        <p className="text-charcoal/40 font-serif italic mt-1 text-sm">
                           {category.nameFrench}
                         </p>
 
                         {/* Count */}
-                        <div className="mt-4 flex items-center gap-2">
+                        <div className="mt-3 flex items-center gap-2">
                           <span className="text-xs text-charcoal/50 tracking-widest uppercase">
                             {itemCount} dishes
                           </span>
