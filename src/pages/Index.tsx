@@ -93,13 +93,12 @@ export default function Index() {
           <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
         </div>
         
-        {/* Main Content */}
         <motion.div 
           className="relative z-10 text-center px-6"
           style={{ opacity: heroOpacity }}
         >
           <motion.p 
-            className="text-charcoal/70 text-lg md:text-xl font-light tracking-[0.3em] uppercase mb-8"
+            className="text-charcoal text-sm md:text-base font-bold tracking-[0.4em] uppercase mb-6 drop-shadow-sm"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -111,23 +110,32 @@ export default function Index() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="mb-10"
+            className="mb-6"
           >
             <img 
               src={logoImage} 
               alt="Ce Soir" 
-              className="h-24 md:h-32 lg:h-40 mx-auto"
+              className="h-28 md:h-36 lg:h-44 mx-auto drop-shadow-lg"
             />
           </motion.div>
           
+          <motion.p
+            className="text-charcoal/80 text-lg md:text-xl font-serif italic mb-8 max-w-md mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
+            French Mediterranean Cuisine
+          </motion.p>
+          
           <motion.div 
-            className="flex items-center justify-center gap-2 text-charcoal/60 mb-12"
+            className="flex items-center justify-center gap-2 text-charcoal mb-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.6 }}
           >
             <MapPin className="w-4 h-4" />
-            <span className="text-sm tracking-widest uppercase">Naples, Florida</span>
+            <span className="text-sm font-semibold tracking-widest uppercase">Naples, Florida</span>
           </motion.div>
           
           <motion.div 
