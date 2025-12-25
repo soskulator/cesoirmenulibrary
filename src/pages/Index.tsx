@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,12 @@ import {
   Star, 
   AlertTriangle,
   ArrowRight,
-  ChefHat,
+  ArrowDown,
   MapPin
 } from 'lucide-react';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
 import bayfrontImage from '@/assets/bayfront-naples.jpg';
+import logoImage from '@/assets/cesoir-logo.png';
 
 const features = [
   {
@@ -23,28 +24,24 @@ const features = [
     title: 'Browse Menu',
     description: 'Explore all categories and menu items',
     path: '/categories',
-    color: 'bg-burgundy/10 text-burgundy',
   },
   {
     icon: CreditCard,
     title: 'Flashcards',
     description: 'Study with interactive flip cards',
     path: '/flashcards',
-    color: 'bg-gold/10 text-gold',
   },
   {
     icon: HelpCircle,
     title: 'Quiz Mode',
     description: 'Test your knowledge',
     path: '/quiz',
-    color: 'bg-sage/10 text-sage',
   },
   {
     icon: AlertTriangle,
     title: 'Allergy Check',
     description: 'Quick allergen reference',
     path: '/allergy-check',
-    color: 'bg-destructive/10 text-destructive',
   },
 ];
 
@@ -53,14 +50,19 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.15,
+      delayChildren: 0.3,
     },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 30 },
+  show: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6 }
+  },
 };
 
 export default function Index() {
@@ -68,248 +70,301 @@ export default function Index() {
     .map(id => getMenuItemById(id))
     .filter(Boolean);
 
+  const { scrollY } = useScroll();
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const heroScale = useTransform(scrollY, [0, 400], [1, 1.1]);
+
+  const scrollToContent = () => {
+    window.scrollTo({ top: window.innerHeight * 0.85, behavior: 'smooth' });
+  };
+
   return (
     <Layout>
-      {/* Hero Section with Bayfront Naples */}
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-        {/* Background Image with Overlay Effects */}
-        <div className="absolute inset-0">
+      {/* Hero Section - Full Screen Minimalist */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Background with Parallax */}
+        <motion.div 
+          className="absolute inset-0"
+          style={{ scale: heroScale }}
+        >
           <img 
             src={bayfrontImage} 
             alt="Bayfront Place Naples" 
             className="w-full h-full object-cover"
           />
-          {/* Dark overlay with gradient for readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/80 via-charcoal/60 to-charcoal/90" />
-          {/* Copper/Rose-gold accent overlay */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-copper/20 via-transparent to-rose-gold/10" />
-          {/* Subtle texture overlay */}
-          <div className="absolute inset-0 bg-texture opacity-30" />
-        </div>
+          <div className="absolute inset-0 bg-charcoal/70" />
+        </motion.div>
         
-        <div className="container relative z-10 py-20 md:py-32">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              <Badge className="mb-6 bg-copper/20 text-cream border-copper/40 backdrop-blur-sm">
-                <ChefHat className="w-3 h-3 mr-1" />
-                Staff Training Portal
-              </Badge>
-            </motion.div>
-            
-            <motion.h1 
-              className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-cream mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              Welcome to{' '}
-              <span className="text-gradient-gold">Ce Soir</span>
-            </motion.h1>
-            
-            <motion.p 
-              className="text-lg md:text-xl text-cream/80 mb-4 font-light tracking-wide"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
-              Master the menu, delight the guests. Your comprehensive guide to every dish, 
-              ingredient, and story behind our French bistro cuisine.
-            </motion.p>
-            
-            <motion.div 
-              className="flex items-center justify-center gap-2 text-cream/60 mb-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-            >
-              <MapPin className="w-4 h-4 text-copper" />
-              <span className="text-sm tracking-wider">492 Bayfront Pl, 3402 · Naples, Florida</span>
-            </motion.div>
-            
-            <motion.div 
-              className="flex flex-wrap gap-4 justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-            >
-              <Button 
-                size="lg" 
-                className="bg-copper hover:bg-copper-light text-charcoal font-semibold shadow-lg hover:shadow-xl transition-all"
-                asChild
-              >
-                <Link to="/flashcards">
-                  Start Training
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="border-cream/30 text-cream hover:bg-cream/10 backdrop-blur-sm"
-                asChild
-              >
-                <Link to="/categories">
-                  Browse Menu
-                </Link>
-              </Button>
-            </motion.div>
-          </motion.div>
-        </div>
-        
-        {/* Bottom fade to blend with next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
-      </section>
-
-      {/* Daily Focus */}
-      <section className="container py-12">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+        {/* Main Content */}
+        <motion.div 
+          className="relative z-10 text-center px-6"
+          style={{ opacity: heroOpacity }}
         >
-          <div className="flex items-center gap-2 mb-6">
-            <Star className="w-5 h-5 text-gold" />
-            <h2 className="font-serif text-2xl font-semibold">Today's Focus</h2>
-            <Badge variant="gold" className="ml-2">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
-            </Badge>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {focusItems.map((menuItem) => (
-              <Card key={menuItem!.id} className="group hover:shadow-card-hover transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-lg bg-cream-dark flex items-center justify-center shrink-0">
-                      <span className="text-2xl">🍽️</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-serif text-lg font-semibold truncate">
-                        {menuItem!.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {menuItem!.shortDescription}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <div className="mt-4 text-center">
-            <Button variant="link" asChild>
-              <Link to="/daily-focus">
-                View all focus items
-                <ArrowRight className="w-4 h-4 ml-1" />
+          <motion.p 
+            className="text-cream/80 text-lg md:text-xl font-light tracking-[0.3em] uppercase mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Welcome to
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="mb-10"
+          >
+            <img 
+              src={logoImage} 
+              alt="Ce Soir" 
+              className="h-24 md:h-32 lg:h-40 mx-auto drop-shadow-2xl"
+            />
+          </motion.div>
+          
+          <motion.div 
+            className="flex items-center justify-center gap-2 text-cream/50 mb-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.6 }}
+          >
+            <MapPin className="w-4 h-4" />
+            <span className="text-sm tracking-widest uppercase">Naples, Florida</span>
+          </motion.div>
+          
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.6 }}
+          >
+            <Button 
+              size="lg" 
+              className="bg-copper hover:bg-copper-light text-charcoal font-medium px-8 py-6 text-base tracking-wide"
+              asChild
+            >
+              <Link to="/flashcards">
+                Start Training
               </Link>
             </Button>
-          </div>
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="border-cream/20 text-cream hover:bg-cream/5 px-8 py-6 text-base tracking-wide"
+              asChild
+            >
+              <Link to="/categories">
+                Explore Menu
+              </Link>
+            </Button>
+          </motion.div>
         </motion.div>
+        
+        {/* Scroll Indicator */}
+        <motion.button
+          onClick={scrollToContent}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-cream/40 hover:text-cream/80 transition-colors cursor-pointer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, y: [0, 8, 0] }}
+          transition={{ 
+            opacity: { delay: 2 },
+            y: { repeat: Infinity, duration: 2, ease: "easeInOut" }
+          }}
+        >
+          <ArrowDown className="w-6 h-6" />
+        </motion.button>
       </section>
 
-      {/* Quick Actions */}
-      <section className="container py-12">
-        <h2 className="font-serif text-2xl font-semibold mb-6">Quick Actions</h2>
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {features.map((feature) => (
-            <motion.div key={feature.path} variants={item}>
-              <Link to={feature.path}>
-                <Card className="group h-full hover:shadow-card-hover transition-all hover:-translate-y-1">
+      {/* Quick Actions - Minimal Grid */}
+      <section className="py-24 bg-background">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground mb-4">
+              Staff Training Portal
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Master the menu, delight the guests.
+            </p>
+          </motion.div>
+          
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {features.map((feature) => (
+              <motion.div key={feature.path} variants={item}>
+                <Link to={feature.path}>
+                  <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-500 hover:shadow-elevated">
+                    <CardContent className="p-8 text-center">
+                      <div className="w-14 h-14 rounded-2xl bg-copper/10 text-copper flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:bg-copper group-hover:text-charcoal transition-all duration-500">
+                        <feature.icon className="w-6 h-6" />
+                      </div>
+                      <h3 className="font-serif text-xl font-semibold mb-2 group-hover:text-copper transition-colors">
+                        {feature.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {feature.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Daily Focus - Clean Cards */}
+      <section className="py-24 bg-muted/30">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="flex items-center justify-between mb-12"
+          >
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Star className="w-5 h-5 text-copper" />
+                <Badge className="bg-copper/10 text-copper border-0">
+                  {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
+                </Badge>
+              </div>
+              <h2 className="font-serif text-3xl font-semibold">Today's Focus</h2>
+            </div>
+            <Button variant="ghost" className="text-copper hover:text-copper-light" asChild>
+              <Link to="/daily-focus">
+                View all
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </motion.div>
+          
+          <motion.div 
+            className="grid gap-6 md:grid-cols-3"
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
+          >
+            {focusItems.map((menuItem) => (
+              <motion.div key={menuItem!.id} variants={item}>
+                <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-500">
                   <CardContent className="p-6">
-                    <div className={`w-12 h-12 rounded-xl ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <feature.icon className="w-6 h-6" />
-                    </div>
-                    <h3 className="font-serif text-lg font-semibold mb-1">
-                      {feature.title}
+                    <h3 className="font-serif text-xl font-semibold mb-2 group-hover:text-copper transition-colors">
+                      {menuItem!.name}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {feature.description}
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {menuItem!.shortDescription}
                     </p>
                   </CardContent>
                 </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
       {/* Categories Preview */}
-      <section className="container py-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-serif text-2xl font-semibold">Menu Categories</h2>
-          <Button variant="link" asChild>
-            <Link to="/categories">
-              View all
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.slice(0, 3).map((category) => {
-            const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
-            return (
-              <Link key={category.id} to={`/categories/${category.id}`}>
-                <Card className="group hover:shadow-card-hover transition-all hover:-translate-y-1">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <span className="text-4xl">{category.icon}</span>
-                      <div>
-                        <h3 className="font-serif text-xl font-semibold group-hover:text-burgundy transition-colors">
-                          {category.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground italic">
-                          {category.nameFrench}
-                        </p>
-                        <Badge variant="secondary" className="mt-2">
-                          {itemCount} items
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+      <section className="py-24 bg-background">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="flex items-center justify-between mb-12"
+          >
+            <h2 className="font-serif text-3xl font-semibold">Menu Categories</h2>
+            <Button variant="ghost" className="text-copper hover:text-copper-light" asChild>
+              <Link to="/categories">
+                View all
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
-            );
-          })}
+            </Button>
+          </motion.div>
+          
+          <motion.div 
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
+          >
+            {categories.slice(0, 3).map((category) => {
+              const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
+              return (
+                <motion.div key={category.id} variants={item}>
+                  <Link to={`/categories/${category.id}`}>
+                    <Card className="group border-0 bg-card/50 hover:bg-card hover:shadow-elevated transition-all duration-500">
+                      <CardContent className="p-8">
+                        <div className="flex items-center gap-6">
+                          <span className="text-5xl">{category.icon}</span>
+                          <div>
+                            <h3 className="font-serif text-2xl font-semibold group-hover:text-copper transition-colors">
+                              {category.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground italic mb-2">
+                              {category.nameFrench}
+                            </p>
+                            <Badge variant="secondary" className="bg-muted">
+                              {itemCount} items
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="container py-12">
-        <Card className="bg-gradient-to-r from-burgundy to-burgundy-light text-primary-foreground overflow-hidden">
-          <CardContent className="p-8">
-            <div className="grid gap-8 md:grid-cols-4 text-center">
-              <div>
-                <p className="text-4xl font-serif font-bold">{menuItems.length}</p>
-                <p className="text-sm opacity-80">Menu Items</p>
-              </div>
-              <div>
-                <p className="text-4xl font-serif font-bold">{categories.length}</p>
-                <p className="text-sm opacity-80">Categories</p>
-              </div>
-              <div>
-                <p className="text-4xl font-serif font-bold">10+</p>
-                <p className="text-sm opacity-80">Allergens Tracked</p>
-              </div>
-              <div>
-                <p className="text-4xl font-serif font-bold">27</p>
-                <p className="text-sm opacity-80">Quiz Questions</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <section className="py-24">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+          >
+            <Card className="border-0 bg-gradient-to-r from-charcoal to-charcoal-light text-cream overflow-hidden">
+              <CardContent className="p-12">
+                <div className="grid gap-8 md:grid-cols-4 text-center">
+                  <div>
+                    <p className="text-5xl font-serif font-bold text-copper">{menuItems.length}</p>
+                    <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Menu Items</p>
+                  </div>
+                  <div>
+                    <p className="text-5xl font-serif font-bold text-copper">{categories.length}</p>
+                    <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Categories</p>
+                  </div>
+                  <div>
+                    <p className="text-5xl font-serif font-bold text-copper">10+</p>
+                    <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Allergens Tracked</p>
+                  </div>
+                  <div>
+                    <p className="text-5xl font-serif font-bold text-copper">27</p>
+                    <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Quiz Questions</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </section>
     </Layout>
   );
