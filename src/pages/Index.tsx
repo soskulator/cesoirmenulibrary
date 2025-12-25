@@ -87,10 +87,10 @@ export default function Index() {
           <img 
             src={bayfrontSketch} 
             alt="Bayfront Place Naples Sketch" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-40"
           />
           {/* Subtle gradient overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/20 via-transparent to-cream/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
         </div>
         
         {/* Main Content */}
