@@ -238,54 +238,43 @@ export default function CategoriesPage() {
                     className="group block h-full"
                   >
                     <div className={`
-                      relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-sm 
+                      relative overflow-hidden rounded-3xl bg-white/40 backdrop-blur-sm 
                       border border-charcoal/5 hover:border-charcoal/10
-                      hover:bg-white hover:shadow-xl
+                      hover:bg-white/60 hover:shadow-xl
                       transition-all duration-500
                       ${isLarge ? 'p-8 md:p-10' : 'p-6 md:p-8'}
                     `}>
-                      {/* Icon */}
-                      <motion.div 
-                        className={`
-                          mb-4 
-                          ${isLarge ? 'w-16 h-16 md:w-20 md:h-20' : 'w-12 h-12 md:w-14 md:h-14'}
-                          group-hover:scale-110 transition-transform duration-500
-                        `}
-                      >
-                        {getCategoryIcon(category.id) ? (
+                      {/* Background Icon */}
+                      {getCategoryIcon(category.id) && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                           <img 
                             src={getCategoryIcon(category.id)} 
-                            alt={category.name}
-                            className="w-full h-full object-contain drop-shadow-lg"
+                            alt=""
+                            className="w-32 h-32 md:w-40 md:h-40 object-contain opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500"
                           />
-                        ) : (
-                          <span className={`block ${isLarge ? 'text-6xl md:text-7xl' : 'text-4xl md:text-5xl'}`}>
-                            {category.icon}
-                          </span>
-                        )}
-                      </motion.div>
+                        </div>
+                      )}
 
                       {/* Text */}
-                      <h2 className={`
-                        font-serif font-bold text-charcoal group-hover:text-copper transition-colors duration-300
-                        ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
-                      `}>
-                        {category.name}
-                      </h2>
-                      <p className="text-charcoal/40 font-serif italic mt-1 text-sm md:text-base">
-                        {category.nameFrench}
-                      </p>
+                      <div className="relative z-10">
+                        <h2 className={`
+                          font-serif font-bold text-charcoal group-hover:text-copper transition-colors duration-300
+                          ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
+                        `}>
+                          {category.name}
+                        </h2>
+                        <p className="text-charcoal/40 font-serif italic mt-1 text-sm md:text-base">
+                          {category.nameFrench}
+                        </p>
 
-                      {/* Count */}
-                      <div className="mt-4 flex items-center gap-2">
-                        <span className="text-xs text-charcoal/50 tracking-widest uppercase">
-                          {itemCount} dishes
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all" />
+                        {/* Count */}
+                        <div className="mt-4 flex items-center gap-2">
+                          <span className="text-xs text-charcoal/50 tracking-widest uppercase">
+                            {itemCount} dishes
+                          </span>
+                          <ChevronRight className="w-4 h-4 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all" />
+                        </div>
                       </div>
-
-                      {/* Decorative Corner */}
-                      <div className="absolute -bottom-8 -right-8 w-24 h-24 rounded-full bg-copper/5 group-hover:bg-copper/10 transition-colors duration-500" />
                     </div>
                   </Link>
                 </motion.div>
