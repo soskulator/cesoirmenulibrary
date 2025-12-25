@@ -194,7 +194,7 @@ export default function Index() {
               Staff Training Portal
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Master the menu, delight the guests.
+              Master the menu, create the memories.
             </p>
           </motion.div>
           
