@@ -3494,6 +3494,22 @@ export const menuItems: MenuItem[] = [
   },
 ];
 
+// Process spirits to remove non-dairy allergens
+// Most distilled spirits are naturally free of common food allergens
+// Only dairy allergens are tracked for cream-based liqueurs
+const processedMenuItems = menuItems.map(item => {
+  if (item.categoryId === 'spirits') {
+    // Keep only dairy allergen if present, remove all others
+    const dairyAllergens = item.allergens.filter(a => a === 'dairy');
+    return { ...item, allergens: dairyAllergens };
+  }
+  return item;
+});
+
+// Replace menuItems with processed version
+menuItems.length = 0;
+menuItems.push(...processedMenuItems);
+
 export const dailyFocus: DailyFocus = {
   date: new Date().toISOString().split('T')[0],
   menuItemIds: ['app-1', 'ent-1', 'des-1'],

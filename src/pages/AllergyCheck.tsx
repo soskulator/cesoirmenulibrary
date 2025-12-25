@@ -16,9 +16,21 @@ import { AlertTriangle, Check, X, Printer, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
+// Filter out spirits from allergen checking - spirits only track dairy allergens
+// Most distilled spirits are naturally free of common food allergens
+const getAllergenRelevantItems = () => {
+  return menuItems.filter(item => 
+    item.isPublished && 
+    item.categoryId !== 'spirits'
+  );
+};
+
 export default function AllergyCheckPage() {
   const [selectedAllergens, setSelectedAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Get only food/cocktail items (exclude spirits)
+  const allergenRelevantItems = useMemo(() => getAllergenRelevantItems(), []);
 
   const toggleAllergen = (id: AllergenType) => {
     setSelectedAllergens(prev =>
@@ -31,20 +43,18 @@ export default function AllergyCheckPage() {
   // Items that contain ANY of the selected allergens
   const itemsWithAllergens = useMemo(() => {
     if (selectedAllergens.length === 0) return [];
-    return menuItems.filter(item =>
-      item.isPublished &&
+    return allergenRelevantItems.filter(item =>
       item.allergens.some(a => selectedAllergens.includes(a))
     );
-  }, [selectedAllergens]);
+  }, [selectedAllergens, allergenRelevantItems]);
 
   // Items that are SAFE (don't contain any selected allergens)
   const safeItems = useMemo(() => {
-    if (selectedAllergens.length === 0) return menuItems.filter(i => i.isPublished);
-    return menuItems.filter(item =>
-      item.isPublished &&
+    if (selectedAllergens.length === 0) return allergenRelevantItems;
+    return allergenRelevantItems.filter(item =>
       !item.allergens.some(a => selectedAllergens.includes(a))
     );
-  }, [selectedAllergens]);
+  }, [selectedAllergens, allergenRelevantItems]);
 
   // Search filter
   const filteredSafeItems = useMemo(() => {
@@ -256,10 +266,13 @@ export default function AllergyCheckPage() {
             <h2 className="font-serif text-xl font-semibold mb-4">
               All Items by Allergen
             </h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Note: Spirits are excluded from allergen tracking. Most distilled spirits are naturally free of common food allergens.
+            </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {allergens.map((allergen) => {
-                const itemsWithThis = menuItems.filter(i =>
-                  i.isPublished && i.allergens.includes(allergen.id)
+                const itemsWithThis = allergenRelevantItems.filter(i =>
+                  i.allergens.includes(allergen.id)
                 );
                 return (
                   <Card key={allergen.id}>
@@ -274,9 +287,12 @@ export default function AllergyCheckPage() {
                     </CardHeader>
                     <CardContent>
                       <ul className="text-sm text-muted-foreground space-y-1">
-                        {itemsWithThis.map((item) => (
+                        {itemsWithThis.slice(0, 10).map((item) => (
                           <li key={item.id}>• {item.name}</li>
                         ))}
+                        {itemsWithThis.length > 10 && (
+                          <li className="italic text-charcoal/50">...and {itemsWithThis.length - 10} more</li>
+                        )}
                         {itemsWithThis.length === 0 && (
                           <li className="italic">No items contain this allergen</li>
                         )}
