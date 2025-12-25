@@ -61,6 +61,15 @@ import spiritYamazaki12 from '@/assets/drinks/spirit-yamazaki12.jpg';
 import spiritJohnnieBlue from '@/assets/drinks/spirit-johnnie-blue.png';
 import spiritWoodford from '@/assets/drinks/spirit-woodford.jpg';
 import spiritLouisXIII from '@/assets/drinks/spirit-louisxiii.jpg';
+import spiritTitos from '@/assets/drinks/spirit-titos.jpg';
+import spiritZubrowka from '@/assets/drinks/spirit-zubrowka.png';
+import spiritBotanist from '@/assets/drinks/spirit-botanist.jpg';
+import spiritEmpress from '@/assets/drinks/spirit-empress1908.webp';
+import spiritMare from '@/assets/drinks/spirit-mare.jpg';
+import spiritSailorJerry from '@/assets/drinks/spirit-sailor-jerry.jpg';
+import spiritElDorado15 from '@/assets/drinks/spirit-eldorado15.jpg';
+import spiritBalvenie12 from '@/assets/drinks/spirit-balvenie12.png';
+import spiritLagavulin8 from '@/assets/drinks/spirit-lagavulin8.png';
 
 // Drink images - Cocktails
 import cocktailFrench75 from '@/assets/drinks/cocktail-french-75.jpg';
@@ -130,17 +139,27 @@ export const dishImages: Record<string, string> = {
 
   // Spirits
   'spirit-1': spiritGreyGoose, // Grey Goose
-  'spirit-2': spiritBelugaGold, // Beluga Gold
-  'spirit-3': spiritHendricks, // Hendrick's Gin
-  'spirit-4': spiritMonkey47, // Monkey 47 Gin
-  'spirit-5': spiritDiplomatico, // Diplomatico Reserva Exclusiva
-  'spirit-6': spiritZacapa23, // Zacapa 23
-  'spirit-7': spiritClaseAzul, // Clase Azul Reposado
-  'spirit-8': spiritMacallan18, // Macallan 18
-  'spirit-9': spiritYamazaki12, // Yamazaki 12
-  'spirit-10': spiritJohnnieBlue, // Johnnie Walker Blue Label
-  'spirit-11': spiritWoodford, // Woodford Reserve
-  'spirit-12': spiritLouisXIII, // Louis XIII Cognac
+  'spirit-2': spiritTitos, // Tito's
+  'spirit-5': spiritZubrowka, // Zubrowka
+  'spirit-6': spiritBelugaGold, // Beluga Noble
+  'spirit-7': spiritBelugaGold, // Beluga Gold
+  'spirit-9': spiritBotanist, // The Botanist
+  'spirit-10': spiritEmpress, // Empress 1908
+  'spirit-11': spiritHendricks, // Hendrick's Gin
+  'spirit-12': spiritMare, // Mare
+  'spirit-14': spiritMonkey47, // Monkey 47 Gin
+  'spirit-18': spiritSailorJerry, // Sailor Jerry
+  'spirit-19': spiritDiplomatico, // Diplomatico Reserva Exclusiva
+  'spirit-21': spiritZacapa23, // Zacapa 23
+  'spirit-22': spiritElDorado15, // El Dorado 15
+  'spirit-42': spiritClaseAzul, // Clase Azul Reposado
+  'spirit-56': spiritBalvenie12, // Balvenie 12
+  'spirit-57': spiritLagavulin8, // Lagavulin 8
+  'spirit-64': spiritYamazaki12, // Yamazaki 12
+  'spirit-69': spiritJohnnieBlue, // Johnnie Walker Blue Label
+  'spirit-73': spiritMacallan18, // Macallan 18
+  'spirit-81': spiritWoodford, // Woodford Reserve
+  'spirit-112': spiritLouisXIII, // Louis XIII Cognac
 
   // Cocktails
   'cocktail-1': cocktailFrench75,
