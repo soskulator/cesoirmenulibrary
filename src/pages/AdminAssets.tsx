@@ -1,5 +1,8 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -55,6 +58,35 @@ const requiredAssets = [
 ];
 
 export default function AdminAssetsPage() {
+  const { user, isAdmin, loading: authLoading } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    } else if (!authLoading && !isAdmin) {
+      navigate('/');
+      toast({
+        title: 'Access Denied',
+        description: 'You need admin permissions to access this page.',
+        variant: 'destructive',
+      });
+    }
+  }, [authLoading, user, isAdmin, navigate, toast]);
+
+  if (authLoading) {
+    return (
+      <Layout>
+        <div className="container py-8 max-w-4xl">
+          <p className="text-muted-foreground">Checking permissions…</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!user || !isAdmin) return null;
+
   return (
     <Layout>
       <div className="container py-8 max-w-4xl">
