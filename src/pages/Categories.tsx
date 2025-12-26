@@ -217,7 +217,7 @@ export default function CategoriesPage() {
                 </p>
                 <div className="flex flex-wrap items-center gap-3 mt-4">
                   <span className="text-sm text-charcoal/60 tracking-wide">
-                    {items.length} {isSpirits ? 'spirits' : 'dishes'}
+                    {items.length} {isSpirits ? 'spirits' : categoryId === 'wine' ? 'wines' : categoryId === 'cocktails' ? 'cocktails' : 'dishes'}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-charcoal/30" />
                   <Button variant="ghost" size="sm" asChild className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2 transition-all duration-300">
