@@ -17,14 +17,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { AllergenType, allergens, getAllergenById } from '@/data/menuData';
-
-// Import dish images
-import burgerImage from '@/assets/dishes/steak-tartare.jpg';
-import salmonImage from '@/assets/dishes/crispy-skin-salmon.jpg';
-import pastaImage from '@/assets/dishes/wild-mushroom-ravioli.jpg';
-import scallopImage from '@/assets/dishes/seared-scallops.jpg';
-import saladImage from '@/assets/dishes/caesar-salad.jpg';
+import { AllergenType, getAllergenById, menuItems, categories } from '@/data/menuData';
+import { getDishImage } from '@/data/dishImages';
 
 // Training dish data structure
 interface TrainingIngredient {
@@ -39,83 +33,65 @@ interface TrainingDish {
   name: string;
   image: string;
   description: string;
+  categoryId: string;
   ingredients: TrainingIngredient[];
 }
 
-// Mock training dishes with detailed ingredients
-const trainingDishes: TrainingDish[] = [
-  {
-    id: 'burger',
-    name: 'Classic Bistro Burger',
-    image: burgerImage,
-    description: 'House-ground beef patty with aged cheddar, caramelized onions, and truffle aioli on a brioche bun.',
-    ingredients: [
-      { id: 'b1', name: 'Brioche Bun', allergens: ['gluten', 'dairy', 'egg'], removable: true },
-      { id: 'b2', name: 'Beef Patty', allergens: [], removable: false },
-      { id: 'b3', name: 'Aged Cheddar', allergens: ['dairy'], removable: true },
-      { id: 'b4', name: 'Caramelized Onions', allergens: ['allium'], removable: true },
-      { id: 'b5', name: 'Truffle Aioli', allergens: ['egg', 'soy'], removable: true },
-      { id: 'b6', name: 'Butter Lettuce', allergens: [], removable: true },
-      { id: 'b7', name: 'Tomato', allergens: ['nightshade'], removable: true },
-    ],
-  },
-  {
-    id: 'salmon',
-    name: 'Pan-Seared Salmon',
-    image: salmonImage,
-    description: 'Wild-caught salmon with lemon beurre blanc, haricots verts, and fingerling potatoes.',
-    ingredients: [
-      { id: 's1', name: 'Atlantic Salmon', allergens: ['fish'], removable: false },
-      { id: 's2', name: 'Lemon Beurre Blanc', allergens: ['dairy'], removable: true },
-      { id: 's3', name: 'Haricots Verts', allergens: [], removable: true },
-      { id: 's4', name: 'Fingerling Potatoes', allergens: [], removable: true },
-      { id: 's5', name: 'Shallot Garnish', allergens: ['allium'], removable: true },
-      { id: 's6', name: 'Herb Oil', allergens: [], removable: true },
-    ],
-  },
-  {
-    id: 'pasta',
-    name: 'Wild Mushroom Ravioli',
-    image: pastaImage,
-    description: 'House-made pasta filled with wild mushrooms, in a truffle cream sauce with parmesan.',
-    ingredients: [
-      { id: 'p1', name: 'Fresh Pasta Dough', allergens: ['gluten', 'egg'], removable: false },
-      { id: 'p2', name: 'Wild Mushroom Filling', allergens: [], removable: false },
-      { id: 'p3', name: 'Truffle Cream Sauce', allergens: ['dairy'], removable: true },
-      { id: 'p4', name: 'Parmesan Cheese', allergens: ['dairy'], removable: true },
-      { id: 'p5', name: 'Garlic Butter', allergens: ['dairy', 'allium'], removable: true },
-      { id: 'p6', name: 'Fresh Thyme', allergens: [], removable: true },
-    ],
-  },
-  {
-    id: 'scallops',
-    name: 'Seared Diver Scallops',
-    image: scallopImage,
-    description: 'U-10 scallops with cauliflower purée, brown butter, capers, and toasted almonds.',
-    ingredients: [
-      { id: 'sc1', name: 'Diver Scallops', allergens: ['shellfish'], removable: false },
-      { id: 'sc2', name: 'Cauliflower Purée', allergens: ['dairy'], removable: true },
-      { id: 'sc3', name: 'Brown Butter', allergens: ['dairy'], removable: true },
-      { id: 'sc4', name: 'Toasted Almonds', allergens: ['nuts'], removable: true },
-      { id: 'sc5', name: 'Capers', allergens: [], removable: true },
-      { id: 'sc6', name: 'Lemon Segments', allergens: [], removable: true },
-    ],
-  },
-  {
-    id: 'salad',
-    name: 'Classic Caesar Salad',
-    image: saladImage,
-    description: 'Crisp romaine with house-made caesar dressing, parmesan crisps, and garlic croutons.',
-    ingredients: [
-      { id: 'sa1', name: 'Romaine Lettuce', allergens: [], removable: false },
-      { id: 'sa2', name: 'Caesar Dressing', allergens: ['egg', 'dairy', 'fish'], removable: true },
-      { id: 'sa3', name: 'Parmesan Crisps', allergens: ['dairy'], removable: true },
-      { id: 'sa4', name: 'Garlic Croutons', allergens: ['gluten', 'allium'], removable: true },
-      { id: 'sa5', name: 'Anchovy Garnish', allergens: ['fish'], removable: true },
-      { id: 'sa6', name: 'Black Pepper', allergens: [], removable: true },
-    ],
-  },
-];
+// Parse ingredients from ingredientsText and map allergens
+const parseIngredients = (ingredientsText: string, allergens: AllergenType[]): TrainingIngredient[] => {
+  const ingredientNames = ingredientsText.split(',').map(i => i.trim()).filter(Boolean);
+  
+  // Simple heuristic: distribute allergens based on ingredient keywords
+  const allergenKeywords: Record<AllergenType, string[]> = {
+    gluten: ['bread', 'crouton', 'pasta', 'flour', 'bun', 'brioche', 'puff', 'panko', 'baguette', 'crostini', 'tempura', 'spaghetti', 'ravioli', 'gnocchi'],
+    dairy: ['butter', 'cream', 'cheese', 'parmesan', 'gruyère', 'burrata', 'beurre', 'mascarpone', 'crème', 'milk'],
+    egg: ['egg', 'aioli', 'mayo', 'mayonnaise', 'hollandaise', 'béarnaise'],
+    nuts: ['almond', 'hazelnut', 'pistachio', 'walnut', 'pine nut', 'pecan', 'cashew'],
+    shellfish: ['lobster', 'shrimp', 'scallop', 'crab', 'mussel', 'clam', 'oyster', 'octopus'],
+    fish: ['salmon', 'tuna', 'anchovy', 'branzino', 'bass', 'sole', 'fish'],
+    soy: ['soy', 'miso', 'tofu', 'edamame'],
+    sesame: ['sesame', 'tahini'],
+    allium: ['onion', 'garlic', 'shallot', 'leek', 'chive', 'scallion'],
+    nightshade: ['tomato', 'pepper', 'potato', 'eggplant', 'paprika', 'chili']
+  };
+
+  return ingredientNames.map((name, index) => {
+    const lowerName = name.toLowerCase();
+    const ingredientAllergens: AllergenType[] = [];
+    
+    // Check which allergens this ingredient might contain
+    allergens.forEach(allergen => {
+      const keywords = allergenKeywords[allergen] || [];
+      if (keywords.some(keyword => lowerName.includes(keyword))) {
+        ingredientAllergens.push(allergen);
+      }
+    });
+    
+    // Determine if removable (main proteins are typically not removable)
+    const isMainProtein = ['beef', 'chicken', 'duck', 'lamb', 'pork', 'salmon', 'tuna', 'scallop', 'lobster', 'octopus', 'branzino', 'sole', 'bass', 'foie gras'].some(p => lowerName.includes(p));
+    const isBaseItem = index === 0 || lowerName.includes('base') || isMainProtein;
+    
+    return {
+      id: `ing-${index}`,
+      name: name,
+      allergens: ingredientAllergens,
+      removable: !isBaseItem
+    };
+  });
+};
+
+// Convert menu items to training dishes (excluding beverages)
+const foodCategories = ['appetizers', 'entrees', 'desserts', 'sides', 'specials'];
+const trainingDishes: TrainingDish[] = menuItems
+  .filter(item => foodCategories.includes(item.categoryId) && item.isPublished)
+  .map(item => ({
+    id: item.id,
+    name: item.name,
+    image: getDishImage(item.id) || '/placeholder.svg',
+    description: item.shortDescription,
+    categoryId: item.categoryId,
+    ingredients: parseIngredients(item.ingredientsText, item.allergens)
+  }));
 
 // Allergen icon component
 const AllergenIcon = ({ allergenId, size = 'md' }: { allergenId: AllergenType; size?: 'sm' | 'md' }) => {
@@ -138,6 +114,7 @@ const AllergenIcon = ({ allergenId, size = 'md' }: { allergenId: AllergenType; s
 export default function AllergyTrainingPage() {
   const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [omittedIngredients, setOmittedIngredients] = useState<Set<string>>(new Set());
   const [previousAllergens, setPreviousAllergens] = useState<Set<AllergenType>>(new Set());
 
@@ -146,16 +123,31 @@ export default function AllergyTrainingPage() {
     [selectedDishId]
   );
 
-  // Filter dishes based on search
+  // Get available categories from dishes
+  const availableCategories = useMemo(() => {
+    const cats = new Set(trainingDishes.map(d => d.categoryId));
+    return categories.filter(c => cats.has(c.id));
+  }, []);
+
+  // Filter dishes based on search and category
   const filteredDishes = useMemo(() => {
-    if (!searchQuery) return trainingDishes;
-    const query = searchQuery.toLowerCase();
-    return trainingDishes.filter(dish =>
-      dish.name.toLowerCase().includes(query) ||
-      dish.description.toLowerCase().includes(query) ||
-      dish.ingredients.some(ing => ing.name.toLowerCase().includes(query))
-    );
-  }, [searchQuery]);
+    let dishes = trainingDishes;
+    
+    if (selectedCategory !== 'all') {
+      dishes = dishes.filter(dish => dish.categoryId === selectedCategory);
+    }
+    
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      dishes = dishes.filter(dish =>
+        dish.name.toLowerCase().includes(query) ||
+        dish.description.toLowerCase().includes(query) ||
+        dish.ingredients.some(ing => ing.name.toLowerCase().includes(query))
+      );
+    }
+    
+    return dishes;
+  }, [searchQuery, selectedCategory]);
 
   // Calculate current allergens based on active ingredients
   const currentAllergens = useMemo(() => {
@@ -266,7 +258,42 @@ export default function AllergyTrainingPage() {
               />
             </div>
 
-            <div className="space-y-3">
+            {/* Category Filter */}
+            <div className="flex flex-wrap gap-2">
+              <Badge
+                variant={selectedCategory === 'all' ? 'default' : 'outline'}
+                className={cn(
+                  "cursor-pointer transition-all",
+                  selectedCategory === 'all' && "bg-copper hover:bg-copper/90"
+                )}
+                onClick={() => setSelectedCategory('all')}
+              >
+                All ({trainingDishes.length})
+              </Badge>
+              {availableCategories.map(cat => {
+                const count = trainingDishes.filter(d => d.categoryId === cat.id).length;
+                return (
+                  <Badge
+                    key={cat.id}
+                    variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                    className={cn(
+                      "cursor-pointer transition-all",
+                      selectedCategory === cat.id && "bg-copper hover:bg-copper/90"
+                    )}
+                    onClick={() => setSelectedCategory(cat.id)}
+                  >
+                    {cat.name} ({count})
+                  </Badge>
+                );
+              })}
+            </div>
+
+            {/* Dish Count */}
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredDishes.length} dish{filteredDishes.length !== 1 ? 'es' : ''}
+            </p>
+
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
               {filteredDishes.map((dish) => (
                 <motion.div
                   key={dish.id}
