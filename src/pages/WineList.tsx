@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { menuItems } from '@/data/menuData';
+import { menuItems, MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { ArrowLeft, Wine, Sparkles, MapPin } from 'lucide-react';
+import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 // Wine region classification
@@ -105,6 +107,8 @@ const item = {
 };
 
 export default function WineListPage() {
+  const [selectedWine, setSelectedWine] = useState<MenuItem | null>(null);
+  
   // Get all wine items
   const wines = menuItems.filter((item) => item.categoryId === 'wine' && item.isPublished);
   
@@ -220,7 +224,8 @@ export default function WineListPage() {
                       <motion.div
                         key={wine.id}
                         variants={item}
-                        className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300"
+                        onClick={() => setSelectedWine(wine)}
+                        className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
                       >
                         <div className="flex flex-col md:flex-row">
                           {/* Wine Image */}
@@ -306,6 +311,14 @@ export default function WineListPage() {
           </div>
         </motion.div>
       </div>
+      
+      {/* Wine Detail Modal */}
+      <BeverageSplashModal
+        item={selectedWine}
+        isOpen={!!selectedWine}
+        onClose={() => setSelectedWine(null)}
+        type="wine"
+      />
     </Layout>
   );
 }
