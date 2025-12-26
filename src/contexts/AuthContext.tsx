@@ -24,6 +24,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<AppRole | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLeadAdmin, setIsLeadAdmin] = useState(false);
 
   const fetchUserRole = async (userId: string) => {
     try {
@@ -34,22 +36,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
       
       if (error) {
-        console.error('Error fetching role:', error);
+        console.error('Error fetching role');
         return null;
       }
       
       return data?.role as AppRole | null;
-    } catch (err) {
-      console.error('Error in fetchUserRole:', err);
+    } catch {
+      console.error('Error in fetchUserRole');
       return null;
     }
   };
 
-  const refreshRole = async () => {
-    if (user) {
-      const userRole = await fetchUserRole(user.id);
-      setRole(userRole);
+  const fetchAdminFlags = async (userId: string) => {
+    try {
+      const [{ data: adminData }, { data: leadAdminData }] = await Promise.all([
+        supabase.rpc('is_admin', { _user_id: userId }),
+        supabase.rpc('has_role', { _user_id: userId, _role: 'lead_admin' }),
+      ]);
+
+      return {
+        isAdmin: Boolean(adminData),
+        isLeadAdmin: Boolean(leadAdminData),
+      };
+    } catch {
+      console.error('Error checking admin permissions');
+      return { isAdmin: false, isLeadAdmin: false };
     }
+  };
+
+  const refreshRole = async () => {
+    if (!user) return;
+
+    const [userRole, flags] = await Promise.all([
+      fetchUserRole(user.id),
+      fetchAdminFlags(user.id),
+    ]);
+
+    setRole(userRole);
+    setIsAdmin(flags.isAdmin);
+    setIsLeadAdmin(flags.isLeadAdmin);
   };
 
   useEffect(() => {
@@ -59,13 +84,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer role fetching with setTimeout to prevent deadlock
+        // Defer backend calls with setTimeout to prevent deadlock
         if (session?.user) {
           setTimeout(() => {
-            fetchUserRole(session.user.id).then(setRole);
+            Promise.all([
+              fetchUserRole(session.user.id),
+              fetchAdminFlags(session.user.id),
+            ]).then(([userRole, flags]) => {
+              setRole(userRole);
+              setIsAdmin(flags.isAdmin);
+              setIsLeadAdmin(flags.isLeadAdmin);
+            });
           }, 0);
         } else {
           setRole(null);
+          setIsAdmin(false);
+          setIsLeadAdmin(false);
         }
       }
     );
@@ -76,8 +110,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        fetchUserRole(session.user.id).then(setRole);
+        Promise.all([
+          fetchUserRole(session.user.id),
+          fetchAdminFlags(session.user.id),
+        ]).then(([userRole, flags]) => {
+          setRole(userRole);
+          setIsAdmin(flags.isAdmin);
+          setIsLeadAdmin(flags.isLeadAdmin);
+        });
+      } else {
+        setRole(null);
+        setIsAdmin(false);
+        setIsLeadAdmin(false);
       }
+
       setLoading(false);
     });
 
@@ -108,10 +154,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     await supabase.auth.signOut();
     setRole(null);
+    setIsAdmin(false);
+    setIsLeadAdmin(false);
   };
 
-  const isAdmin = role === 'admin' || role === 'lead_admin';
-  const isLeadAdmin = role === 'lead_admin';
 
   return (
     <AuthContext.Provider
