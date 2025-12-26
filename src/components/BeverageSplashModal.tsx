@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Wine, Sparkles } from 'lucide-react';
+import { X, Wine, Sparkles, GlassWater } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { cn } from '@/lib/utils';
@@ -8,7 +8,7 @@ interface BeverageSplashModalProps {
   item: MenuItem | null;
   isOpen: boolean;
   onClose: () => void;
-  type: 'wine' | 'spirit';
+  type: 'wine' | 'spirit' | 'cocktail';
 }
 
 export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSplashModalProps) {
@@ -18,10 +18,20 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
   
   const bgGradient = type === 'wine' 
     ? 'from-[#2a1f3d] via-[#1a1525] to-[#0d0a12]'
+    : type === 'cocktail'
+    ? 'from-[#1a2a3d] via-[#101a25] to-[#080d12]'
     : 'from-[#2d2318] via-[#1a1510] to-[#0d0a08]';
   
-  const accentColor = type === 'wine' ? 'text-rose-300' : 'text-amber-300';
-  const glowColor = type === 'wine' ? 'shadow-rose-500/20' : 'shadow-amber-500/20';
+  const accentColor = type === 'wine' 
+    ? 'text-rose-300' 
+    : type === 'cocktail' 
+    ? 'text-cyan-300' 
+    : 'text-amber-300';
+  const glowColor = type === 'wine' 
+    ? 'shadow-rose-500/20' 
+    : type === 'cocktail' 
+    ? 'shadow-cyan-500/20' 
+    : 'shadow-amber-500/20';
 
   return (
     <AnimatePresence>
@@ -76,18 +86,21 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
               />
             </div>
 
-            {/* Close Button */}
+            {/* Close Button - Fixed position outside scrollable area */}
             <motion.button
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-              onClick={onClose}
+              className="absolute top-4 right-4 z-50 p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors border border-white/20"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <X className="w-5 h-5 text-white" />
+              <X className="w-6 h-6 text-white" />
             </motion.button>
 
             {/* Scrollable Content */}
-            <div className="relative z-10 overflow-y-auto max-h-[90vh] p-6 md:p-8">
+            <div className="relative z-10 overflow-y-auto max-h-[90vh] p-6 md:p-8 pt-16">
               {/* Bottle Image */}
               <motion.div
                 className="flex justify-center mb-8"
@@ -112,6 +125,8 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
                     <div className="relative w-32 h-48 md:h-64 flex items-center justify-center">
                       {type === 'wine' ? (
                         <Wine className="w-16 h-16 text-copper/50" />
+                      ) : type === 'cocktail' ? (
+                        <GlassWater className="w-16 h-16 text-copper/50" />
                       ) : (
                         <span className="text-6xl">🥃</span>
                       )}
@@ -172,7 +187,7 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
                       transition={{ delay: 0.5, duration: 0.4 }}
                     >
                       <h3 className="text-copper text-sm font-semibold uppercase tracking-wide mb-2">
-                        {type === 'wine' ? 'Origin & Grape' : 'Details'}
+                        {type === 'wine' ? 'Origin & Grape' : type === 'cocktail' ? 'Ingredients' : 'Details'}
                       </h3>
                       <p className="text-white/70 text-sm leading-relaxed">
                         {item.ingredientsText}
@@ -207,7 +222,7 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
                     transition={{ delay: 0.7, duration: 0.4 }}
                   >
                     <h3 className="text-copper text-sm font-semibold uppercase tracking-wide mb-2">
-                      {type === 'wine' ? 'Pairing Suggestions' : 'Serving Notes'}
+                      {type === 'wine' ? 'Pairing Suggestions' : type === 'cocktail' ? 'Bartender Notes' : 'Serving Notes'}
                     </h3>
                     <p className="text-white/70 text-sm leading-relaxed italic">
                       {item.prepNotes}

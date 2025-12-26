@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { menuItems } from '@/data/menuData';
+import { menuItems, MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { ArrowLeft, GlassWater, Sparkles, Star, Clock } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
+import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 
 // Cocktail style classification
 const cocktailStyles = {
@@ -77,6 +79,8 @@ const item = {
 };
 
 export default function CocktailsPage() {
+  const [selectedCocktail, setSelectedCocktail] = useState<MenuItem | null>(null);
+  
   // Get all cocktail items
   const cocktails = menuItems.filter((item) => item.categoryId === 'cocktails' && item.isPublished);
   
@@ -192,7 +196,8 @@ export default function CocktailsPage() {
                       <motion.div
                         key={cocktail.id}
                         variants={item}
-                        className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300"
+                        className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                        onClick={() => setSelectedCocktail(cocktail)}
                       >
                         <div className="flex flex-col md:flex-row">
                           {/* Cocktail Image */}
@@ -273,6 +278,13 @@ export default function CocktailsPage() {
           </div>
         </motion.div>
       </div>
+      
+      <BeverageSplashModal
+        item={selectedCocktail}
+        isOpen={!!selectedCocktail}
+        onClose={() => setSelectedCocktail(null)}
+        type="cocktail"
+      />
     </Layout>
   );
 }
