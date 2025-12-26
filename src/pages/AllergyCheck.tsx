@@ -29,6 +29,7 @@ const getAllergenRelevantItems = () => {
 export default function AllergyCheckPage() {
   const [selectedAllergens, setSelectedAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [categorySearchQuery, setCategorySearchQuery] = useState('');
   const [expandedAllergens, setExpandedAllergens] = useState<string[]>([]);
 
   const toggleExpanded = (allergenId: string) => {
@@ -279,11 +280,30 @@ export default function AllergyCheckPage() {
             <p className="text-sm text-muted-foreground mb-4">
               Note: Spirits are excluded from allergen tracking. Most distilled spirits are naturally free of common food allergens.
             </p>
+            
+            {/* Search Filter */}
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search menu items..."
+                value={categorySearchQuery}
+                onChange={(e) => setCategorySearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {allergens.map((allergen) => {
-                const itemsWithThis = allergenRelevantItems.filter(i =>
+                const allItemsWithThis = allergenRelevantItems.filter(i =>
                   i.allergens.includes(allergen.id)
                 );
+                // Filter items based on search query
+                const itemsWithThis = categorySearchQuery
+                  ? allItemsWithThis.filter(item =>
+                      item.name.toLowerCase().includes(categorySearchQuery.toLowerCase()) ||
+                      item.shortDescription.toLowerCase().includes(categorySearchQuery.toLowerCase())
+                    )
+                  : allItemsWithThis;
                 const isExpanded = expandedAllergens.includes(allergen.id);
                 const previewCount = 5;
                 const hasMore = itemsWithThis.length > previewCount;
