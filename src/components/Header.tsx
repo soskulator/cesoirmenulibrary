@@ -43,8 +43,7 @@ const navItems = [
   { path: '/wine-quiz', label: 'Wine Quiz', icon: Wine },
   { path: '/spirits-quiz', label: 'Spirits Quiz', icon: Martini },
   { path: '/daily-focus', label: 'Daily Focus', icon: Star },
-  { path: '/allergy-check', label: 'Allergy Check', icon: AlertTriangle },
-  { path: '/allergy-training', label: 'Allergy Training', icon: AlertTriangle },
+  { path: '/allergy', label: 'Allergy Center', icon: AlertTriangle },
 ];
 
 const adminItems = [
