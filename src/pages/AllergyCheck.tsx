@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,9 +12,10 @@ import {
   getAllergenById,
   getCategoryById 
 } from '@/data/menuData';
-import { AlertTriangle, Check, X, Printer, Search } from 'lucide-react';
+import { AlertTriangle, Check, X, Printer, Search, ChevronDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 // Filter out spirits from allergen checking - spirits only track dairy allergens
 // Most distilled spirits are naturally free of common food allergens
@@ -28,6 +29,15 @@ const getAllergenRelevantItems = () => {
 export default function AllergyCheckPage() {
   const [selectedAllergens, setSelectedAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedAllergens, setExpandedAllergens] = useState<string[]>([]);
+
+  const toggleExpanded = (allergenId: string) => {
+    setExpandedAllergens(prev =>
+      prev.includes(allergenId)
+        ? prev.filter(id => id !== allergenId)
+        : [...prev, allergenId]
+    );
+  };
 
   // Get only food/cocktail items (exclude spirits)
   const allergenRelevantItems = useMemo(() => getAllergenRelevantItems(), []);
@@ -274,31 +284,72 @@ export default function AllergyCheckPage() {
                 const itemsWithThis = allergenRelevantItems.filter(i =>
                   i.allergens.includes(allergen.id)
                 );
+                const isExpanded = expandedAllergens.includes(allergen.id);
+                const previewCount = 5;
+                const hasMore = itemsWithThis.length > previewCount;
+                
                 return (
-                  <Card key={allergen.id}>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <span>{allergen.icon}</span>
-                        {allergen.name}
-                        <Badge variant="secondary" className="ml-auto">
-                          {itemsWithThis.length}
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="text-sm text-muted-foreground space-y-1">
-                        {itemsWithThis.slice(0, 10).map((item) => (
-                          <li key={item.id}>• {item.name}</li>
-                        ))}
-                        {itemsWithThis.length > 10 && (
-                          <li className="italic text-charcoal/50">...and {itemsWithThis.length - 10} more</li>
+                  <Collapsible 
+                    key={allergen.id} 
+                    open={isExpanded} 
+                    onOpenChange={() => toggleExpanded(allergen.id)}
+                  >
+                    <Card>
+                      <CollapsibleTrigger asChild>
+                        <CardHeader className="pb-2 cursor-pointer hover:bg-muted/50 transition-colors">
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <span>{allergen.icon}</span>
+                            {allergen.name}
+                            <Badge variant="secondary" className="ml-auto">
+                              {itemsWithThis.length}
+                            </Badge>
+                            <ChevronDown 
+                              className={cn(
+                                "w-4 h-4 text-muted-foreground transition-transform duration-200",
+                                isExpanded && "rotate-180"
+                              )} 
+                            />
+                          </CardTitle>
+                        </CardHeader>
+                      </CollapsibleTrigger>
+                      <CardContent className="pt-0">
+                        {itemsWithThis.length === 0 ? (
+                          <p className="text-sm text-muted-foreground italic">
+                            No items contain this allergen
+                          </p>
+                        ) : (
+                          <>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              {itemsWithThis.slice(0, previewCount).map((item) => (
+                                <li key={item.id}>• {item.name}</li>
+                              ))}
+                            </ul>
+                            <CollapsibleContent>
+                              <AnimatePresence>
+                                {isExpanded && (
+                                  <motion.ul
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="text-sm text-muted-foreground space-y-1"
+                                  >
+                                    {itemsWithThis.slice(previewCount).map((item) => (
+                                      <li key={item.id}>• {item.name}</li>
+                                    ))}
+                                  </motion.ul>
+                                )}
+                              </AnimatePresence>
+                            </CollapsibleContent>
+                            {hasMore && !isExpanded && (
+                              <p className="text-xs text-copper mt-2 cursor-pointer hover:underline">
+                                +{itemsWithThis.length - previewCount} more items
+                              </p>
+                            )}
+                          </>
                         )}
-                        {itemsWithThis.length === 0 && (
-                          <li className="italic">No items contain this allergen</li>
-                        )}
-                      </ul>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </Collapsible>
                 );
               })}
             </div>
