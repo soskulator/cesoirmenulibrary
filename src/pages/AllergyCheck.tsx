@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,7 @@ import {
   getAllergenById,
   getCategoryById 
 } from '@/data/menuData';
-import { AlertTriangle, Check, X, Printer, Search, ChevronDown } from 'lucide-react';
+import { AlertTriangle, Check, X, Printer, Search, ChevronDown, GraduationCap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -86,16 +87,24 @@ export default function AllergyCheckPage() {
       <div className="container py-8 max-w-5xl">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-              <AlertTriangle className="w-6 h-6 text-destructive" />
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-destructive" />
+              </div>
+              <div>
+                <h1 className="font-serif text-3xl font-bold">Guest Allergy Check</h1>
+                <p className="text-muted-foreground">
+                  Quick reference for allergen-free dining options
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="font-serif text-3xl font-bold">Guest Allergy Check</h1>
-              <p className="text-muted-foreground">
-                Quick reference for allergen-free dining options
-              </p>
-            </div>
+            <Button asChild variant="outline" className="gap-2">
+              <Link to="/allergy-training">
+                <GraduationCap className="w-4 h-4" />
+                Training Module
+              </Link>
+            </Button>
           </div>
         </div>
 

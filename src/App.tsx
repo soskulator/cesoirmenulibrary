@@ -16,6 +16,7 @@ import WineQuiz from "./pages/WineQuiz";
 import SpiritsQuiz from "./pages/SpiritsQuiz";
 import DailyFocus from "./pages/DailyFocus";
 import AllergyCheck from "./pages/AllergyCheck";
+import AllergyTraining from "./pages/AllergyTraining";
 import Admin from "./pages/Admin";
 import AdminAssets from "./pages/AdminAssets";
 import AdminUsers from "./pages/AdminUsers";
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/spirits-quiz" element={<SpiritsQuiz />} />
             <Route path="/daily-focus" element={<DailyFocus />} />
             <Route path="/allergy-check" element={<AllergyCheck />} />
+            <Route path="/allergy-training" element={<AllergyTraining />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/assets" element={<AdminAssets />} />
             <Route path="/admin/users" element={<AdminUsers />} />
