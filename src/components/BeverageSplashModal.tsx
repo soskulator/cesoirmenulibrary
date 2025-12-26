@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { X, Wine, Sparkles, GlassWater } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
@@ -33,6 +33,13 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
     ? 'shadow-cyan-500/20' 
     : 'shadow-amber-500/20';
 
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    // Close if dragged down more than 100px or with sufficient velocity
+    if (info.offset.y > 100 || info.velocity.y > 500) {
+      onClose();
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -52,16 +59,20 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
             onClick={onClose}
           />
 
-          {/* Modal Content */}
+          {/* Modal Content - Swipeable */}
           <motion.div
             className={cn(
-              "relative w-full max-w-2xl max-h-[90vh] mx-4 rounded-3xl overflow-hidden shadow-2xl",
+              "relative w-full max-w-2xl max-h-[90vh] mx-4 rounded-3xl overflow-hidden shadow-2xl cursor-grab active:cursor-grabbing",
               glowColor
             )}
             initial={{ scale: 0.8, opacity: 0, y: 50 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 50 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0.1, bottom: 0.5 }}
+            onDragEnd={handleDragEnd}
           >
             {/* Background Gradient */}
             <div className={cn("absolute inset-0 bg-gradient-to-b", bgGradient)} />

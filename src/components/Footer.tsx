@@ -1,12 +1,14 @@
 import { Instagram, Facebook, MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { OpenTableLogo } from './OpenTableLogo';
+import cesoirLogo from '@/assets/cesoir-logo.png';
+
 export function Footer() {
   return <footer className="bg-charcoal text-cream border-t border-border">
       <div className="container py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-2xl font-semibold mb-4">Ce Soir</h3>
+            <img src={cesoirLogo} alt="Ce Soir" className="h-14 w-auto mb-4" />
             <p className="text-cream/60 text-sm leading-relaxed">French - Mediterranean cuisine in the heart of Naples, Florida.</p>
           </div>
 
