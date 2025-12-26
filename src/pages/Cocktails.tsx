@@ -31,7 +31,11 @@ const cocktailStyles = {
 
 // Classify cocktails by style
 const classifyCocktail = (cocktail: typeof menuItems[0]) => {
+  const id = cocktail.id;
   const name = cocktail.name.toLowerCase();
+  
+  // Check if it's a signature cocktail first (by ID prefix)
+  if (id.startsWith('signature-cocktail')) return 'signature';
   
   // Classic cocktails - timeless recipes
   const classics = [
@@ -39,18 +43,13 @@ const classifyCocktail = (cocktail: typeof menuItems[0]) => {
     'margarita', 'whiskey sour', 'boulevardier', 'pisco sour'
   ];
   
-  // Signature/Modern cocktails
-  const signature = [
+  // Specials - lighter, refreshing
+  const specials = [
+    'moscow mule', 'aperol spritz', 'cosmopolitan', 'mojito',
     'espresso martini', 'irish coffee', 'vodka martini'
   ];
   
-  // Specials - lighter, refreshing
-  const specials = [
-    'moscow mule', 'aperol spritz', 'cosmopolitan', 'mojito'
-  ];
-  
   if (classics.some(c => name.includes(c))) return 'classic';
-  if (signature.some(s => name.includes(s))) return 'signature';
   if (specials.some(s => name.includes(s))) return 'specials';
   
   // Default based on cocktail type

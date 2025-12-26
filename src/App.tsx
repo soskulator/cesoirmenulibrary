@@ -13,6 +13,7 @@ import Cocktails from "./pages/Cocktails";
 import Flashcards from "./pages/Flashcards";
 import Quiz from "./pages/Quiz";
 import WineQuiz from "./pages/WineQuiz";
+import SpiritsQuiz from "./pages/SpiritsQuiz";
 import DailyFocus from "./pages/DailyFocus";
 import AllergyCheck from "./pages/AllergyCheck";
 import Admin from "./pages/Admin";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/wine-quiz" element={<WineQuiz />} />
+            <Route path="/spirits-quiz" element={<SpiritsQuiz />} />
             <Route path="/daily-focus" element={<DailyFocus />} />
             <Route path="/allergy-check" element={<AllergyCheck />} />
             <Route path="/admin" element={<Admin />} />

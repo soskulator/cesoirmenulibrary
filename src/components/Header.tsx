@@ -41,6 +41,7 @@ const navItems = [
   { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
   { path: '/quiz', label: 'Quiz', icon: HelpCircle },
   { path: '/wine-quiz', label: 'Wine Quiz', icon: Wine },
+  { path: '/spirits-quiz', label: 'Spirits Quiz', icon: Martini },
   { path: '/daily-focus', label: 'Daily Focus', icon: Star },
   { path: '/allergy-check', label: 'Allergy Check', icon: AlertTriangle },
 ];
