@@ -17,7 +17,8 @@ import {
   GlassWater,
   Martini,
   Sun,
-  Moon
+  Moon,
+  ChevronDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -42,9 +43,15 @@ const navItems = [
   { path: '/spirits', label: 'Spirits', icon: Martini },
   { path: '/cocktails', label: 'Cocktails', icon: GlassWater },
   { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
-  { path: '/quiz', label: 'Quiz', icon: HelpCircle },
   { path: '/daily-focus', label: 'Daily Focus', icon: Star },
   { path: '/allergy', label: 'Allergy Center', icon: AlertTriangle },
+];
+
+const quizItems = [
+  { path: '/quiz', label: 'General Quiz', icon: HelpCircle },
+  { path: '/wine-quiz', label: 'Wine Quiz', icon: Wine },
+  { path: '/spirits-quiz', label: 'Spirits Quiz', icon: Martini },
+  { path: '/allergy-quiz', label: 'Allergy Quiz', icon: AlertTriangle },
 ];
 
 const adminItems = [
@@ -103,6 +110,47 @@ export function Header() {
               </Link>
             );
           })}
+
+          {/* Quiz Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={cn(
+                  "relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5",
+                  quizItems.some(item => location.pathname === item.path)
+                    ? "text-burgundy"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                )}
+              >
+                <HelpCircle className="w-4 h-4" />
+                Quiz
+                <ChevronDown className="w-3 h-3" />
+                {quizItems.some(item => location.pathname === item.path) && (
+                  <motion.div
+                    layoutId="activeTabQuiz"
+                    className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48">
+              {quizItems.map((item) => (
+                <DropdownMenuItem key={item.path} asChild>
+                  <Link
+                    to={item.path}
+                    className={cn(
+                      "flex items-center gap-2 cursor-pointer",
+                      location.pathname === item.path && "text-burgundy"
+                    )}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {isAdmin && (
             <>
@@ -239,6 +287,29 @@ export function Header() {
       >
         <nav className="container py-4 flex flex-col gap-1">
           {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                  isActive 
+                    ? "bg-burgundy/10 text-burgundy" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+
+          {/* Quiz Section - Mobile */}
+          <div className="h-px bg-border my-2" />
+          <p className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Quizzes</p>
+          {quizItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
