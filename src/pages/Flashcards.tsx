@@ -44,7 +44,6 @@ export default function FlashcardsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isRandomMode, setIsRandomMode] = useState(true); // Default to random ON
   const [localKnown, setLocalKnown] = useState<Set<string>>(new Set());
   const [localReview, setLocalReview] = useState<Set<string>>(new Set());
 
@@ -86,12 +85,7 @@ export default function FlashcardsPage() {
   const currentItem = filteredItems[currentIndex];
 
   const goToNext = () => {
-    if (filteredItems.length === 0) return;
-    if (isRandomMode) {
-      // Random mode: pick a random card
-      const randomIndex = Math.floor(Math.random() * filteredItems.length);
-      setCurrentIndex(randomIndex);
-    } else if (currentIndex < filteredItems.length - 1) {
+    if (currentIndex < filteredItems.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -136,8 +130,10 @@ export default function FlashcardsPage() {
     goToNext();
   };
 
-  const toggleRandomMode = () => {
-    setIsRandomMode(prev => !prev);
+  const shuffle = () => {
+    if (filteredItems.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * filteredItems.length);
+    setCurrentIndex(randomIndex);
   };
 
   const resetProgress = () => {
@@ -272,14 +268,9 @@ export default function FlashcardsPage() {
             </span>
           </div>
           <div className="flex gap-1 sm:gap-2">
-            <Button 
-              variant={isRandomMode ? "secondary" : "ghost"} 
-              size="sm" 
-              onClick={toggleRandomMode} 
-              className="h-8 px-2 sm:px-3"
-            >
-              <Shuffle className={cn("w-4 h-4 sm:mr-1", isRandomMode && "text-copper")} />
-              <span className="hidden sm:inline">{isRandomMode ? 'Random ON' : 'Random OFF'}</span>
+            <Button variant="ghost" size="sm" onClick={shuffle} className="h-8 px-2 sm:px-3">
+              <Shuffle className="w-4 h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Shuffle</span>
             </Button>
             <Button variant="ghost" size="sm" onClick={resetProgress} className="h-8 px-2 sm:px-3">
               <RotateCcw className="w-4 h-4 sm:mr-1" />
