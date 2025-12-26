@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Layers, CreditCard, HelpCircle, Star, AlertTriangle, ArrowRight, ArrowDown, MapPin, LogIn } from 'lucide-react';
+import { Layers, CreditCard, HelpCircle, Star, AlertTriangle, ArrowRight, ArrowDown, MapPin, LogIn, BookOpen, Brain } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
 import { getCategoryIcon } from '@/data/categoryIcons';
@@ -60,6 +61,7 @@ export default function Index() {
   const {
     user
   } = useAuth();
+  const [showTrainingOptions, setShowTrainingOptions] = useState(false);
   const focusItems = dailyFocus.menuItemIds.map(id => getMenuItemById(id)).filter(Boolean);
   const {
     scrollY
@@ -123,7 +125,7 @@ export default function Index() {
             <span className="text-sm font-semibold tracking-widest uppercase">Naples, Florida</span>
           </motion.div>
           
-          <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" initial={{
+          <motion.div className="flex flex-col items-center gap-4 justify-center" initial={{
           opacity: 0,
           y: 20
         }} animate={{
@@ -133,22 +135,63 @@ export default function Index() {
           delay: 1,
           duration: 0.6
         }}>
-            <Button size="lg" className="bg-charcoal text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300" asChild>
-              <Link to="/flashcards">
-                Start Training
-              </Link>
-            </Button>
-            <Button size="lg" className="bg-copper text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300" asChild>
-              <Link to="/categories">
-                Explore Menu
-              </Link>
-            </Button>
-            {!user && <Button size="lg" className="bg-white text-charcoal border border-charcoal/20 font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-cream hover:shadow-xl transition-all duration-300" asChild>
-                <Link to="/auth">
-                  <LogIn className="w-5 h-5 mr-2" />
-                  Login
+            {/* Start Training Button with expanding options */}
+            <div className="relative flex flex-col items-center">
+              <AnimatePresence>
+                {showTrainingOptions && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="flex flex-col sm:flex-row gap-3 mb-4"
+                  >
+                    <Button 
+                      size="lg" 
+                      className="bg-charcoal text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300 group" 
+                      asChild
+                    >
+                      <Link to="/categories">
+                        <BookOpen className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                        Flashcards
+                      </Link>
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      className="bg-copper text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300 group" 
+                      asChild
+                    >
+                      <Link to="/quiz">
+                        <Brain className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                        Take Quiz
+                      </Link>
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              <Button 
+                size="lg" 
+                className="bg-charcoal text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300"
+                onClick={() => setShowTrainingOptions(!showTrainingOptions)}
+              >
+                {showTrainingOptions ? 'Choose an Option' : 'Start Training'}
+              </Button>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button size="lg" className="bg-copper text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300" asChild>
+                <Link to="/categories">
+                  Explore Menu
                 </Link>
-              </Button>}
+              </Button>
+              {!user && <Button size="lg" className="bg-white text-charcoal border border-charcoal/20 font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-cream hover:shadow-xl transition-all duration-300" asChild>
+                  <Link to="/auth">
+                    <LogIn className="w-5 h-5 mr-2" />
+                    Login
+                  </Link>
+                </Button>}
+            </div>
           </motion.div>
         </motion.div>
         
