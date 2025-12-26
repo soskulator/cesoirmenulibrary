@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import Index from "./pages/Index";
@@ -15,8 +15,7 @@ import Quiz from "./pages/Quiz";
 import WineQuiz from "./pages/WineQuiz";
 import SpiritsQuiz from "./pages/SpiritsQuiz";
 import DailyFocus from "./pages/DailyFocus";
-import AllergyCheck from "./pages/AllergyCheck";
-import AllergyTraining from "./pages/AllergyTraining";
+import Allergy from "./pages/Allergy";
 import Admin from "./pages/Admin";
 import AdminAssets from "./pages/AdminAssets";
 import AdminUsers from "./pages/AdminUsers";
@@ -46,8 +45,10 @@ const App = () => (
             <Route path="/wine-quiz" element={<WineQuiz />} />
             <Route path="/spirits-quiz" element={<SpiritsQuiz />} />
             <Route path="/daily-focus" element={<DailyFocus />} />
-            <Route path="/allergy-check" element={<AllergyCheck />} />
-            <Route path="/allergy-training" element={<AllergyTraining />} />
+            <Route path="/allergy" element={<Allergy />} />
+            {/* Redirects for old routes */}
+            <Route path="/allergy-check" element={<Navigate to="/allergy" replace />} />
+            <Route path="/allergy-training" element={<Navigate to="/allergy" replace />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/assets" element={<AdminAssets />} />
             <Route path="/admin/users" element={<AdminUsers />} />
