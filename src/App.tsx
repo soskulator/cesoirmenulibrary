@@ -14,6 +14,7 @@ import Flashcards from "./pages/Flashcards";
 import Quiz from "./pages/Quiz";
 import WineQuiz from "./pages/WineQuiz";
 import SpiritsQuiz from "./pages/SpiritsQuiz";
+import AllergyQuiz from "./pages/AllergyQuiz";
 import DailyFocus from "./pages/DailyFocus";
 import Allergy from "./pages/Allergy";
 import Admin from "./pages/Admin";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/wine-quiz" element={<WineQuiz />} />
             <Route path="/spirits-quiz" element={<SpiritsQuiz />} />
+            <Route path="/allergy-quiz" element={<AllergyQuiz />} />
             <Route path="/daily-focus" element={<DailyFocus />} />
             <Route path="/allergy" element={<Allergy />} />
             {/* Redirects for old routes */}
