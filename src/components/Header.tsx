@@ -64,15 +64,13 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex flex-col items-center gap-0.5">
           <img 
             src={cesoirLogo} 
             alt="Ce Soir" 
-            className="h-10 w-auto"
+            className="h-8 w-auto"
           />
-          <div className="hidden sm:block">
-            <p className="text-xs text-muted-foreground">Staff Training</p>
-          </div>
+          <p className="text-[10px] tracking-widest uppercase text-muted-foreground font-medium">Staff Training</p>
         </Link>
 
         {/* Desktop Nav */}
