@@ -16,7 +16,8 @@ import {
   ArrowRight,
   HelpCircle,
   Wine,
-  Martini
+  Martini,
+  AlertTriangle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -239,7 +240,7 @@ export default function QuizPage() {
             {/* Specialized Quiz Links */}
             <div className="pt-6 border-t border-border mt-6">
               <p className="text-sm text-muted-foreground mb-4">Looking for specialized training?</p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
                 <Link to="/wine-quiz" className="group">
                   <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5">
                     <div className="flex items-center gap-3">
@@ -266,6 +267,21 @@ export default function QuizPage() {
                         <p className="text-xs text-muted-foreground">Bottles, origins & cocktails</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-copper group-hover:translate-x-1 transition-all ml-2" />
+                    </div>
+                  </div>
+                </Link>
+
+                <Link to="/allergy-quiz" className="group">
+                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 transition-colors">
+                        <AlertTriangle className="w-5 h-5 text-destructive" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="font-semibold text-foreground group-hover:text-destructive transition-colors">Allergy Quiz</h3>
+                        <p className="text-xs text-muted-foreground">Ingredient removal training</p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-destructive group-hover:translate-x-1 transition-all ml-2" />
                     </div>
                   </div>
                 </Link>
