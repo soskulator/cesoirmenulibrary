@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { menuItems } from '@/data/menuData';
+import { menuItems, MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { ArrowLeft, Wine } from 'lucide-react';
+import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 // Spirit categories with French names
@@ -103,6 +105,8 @@ const item = {
 };
 
 export default function SpiritsPage() {
+  const [selectedSpirit, setSelectedSpirit] = useState<MenuItem | null>(null);
+  
   // Get all spirits
   const spirits = menuItems.filter((item) => item.categoryId === 'spirits' && item.isPublished);
 
@@ -206,7 +210,8 @@ export default function SpiritsPage() {
                         <motion.div
                           key={spirit.id}
                           variants={item}
-                          className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300"
+                          onClick={() => setSelectedSpirit(spirit)}
+                          className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
                         >
                           <div className="flex items-center gap-4 p-4">
                             {/* Spirit Image */}
@@ -269,6 +274,14 @@ export default function SpiritsPage() {
           </div>
         </motion.div>
       </div>
+      
+      {/* Spirit Detail Modal */}
+      <BeverageSplashModal
+        item={selectedSpirit}
+        isOpen={!!selectedSpirit}
+        onClose={() => setSelectedSpirit(null)}
+        type="spirit"
+      />
     </Layout>
   );
 }
