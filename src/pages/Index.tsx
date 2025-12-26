@@ -166,6 +166,16 @@ export default function Index() {
                         Take Quiz
                       </Link>
                     </Button>
+                    <Button 
+                      size="lg" 
+                      className="bg-sage text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-sage/80 hover:shadow-xl transition-all duration-300 group" 
+                      asChild
+                    >
+                      <Link to="/allergy-training">
+                        <AlertTriangle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                        Allergy Training
+                      </Link>
+                    </Button>
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -44,6 +44,7 @@ const navItems = [
   { path: '/spirits-quiz', label: 'Spirits Quiz', icon: Martini },
   { path: '/daily-focus', label: 'Daily Focus', icon: Star },
   { path: '/allergy-check', label: 'Allergy Check', icon: AlertTriangle },
+  { path: '/allergy-training', label: 'Allergy Training', icon: AlertTriangle },
 ];
 
 const adminItems = [
