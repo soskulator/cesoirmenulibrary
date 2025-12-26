@@ -121,50 +121,27 @@ export function BeverageFlashCard({
             beverageType.frontBg
           )}
         >
-          {/* Bottle Display Area - Fixed height for uniformity */}
-          <div className="flex-1 relative flex items-center justify-center overflow-hidden">
-            {/* Multi-layer background blend */}
+          {/* Bottle Display Area - Maximized for clear visibility */}
+          <div className="flex-1 relative flex items-center justify-center overflow-hidden min-h-0">
+            {/* Clean background */}
             <div 
               className="absolute inset-0"
               style={{ backgroundColor: beverageType.imageBg }}
             />
             
-            {/* Radial gradient for depth */}
-            <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/10" />
-            
             {dishImage ? (
-              <div className="relative h-full w-full flex items-center justify-center p-4 sm:p-6">
-                {/* Soft ambient glow behind bottle */}
-                <div 
-                  className="absolute inset-0 flex items-center justify-center opacity-40"
+              <div className="relative w-full h-full flex items-center justify-center py-3 px-6 sm:py-4 sm:px-8">
+                {/* Bottle image - sized to fill the card while maintaining aspect ratio */}
+                <img
+                  src={dishImage}
+                  alt={item.name}
+                  className="max-h-full max-w-full object-contain pointer-events-none"
                   style={{ 
-                    background: `radial-gradient(ellipse 60% 40% at 50% 50%, ${beverageType.imageBg === '#f8f6f3' ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.05)'} 0%, transparent 70%)`
+                    filter: `drop-shadow(0 4px 20px ${beverageType.imageBg === '#f8f6f3' ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,0.5)'})`,
+                    height: '100%',
+                    width: 'auto',
                   }}
                 />
-                
-                {/* Main bottle image with professional masking */}
-                <div className="relative z-10 h-full flex items-center justify-center">
-                  {/* Edge fade overlays for seamless blending */}
-                  <div 
-                    className="absolute inset-0 pointer-events-none z-20"
-                    style={{
-                      background: `
-                        linear-gradient(to right, ${beverageType.imageBg} 0%, transparent 8%, transparent 92%, ${beverageType.imageBg} 100%),
-                        linear-gradient(to bottom, ${beverageType.imageBg} 0%, transparent 5%, transparent 95%, ${beverageType.imageBg} 100%)
-                      `
-                    }}
-                  />
-                  
-                  <img
-                    src={dishImage}
-                    alt={item.name}
-                    className="relative h-full max-h-[180px] sm:max-h-[220px] md:max-h-[280px] w-auto object-contain pointer-events-none"
-                    style={{ 
-                      filter: `drop-shadow(0 8px 24px ${beverageType.imageBg === '#f8f6f3' ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.4)'})`,
-                      mixBlendMode: 'normal',
-                    }}
-                  />
-                </div>
               </div>
             ) : (
               <div className={cn("flex flex-col items-center justify-center gap-3", 
@@ -176,22 +153,19 @@ export function BeverageFlashCard({
             )}
           </div>
 
-          {/* Name overlay with elegant styling */}
+          {/* Compact name bar at bottom */}
           <div className={cn(
-            "p-4 sm:p-5 md:p-6",
+            "px-4 py-3 sm:px-5 sm:py-4 shrink-0",
             item.categoryId === 'spirits' 
-              ? "bg-gradient-to-t from-charcoal via-charcoal/90 to-charcoal/70" 
-              : "bg-gradient-to-t from-black/90 via-black/60 to-transparent"
+              ? "bg-charcoal" 
+              : "bg-black/90"
           )}>
-            <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-cream/50 mb-1.5 text-center">
+            <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-cream/40 mb-1 text-center">
               Swipe up to flip
             </p>
-            <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold text-cream text-center leading-tight">
+            <h2 className="font-serif text-base sm:text-lg md:text-xl font-semibold text-cream text-center leading-tight truncate">
               {item.name}
             </h2>
-            <p className={cn("text-xs sm:text-sm text-center mt-1 truncate", beverageType.accentColor)}>
-              {item.shortDescription}
-            </p>
           </div>
         </div>
 

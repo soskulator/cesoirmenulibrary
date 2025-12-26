@@ -113,6 +113,11 @@ import spiritCentenarioAnejo from '@/assets/drinks/spirit-centenario-anejo.png';
 import spiritMijentaBlanco from '@/assets/drinks/spirit-mijenta-blanco.png';
 import spiritLalo from '@/assets/drinks/spirit-lalo.png';
 import spiritDalmoreCigar from '@/assets/drinks/spirit-dalmore-cigar.jpg';
+// New bottle images
+import spiritBacardiSuperior from '@/assets/drinks/spirit-bacardi-superior.jpg';
+import spiritBelugaNoble from '@/assets/drinks/spirit-beluga-noble.jpg';
+import spiritFoursquareConvocation from '@/assets/drinks/spirit-foursquare-convocation.jpg';
+import spiritBrugalMaestro from '@/assets/drinks/spirit-brugal-maestro.jpg';
 
 // Drink images - Cocktails
 import cocktailEspressoMartini from '@/assets/drinks/cocktail-espresso-martini-new.jpg';
@@ -196,7 +201,7 @@ export const dishImages: Record<string, string> = {
   'spirit-3': spiritChopinPotato, // Chopin
   'spirit-4': spiritTrumanVodka, // Truman
   'spirit-5': spiritZubrowka, // Zubrowka
-  'spirit-6': spiritBelugaGold, // Beluga Noble
+  'spirit-6': spiritBelugaNoble, // Beluga Noble
   'spirit-7': spiritBelugaGold, // Beluga Gold
   
   // Spirits - Gin
@@ -210,7 +215,7 @@ export const dishImages: Record<string, string> = {
   'spirit-15': spiritTanqueray10, // Tanqueray No. Ten
   
   // Spirits - Rum
-  'spirit-16': spiritSailorJerry, // Bacardi Superior
+  'spirit-16': spiritBacardiSuperior, // Bacardi Superior
   'spirit-17': spiritBrugalAnejo, // Brugal Añejo
   'spirit-18': spiritSailorJerry, // Sailor Jerry
   'spirit-19': spiritKraken, // Kraken Black Spiced
@@ -218,8 +223,8 @@ export const dishImages: Record<string, string> = {
   'spirit-21': spiritZacapa23, // Zacapa 23
   'spirit-22': spiritElDorado15, // El Dorado 15
   'spirit-23': spiritZacapaXO, // Zacapa XO
-  'spirit-24': spiritElDorado15, // Foursquare
-  'spirit-25': spiritBrugalAnejo, // Brugal Maestro Reserva
+  'spirit-24': spiritFoursquareConvocation, // Foursquare Convocation
+  'spirit-25': spiritBrugalMaestro, // Brugal Maestro Reserva
   
   // Spirits - Tequila
   'spirit-26': spiritDobelDiamante, // Dobel Diamante
