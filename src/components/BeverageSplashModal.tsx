@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { X, Wine, Sparkles, GlassWater } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
@@ -11,7 +12,8 @@ interface BeverageSplashModalProps {
   type: 'wine' | 'spirit' | 'cocktail';
 }
 
-export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSplashModalProps) {
+export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModalProps>(
+  function BeverageSplashModal({ item, isOpen, onClose, type }, ref) {
   if (!item) return null;
 
   const image = getDishImage(item.id);
@@ -250,4 +252,4 @@ export function BeverageSplashModal({ item, isOpen, onClose, type }: BeverageSpl
       )}
     </AnimatePresence>
   );
-}
+});
