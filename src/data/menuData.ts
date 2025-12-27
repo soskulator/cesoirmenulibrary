@@ -984,7 +984,7 @@ export const menuItems: MenuItem[] = [
     updatedAt: '2024-01-15',
   },
   {
-    id: 'wine-11',
+    id: 'wine-12',
     categoryId: 'wine',
     name: 'Inniskillin Riesling Icewine',
     shortDescription: 'Canada 2021 • $25 per 2oz pour',
@@ -995,8 +995,8 @@ export const menuItems: MenuItem[] = [
     imageUrl: '/placeholder.svg',
     allergens: [],
     questions: [
-      { id: 'w21', type: 'selling', prompt: 'What is Icewine?', answer: 'Wine made from grapes frozen on the vine, resulting in intensely concentrated sweet wine.' },
-      { id: 'w22', type: 'quiz', prompt: 'Why is Icewine so special?', answer: 'Grapes must freeze naturally on the vine, concentrating sugars and flavors' },
+      { id: 'w27', type: 'selling', prompt: 'What is Icewine?', answer: 'Wine made from grapes frozen on the vine, resulting in intensely concentrated sweet wine.' },
+      { id: 'w28', type: 'quiz', prompt: 'Why is Icewine so special?', answer: 'Grapes must freeze naturally on the vine, concentrating sugars and flavors' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
