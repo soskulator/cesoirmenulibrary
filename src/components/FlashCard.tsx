@@ -74,7 +74,7 @@ export function FlashCard({
 
   return (
     <motion.div
-      className={cn('flip-card w-full max-w-md mx-auto cursor-pointer select-none touch-none h-[280px] sm:h-[340px] md:h-[420px]', className)}
+      className={cn('flip-card w-full max-w-lg mx-auto cursor-pointer select-none touch-none h-[520px] sm:h-[560px] md:h-[600px]', className)}
       style={{ x, y, rotateX, rotateY, perspective: 1000 }}
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
@@ -116,11 +116,11 @@ export function FlashCard({
           </div>
 
           {/* Name overlay with larger touch target */}
-          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-center">
+          <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 md:p-6 text-center">
             <p className="text-[10px] sm:text-xs uppercase tracking-widest text-cream/70 mb-1">
               Swipe up to flip • Left/right to navigate
             </p>
-            <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold text-cream drop-shadow-md">
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-cream drop-shadow-md">
               {item.name}
             </h2>
           </div>
@@ -129,48 +129,51 @@ export function FlashCard({
         {/* Back: Description */}
         <div
           className={cn(
-            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-2.5 sm:p-4 md:p-6 flex flex-col',
+            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-4 sm:p-5 md:p-6 flex flex-col',
             bgClass,
             borderClass
           )}
         >
-          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1.5 sm:space-y-3">
+          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-3 sm:space-y-4">
             {/* Title */}
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-semibold text-foreground leading-tight">{item.name}</h2>
-            <p className="text-copper font-medium text-[11px] sm:text-sm leading-snug">{item.shortDescription}</p>
-            <p className="text-muted-foreground leading-snug text-[11px] sm:text-sm line-clamp-2 sm:line-clamp-none">{item.longDescription}</p>
+            <div>
+              <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-foreground leading-tight">{item.name}</h2>
+              <p className="text-copper font-medium text-sm sm:text-base mt-1">{item.shortDescription}</p>
+            </div>
+            
+            <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{item.longDescription}</p>
 
             {/* Ingredients */}
             <div>
-              <h3 className="text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-jade mb-0.5">Ingredients</h3>
-              <p className="text-[11px] sm:text-sm text-muted-foreground leading-snug line-clamp-2 sm:line-clamp-none">{item.ingredientsText}</p>
+              <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-jade mb-1">Ingredients</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.ingredientsText}</p>
             </div>
 
             {/* Selling Points */}
             <div>
-              <h3 className="text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-copper mb-0.5">Selling Points</h3>
-              <p className="text-[11px] sm:text-sm text-muted-foreground leading-snug line-clamp-2 sm:line-clamp-none">{item.sellingPointsText}</p>
+              <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-copper mb-1">Selling Points</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.sellingPointsText}</p>
             </div>
 
             {/* Allergens */}
             {showAllergens && item.allergens.length > 0 && (
               <div>
-                <h3 className="text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-destructive mb-0.5">Allergens</h3>
+                <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-destructive mb-1">Allergens</h3>
                 <AllergenList allergens={item.allergens} size="sm" />
               </div>
             )}
 
             {/* Prep Notes */}
             {showPrepNotes && item.prepNotes && (
-              <div className="hidden sm:block">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Prep Notes</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground bg-muted/50 p-2 rounded-lg">{item.prepNotes}</p>
+              <div>
+                <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Prep Notes</h3>
+                <p className="text-sm sm:text-base text-muted-foreground bg-muted/50 p-3 rounded-lg">{item.prepNotes}</p>
               </div>
             )}
           </div>
 
           {/* Flip hint */}
-          <p className="text-[9px] sm:text-xs text-center text-muted-foreground mt-1.5 sm:mt-2">
+          <p className="text-xs text-center text-muted-foreground mt-3 pt-2 border-t border-border/50">
             Swipe down to flip back
           </p>
         </div>

@@ -18,8 +18,6 @@ import {
 } from '@/data/menuData';
 
 import { 
-  ChevronLeft, 
-  ChevronRight, 
   Search, 
   Filter, 
   X,
@@ -340,56 +338,29 @@ export default function FlashcardsPage() {
           </div>
         )}
 
-        {/* Navigation */}
+        {/* Action Buttons */}
         {currentItem && (
-          <div className="mt-3 sm:mt-4 md:mt-6 space-y-2 sm:space-y-3">
-            {/* Arrow Navigation */}
-            <div className="flex justify-between items-center gap-2 sm:gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={goToPrev}
-                disabled={currentIndex === 0}
-                className="flex-1 h-10 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"
-              >
-                <ChevronLeft className="w-5 h-5 sm:mr-1" />
-                <span className="hidden sm:inline">Previous</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={goToNext}
-                disabled={currentIndex >= filteredItems.length - 1}
-                className="flex-1 h-10 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"
-              >
-                <span className="hidden sm:inline">Next</span>
-                <ChevronRight className="w-5 h-5 sm:ml-1" />
-              </Button>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2 sm:gap-4 justify-center">
-              <Button
-                variant="burgundy-outline"
-                size="sm"
-                onClick={markForReview}
-                className="flex-1 max-w-xs h-10 sm:h-12 text-xs sm:text-base active:scale-95 transition-transform"
-              >
-                <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-2" />
-                <span className="hidden sm:inline">Need to Review</span>
-                <span className="sm:hidden">Review</span>
-              </Button>
-              <Button
-                variant="success"
-                size="sm"
-                onClick={markAsKnown}
-                className="flex-1 max-w-xs h-10 sm:h-12 text-xs sm:text-base active:scale-95 transition-transform"
-              >
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-2" />
-                <span className="hidden sm:inline">I Know This</span>
-                <span className="sm:hidden">Know It</span>
-              </Button>
-            </div>
+          <div className="mt-4 sm:mt-6 flex gap-3 sm:gap-4 justify-center">
+            <Button
+              variant="burgundy-outline"
+              size="sm"
+              onClick={markForReview}
+              className="flex-1 max-w-xs h-11 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"
+            >
+              <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="hidden sm:inline">Need to Review</span>
+              <span className="sm:hidden">Review</span>
+            </Button>
+            <Button
+              variant="success"
+              size="sm"
+              onClick={markAsKnown}
+              className="flex-1 max-w-xs h-11 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"
+            >
+              <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="hidden sm:inline">I Know This</span>
+              <span className="sm:hidden">Know It</span>
+            </Button>
           </div>
         )}
       </div>
