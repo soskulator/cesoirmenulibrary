@@ -16,13 +16,11 @@ import {
   Wine,
   GlassWater,
   Martini,
-  Sun,
-  Moon,
   ChevronDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { useTheme } from 'next-themes';
+
 import cesoirLogo from '@/assets/cesoir-logo.png';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -62,7 +60,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { user, isAdmin, signOut, loading } = useAuth();
-  const { theme, setTheme } = useTheme();
+  
 
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
@@ -175,18 +173,6 @@ export function Header() {
             </>
           )}
 
-          {/* Theme Toggle */}
-          <div className="w-px h-6 bg-border mx-2" />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="h-8 w-8"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
 
           {/* Auth Section */}
           <div className="w-px h-6 bg-border mx-2" />
@@ -231,16 +217,6 @@ export function Header() {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="h-8 w-8"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
           {!loading && user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
