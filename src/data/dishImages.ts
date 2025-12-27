@@ -47,6 +47,19 @@ import wineQuintessa from '@/assets/drinks/wine-quintessa-rutherford.webp';
 import wineKathrynHall from '@/assets/drinks/wine-kathryn-hall.jpg';
 import wineSancerreRose from '@/assets/drinks/wine-sancerre-rose.jpg';
 import wineInniskillin from '@/assets/drinks/wine-inniskillin-icewine.png';
+// New wine imports
+import wineRuinartBlanc from '@/assets/drinks/wine-ruinart-blanc.jpg';
+import wineLaurentPerrierRose from '@/assets/drinks/wine-laurent-perrier-rose.jpg';
+import wineVeuveClicquot from '@/assets/drinks/wine-veuve-clicquot.jpg';
+import wineFerghettina from '@/assets/drinks/wine-ferghettina-rose.png';
+import wineGioiosaProsecco from '@/assets/drinks/wine-la-gioiosa-prosecco.jpg';
+import wineBousquetMalbec from '@/assets/drinks/wine-domaine-bousquet-malbec.jpg';
+import wineChateauMargaux from '@/assets/drinks/wine-chateau-margaux.png';
+import wineCloudyBay from '@/assets/drinks/wine-cloudy-bay.png';
+import wineCatenaAlta from '@/assets/drinks/wine-catena-alta-malbec.jpg';
+import wineCakebread from '@/assets/drinks/wine-cakebread-chardonnay.jpg';
+import wineWhisperingAngel from '@/assets/drinks/wine-whispering-angel.jpg';
+import wineJordanCabernet from '@/assets/drinks/wine-jordan-cabernet.png';
 
 // Drink images - Spirits
 import spiritGreyGoose from '@/assets/drinks/spirit-grey-goose.png';
@@ -182,7 +195,7 @@ export const dishImages: Record<string, string> = {
   'spec-5': oysters,
   'spec-6': charcuterieBoard,
 
-  // Wines
+  // Wines - Original
   'wine-1': wineMoetImperial, // Moët Chandon Impérial Brut
   'wine-2': wineLaurentPerrier, // Laurent-Perrier Brut
   'wine-3': wineSancerre, // Domaine Fouassier Sancerre
@@ -195,6 +208,69 @@ export const dishImages: Record<string, string> = {
   'wine-10': wineKrug, // Krug Grand Cuvée
   'wine-11': wineQuintessa, // Quintessa Rutherford
   'wine-12': wineInniskillin, // Inniskillin Riesling Icewine
+  
+  // Wines - Sparkling (By the Glass)
+  'wine-13': wineMoetImperial, // Moët & Chandon Impérial Brut
+  'wine-14': wineVeuveClicquot, // Veuve Clicquot Yellow Label Brut
+  'wine-15': wineDomPerignon, // Dom Pérignon Brut 2015
+  'wine-16': wineKrug, // Krug Grande Cuvée
+  'wine-17': wineAceOfSpades, // Armand de Brignac Brut Gold
+  'wine-18': wineGioiosaProsecco, // La Gioiosa Prosecco
+  
+  // Wines - Champagne (By the Bottle)
+  'wine-19': wineRuinartBlanc, // Ruinart Blanc de Blancs
+  'wine-20': wineLaurentPerrier, // Perrier-Jouët Belle Epoque
+  'wine-21': wineLaurentPerrier, // Perrier-Jouët Grand Brut
+  'wine-22': wineLaurentPerrierRose, // Perrier-Jouët Blason Rosé
+  'wine-23': wineLaurentPerrier, // Laurent-Perrier Brut Nature
+  'wine-24': wineLaurentPerrierRose, // Laurent-Perrier Cuvée Rosé
+  'wine-25': wineLaurentPerrier, // Taittinger La Française
+  'wine-26': wineRuinartBlanc, // Barons de Rothschild Blanc de Blancs
+  
+  // Wines - Other Sparkling
+  'wine-27': wineLaurentPerrier, // Henri Champliau Crémant de Bourgogne
+  'wine-28': wineLaurentPerrier, // Barton & Guestier Crémant de Bordeaux
+  'wine-29': wineLaurentPerrier, // Clavelin Crémant du Jura
+  'wine-30': wineFerghettina, // Ferghettina Franciacorta Rosé
+  'wine-31': wineLaurentPerrier, // Gloria Ferrer Royal Cuvée
+  
+  // Wines - White (By the Glass)
+  'wine-32': wineSancerre, // Domaine Michel Brégeon Muscadet
+  'wine-33': wineChablis, // Lucien Albrecht Riesling
+  'wine-34': wineCloudyBay, // Knights Bridge Sauvignon Blanc
+  'wine-35': wineChablis, // Vincent Latour Pouilly-Fuissé
+  'wine-36': wineCakebread, // Cakebread Cellars Chardonnay
+  'wine-37': wineCloudyBay, // Cloudy Bay Sauvignon Blanc
+  
+  // Wines - White (By the Bottle)
+  'wine-38': wineSancerre, // Thierry & Pascale Reverdy Sancerre
+  'wine-39': wineChablis, // Maison Roland Lavantureux Chablis
+  'wine-40': wineCakebread, // Jordan Chardonnay
+  
+  // Wines - Rosé
+  'wine-41': wineSancerreRose, // Château du Rouët Côtes de Provence
+  'wine-42': wineSancerreRose, // Domaine des Parpaïouns Rosé
+  'wine-43': wineWhisperingAngel, // Whispering Angel
+  'wine-44': wineSancerreRose, // Blackbird Vineyards Arriviste Rosé
+  
+  // Wines - Red (By the Glass)
+  'wine-45': wineChateauMargaux, // Château Payrabon Haut-Médoc
+  'wine-46': wineLaboureRoi, // Domaine Chamfort Côtes-du-Rhône
+  'wine-47': wineLaboureRoi, // Etrusca Wines Zinfandel
+  'wine-48': wineLaboureRoi, // Resonance Pinot Noir
+  'wine-49': wineLaboureRoi, // Terrazza dell'Etna
+  'wine-50': wineLaboureRoi, // Daniele Conterno Barbera
+  'wine-51': wineLaboureRoi, // Il Bugiardo Valpolicella Ripasso
+  'wine-52': wineLaboureRoi, // Bodega Ontañón Rioja
+  'wine-53': wineCatenaAlta, // Alta Vista Estate Malbec
+  
+  // Wines - Dessert
+  'wine-54': wineInniskillin, // Château Roumieu-Lacoste Sauternes
+  'wine-55': wineInniskillin, // Royal Tokaji Red Label
+  'wine-56': wineInniskillin, // Antinori Vin Santo
+  'wine-57': wineInniskillin, // Van Zellers 20 Year Tawny Port
+  'wine-58': wineInniskillin, // Van Zellers 30 Year Tawny Port
+  'wine-59': wineInniskillin, // Poli Sarpa Oro Grappa
 
   // Spirits - Vodka
   'spirit-1': spiritGreyGoose, // Grey Goose
