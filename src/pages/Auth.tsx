@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Lock, Mail, User, AlertCircle } from 'lucide-react';
+import { Lock, Mail, User, AlertCircle, ArrowLeft, CheckCircle } from 'lucide-react';
 import logoImage from '@/assets/cesoir-logo.png';
 import { z } from 'zod';
 
@@ -24,17 +24,24 @@ const signUpSchema = z.object({
   fullName: z.string().trim().min(2, 'Name must be at least 2 characters'),
 });
 
+const resetSchema = z.object({
+  email: z.string().trim().email('Invalid email address'),
+});
+
+type AuthMode = 'signin' | 'signup' | 'forgot';
+
 export default function AuthPage() {
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get('token');
   
-  const [isSignUp, setIsSignUp] = useState(!!inviteToken);
+  const [mode, setMode] = useState<AuthMode>(inviteToken ? 'signup' : 'signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [inviteValid, setInviteValid] = useState<boolean | null>(null);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   
   const { signIn, signUp, user, loading } = useAuth();
   const { toast } = useToast();
@@ -84,13 +91,46 @@ export default function AuthPage() {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const validation = resetSchema.safeParse({ email });
+      if (!validation.success) {
+        setError(validation.error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+
+      const redirectUrl = `${window.location.origin}/reset-password`;
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,
+      });
+
+      if (error) {
+        // Don't reveal if email exists or not
+        console.error('Reset password error:', error);
+      }
+      
+      // Always show success to prevent email enumeration
+      setResetEmailSent(true);
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      if (isSignUp) {
+      if (mode === 'signup') {
         const validation = signUpSchema.safeParse({ email, password, fullName });
         if (!validation.success) {
           setError(validation.error.errors[0].message);
@@ -101,7 +141,6 @@ export default function AuthPage() {
         const { error } = await signUp(email, password, fullName);
         
         if (error) {
-          // Map errors to generic user-friendly messages
           if (error.message.includes('already registered') || error.message.includes('already been registered')) {
             setError('This email is already registered. Please sign in instead.');
           } else if (error.message.includes('invalid') || error.message.includes('Invalid')) {
@@ -109,7 +148,6 @@ export default function AuthPage() {
           } else if (error.message.includes('weak') || error.message.includes('password')) {
             setError('Password does not meet requirements. Please use a stronger password.');
           } else {
-            // Generic fallback - don't expose raw error details
             setError('Unable to create account. Please try again.');
           }
         } else {
@@ -130,13 +168,11 @@ export default function AuthPage() {
         const { error } = await signIn(email, password);
         
         if (error) {
-          // Map all auth errors to generic message - don't reveal if email exists
           if (error.message.includes('Invalid login') || error.message.includes('invalid') || error.message.includes('credentials')) {
             setError('Invalid email or password. Please try again.');
           } else if (error.message.includes('rate') || error.message.includes('limit')) {
             setError('Too many attempts. Please try again later.');
           } else {
-            // Generic fallback - don't expose raw error details
             setError('Unable to sign in. Please try again.');
           }
         } else {
@@ -164,6 +200,150 @@ export default function AuthPage() {
     );
   }
 
+  // Forgot Password Success Screen
+  if (resetEmailSent) {
+    return (
+      <Layout>
+        <div className="container py-8 sm:py-16 max-w-md px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="text-center mb-8">
+              <img 
+                src={logoImage} 
+                alt="Ce Soir" 
+                className="h-16 mx-auto mb-4"
+              />
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold">
+                Staff Portal
+              </h1>
+            </div>
+
+            <Card className="border-0 shadow-elevated">
+              <CardContent className="pt-6">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h2 className="font-semibold text-lg">Check your email</h2>
+                  <p className="text-muted-foreground text-sm">
+                    If an account exists for <strong>{email}</strong>, we've sent a password reset link.
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    The link will expire in 1 hour.
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="mt-4"
+                    onClick={() => {
+                      setResetEmailSent(false);
+                      setMode('signin');
+                      setEmail('');
+                    }}
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Sign In
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Forgot Password Form
+  if (mode === 'forgot') {
+    return (
+      <Layout>
+        <div className="container py-8 sm:py-16 max-w-md px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="text-center mb-8">
+              <img 
+                src={logoImage} 
+                alt="Ce Soir" 
+                className="h-16 mx-auto mb-4"
+              />
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold">
+                Staff Portal
+              </h1>
+              <p className="text-muted-foreground text-sm mt-2">
+                Reset your password
+              </p>
+            </div>
+
+            <Card className="border-0 shadow-elevated">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-copper" />
+                  Forgot Password
+                </CardTitle>
+                <CardDescription>
+                  Enter your email and we'll send you a reset link
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="flex items-center gap-2 text-destructive text-sm bg-destructive/10 p-3 rounded-md">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                      {error}
+                    </div>
+                  )}
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Sending...' : 'Send Reset Link'}
+                  </Button>
+                </form>
+
+                <div className="mt-6 text-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('signin');
+                      setError('');
+                    }}
+                    className="text-sm text-copper hover:text-copper-light transition-colors flex items-center gap-1 mx-auto"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back to Sign In
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="container py-8 sm:py-16 max-w-md px-4">
@@ -182,7 +362,7 @@ export default function AuthPage() {
               Staff Portal
             </h1>
             <p className="text-muted-foreground text-sm mt-2">
-              {isSignUp ? 'Create your account' : 'Sign in to continue'}
+              {mode === 'signup' ? 'Create your account' : 'Sign in to continue'}
             </p>
           </div>
 
@@ -190,7 +370,7 @@ export default function AuthPage() {
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Lock className="w-5 h-5 text-copper" />
-                {isSignUp ? 'Sign Up' : 'Sign In'}
+                {mode === 'signup' ? 'Sign Up' : 'Sign In'}
               </CardTitle>
               {inviteToken && inviteValid === false && (
                 <CardDescription className="text-destructive">
@@ -200,7 +380,7 @@ export default function AuthPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                {isSignUp && (
+                {mode === 'signup' && (
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
                     <div className="relative">
@@ -236,7 +416,21 @@ export default function AuthPage() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    {mode === 'signin' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMode('forgot');
+                          setError('');
+                        }}
+                        className="text-xs text-copper hover:text-copper-light transition-colors"
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
@@ -263,7 +457,7 @@ export default function AuthPage() {
                   className="w-full" 
                   disabled={isLoading || (inviteToken && !inviteValid)}
                 >
-                  {isLoading ? 'Please wait...' : (isSignUp ? 'Create Account' : 'Sign In')}
+                  {isLoading ? 'Please wait...' : (mode === 'signup' ? 'Create Account' : 'Sign In')}
                 </Button>
               </form>
 
@@ -272,12 +466,12 @@ export default function AuthPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setIsSignUp(!isSignUp);
+                      setMode(mode === 'signup' ? 'signin' : 'signup');
                       setError('');
                     }}
                     className="text-sm text-copper hover:text-copper-light transition-colors"
                   >
-                    {isSignUp 
+                    {mode === 'signup' 
                       ? 'Already have an account? Sign in' 
                       : 'Need an invitation? Contact your manager'}
                   </button>
