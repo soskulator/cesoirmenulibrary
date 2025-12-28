@@ -4,9 +4,10 @@ import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { menuItems, MenuItem } from '@/data/menuData';
-import { getDishImage } from '@/data/dishImages';
+import { getUniqueImage } from '@/data/dishImages';
 import { ArrowLeft, Wine } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
+import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 // Spirit categories with French names
@@ -204,7 +205,7 @@ export default function SpiritsPage() {
                   >
                     {categorySpirits.map((spirit) => {
                       if (!spirit) return null;
-                      const image = getDishImage(spirit.id);
+                      const image = getUniqueImage(spirit.id);
 
                       return (
                         <motion.div
@@ -213,24 +214,23 @@ export default function SpiritsPage() {
                           onClick={() => setSelectedSpirit(spirit)}
                           className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
                         >
-                          <div className="flex items-center gap-4 p-4">
-                            {/* Spirit Image */}
-                            <div className="relative w-16 h-20 md:w-20 md:h-24 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 rounded-xl flex items-center justify-center">
-                              {image ? (
-                                <img
+                          <div className="flex items-stretch gap-4 p-4 min-h-[96px]">
+                            {/* Spirit Image - Only render if unique image exists */}
+                            {image ? (
+                              <div className="relative w-16 h-20 md:w-20 md:h-24 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 rounded-xl flex items-center justify-center">
+                                <LazyImage
                                   src={image}
                                   alt={spirit.name}
                                   className="w-auto h-full max-h-20 md:max-h-22 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-md"
+                                  containerClassName="w-full h-full flex items-center justify-center"
                                 />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                  <span className="text-2xl">🥃</span>
-                                </div>
-                              )}
-                            </div>
+                              </div>
+                            ) : (
+                              <div className="w-16 md:w-20 flex-shrink-0" />
+                            )}
 
-                            {/* Spirit Details */}
-                            <div className="flex-1 min-w-0">
+                            {/* Spirit Details - Flex to fill available space */}
+                            <div className="flex-1 min-w-0 flex flex-col justify-center">
                               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
                                 <h3 className="font-serif text-lg font-semibold text-charcoal group-hover:text-copper transition-colors">
                                   {spirit.name}
