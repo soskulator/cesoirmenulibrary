@@ -126,81 +126,54 @@ export function FlashCard({
           </div>
         </div>
 
-        {/* Back: Bento Grid Detail View */}
+        {/* Back: Description */}
         <div
           className={cn(
-            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-4 flex flex-col',
+            'flip-card-back absolute inset-0 rounded-xl border-2 overflow-hidden shadow-elevated p-4 sm:p-5 md:p-6 flex flex-col',
             bgClass,
             borderClass
           )}
         >
-          <div className="flex-1 overflow-y-auto scrollbar-hide">
-            {/* Bento Grid Layout */}
-            <div className="grid grid-cols-3 gap-4 h-full auto-rows-fr">
-              {/* Main Image - spans 2 columns, 2 rows */}
-              <div className="col-span-2 row-span-2 rounded-xl overflow-hidden relative">
-                {dishImage ? (
-                  <img
-                    src={dishImage}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-muted rounded-xl">
-                    <span className="text-5xl opacity-40">🍽️</span>
-                  </div>
-                )}
-                {/* Name overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-charcoal/90 to-transparent">
-                  <h2 className="font-serif text-lg sm:text-xl font-semibold text-cream leading-tight">{item.name}</h2>
-                  <p className="text-copper text-xs sm:text-sm mt-0.5">{item.shortDescription}</p>
-                </div>
-              </div>
-
-              {/* Allergen Card - small square */}
-              <div className="col-span-1 row-span-1 rounded-xl bg-destructive/10 border border-destructive/20 p-3 flex flex-col">
-                <h3 className="text-[10px] font-semibold uppercase tracking-wider text-destructive mb-2">Allergens</h3>
-                {item.allergens.length > 0 ? (
-                  <div className="flex-1 flex items-center justify-center">
-                    <AllergenList allergens={item.allergens} size="sm" />
-                  </div>
-                ) : (
-                  <div className="flex-1 flex items-center justify-center">
-                    <span className="text-xs text-muted-foreground">None</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Selling Points Card - small square */}
-              <div className="col-span-1 row-span-1 rounded-xl bg-copper/10 border border-copper/20 p-3 flex flex-col">
-                <h3 className="text-[10px] font-semibold uppercase tracking-wider text-copper mb-1">Why It's Great</h3>
-                <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed line-clamp-4 flex-1">{item.sellingPointsText}</p>
-              </div>
-
-              {/* Description Card - tall vertical, spans full width */}
-              <div className="col-span-2 row-span-1 rounded-xl bg-card/50 border border-border/30 p-3 flex flex-col">
-                <h3 className="text-[10px] font-semibold uppercase tracking-wider text-jade mb-1">Description</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">{item.longDescription}</p>
-              </div>
-
-              {/* Ingredients Card */}
-              <div className="col-span-1 row-span-1 rounded-xl bg-jade/10 border border-jade/20 p-3 flex flex-col">
-                <h3 className="text-[10px] font-semibold uppercase tracking-wider text-jade mb-1">Ingredients</h3>
-                <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed line-clamp-5 flex-1">{item.ingredientsText}</p>
-              </div>
-
-              {/* Prep Notes Card (if available) */}
-              {showPrepNotes && item.prepNotes && (
-                <div className="col-span-3 row-span-1 rounded-xl bg-muted/50 border border-border/30 p-3">
-                  <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">Prep Notes</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{item.prepNotes}</p>
-                </div>
-              )}
+          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-3 sm:space-y-4">
+            {/* Title */}
+            <div>
+              <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-foreground leading-tight">{item.name}</h2>
+              <p className="text-copper font-medium text-sm sm:text-base mt-1">{item.shortDescription}</p>
             </div>
+            
+            <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{item.longDescription}</p>
+
+            {/* Ingredients */}
+            <div>
+              <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-jade mb-1">Ingredients</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.ingredientsText}</p>
+            </div>
+
+            {/* Selling Points */}
+            <div>
+              <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-copper mb-1">Selling Points</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.sellingPointsText}</p>
+            </div>
+
+            {/* Allergens */}
+            {showAllergens && item.allergens.length > 0 && (
+              <div>
+                <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-destructive mb-1">Allergens</h3>
+                <AllergenList allergens={item.allergens} size="sm" />
+              </div>
+            )}
+
+            {/* Prep Notes */}
+            {showPrepNotes && item.prepNotes && (
+              <div>
+                <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Prep Notes</h3>
+                <p className="text-sm sm:text-base text-muted-foreground bg-muted/50 p-3 rounded-lg">{item.prepNotes}</p>
+              </div>
+            )}
           </div>
 
           {/* Flip hint */}
-          <p className="text-[10px] text-center text-muted-foreground mt-2 pt-2 border-t border-border/50">
+          <p className="text-xs text-center text-muted-foreground mt-3 pt-2 border-t border-border/50">
             Swipe down to flip back
           </p>
         </div>
