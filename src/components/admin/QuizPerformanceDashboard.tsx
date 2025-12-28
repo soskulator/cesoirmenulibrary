@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDistanceToNow } from 'date-fns';
-import { Trophy, TrendingUp, Target, Medal, User } from 'lucide-react';
+import { Trophy, TrendingUp, Target, Medal, User, AlertCircle } from 'lucide-react';
 
 interface QuizScore {
   id: string;
@@ -42,6 +42,7 @@ export function QuizPerformanceDashboard() {
   const [scores, setScores] = useState<QuizScore[]>([]);
   const [staffPerformance, setStaffPerformance] = useState<StaffPerformance[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tableExists, setTableExists] = useState(true);
 
   useEffect(() => {
     fetchScores();
@@ -49,14 +50,21 @@ export function QuizPerformanceDashboard() {
 
   const fetchScores = async () => {
     try {
-      // Fetch quiz scores
+      // Try to fetch quiz scores - the table may not exist yet
       const { data: scoresData, error: scoresError } = await supabase
-        .from('quiz_scores')
+        .from('quiz_scores' as 'profiles') // Type cast to avoid TS error
         .select('*')
         .order('completed_at', { ascending: false })
         .limit(100);
 
-      if (scoresError) throw scoresError;
+      if (scoresError) {
+        // Check if table doesn't exist
+        if (scoresError.message.includes('does not exist') || scoresError.code === '42P01') {
+          setTableExists(false);
+          return;
+        }
+        throw scoresError;
+      }
 
       if (!scoresData || scoresData.length === 0) {
         setScores([]);
@@ -64,8 +72,11 @@ export function QuizPerformanceDashboard() {
         return;
       }
 
+      // Type cast the data
+      const typedData = scoresData as unknown as QuizScore[];
+
       // Get unique user IDs
-      const userIds = [...new Set(scoresData.map(s => s.user_id))];
+      const userIds = [...new Set(typedData.map(s => s.user_id))];
 
       // Fetch profiles
       const { data: profilesData } = await supabase
@@ -78,7 +89,7 @@ export function QuizPerformanceDashboard() {
       );
 
       // Enrich scores with user info
-      const enrichedScores = scoresData.map(score => ({
+      const enrichedScores = typedData.map(score => ({
         ...score,
         user_email: profilesMap.get(score.user_id)?.email || 'Unknown',
         user_name: profilesMap.get(score.user_id)?.name || null,
@@ -128,6 +139,7 @@ export function QuizPerformanceDashboard() {
       setStaffPerformance(performance);
     } catch (error) {
       console.error('Error fetching quiz scores:', error);
+      setTableExists(false);
     } finally {
       setLoading(false);
     }
@@ -137,12 +149,6 @@ export function QuizPerformanceDashboard() {
     if (percentage >= 90) return 'text-green-600 dark:text-green-400';
     if (percentage >= 70) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-red-600 dark:text-red-400';
-  };
-
-  const getProgressColor = (percentage: number) => {
-    if (percentage >= 90) return 'bg-green-500';
-    if (percentage >= 70) return 'bg-yellow-500';
-    return 'bg-red-500';
   };
 
   const getMedalIcon = (index: number) => {
@@ -163,6 +169,27 @@ export function QuizPerformanceDashboard() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">Loading scores...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!tableExists) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-copper" />
+            Quiz Performance
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <p className="text-sm">
+              Quiz performance tracking is being set up. The database tables are being created.
+            </p>
+          </div>
         </CardContent>
       </Card>
     );

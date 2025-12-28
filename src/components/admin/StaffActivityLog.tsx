@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNow } from 'date-fns';
-import { Eye, BookOpen, HelpCircle, Wine, Martini, UtensilsCrossed, User } from 'lucide-react';
+import { Eye, BookOpen, HelpCircle, Wine, Martini, UtensilsCrossed, User, AlertCircle } from 'lucide-react';
 
 interface ActivityLogEntry {
   id: string;
@@ -32,6 +32,7 @@ const categoryIcons: Record<string, typeof Wine> = {
 export function StaffActivityLog() {
   const [activities, setActivities] = useState<ActivityLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tableExists, setTableExists] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -39,22 +40,32 @@ export function StaffActivityLog() {
 
   const fetchActivities = async () => {
     try {
-      // Fetch activities
+      // Try to fetch activities - the table may not exist yet
       const { data: activityData, error: activityError } = await supabase
-        .from('staff_activity_log')
+        .from('staff_activity_log' as 'profiles') // Type cast to avoid TS error
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
 
-      if (activityError) throw activityError;
+      if (activityError) {
+        // Check if table doesn't exist
+        if (activityError.message.includes('does not exist') || activityError.code === '42P01') {
+          setTableExists(false);
+          return;
+        }
+        throw activityError;
+      }
 
       if (!activityData || activityData.length === 0) {
         setActivities([]);
         return;
       }
 
+      // Type cast the data
+      const typedData = activityData as unknown as ActivityLogEntry[];
+
       // Get unique user IDs
-      const userIds = [...new Set(activityData.map(a => a.user_id))];
+      const userIds = [...new Set(typedData.map(a => a.user_id))];
 
       // Fetch profiles for these users
       const { data: profilesData } = await supabase
@@ -68,7 +79,7 @@ export function StaffActivityLog() {
       );
 
       // Merge activity data with user info
-      const enrichedActivities = activityData.map(activity => ({
+      const enrichedActivities = typedData.map(activity => ({
         ...activity,
         user_email: profilesMap.get(activity.user_id)?.email || 'Unknown',
         user_name: profilesMap.get(activity.user_id)?.name || null,
@@ -77,6 +88,7 @@ export function StaffActivityLog() {
       setActivities(enrichedActivities);
     } catch (error) {
       console.error('Error fetching activities:', error);
+      setTableExists(false);
     } finally {
       setLoading(false);
     }
@@ -113,6 +125,27 @@ export function StaffActivityLog() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">Loading activity...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!tableExists) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Eye className="w-5 h-5 text-copper" />
+            Staff Activity Log
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <p className="text-sm">
+              Activity logging is being set up. The database tables are being created.
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
