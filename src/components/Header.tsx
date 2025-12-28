@@ -53,7 +53,7 @@ const quizItems = [
 ];
 
 const adminItems = [
-  { path: '/admin', label: 'Admin', icon: Settings },
+  { path: '/admin', label: 'Admin Center', icon: Settings },
 ];
 
 export function Header() {
