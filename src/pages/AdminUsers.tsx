@@ -63,6 +63,7 @@ interface Invitation {
   id: string;
   email: string;
   role: AppRole;
+  token: string;
   expires_at: string;
   accepted_at: string | null;
   created_at: string;
@@ -431,7 +432,7 @@ export default function AdminUsersPage() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => copyInviteLink(invite.id)}
+                        onClick={() => copyInviteLink(invite.token)}
                       >
                         Copy Link
                       </Button>
