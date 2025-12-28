@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { X, Wine, Sparkles, GlassWater } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
@@ -14,6 +14,19 @@ interface BeverageSplashModalProps {
 
 export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModalProps>(
   function BeverageSplashModal({ item, isOpen, onClose, type }, ref) {
+  
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!item) return null;
 
   const image = getDishImage(item.id);
