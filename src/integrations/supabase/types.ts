@@ -71,6 +71,63 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_scores: {
+        Row: {
+          completed_at: string
+          id: string
+          percentage: number
+          quiz_type: string
+          score: number
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          percentage: number
+          quiz_type: string
+          score: number
+          total_questions: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          percentage?: number
+          quiz_type?: string
+          score?: number
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      staff_activity_log: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          item_category: string | null
+          item_name: string
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          item_category?: string | null
+          item_name: string
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          item_category?: string | null
+          item_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       study_progress: {
         Row: {
           id: string
