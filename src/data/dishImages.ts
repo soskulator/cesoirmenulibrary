@@ -426,3 +426,65 @@ export const dishImages: Record<string, string> = {
 export const getDishImage = (itemId: string): string | undefined => {
   return dishImages[itemId];
 };
+
+// Items that have unique, verified images (not fallbacks from other products)
+// Wine items with unique bottle images
+const uniqueWineImages = new Set([
+  'wine-1', 'wine-2', 'wine-3', 'wine-4', 'wine-5', 'wine-6', 'wine-7', 
+  'wine-8', 'wine-9', 'wine-10', 'wine-11', 'wine-12',
+  'wine-13', 'wine-14', 'wine-15', 'wine-16', 'wine-17', 'wine-18',
+  'wine-19', 'wine-22', 'wine-24', 'wine-30',
+  'wine-34', 'wine-36', 'wine-37', 'wine-43', 'wine-53',
+]);
+
+// Spirit items with unique bottle images  
+const uniqueSpiritImages = new Set([
+  'spirit-1', 'spirit-2', 'spirit-3', 'spirit-4', 'spirit-5', 'spirit-6', 'spirit-7',
+  'spirit-8', 'spirit-9', 'spirit-10', 'spirit-11', 'spirit-12', 'spirit-13', 'spirit-14', 'spirit-15',
+  'spirit-16', 'spirit-17', 'spirit-18', 'spirit-19', 'spirit-20', 'spirit-21', 'spirit-22', 'spirit-23', 'spirit-24', 'spirit-25',
+  'spirit-26', 'spirit-27', 'spirit-28', 'spirit-29', 'spirit-30', 'spirit-31', 'spirit-32', 'spirit-34', 'spirit-35',
+  'spirit-40', 'spirit-47', 
+  'spirit-53', 'spirit-56', 'spirit-57', 'spirit-58', 'spirit-59', 'spirit-60', 'spirit-61', 
+  'spirit-65', 'spirit-67', 'spirit-69', 'spirit-70', 'spirit-71', 'spirit-73',
+  'spirit-81', 'spirit-82', 'spirit-83',
+  'spirit-90',
+  'spirit-97', 'spirit-99', 'spirit-100', 'spirit-101', 'spirit-102', 'spirit-103', 'spirit-110', 'spirit-115',
+]);
+
+// All food items have unique images
+const uniqueFoodImages = new Set([
+  'app-1', 'app-2', 'app-3', 'app-4', 'app-5', 'app-6', 'app-7', 'app-8', 'app-9', 'app-10',
+  'ent-1', 'ent-2', 'ent-3', 'ent-4', 'ent-5', 'ent-6', 'ent-7', 'ent-8', 'ent-9',
+  'des-1', 'des-2', 'des-3',
+  'side-1', 'side-2', 'side-3', 'side-4', 'side-5', 'side-6',
+  'spec-1', 'spec-2', 'spec-3', 'spec-4', 'spec-5', 'spec-6',
+]);
+
+// Cocktails all have unique images
+const uniqueCocktailImages = new Set([
+  'cocktail-1', 'cocktail-2', 'cocktail-3', 'cocktail-4', 'cocktail-5',
+  'cocktail-6', 'cocktail-7', 'cocktail-8', 'cocktail-9', 'cocktail-10',
+  'cocktail-11', 'cocktail-12', 'cocktail-13', 'cocktail-14', 'cocktail-15',
+]);
+
+/**
+ * Check if an item has a unique, verified image (not a fallback from another product)
+ * Use this to avoid showing duplicate/inherited images in lists
+ */
+export const hasUniqueImage = (itemId: string): boolean => {
+  return uniqueWineImages.has(itemId) || 
+         uniqueSpiritImages.has(itemId) || 
+         uniqueFoodImages.has(itemId) ||
+         uniqueCocktailImages.has(itemId);
+};
+
+/**
+ * Get image only if the item has a unique verified image
+ * Returns undefined for items using fallback images
+ */
+export const getUniqueImage = (itemId: string): string | undefined => {
+  if (hasUniqueImage(itemId)) {
+    return dishImages[itemId];
+  }
+  return undefined;
+};

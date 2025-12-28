@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { menuItems, MenuItem } from '@/data/menuData';
-import { getDishImage } from '@/data/dishImages';
+import { getUniqueImage } from '@/data/dishImages';
 import { ArrowLeft, Wine, Sparkles, GlassWater, ChevronDown } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
+import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 // Wine categories organized by type
@@ -227,7 +228,7 @@ export default function WineListPage() {
                           >
                             {categoryWines.map((wine, index) => {
                               if (!wine) return null;
-                              const image = getDishImage(wine.id);
+                              const image = getUniqueImage(wine.id);
 
                               return (
                                 <motion.div
@@ -237,37 +238,36 @@ export default function WineListPage() {
                                   onClick={() => setSelectedWine(wine)}
                                   className="group relative bg-background/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
                                 >
-                                  <div className="flex items-center gap-4 p-4">
-                                    {/* Wine Image */}
-                                    <div className="relative w-14 h-18 md:w-16 md:h-20 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 rounded-xl flex items-center justify-center">
-                                      {image ? (
-                                        <img
+                                  <div className="flex items-stretch gap-4 p-4 min-h-[88px]">
+                                    {/* Wine Image - Only render if unique image exists */}
+                                    {image ? (
+                                      <div className="relative w-14 h-18 md:w-16 md:h-20 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 rounded-xl flex items-center justify-center">
+                                        <LazyImage
                                           src={image}
                                           alt={wine.name}
                                           className="w-auto h-full max-h-16 md:max-h-18 object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-md"
+                                          containerClassName="w-full h-full flex items-center justify-center"
                                         />
-                                      ) : (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                          <Wine className="w-6 h-6 text-copper/30" />
-                                        </div>
-                                      )}
-                                    </div>
+                                      </div>
+                                    ) : (
+                                      <div className="w-14 md:w-16 flex-shrink-0" />
+                                    )}
 
-                                    {/* Wine Details */}
-                                    <div className="flex-1 min-w-0">
+                                    {/* Wine Details - Flex to fill available space */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
                                       <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors line-clamp-1">
                                         {wine.name}
                                       </h3>
                                       <p className="text-sm text-copper/80 font-medium mt-0.5 line-clamp-1">
                                         {wine.shortDescription}
                                       </p>
-                                      <p className="text-charcoal/50 text-xs md:text-sm leading-relaxed mt-1 line-clamp-1">
+                                      <p className="text-charcoal/50 text-xs md:text-sm leading-relaxed mt-1 line-clamp-2">
                                         {wine.longDescription}
                                       </p>
                                     </div>
 
                                     {/* Hover Indicator */}
-                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 self-center">
                                       <div className="w-8 h-8 rounded-full bg-copper/10 flex items-center justify-center">
                                         <ChevronDown className="w-4 h-4 text-copper -rotate-90" />
                                       </div>
