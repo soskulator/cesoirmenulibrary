@@ -282,28 +282,43 @@ export function Header() {
             );
           })}
 
-          {/* Quiz Section - Mobile */}
+          {/* Quiz Section - Mobile (Collapsible) */}
           <div className="h-px bg-border my-2" />
-          <p className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Quizzes</p>
-          {quizItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                  isActive 
-                    ? "bg-burgundy/10 text-burgundy" 
+                  "w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors",
+                  quizItems.some(item => location.pathname === item.path)
+                    ? "bg-burgundy/10 text-burgundy"
                     : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 )}
               >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
+                <span className="flex items-center gap-3">
+                  <HelpCircle className="w-5 h-5" />
+                  <span className="font-medium">Quiz</span>
+                </span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 bg-background">
+              {quizItems.map((item) => (
+                <DropdownMenuItem key={item.path} asChild>
+                  <Link
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-2 cursor-pointer",
+                      location.pathname === item.path && "text-burgundy"
+                    )}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           {isAdmin && (
             <>
