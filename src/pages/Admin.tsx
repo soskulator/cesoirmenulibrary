@@ -27,6 +27,8 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { menuItems, categories } from '@/data/menuData';
+import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
+import { QuizPerformanceDashboard } from '@/components/admin/QuizPerformanceDashboard';
 
 const adminSections = [
   {
@@ -333,7 +335,7 @@ export default function AdminPage() {
         </div>
 
         {/* Detailed Stats */}
-        <Card>
+        <Card className="mb-8">
           <CardHeader>
             <CardTitle className="text-lg">Complete Menu Overview</CardTitle>
           </CardHeader>
@@ -358,6 +360,17 @@ export default function AdminPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Staff Dashboards - Lead Admin Only */}
+        {isLeadAdmin && (
+          <>
+            <h2 className="font-serif text-xl font-semibold mb-4">Staff Insights</h2>
+            <div className="grid lg:grid-cols-2 gap-6 mb-8">
+              <StaffActivityLog />
+              <QuizPerformanceDashboard />
+            </div>
+          </>
+        )}
       </div>
     </Layout>
   );
