@@ -70,6 +70,11 @@
     --charcoal: 30 15% 12%;
     --charcoal-light: 30 12% 30%;
 
+    /* Brand accent colors - Terra Cotta & Soft Clay */
+    --terra-cotta: 18 58% 52%;
+    --soft-clay: 24 55% 65%;
+    --admin-bg: 30 20% 96%;
+
     /* Legacy support - map old names to new */
     --burgundy: 20 55% 50%;
     --burgundy-light: 22 50% 62%;

@@ -21,6 +21,7 @@ import Allergy from "./pages/Allergy";
 import Admin from "./pages/Admin";
 import AdminAssets from "./pages/AdminAssets";
 import AdminUsers from "./pages/AdminUsers";
+import LeadAdminDashboard from "./pages/LeadAdminDashboard";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -58,6 +59,7 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/assets" element={<AdminAssets />} />
               <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/dashboard" element={<LeadAdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
