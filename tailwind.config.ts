@@ -113,15 +113,24 @@ export default {
   				light: 'hsl(var(--copper-light))',
   				dark: 'hsl(var(--copper-dark))'
   			},
-  			gold: {
-  				DEFAULT: 'hsl(var(--gold))',
-  				light: 'hsl(var(--gold-light))'
-  			},
-  			sage: {
-  				DEFAULT: 'hsl(var(--jade))',
-  				light: 'hsl(var(--jade-light))'
-  			},
-  			allergen: {
+			gold: {
+				DEFAULT: 'hsl(var(--gold))',
+				light: 'hsl(var(--gold-light))'
+			},
+			sage: {
+				DEFAULT: 'hsl(var(--jade))',
+				light: 'hsl(var(--jade-light))'
+			},
+			'terra-cotta': {
+				DEFAULT: 'hsl(var(--terra-cotta))'
+			},
+			'soft-clay': {
+				DEFAULT: 'hsl(var(--soft-clay))'
+			},
+			'admin-bg': {
+				DEFAULT: 'hsl(var(--admin-bg))'
+			},
+			allergen: {
   				gluten: 'hsl(var(--allergen-gluten))',
   				dairy: 'hsl(var(--allergen-dairy))',
   				nuts: 'hsl(var(--allergen-nuts))',

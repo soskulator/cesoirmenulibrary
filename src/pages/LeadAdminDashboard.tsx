@@ -1,0 +1,440 @@
+import { useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { Layout } from '@/components/Layout';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
+import { 
+  Crown,
+  FileText,
+  Database,
+  Calendar,
+  Upload,
+  Plus,
+  Search,
+  GripVertical,
+  Download,
+  File,
+  ArrowLeft,
+  Wine,
+  Martini,
+  GlassWater,
+  UtensilsCrossed,
+  Edit,
+  Trash2,
+  Check,
+  X
+} from 'lucide-react';
+import { menuItems, categories, MenuItem } from '@/data/menuData';
+
+export default function LeadAdminDashboard() {
+  const { user, isLeadAdmin, loading: authLoading } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  // Menu Management state
+  const [menuTab, setMenuTab] = useState('food');
+  const [menuSearchQuery, setMenuSearchQuery] = useState('');
+  
+  // Daily Focus state
+  const [focusSearchQuery, setFocusSearchQuery] = useState('');
+  const [selectedFocusItems, setSelectedFocusItems] = useState<string[]>([]);
+  
+  // Drag state for categories
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    } else if (!authLoading && !isLeadAdmin) {
+      navigate('/admin');
+      toast({
+        title: 'Access Denied',
+        description: 'You need Lead Admin permissions to access this page.',
+        variant: 'destructive',
+      });
+    }
+  }, [authLoading, user, isLeadAdmin, navigate, toast]);
+
+  // Filter menu items by tab
+  const filteredMenuItems = useMemo(() => {
+    let items: MenuItem[] = [];
+    
+    switch (menuTab) {
+      case 'food':
+        items = menuItems.filter(item => 
+          !['wine-list', 'spirits', 'cocktails'].includes(item.categoryId)
+        );
+        break;
+      case 'wines':
+        items = menuItems.filter(item => item.categoryId === 'wine-list');
+        break;
+      case 'cocktails':
+        items = menuItems.filter(item => item.categoryId === 'cocktails');
+        break;
+      case 'spirits':
+        items = menuItems.filter(item => item.categoryId === 'spirits');
+        break;
+    }
+    
+    if (menuSearchQuery) {
+      items = items.filter(item => 
+        item.name.toLowerCase().includes(menuSearchQuery.toLowerCase()) ||
+        item.shortDescription.toLowerCase().includes(menuSearchQuery.toLowerCase())
+      );
+    }
+    
+    return items;
+  }, [menuTab, menuSearchQuery]);
+
+  // Filter for daily focus searchable list
+  const focusFilteredItems = useMemo(() => {
+    if (!focusSearchQuery) return menuItems.slice(0, 20);
+    return menuItems.filter(item =>
+      item.name.toLowerCase().includes(focusSearchQuery.toLowerCase())
+    ).slice(0, 20);
+  }, [focusSearchQuery]);
+
+  const toggleFocusItem = (itemId: string) => {
+    setSelectedFocusItems(prev => 
+      prev.includes(itemId) 
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    );
+  };
+
+  const handleSaveDailyFocus = () => {
+    toast({
+      title: 'Daily Focus Saved',
+      description: `${selectedFocusItems.length} items selected for today's focus.`,
+    });
+  };
+
+  const handleCSVUpload = () => {
+    toast({
+      title: 'Coming Soon',
+      description: 'CSV import functionality will be available soon.',
+    });
+  };
+
+  if (authLoading) {
+    return (
+      <Layout>
+        <div className="bg-admin-bg min-h-screen">
+          <div className="container py-8 max-w-6xl">
+            <p className="text-muted-foreground">Checking permissions…</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!user || !isLeadAdmin) return null;
+
+  return (
+    <Layout>
+      <div className="bg-admin-bg min-h-screen">
+        <div className="container py-8 max-w-6xl">
+          {/* Header */}
+          <div className="mb-8">
+            <Button 
+              variant="ghost" 
+              asChild 
+              className="mb-4 text-muted-foreground hover:text-foreground"
+            >
+              <Link to="/admin">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Admin
+              </Link>
+            </Button>
+            
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-terra-cotta to-soft-clay flex items-center justify-center shadow-lg">
+                <Crown className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h1 className="font-serif text-3xl font-bold text-foreground">
+                  Lead Admin Dashboard
+                </h1>
+                <p className="text-muted-foreground">
+                  Manage menu content, categories, and staff analytics
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Management Cards Grid */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            
+            {/* 1. Menu Management Center */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0 }}
+            >
+              <Card className="bg-card shadow-card h-full">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-10 h-10 rounded-lg bg-terra-cotta/10 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-terra-cotta" />
+                    </div>
+                    <Button size="sm" className="bg-terra-cotta hover:bg-terra-cotta/90 text-white">
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add Item
+                    </Button>
+                  </div>
+                  <CardTitle className="font-serif text-xl">Menu Management Center</CardTitle>
+                  <CardDescription>Add, edit, or remove individual items</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Tabs value={menuTab} onValueChange={setMenuTab} className="mb-4">
+                    <TabsList className="w-full grid grid-cols-4">
+                      <TabsTrigger value="food" className="text-xs">
+                        <UtensilsCrossed className="w-3 h-3 mr-1" />
+                        Food
+                      </TabsTrigger>
+                      <TabsTrigger value="wines" className="text-xs">
+                        <Wine className="w-3 h-3 mr-1" />
+                        Wines
+                      </TabsTrigger>
+                      <TabsTrigger value="cocktails" className="text-xs">
+                        <Martini className="w-3 h-3 mr-1" />
+                        Cocktails
+                      </TabsTrigger>
+                      <TabsTrigger value="spirits" className="text-xs">
+                        <GlassWater className="w-3 h-3 mr-1" />
+                        Spirits
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                  
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search items..."
+                      value={menuSearchQuery}
+                      onChange={(e) => setMenuSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  
+                  <ScrollArea className="h-[200px]">
+                    <div className="space-y-2">
+                      {filteredMenuItems.slice(0, 8).map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{item.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{item.shortDescription}</p>
+                          </div>
+                          <div className="flex items-center gap-1 ml-2">
+                            <Button size="icon" variant="ghost" className="h-8 w-8">
+                              <Edit className="w-3.5 h-3.5 text-muted-foreground" />
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  
+                  <p className="text-xs text-muted-foreground mt-3 text-center">
+                    Showing {Math.min(8, filteredMenuItems.length)} of {filteredMenuItems.length} items
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* 2. Category Manager */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="bg-card shadow-card h-full">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-10 h-10 rounded-lg bg-soft-clay/20 flex items-center justify-center">
+                      <Database className="w-5 h-5 text-soft-clay" />
+                    </div>
+                    <Button size="sm" variant="outline" className="border-soft-clay/30 text-soft-clay hover:bg-soft-clay/10">
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add Category
+                    </Button>
+                  </div>
+                  <CardTitle className="font-serif text-xl">Category Manager</CardTitle>
+                  <CardDescription>Organize and reorder menu categories</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-muted-foreground mb-3">Drag to reorder categories</p>
+                  <ScrollArea className="h-[280px]">
+                    <div className="space-y-2">
+                      {categories.map((category, index) => (
+                        <div
+                          key={category.id}
+                          className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-move"
+                        >
+                          <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span className="text-xl">{category.icon}</span>
+                          <div className="flex-1">
+                            <p className="font-medium text-sm">{category.name}</p>
+                            <p className="text-xs text-muted-foreground">{category.nameFrench}</p>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {menuItems.filter(m => m.categoryId === category.id).length} items
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* 3. Daily Focus Editor */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Card className="bg-card shadow-card h-full">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-10 h-10 rounded-lg bg-jade/10 flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-jade" />
+                    </div>
+                    <Badge variant="outline" className="border-jade/30 text-jade">
+                      {selectedFocusItems.length} Selected
+                    </Badge>
+                  </div>
+                  <CardTitle className="font-serif text-xl">Daily Focus Editor</CardTitle>
+                  <CardDescription>Select items for staff's daily focus page</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search menu items..."
+                      value={focusSearchQuery}
+                      onChange={(e) => setFocusSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  
+                  <ScrollArea className="h-[180px] mb-4">
+                    <div className="space-y-1">
+                      {focusFilteredItems.map((item) => {
+                        const isSelected = selectedFocusItems.includes(item.id);
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => toggleFocusItem(item.id)}
+                            className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-colors ${
+                              isSelected 
+                                ? 'bg-jade/10 border border-jade/30' 
+                                : 'bg-muted/50 hover:bg-muted'
+                            }`}
+                          >
+                            <Checkbox 
+                              checked={isSelected}
+                              className="border-jade data-[state=checked]:bg-jade data-[state=checked]:border-jade"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{item.name}</p>
+                            </div>
+                            {isSelected && <Check className="w-4 h-4 text-jade flex-shrink-0" />}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+                  
+                  <Button 
+                    onClick={handleSaveDailyFocus}
+                    className="w-full bg-jade hover:bg-jade/90 text-white"
+                  >
+                    Save Daily Focus
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* 4. Bulk Operations (CSV Import) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card className="bg-card shadow-card h-full">
+                <CardHeader className="pb-4">
+                  <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center">
+                    <Upload className="w-5 h-5 text-copper" />
+                  </div>
+                  <CardTitle className="font-serif text-xl">Bulk Operations</CardTitle>
+                  <CardDescription>Import menu items from CSV file</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4">
+                    <Button variant="link" className="p-0 h-auto text-terra-cotta">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download CSV Template
+                    </Button>
+                  </div>
+                  
+                  <div
+                    onClick={handleCSVUpload}
+                    className="border-2 border-dashed border-muted rounded-lg p-8 text-center cursor-pointer hover:border-terra-cotta/50 hover:bg-terra-cotta/5 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-muted/80 flex items-center justify-center mx-auto mb-3">
+                      <File className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <p className="text-sm font-medium text-foreground mb-1">
+                      Drop CSV file here
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      or click to browse
+                    </p>
+                  </div>
+                  
+                  <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                    <p className="text-xs text-amber-700">
+                      <strong>Note:</strong> CSV import requires database storage to be configured.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Analytics Section - Full Width */}
+          <Separator className="my-8" />
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <h2 className="font-serif text-2xl font-semibold mb-6">
+              Analytics: Team Study Progress
+            </h2>
+            <TeamStudyProgressChart />
+          </motion.div>
+        </div>
+      </div>
+    </Layout>
+  );
+}

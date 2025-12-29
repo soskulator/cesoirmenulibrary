@@ -35,33 +35,33 @@ const adminSections = [
     title: 'Menu Items',
     description: 'Add, edit, or remove menu items',
     icon: FileText,
-    path: '/admin/items',
-    badge: 'Coming Soon',
-    disabled: true,
+    path: '/admin/dashboard',
+    badge: null,
+    disabled: false,
   },
   {
     title: 'Categories',
     description: 'Manage menu categories',
     icon: Database,
-    path: '/admin/categories',
-    badge: 'Coming Soon',
-    disabled: true,
+    path: '/admin/dashboard',
+    badge: null,
+    disabled: false,
   },
   {
     title: 'CSV Import',
     description: 'Bulk import menu items from CSV',
     icon: Upload,
-    path: '/admin/import',
-    badge: 'Coming Soon',
-    disabled: true,
+    path: '/admin/dashboard',
+    badge: null,
+    disabled: false,
   },
   {
     title: 'Daily Focus',
     description: 'Schedule featured items for each day',
     icon: Calendar,
-    path: '/admin/focus',
-    badge: 'Coming Soon',
-    disabled: true,
+    path: '/admin/dashboard',
+    badge: null,
+    disabled: false,
   },
   {
     title: 'Assets & Design',
@@ -245,6 +245,12 @@ export default function AdminPage() {
             <CardContent>
               <div className="flex flex-wrap gap-3">
                 <Button asChild variant="outline" className="border-copper/30 hover:bg-copper/10 hover:text-copper">
+                  <Link to="/admin/dashboard">
+                    <Crown className="w-4 h-4 mr-2" />
+                    Open Dashboard
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="border-copper/30 hover:bg-copper/10 hover:text-copper">
                   <Link to="/admin/users">
                     <Users className="w-4 h-4 mr-2" />
                     Invite Staff
@@ -255,11 +261,6 @@ export default function AdminPage() {
                     <Image className="w-4 h-4 mr-2" />
                     Upload Assets
                   </Link>
-                </Button>
-                <Button variant="outline" className="border-copper/30 hover:bg-copper/10 hover:text-copper" disabled>
-                  <Upload className="w-4 h-4 mr-2" />
-                  Import Menu
-                  <Badge variant="secondary" className="ml-2 text-xs">Soon</Badge>
                 </Button>
               </div>
             </CardContent>
