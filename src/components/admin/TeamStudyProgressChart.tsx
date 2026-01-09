@@ -31,16 +31,16 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="bg-card border border-border rounded-lg shadow-lg p-4 min-w-[180px]">
-        <p className="font-serif font-semibold text-foreground mb-1">{data.name}</p>
-        <p className="text-sm text-muted-foreground mb-2">{data.email}</p>
-        <div className="flex items-center justify-between border-t border-border pt-2">
-          <span className="text-sm text-muted-foreground">Avg Score</span>
-          <span className="font-bold text-terra-cotta">{data.score}%</span>
+      <div className="bg-card border border-border rounded-lg shadow-lg p-3 sm:p-4 min-w-[160px] sm:min-w-[180px] max-w-[200px]">
+        <p className="font-serif font-semibold text-foreground text-sm sm:text-base mb-0.5 sm:mb-1 truncate">{data.name}</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mb-1.5 sm:mb-2 truncate">{data.email}</p>
+        <div className="flex items-center justify-between border-t border-border pt-1.5 sm:pt-2">
+          <span className="text-xs sm:text-sm text-muted-foreground">Avg Score</span>
+          <span className="font-bold text-terra-cotta text-sm sm:text-base">{data.score}%</span>
         </div>
         <div className="flex items-center justify-between mt-1">
-          <span className="text-sm text-muted-foreground">Last Active</span>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground">Last Active</span>
+          <span className="text-[10px] sm:text-xs text-muted-foreground">
             {formatDistanceToNow(new Date(data.lastActive), { addSuffix: true })}
           </span>
         </div>
@@ -147,16 +147,16 @@ export function TeamStudyProgressChart() {
 
   if (loading) {
     return (
-      <Card className="bg-card shadow-card">
-        <CardHeader>
-          <CardTitle className="font-serif text-xl flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-terra-cotta" />
+      <Card className="bg-card shadow-card overflow-hidden">
+        <CardHeader className="px-3 sm:px-6">
+          <CardTitle className="font-serif text-lg sm:text-xl flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-terra-cotta" />
             Team Study Progress
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="h-[300px] flex items-center justify-center">
-            <p className="text-muted-foreground text-sm">Loading chart data...</p>
+        <CardContent className="px-3 sm:px-6">
+          <div className="h-[250px] sm:h-[300px] flex items-center justify-center">
+            <p className="text-muted-foreground text-xs sm:text-sm">Loading chart data...</p>
           </div>
         </CardContent>
       </Card>
@@ -165,17 +165,17 @@ export function TeamStudyProgressChart() {
 
   if (!tableExists) {
     return (
-      <Card className="bg-card shadow-card">
-        <CardHeader>
-          <CardTitle className="font-serif text-xl flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-terra-cotta" />
+      <Card className="bg-card shadow-card overflow-hidden">
+        <CardHeader className="px-3 sm:px-6">
+          <CardTitle className="font-serif text-lg sm:text-xl flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-terra-cotta" />
             Team Study Progress
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-3 p-4 rounded-lg bg-amber-50 text-amber-700">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <p className="text-sm">
+        <CardContent className="px-3 sm:px-6">
+          <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-amber-50 text-amber-700">
+            <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+            <p className="text-xs sm:text-sm">
               Quiz tracking is being set up. Chart will display once staff complete quizzes.
             </p>
           </div>
@@ -185,52 +185,54 @@ export function TeamStudyProgressChart() {
   }
 
   return (
-    <Card className="bg-card shadow-card">
-      <CardHeader className="pb-4">
-        <CardTitle className="font-serif text-xl flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-terra-cotta" />
+    <Card className="bg-card shadow-card overflow-hidden">
+      <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
+        <CardTitle className="font-serif text-lg sm:text-xl flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-terra-cotta flex-shrink-0" />
           Employee Study Scores
         </CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
           Average quiz performance by team member
         </p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-2 sm:px-6">
         {data.length === 0 ? (
-          <div className="h-[300px] flex items-center justify-center">
-            <p className="text-muted-foreground text-sm text-center">
+          <div className="h-[250px] sm:h-[300px] flex items-center justify-center">
+            <p className="text-muted-foreground text-xs sm:text-sm text-center px-4">
               No quiz scores recorded yet.<br />
               Scores will appear as staff complete quizzes.
             </p>
           </div>
         ) : (
-          <div className="h-[350px] w-full">
+          <div className="h-[280px] sm:h-[350px] w-full -ml-2 sm:ml-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
                 layout="vertical"
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 5, right: 15, left: 0, bottom: 5 }}
               >
                 <XAxis 
                   type="number" 
                   domain={[0, 100]} 
                   tickFormatter={(value) => `${value}%`}
                   stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
+                  fontSize={10}
+                  tick={{ fontSize: 10 }}
                 />
                 <YAxis 
                   type="category" 
                   dataKey="name" 
-                  width={100}
+                  width={70}
                   stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
+                  fontSize={10}
                   tickLine={false}
+                  tick={{ fontSize: 10 }}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
                 <Bar 
                   dataKey="score" 
                   radius={[0, 4, 4, 0]}
-                  maxBarSize={30}
+                  maxBarSize={24}
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={getBarColor(entry.score)} />
