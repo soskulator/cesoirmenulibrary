@@ -10,6 +10,28 @@ import { getCategoryIcon } from '@/data/categoryIcons';
 import { ArrowLeft, CreditCard, ChevronRight, ChevronDown } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
+// Illustrated category images
+import appetizersIllustrated from '@/assets/categories/appetizers-illustrated.jpg';
+import entreesIllustrated from '@/assets/categories/entrees-illustrated.jpg';
+import dessertsIllustrated from '@/assets/categories/desserts-illustrated.jpg';
+import sidesIllustrated from '@/assets/categories/sides-illustrated.jpg';
+import specialsIllustrated from '@/assets/categories/specials-illustrated.jpg';
+import wineIllustrated from '@/assets/categories/wine-illustrated.jpg';
+import spiritsIllustrated from '@/assets/categories/spirits-illustrated.jpg';
+import cocktailsIllustrated from '@/assets/categories/cocktails-illustrated.jpg';
+
+// Map category IDs to illustrated images
+const categoryIllustratedImages: Record<string, string> = {
+  'appetizers': appetizersIllustrated,
+  'entrees': entreesIllustrated,
+  'desserts': dessertsIllustrated,
+  'sides': sidesIllustrated,
+  'specials': specialsIllustrated,
+  'wine': wineIllustrated,
+  'spirits': spiritsIllustrated,
+  'cocktails': cocktailsIllustrated,
+};
+
 // Spirit subcategories with their IDs
 const spiritSubcategories = {
   vodka: {
@@ -482,48 +504,72 @@ export default function CategoriesPage() {
           <p className="text-charcoal/50 mt-3 text-lg font-serif italic">Explore our menu categories</p>
         </motion.header>
 
-        {/* Categories Grid - Artistic Layout */}
-        <motion.div variants={container} initial="hidden" animate="show" className="px-6 pb-24">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        {/* Categories Grid - Illustrated Style */}
+        <motion.div variants={container} initial="hidden" animate="show" className="px-4 sm:px-6 pb-24">
+          <div className="max-w-2xl mx-auto grid grid-cols-2 gap-3 sm:gap-4">
             {categories.map((category) => {
-            const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
-            const iconSrc = getCategoryIcon(category.id);
-            return <motion.div key={category.id} variants={item}>
+              const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
+              const illustratedImage = categoryIllustratedImages[category.id];
+              const isDarkCategory = ['wine', 'spirits', 'cocktails'].includes(category.id);
+              
+              return (
+                <motion.div key={category.id} variants={item}>
                   <Link to={`/categories/${category.id}`} className="group block h-full">
-                    <div className="relative overflow-hidden rounded-3xl h-32 md:h-40 border border-charcoal/10 hover:border-copper/30 hover:shadow-xl transition-all duration-500">
-                      {/* Background Image - Full Cover */}
-                      {iconSrc && (
+                    <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 border transition-all duration-500 hover:shadow-xl ${
+                      isDarkCategory 
+                        ? 'border-charcoal/20 hover:border-charcoal/40' 
+                        : 'border-charcoal/10 hover:border-copper/30'
+                    }`}>
+                      {/* Background Image - Illustrated Style */}
+                      {illustratedImage && (
                         <img 
-                          src={iconSrc} 
+                          src={illustratedImage} 
                           alt="" 
-                          className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" 
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                         />
                       )}
                       
-                      {/* Dark Gradient Overlay for Text Readability */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-charcoal/20 group-hover:from-charcoal/95 transition-colors duration-500" />
+                      {/* Subtle Gradient Overlay - Different for light/dark images */}
+                      <div className={`absolute inset-0 transition-all duration-500 ${
+                        isDarkCategory
+                          ? 'bg-gradient-to-r from-charcoal/70 via-charcoal/30 to-transparent'
+                          : 'bg-gradient-to-r from-cream/80 via-cream/40 to-transparent'
+                      }`} />
 
-                      {/* Text Content - Bottom Aligned */}
-                      <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6">
-                        <h2 className="font-serif text-xl md:text-2xl font-bold text-white drop-shadow-lg group-hover:text-copper-light transition-colors duration-300">
+                      {/* Text Content - Left Aligned */}
+                      <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5">
+                        <h2 className={`font-serif text-lg sm:text-2xl font-bold drop-shadow-sm transition-colors duration-300 ${
+                          isDarkCategory
+                            ? 'text-white group-hover:text-copper-light'
+                            : 'text-charcoal group-hover:text-copper'
+                        }`}>
                           {category.name}
                         </h2>
-                        <p className="text-white/70 font-serif italic text-sm md:text-base mt-0.5">
+                        <p className={`font-serif italic text-xs sm:text-sm mt-0.5 ${
+                          isDarkCategory ? 'text-white/70' : 'text-copper'
+                        }`}>
                           {category.nameFrench}
                         </p>
 
                         {/* Count */}
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className="text-xs text-white/60 tracking-widest uppercase">
+                        <div className="mt-2 flex items-center gap-1">
+                          <span className={`text-[10px] sm:text-xs tracking-wide uppercase ${
+                            isDarkCategory ? 'text-white/60' : 'text-charcoal/50'
+                          }`}>
                             {itemCount} {itemCount === 1 ? 'item' : 'items'}
                           </span>
-                          <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-copper-light group-hover:translate-x-1 transition-all" />
+                          <ChevronRight className={`w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-all ${
+                            isDarkCategory 
+                              ? 'text-white/40 group-hover:text-copper-light' 
+                              : 'text-charcoal/30 group-hover:text-copper'
+                          }`} />
                         </div>
                       </div>
                     </div>
                   </Link>
-                </motion.div>;
-          })}
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
