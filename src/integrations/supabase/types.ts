@@ -47,6 +47,57 @@ export type Database = {
         }
         Relationships: []
       }
+      menu_items: {
+        Row: {
+          allergens: string[]
+          category_id: string
+          created_at: string
+          id: string
+          image_url: string
+          ingredients_text: string
+          is_published: boolean
+          long_description: string
+          name: string
+          prep_notes: string
+          questions: Json
+          selling_points_text: string
+          short_description: string
+          updated_at: string
+        }
+        Insert: {
+          allergens?: string[]
+          category_id: string
+          created_at?: string
+          id: string
+          image_url?: string
+          ingredients_text?: string
+          is_published?: boolean
+          long_description?: string
+          name: string
+          prep_notes?: string
+          questions?: Json
+          selling_points_text?: string
+          short_description?: string
+          updated_at?: string
+        }
+        Update: {
+          allergens?: string[]
+          category_id?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          ingredients_text?: string
+          is_published?: boolean
+          long_description?: string
+          name?: string
+          prep_notes?: string
+          questions?: Json
+          selling_points_text?: string
+          short_description?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

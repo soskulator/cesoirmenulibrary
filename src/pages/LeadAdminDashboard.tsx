@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -17,7 +17,7 @@ import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChar
 import { 
   Crown,
   FileText,
-  Database,
+  Database as DatabaseIcon,
   Calendar,
   Upload,
   Plus,
@@ -33,25 +33,34 @@ import {
   Edit,
   Trash2,
   Check,
-  X
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
-import { menuItems, categories, MenuItem } from '@/data/menuData';
+import { categories, MenuItem } from '@/data/menuData';
 
 export default function LeadAdminDashboard() {
   const { user, isLeadAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   
+  // Menu items from database
+  const { 
+    items: menuItems, 
+    isLoading: menuLoading, 
+    isInitialized,
+    initializeFromStatic,
+    deleteItem,
+    fetchItems
+  } = useMenuItems();
+  
   // Menu Management state
   const [menuTab, setMenuTab] = useState('food');
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   
   // Daily Focus state
   const [focusSearchQuery, setFocusSearchQuery] = useState('');
   const [selectedFocusItems, setSelectedFocusItems] = useState<string[]>([]);
-  
-  // Drag state for categories
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -188,13 +197,37 @@ export default function LeadAdminDashboard() {
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-terra-cotta/10 flex items-center justify-center flex-shrink-0">
                       <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-terra-cotta" />
                     </div>
-                    <Button size="sm" className="bg-terra-cotta hover:bg-terra-cotta/90 text-white text-xs sm:text-sm">
-                      <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-                      Add Item
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      {!isInitialized && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={initializeFromStatic}
+                          disabled={menuLoading}
+                          className="text-xs sm:text-sm"
+                        >
+                          {menuLoading ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
+                          ) : (
+                            <RefreshCw className="w-3.5 h-3.5 mr-1" />
+                          )}
+                          Sync to DB
+                        </Button>
+                      )}
+                      <Button size="sm" className="bg-terra-cotta hover:bg-terra-cotta/90 text-white text-xs sm:text-sm">
+                        <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                        Add Item
+                      </Button>
+                    </div>
                   </div>
                   <CardTitle className="font-serif text-lg sm:text-xl">Menu Management</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Add, edit, or remove items</CardDescription>
+                  <CardDescription className="text-xs sm:text-sm">
+                    {isInitialized ? (
+                      <span className="text-jade">✓ Synced to database</span>
+                    ) : (
+                      'Click "Sync to DB" to enable persistent storage'
+                    )}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
                   <Tabs value={menuTab} onValueChange={setMenuTab} className="mb-4">
@@ -229,27 +262,55 @@ export default function LeadAdminDashboard() {
                   </div>
                   
                   <ScrollArea className="h-[200px]">
-                    <div className="space-y-2">
-                      {filteredMenuItems.slice(0, 8).map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm truncate">{item.name}</p>
-                            <p className="text-xs text-muted-foreground truncate">{item.shortDescription}</p>
+                    {menuLoading ? (
+                      <div className="flex items-center justify-center h-full">
+                        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {filteredMenuItems.slice(0, 8).map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{item.name}</p>
+                              <p className="text-xs text-muted-foreground truncate">{item.shortDescription}</p>
+                            </div>
+                            <div className="flex items-center gap-1 ml-2">
+                              <Button size="icon" variant="ghost" className="h-8 w-8">
+                                <Edit className="w-3.5 h-3.5 text-muted-foreground" />
+                              </Button>
+                              <Button 
+                                size="icon" 
+                                variant="ghost" 
+                                className="h-8 w-8 text-destructive"
+                                disabled={deletingId === item.id}
+                                onClick={async () => {
+                                  if (!isInitialized) {
+                                    toast({
+                                      title: 'Sync Required',
+                                      description: 'Please sync menu to database first.',
+                                      variant: 'destructive',
+                                    });
+                                    return;
+                                  }
+                                  setDeletingId(item.id);
+                                  await deleteItem(item.id);
+                                  setDeletingId(null);
+                                }}
+                              >
+                                {deletingId === item.id ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                )}
+                              </Button>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1 ml-2">
-                            <Button size="icon" variant="ghost" className="h-8 w-8">
-                              <Edit className="w-3.5 h-3.5 text-muted-foreground" />
-                            </Button>
-                            <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive">
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </ScrollArea>
                   
                   <p className="text-xs text-muted-foreground mt-3 text-center">
@@ -269,7 +330,7 @@ export default function LeadAdminDashboard() {
                 <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
                   <div className="flex items-center justify-between gap-2">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-soft-clay/20 flex items-center justify-center flex-shrink-0">
-                      <Database className="w-4 h-4 sm:w-5 sm:h-5 text-soft-clay" />
+                      <DatabaseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-soft-clay" />
                     </div>
                     <Button size="sm" variant="outline" className="border-soft-clay/30 text-soft-clay hover:bg-soft-clay/10 text-xs sm:text-sm">
                       <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
