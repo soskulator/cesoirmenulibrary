@@ -77,7 +77,7 @@ export default function LeadAdminDashboard() {
         );
         break;
       case 'wines':
-        items = menuItems.filter(item => item.categoryId === 'wine-list');
+        items = menuItems.filter(item => item.categoryId === 'wine');
         break;
       case 'cocktails':
         items = menuItems.filter(item => item.categoryId === 'cocktails');
