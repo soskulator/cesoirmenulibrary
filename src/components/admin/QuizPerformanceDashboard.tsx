@@ -30,12 +30,12 @@ interface StaffPerformance {
   lastActivity: string;
 }
 
-const quizTypeLabels: Record<string, string> = {
-  menu: 'Menu Quiz',
-  wine: 'Wine Quiz',
-  spirits: 'Spirits Quiz',
-  cocktails: 'Cocktails Quiz',
-  allergy: 'Allergy Quiz',
+const testTypeLabels: Record<string, string> = {
+  menu: 'Menu Test',
+  wine: 'Wine Test',
+  spirits: 'Spirits Test',
+  cocktails: 'Cocktails Test',
+  allergy: 'Allergy Test',
 };
 
 export function QuizPerformanceDashboard() {
@@ -164,7 +164,7 @@ export function QuizPerformanceDashboard() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Trophy className="w-5 h-5 text-copper" />
-            Quiz Performance
+            Test Performance
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -180,14 +180,14 @@ export function QuizPerformanceDashboard() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Trophy className="w-5 h-5 text-copper" />
-            Quiz Performance
+            Test Performance
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <p className="text-sm">
-              Quiz performance tracking is being set up. The database tables are being created.
+              Test performance tracking is being set up. The database tables are being created.
             </p>
           </div>
         </CardContent>
@@ -208,7 +208,7 @@ export function QuizPerformanceDashboard() {
         <CardContent>
           {staffPerformance.length === 0 ? (
             <p className="text-muted-foreground text-sm text-center py-8">
-              No quiz scores recorded yet. Scores will appear as staff complete quizzes.
+              No test scores recorded yet. Scores will appear as staff complete tests.
             </p>
           ) : (
             <div className="space-y-4">
@@ -232,7 +232,7 @@ export function QuizPerformanceDashboard() {
                       {staff.user_name || staff.user_email}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {staff.totalQuizzes} quizzes completed
+                      {staff.totalQuizzes} tests completed
                     </p>
                   </div>
                   <div className="text-right">
@@ -316,10 +316,10 @@ export function QuizPerformanceDashboard() {
       {/* Recent Quiz Attempts */}
       {scores.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-copper" />
-              Recent Quiz Attempts
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-copper" />
+            Recent Test Attempts
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -339,7 +339,7 @@ export function QuizPerformanceDashboard() {
                           {score.user_name || score.user_email}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {quizTypeLabels[score.quiz_type] || score.quiz_type}
+                          {testTypeLabels[score.quiz_type] || score.quiz_type}
                         </p>
                       </div>
                     </div>

@@ -41,21 +41,21 @@ const navItems = [{
   label: 'Allergy Center',
   icon: AlertTriangle
 }];
-const quizItems = [{
+const testItems = [{
   path: '/quiz',
-  label: 'General Quiz',
+  label: 'General Test',
   icon: HelpCircle
 }, {
   path: '/wine-quiz',
-  label: 'Wine Quiz',
+  label: 'Wine Test',
   icon: Wine
 }, {
   path: '/spirits-quiz',
-  label: 'Spirits Quiz',
+  label: 'Spirits Test',
   icon: Martini
 }, {
   path: '/allergy-quiz',
-  label: 'Allergy Quiz',
+  label: 'Allergy Test',
   icon: AlertTriangle
 }];
 const adminItems = [{
@@ -100,14 +100,14 @@ export function Header() {
               </Link>;
         })}
 
-          {/* Quiz Dropdown */}
+          {/* Test Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5", quizItems.some(item => location.pathname === item.path) ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              <button className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5", testItems.some(item => location.pathname === item.path) ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <HelpCircle className="w-4 h-4" />
-                Quiz
+                Test
                 <ChevronDown className="w-3 h-3" />
-                {quizItems.some(item => location.pathname === item.path) && <motion.div layoutId="activeTabQuiz" className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10" transition={{
+                {testItems.some(item => location.pathname === item.path) && <motion.div layoutId="activeTabTest" className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10" transition={{
                 type: "spring",
                 bounce: 0.2,
                 duration: 0.6
@@ -115,7 +115,7 @@ export function Header() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
-              {quizItems.map(item => <DropdownMenuItem key={item.path} asChild>
+              {testItems.map(item => <DropdownMenuItem key={item.path} asChild>
                   <Link to={item.path} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
                     {item.label}
@@ -217,20 +217,20 @@ export function Header() {
               </Link>;
         })}
 
-          {/* Quiz Section - Mobile (Collapsible) */}
+          {/* Test Section - Mobile (Collapsible) */}
           <div className="h-px bg-border my-2" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors", quizItems.some(item => location.pathname === item.path) ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              <button className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors", testItems.some(item => location.pathname === item.path) ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-3">
                   <HelpCircle className="w-5 h-5" />
-                  <span className="font-medium">Quiz</span>
+                  <span className="font-medium">Test</span>
                 </span>
                 <ChevronDown className="w-4 h-4" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 bg-background">
-              {quizItems.map(item => <DropdownMenuItem key={item.path} asChild>
+              {testItems.map(item => <DropdownMenuItem key={item.path} asChild>
                   <Link to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
                     {item.label}

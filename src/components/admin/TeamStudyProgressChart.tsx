@@ -176,7 +176,7 @@ export function TeamStudyProgressChart() {
           <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-amber-50 text-amber-700">
             <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
             <p className="text-xs sm:text-sm">
-              Quiz tracking is being set up. Chart will display once staff complete quizzes.
+              Test tracking is being set up. Chart will display once staff complete tests.
             </p>
           </div>
         </CardContent>
@@ -192,15 +192,15 @@ export function TeamStudyProgressChart() {
           Employee Study Scores
         </CardTitle>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          Average quiz performance by team member
+          Average test performance by team member
         </p>
       </CardHeader>
       <CardContent className="px-2 sm:px-6">
         {data.length === 0 ? (
           <div className="h-[250px] sm:h-[300px] flex items-center justify-center">
             <p className="text-muted-foreground text-xs sm:text-sm text-center px-4">
-              No quiz scores recorded yet.<br />
-              Scores will appear as staff complete quizzes.
+              No test scores recorded yet.<br />
+              Scores will appear as staff complete tests.
             </p>
           </div>
         ) : (

@@ -190,7 +190,7 @@ export default function AllergyQuizPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gold" />
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Quiz Complete!</h1>
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Test Complete!</h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8">
               You scored {score.correct} out of {shuffledQuestions.length}
             </p>
@@ -239,7 +239,7 @@ export default function AllergyQuizPage() {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <AlertTriangle className="w-6 h-6 sm:w-8 sm:h-8 text-destructive" />
             </div>
-            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Allergy Quiz</h1>
+            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Allergy Test</h1>
             <p className="text-muted-foreground text-xs sm:text-sm">
               Test your knowledge on which ingredients to remove for specific allergies
             </p>
@@ -276,7 +276,7 @@ export default function AllergyQuizPage() {
               disabled={allQuestions.length === 0}
               className="h-10 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
             >
-              Start Quiz
+              Start Test
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
             </Button>
           </div>
