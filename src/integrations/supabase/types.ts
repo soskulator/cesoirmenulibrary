@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      foh_test_questions: {
+        Row: {
+          category: string
+          correct_answer: string
+          correct_index: number | null
+          created_at: string
+          id: string
+          is_active: boolean
+          options: Json | null
+          question: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          correct_answer: string
+          correct_index?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          options?: Json | null
+          question: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          correct_answer?: string
+          correct_index?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          options?: Json | null
+          question?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invitations: {
         Row: {
           accepted_at: string | null

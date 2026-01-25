@@ -15,6 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
 import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
+import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
 import { 
   Crown,
   FileText,
@@ -496,6 +497,16 @@ export default function LeadAdminDashboard() {
                   </div>
                 </CardContent>
               </Card>
+            </motion.div>
+
+            {/* 5. FoH Test Question Manager */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="lg:col-span-2"
+            >
+              <FohTestQuestionManager />
             </motion.div>
           </div>
 

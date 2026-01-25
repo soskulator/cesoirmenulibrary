@@ -7,8 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { fohTestQuestions, getCategoryLabel, getCategoryColor, FohTestQuestion } from '@/data/fohTestData';
+import { useFohTestQuestions } from '@/hooks/useFohTestQuestions';
+import { getCategoryLabel, getCategoryColor, FohTestQuestion } from '@/data/fohTestData';
 import { useQuizScores } from '@/hooks/useQuizScores';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Check, 
   X, 
@@ -19,7 +21,8 @@ import {
   ClipboardList,
   Medal,
   Target,
-  Clock
+  Clock,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -37,53 +40,105 @@ export default function FohTestPage() {
   const [shortAnswer, setShortAnswer] = useState('');
   const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([]);
   const [showResult, setShowResult] = useState(false);
-  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [evaluationResult, setEvaluationResult] = useState<{isCorrect: boolean; feedback: string} | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
   
   const { saveQuizScore } = useQuizScores();
+  const { getTestQuestions } = useFohTestQuestions();
+
+  // Get all questions (no category filtering)
+  const allQuestions = useMemo(() => getTestQuestions(), [getTestQuestions]);
 
   // Shuffle questions for the test
   const [shuffledQuestions, setShuffledQuestions] = useState<FohTestQuestion[]>([]);
 
   const startTest = () => {
-    const shuffled = [...fohTestQuestions].sort(() => Math.random() - 0.5);
+    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
     setShuffledQuestions(shuffled);
     setTestStarted(true);
     setCurrentIndex(0);
     setAnsweredQuestions([]);
     setShowResult(false);
-    setShowCorrectAnswer(false);
+    setEvaluationResult(null);
     setStartTime(new Date());
     setEndTime(null);
   };
 
   const currentQuestion = shuffledQuestions[currentIndex];
 
-  const submitAnswer = () => {
-    if (!currentQuestion) return;
+  // Evaluate short answer using AI
+  const evaluateShortAnswer = async (userAnswer: string, correctAnswer: string, question: string) => {
+    setIsEvaluating(true);
+    setEvaluationResult(null);
 
-    let isCorrect = false;
-    let userAnswer: string | number = '';
+    try {
+      const { data, error } = await supabase.functions.invoke('evaluate-answer', {
+        body: { userAnswer, correctAnswer, question }
+      });
 
-    if (currentQuestion.type === 'multiple_choice') {
-      if (selectedAnswer === null) return;
-      userAnswer = selectedAnswer;
-      isCorrect = selectedAnswer === currentQuestion.correctIndex;
-    } else {
-      if (!shortAnswer.trim()) return;
-      userAnswer = shortAnswer.trim();
-      // For short answers, we'll show both answers and let user self-evaluate
-      // But for automatic scoring, we do a simple comparison
-      const normalizedUser = shortAnswer.toLowerCase().trim();
-      const normalizedCorrect = currentQuestion.correctAnswer.toLowerCase().trim();
-      isCorrect = normalizedUser.includes(normalizedCorrect.substring(0, 20)) || 
-                  normalizedCorrect.includes(normalizedUser.substring(0, 20));
+      if (error) throw error;
+
+      setEvaluationResult({
+        isCorrect: data.isCorrect,
+        feedback: data.feedback || (data.isCorrect ? 'Good answer!' : 'Not quite right')
+      });
+
+      return data.isCorrect;
+    } catch (error) {
+      console.error('Error evaluating answer:', error);
+      // Fallback to simple keyword matching
+      const result = fallbackEvaluation(userAnswer, correctAnswer);
+      setEvaluationResult({
+        isCorrect: result,
+        feedback: result ? 'Answer matches key concepts' : 'Answer does not match expected response'
+      });
+      return result;
+    } finally {
+      setIsEvaluating(false);
     }
+  };
+
+  // Simple fallback evaluation
+  const fallbackEvaluation = (userAnswer: string, correctAnswer: string): boolean => {
+    const normalizedUser = userAnswer.toLowerCase().trim();
+    const normalizedCorrect = correctAnswer.toLowerCase().trim();
+    
+    // Extract key words (words with 3+ characters)
+    const stopWords = ['the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'with', 'this', 'that'];
+    const extractKeywords = (text: string): string[] => {
+      return text
+        .replace(/[^\w\s]/g, ' ')
+        .split(/\s+/)
+        .filter(word => word.length >= 3 && !stopWords.includes(word));
+    };
+    
+    const correctKeywords = extractKeywords(normalizedCorrect);
+    const userKeywords = extractKeywords(normalizedUser);
+    
+    if (correctKeywords.length === 0) {
+      return normalizedCorrect.includes(normalizedUser) || normalizedUser.includes(normalizedCorrect);
+    }
+    
+    let matchCount = 0;
+    for (const keyword of correctKeywords) {
+      if (normalizedUser.includes(keyword)) {
+        matchCount++;
+      }
+    }
+    
+    return (matchCount / correctKeywords.length) >= 0.5;
+  };
+
+  const submitMultipleChoice = () => {
+    if (!currentQuestion || selectedAnswer === null) return;
+
+    const isCorrect = selectedAnswer === currentQuestion.correctIndex;
 
     setAnsweredQuestions(prev => [...prev, {
       questionId: currentQuestion.id,
-      userAnswer,
+      userAnswer: selectedAnswer,
       isCorrect
     }]);
 
@@ -92,53 +147,35 @@ export default function FohTestPage() {
       setCurrentIndex(currentIndex + 1);
       setSelectedAnswer(null);
       setShortAnswer('');
-      setShowResult(false);
-      setShowCorrectAnswer(false);
+      setEvaluationResult(null);
     } else {
       setEndTime(new Date());
       setShowResult(true);
     }
   };
 
-  const revealAnswer = () => {
-    setShowCorrectAnswer(true);
-  };
+  const submitShortAnswer = async () => {
+    if (!currentQuestion || !shortAnswer.trim()) return;
 
-  const markAsCorrect = () => {
-    // Allow user to mark short answer as correct
-    if (!currentQuestion) return;
-    
+    const isCorrect = await evaluateShortAnswer(
+      shortAnswer.trim(),
+      currentQuestion.correctAnswer,
+      currentQuestion.question
+    );
+
     setAnsweredQuestions(prev => [...prev, {
       questionId: currentQuestion.id,
       userAnswer: shortAnswer.trim(),
-      isCorrect: true
+      isCorrect
     }]);
+  };
 
+  const proceedToNext = () => {
     if (currentIndex < shuffledQuestions.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setSelectedAnswer(null);
       setShortAnswer('');
-      setShowCorrectAnswer(false);
-    } else {
-      setEndTime(new Date());
-      setShowResult(true);
-    }
-  };
-
-  const markAsIncorrect = () => {
-    if (!currentQuestion) return;
-    
-    setAnsweredQuestions(prev => [...prev, {
-      questionId: currentQuestion.id,
-      userAnswer: shortAnswer.trim(),
-      isCorrect: false
-    }]);
-
-    if (currentIndex < shuffledQuestions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setSelectedAnswer(null);
-      setShortAnswer('');
-      setShowCorrectAnswer(false);
+      setEvaluationResult(null);
     } else {
       setEndTime(new Date());
       setShowResult(true);
@@ -185,6 +222,7 @@ export default function FohTestPage() {
     setShortAnswer('');
     setAnsweredQuestions([]);
     setShowResult(false);
+    setEvaluationResult(null);
     setStartTime(null);
     setEndTime(null);
   };
@@ -313,11 +351,11 @@ export default function FohTestPage() {
   // Test start screen
   if (!testStarted) {
     const categoryCount = {
-      service: fohTestQuestions.filter(q => q.category === 'service').length,
-      menu: fohTestQuestions.filter(q => q.category === 'menu').length,
-      drinks: fohTestQuestions.filter(q => q.category === 'drinks').length,
-      operations: fohTestQuestions.filter(q => q.category === 'operations').length,
-      general: fohTestQuestions.filter(q => q.category === 'general').length,
+      service: allQuestions.filter(q => q.category === 'service').length,
+      menu: allQuestions.filter(q => q.category === 'menu').length,
+      drinks: allQuestions.filter(q => q.category === 'drinks').length,
+      operations: allQuestions.filter(q => q.category === 'operations').length,
+      general: allQuestions.filter(q => q.category === 'general').length,
     };
 
     return (
@@ -338,7 +376,7 @@ export default function FohTestPage() {
               <h2 className="font-semibold mb-4">Test Overview</h2>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="p-3 bg-muted rounded-lg text-center">
-                  <p className="text-2xl font-bold text-burgundy">{fohTestQuestions.length}</p>
+                  <p className="text-2xl font-bold text-burgundy">{allQuestions.length}</p>
                   <p className="text-xs text-muted-foreground">Total Questions</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg text-center">
@@ -354,6 +392,12 @@ export default function FohTestPage() {
                     {getCategoryLabel(cat as FohTestQuestion['category'])} ({count})
                   </Badge>
                 ))}
+              </div>
+
+              <div className="mt-4 p-3 bg-sage/10 rounded-lg border border-sage/20">
+                <p className="text-xs text-sage-foreground">
+                  <strong>AI-Powered Grading:</strong> Short answers are automatically evaluated - you don't need verbatim answers, just demonstrate understanding of the key concepts.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -446,18 +490,40 @@ export default function FohTestPage() {
                         value={shortAnswer}
                         onChange={(e) => setShortAnswer(e.target.value)}
                         className="h-12"
-                        disabled={showCorrectAnswer}
+                        disabled={isEvaluating || evaluationResult !== null}
                       />
                       
-                      {/* Show correct answer only after submitting */}
-                      {showCorrectAnswer && (
-                        <div className="p-4 bg-muted rounded-lg border-l-4 border-sage">
-                          <p className="text-xs font-medium text-muted-foreground mb-2">Correct Answer:</p>
-                          <p className="text-sm text-foreground">{currentQuestion.correctAnswer}</p>
-                          <p className="text-xs text-muted-foreground mt-3">
-                            Compare your answer and mark it accordingly:
-                          </p>
-                        </div>
+                      {/* Show evaluation result */}
+                      {evaluationResult && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={cn(
+                            "p-4 rounded-lg border-l-4",
+                            evaluationResult.isCorrect 
+                              ? "bg-sage/10 border-sage" 
+                              : "bg-destructive/10 border-destructive"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            {evaluationResult.isCorrect ? (
+                              <Check className="w-5 h-5 text-sage" />
+                            ) : (
+                              <X className="w-5 h-5 text-destructive" />
+                            )}
+                            <p className={cn(
+                              "font-medium",
+                              evaluationResult.isCorrect ? "text-sage" : "text-destructive"
+                            )}>
+                              {evaluationResult.isCorrect ? 'Correct!' : 'Incorrect'}
+                            </p>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-2">{evaluationResult.feedback}</p>
+                          <div className="pt-2 border-t border-border/50">
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Expected Answer:</p>
+                            <p className="text-sm">{currentQuestion.correctAnswer}</p>
+                          </div>
+                        </motion.div>
                       )}
                     </div>
                   )}
@@ -470,41 +536,40 @@ export default function FohTestPage() {
                   <Button
                     variant="burgundy"
                     className="flex-1 h-11"
-                    onClick={submitAnswer}
+                    onClick={submitMultipleChoice}
                     disabled={selectedAnswer === null}
                   >
                     Submit Answer
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
-                ) : !showCorrectAnswer ? (
+                ) : evaluationResult === null ? (
                   <Button
                     variant="burgundy"
                     className="flex-1 h-11"
-                    onClick={revealAnswer}
-                    disabled={!shortAnswer.trim()}
+                    onClick={submitShortAnswer}
+                    disabled={!shortAnswer.trim() || isEvaluating}
                   >
-                    Submit Answer
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    {isEvaluating ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Evaluating...
+                      </>
+                    ) : (
+                      <>
+                        Submit Answer
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                      </>
+                    )}
                   </Button>
                 ) : (
-                  <>
-                    <Button
-                      variant="outline"
-                      className="flex-1 h-11 border-destructive text-destructive hover:bg-destructive hover:text-white"
-                      onClick={markAsIncorrect}
-                    >
-                      <X className="w-5 h-5 mr-2" />
-                      Incorrect
-                    </Button>
-                    <Button
-                      variant="success"
-                      className="flex-1 h-11"
-                      onClick={markAsCorrect}
-                    >
-                      <Check className="w-5 h-5 mr-2" />
-                      Correct
-                    </Button>
-                  </>
+                  <Button
+                    variant="burgundy"
+                    className="flex-1 h-11"
+                    onClick={proceedToNext}
+                  >
+                    {currentIndex < shuffledQuestions.length - 1 ? 'Next Question' : 'See Results'}
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
                 )}
               </div>
             </motion.div>
