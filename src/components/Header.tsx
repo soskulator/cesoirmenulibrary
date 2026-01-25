@@ -1,185 +1,143 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { 
-  Home, 
-  Layers, 
-  CreditCard, 
-  HelpCircle, 
-  Star, 
-  Settings,
-  AlertTriangle,
-  Menu,
-  X,
-  LogIn,
-  LogOut,
-  Wine,
-  GlassWater,
-  Martini,
-  ChevronDown
-} from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-
 import cesoirLogo from '@/assets/cesoir-logo.png';
-
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-
-const navItems = [
-  { path: '/', label: 'Home', icon: Home },
-  { path: '/categories', label: 'The Menu', icon: Layers },
-  { path: '/wine-list', label: 'Wine', icon: Wine },
-  { path: '/spirits', label: 'Spirits', icon: Martini },
-  { path: '/cocktails', label: 'Cocktails', icon: GlassWater },
-  { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
-  { path: '/daily-focus', label: 'Daily Focus', icon: Star },
-  { path: '/allergy', label: 'Allergy Center', icon: AlertTriangle },
-];
-
-const quizItems = [
-  { path: '/quiz', label: 'General Quiz', icon: HelpCircle },
-  { path: '/wine-quiz', label: 'Wine Quiz', icon: Wine },
-  { path: '/spirits-quiz', label: 'Spirits Quiz', icon: Martini },
-  { path: '/allergy-quiz', label: 'Allergy Quiz', icon: AlertTriangle },
-];
-
-const adminItems = [
-  { path: '/admin', label: 'Admin Center', icon: Settings },
-];
-
+const navItems = [{
+  path: '/',
+  label: 'Home',
+  icon: Home
+}, {
+  path: '/categories',
+  label: 'The Menu',
+  icon: Layers
+}, {
+  path: '/wine-list',
+  label: 'Wine',
+  icon: Wine
+}, {
+  path: '/spirits',
+  label: 'Spirits',
+  icon: Martini
+}, {
+  path: '/cocktails',
+  label: 'Cocktails',
+  icon: GlassWater
+}, {
+  path: '/flashcards',
+  label: 'Flashcards',
+  icon: CreditCard
+}, {
+  path: '/daily-focus',
+  label: 'Daily Focus',
+  icon: Star
+}, {
+  path: '/allergy',
+  label: 'Allergy Center',
+  icon: AlertTriangle
+}];
+const quizItems = [{
+  path: '/quiz',
+  label: 'General Quiz',
+  icon: HelpCircle
+}, {
+  path: '/wine-quiz',
+  label: 'Wine Quiz',
+  icon: Wine
+}, {
+  path: '/spirits-quiz',
+  label: 'Spirits Quiz',
+  icon: Martini
+}, {
+  path: '/allergy-quiz',
+  label: 'Allergy Quiz',
+  icon: AlertTriangle
+}];
+const adminItems = [{
+  path: '/admin',
+  label: 'Admin Center',
+  icon: Settings
+}];
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { user, isAdmin, signOut, loading } = useAuth();
-  
-
+  const {
+    user,
+    isAdmin,
+    signOut,
+    loading
+  } = useAuth();
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
   };
-
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+  return <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex flex-col items-center gap-0.5">
-          <img 
-            src={cesoirLogo} 
-            alt="Ce Soir" 
-            className="h-8 w-auto"
-          />
-          <p className="text-[10px] tracking-widest uppercase text-muted-foreground font-medium">Staff Training</p>
+          <img src={cesoirLogo} alt="Ce Soir" className="h-8 w-auto" />
+          <p className="text-[10px] tracking-widest uppercase text-muted-foreground font-medium">Naples</p>
         </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "relative px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-                  isActive 
-                    ? "text-burgundy" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                )}
-              >
+          {navItems.map(item => {
+          const isActive = location.pathname === item.path;
+          return <Link key={item.path} to={item.path} className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5">
                   <item.icon className="w-4 h-4" />
                   {item.label}
                 </span>
-                {isActive && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10" transition={{
+              type: "spring",
+              bounce: 0.2,
+              duration: 0.6
+            }} />}
+              </Link>;
+        })}
 
           {/* Quiz Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button
-                className={cn(
-                  "relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5",
-                  quizItems.some(item => location.pathname === item.path)
-                    ? "text-burgundy"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                )}
-              >
+              <button className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5", quizItems.some(item => location.pathname === item.path) ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <HelpCircle className="w-4 h-4" />
                 Quiz
                 <ChevronDown className="w-3 h-3" />
-                {quizItems.some(item => location.pathname === item.path) && (
-                  <motion.div
-                    layoutId="activeTabQuiz"
-                    className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
+                {quizItems.some(item => location.pathname === item.path) && <motion.div layoutId="activeTabQuiz" className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10" transition={{
+                type: "spring",
+                bounce: 0.2,
+                duration: 0.6
+              }} />}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
-              {quizItems.map((item) => (
-                <DropdownMenuItem key={item.path} asChild>
-                  <Link
-                    to={item.path}
-                    className={cn(
-                      "flex items-center gap-2 cursor-pointer",
-                      location.pathname === item.path && "text-burgundy"
-                    )}
-                  >
+              {quizItems.map(item => <DropdownMenuItem key={item.path} asChild>
+                  <Link to={item.path} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
                     {item.label}
                   </Link>
-                </DropdownMenuItem>
-              ))}
+                </DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
           
-          {isAdmin && (
-            <>
+          {isAdmin && <>
               <div className="w-px h-6 bg-border mx-2" />
-              {adminItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-                    location.pathname.startsWith(item.path)
-                      ? "text-gold bg-gold/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                  )}
-                >
+              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("px-3 py-2 text-sm font-medium rounded-lg transition-colors", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                   <span className="flex items-center gap-1.5">
                     <item.icon className="w-4 h-4" />
                     {item.label}
                   </span>
-                </Link>
-              ))}
-            </>
-          )}
+                </Link>)}
+            </>}
 
 
           {/* Auth Section */}
           <div className="w-px h-6 bg-border mx-2" />
-          {loading ? (
-            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
-          ) : user ? (
-            <DropdownMenu>
+          {loading ? <div className="w-8 h-8 rounded-full bg-muted animate-pulse" /> : user ? <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
@@ -204,21 +162,17 @@ export function Header() {
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button variant="ghost" size="sm" asChild>
+            </DropdownMenu> : <Button variant="ghost" size="sm" asChild>
               <Link to="/auth">
                 <LogIn className="w-4 h-4 mr-2" />
                 Sign In
               </Link>
-            </Button>
-          )}
+            </Button>}
         </nav>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-2">
-          {!loading && user && (
-            <DropdownMenu>
+          {!loading && user && <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
@@ -243,57 +197,31 @@ export function Header() {
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
+            </DropdownMenu>}
+          <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      <motion.div
-        initial={false}
-        animate={{ height: mobileMenuOpen ? 'auto' : 0 }}
-        className="md:hidden overflow-hidden border-t border-border bg-background"
-      >
+      <motion.div initial={false} animate={{
+      height: mobileMenuOpen ? 'auto' : 0
+    }} className="md:hidden overflow-hidden border-t border-border bg-background">
         <nav className="container py-4 flex flex-col gap-1">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                  isActive 
-                    ? "bg-burgundy/10 text-burgundy" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                )}
-              >
+          {navItems.map(item => {
+          const isActive = location.pathname === item.path;
+          return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-3 rounded-lg transition-colors", isActive ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
+              </Link>;
+        })}
 
           {/* Quiz Section - Mobile (Collapsible) */}
           <div className="h-px bg-border my-2" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button
-                className={cn(
-                  "w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors",
-                  quizItems.some(item => location.pathname === item.path)
-                    ? "bg-burgundy/10 text-burgundy"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                )}
-              >
+              <button className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors", quizItems.some(item => location.pathname === item.path) ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-3">
                   <HelpCircle className="w-5 h-5" />
                   <span className="font-medium">Quiz</span>
@@ -302,63 +230,33 @@ export function Header() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 bg-background">
-              {quizItems.map((item) => (
-                <DropdownMenuItem key={item.path} asChild>
-                  <Link
-                    to={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center gap-2 cursor-pointer",
-                      location.pathname === item.path && "text-burgundy"
-                    )}
-                  >
+              {quizItems.map(item => <DropdownMenuItem key={item.path} asChild>
+                  <Link to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
                     {item.label}
                   </Link>
-                </DropdownMenuItem>
-              ))}
+                </DropdownMenuItem>)}
             </DropdownMenuContent>
           </DropdownMenu>
           
-          {isAdmin && (
-            <>
+          {isAdmin && <>
               <div className="h-px bg-border my-2" />
-              {adminItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                    location.pathname.startsWith(item.path)
-                      ? "bg-gold/10 text-gold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                  )}
-                >
+              {adminItems.map(item => <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-3 rounded-lg transition-colors", location.pathname.startsWith(item.path) ? "bg-gold/10 text-gold" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                   <item.icon className="w-5 h-5" />
                   <span className="font-medium">{item.label}</span>
-                </Link>
-              ))}
-            </>
-          )}
+                </Link>)}
+            </>}
 
           {/* Auth Link - Mobile */}
-          {!user && (
-            <>
+          {!user && <>
               <div className="h-px bg-border my-2" />
-              <Link
-                to="/auth"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-copper hover:bg-copper/10"
-              >
+              <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-copper hover:bg-copper/10">
                 <LogIn className="w-5 h-5" />
                 <span className="font-medium">Sign In</span>
               </Link>
-            </>
-          )}
+            </>}
           
         </nav>
       </motion.div>
-    </header>
-  );
+    </header>;
 }
