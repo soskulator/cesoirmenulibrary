@@ -37,6 +37,7 @@ export default function FohTestPage() {
   const [shortAnswer, setShortAnswer] = useState('');
   const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([]);
   const [showResult, setShowResult] = useState(false);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
   
@@ -52,6 +53,7 @@ export default function FohTestPage() {
     setCurrentIndex(0);
     setAnsweredQuestions([]);
     setShowResult(false);
+    setShowCorrectAnswer(false);
     setStartTime(new Date());
     setEndTime(null);
   };
@@ -91,10 +93,15 @@ export default function FohTestPage() {
       setSelectedAnswer(null);
       setShortAnswer('');
       setShowResult(false);
+      setShowCorrectAnswer(false);
     } else {
       setEndTime(new Date());
       setShowResult(true);
     }
+  };
+
+  const revealAnswer = () => {
+    setShowCorrectAnswer(true);
   };
 
   const markAsCorrect = () => {
@@ -111,6 +118,7 @@ export default function FohTestPage() {
       setCurrentIndex(currentIndex + 1);
       setSelectedAnswer(null);
       setShortAnswer('');
+      setShowCorrectAnswer(false);
     } else {
       setEndTime(new Date());
       setShowResult(true);
@@ -130,6 +138,7 @@ export default function FohTestPage() {
       setCurrentIndex(currentIndex + 1);
       setSelectedAnswer(null);
       setShortAnswer('');
+      setShowCorrectAnswer(false);
     } else {
       setEndTime(new Date());
       setShowResult(true);
@@ -437,11 +446,12 @@ export default function FohTestPage() {
                         value={shortAnswer}
                         onChange={(e) => setShortAnswer(e.target.value)}
                         className="h-12"
+                        disabled={showCorrectAnswer}
                       />
                       
-                      {/* Show correct answer for comparison */}
-                      {shortAnswer.trim() && (
-                        <div className="p-4 bg-muted rounded-lg">
+                      {/* Show correct answer only after submitting */}
+                      {showCorrectAnswer && (
+                        <div className="p-4 bg-muted rounded-lg border-l-4 border-sage">
                           <p className="text-xs font-medium text-muted-foreground mb-2">Correct Answer:</p>
                           <p className="text-sm text-foreground">{currentQuestion.correctAnswer}</p>
                           <p className="text-xs text-muted-foreground mt-3">
@@ -466,13 +476,22 @@ export default function FohTestPage() {
                     Submit Answer
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
+                ) : !showCorrectAnswer ? (
+                  <Button
+                    variant="burgundy"
+                    className="flex-1 h-11"
+                    onClick={revealAnswer}
+                    disabled={!shortAnswer.trim()}
+                  >
+                    Submit Answer
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
                 ) : (
                   <>
                     <Button
                       variant="outline"
                       className="flex-1 h-11 border-destructive text-destructive hover:bg-destructive hover:text-white"
                       onClick={markAsIncorrect}
-                      disabled={!shortAnswer.trim()}
                     >
                       <X className="w-5 h-5 mr-2" />
                       Incorrect
@@ -481,7 +500,6 @@ export default function FohTestPage() {
                       variant="success"
                       className="flex-1 h-11"
                       onClick={markAsCorrect}
-                      disabled={!shortAnswer.trim()}
                     >
                       <Check className="w-5 h-5 mr-2" />
                       Correct
