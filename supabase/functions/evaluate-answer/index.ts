@@ -1,5 +1,4 @@
-// Edge function for AI-powered answer evaluation
-// Supabase Edge Function for evaluating test answers
+// Edge function for evaluating test answers using keyword matching
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,91 +21,13 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Get the Lovable API key for AI access
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
+    // Evaluate using keyword matching
+    const result = evaluateAnswer(userAnswer, correctAnswer)
     
-    if (!lovableApiKey) {
-      // Fallback to simple keyword matching if no API key
-      return new Response(
-        JSON.stringify(fallbackEvaluation(userAnswer, correctAnswer)),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
+    console.log(`Evaluating answer - User: "${userAnswer}" | Correct: "${correctAnswer}" | Result: ${result.isCorrect}`)
 
-    // Use Lovable AI to evaluate the answer
-    const response = await fetch('https://ai.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: `You are an answer evaluator for a restaurant staff test. Your job is to determine if the user's answer demonstrates understanding of the correct answer, even if not verbatim.
-
-Be generous with partial matches - if the user captures the key concepts, mark it correct. Look for:
-- Key terms and concepts
-- Understanding of the main point
-- Accurate information even if worded differently
-
-Respond ONLY with a JSON object in this exact format:
-{"isCorrect": true/false, "confidence": 0.0-1.0, "feedback": "brief explanation"}
-
-Examples of correct matches:
-- Correct: "24 Hour oxtail broth. Shallot crumble." | User: "made with oxtail broth that's cooked for 24 hours" → CORRECT
-- Correct: "Crudo is raw and thinly sliced. Ceviche is cured in citrus and diced." | User: "crudo is raw, ceviche is cooked in citrus" → CORRECT (close enough)
-- Correct: "Within 1 minute" | User: "under a minute" → CORRECT`
-          },
-          {
-            role: 'user',
-            content: `Question: ${question || 'Not provided'}
-Correct Answer: ${correctAnswer}
-User's Answer: ${userAnswer}
-
-Evaluate if the user's answer is correct or close enough to be marked correct.`
-          }
-        ],
-        temperature: 0.1,
-        max_tokens: 150
-      })
-    })
-
-    if (!response.ok) {
-      console.error('AI API error:', await response.text())
-      return new Response(
-        JSON.stringify(fallbackEvaluation(userAnswer, correctAnswer)),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    const aiResponse = await response.json()
-    const content = aiResponse.choices?.[0]?.message?.content || ''
-    
-    try {
-      // Parse the JSON response from AI
-      const jsonMatch = content.match(/\{[\s\S]*\}/)
-      if (jsonMatch) {
-        const result = JSON.parse(jsonMatch[0])
-        return new Response(
-          JSON.stringify({
-            isCorrect: result.isCorrect === true,
-            confidence: result.confidence || 0.5,
-            feedback: result.feedback || '',
-            method: 'ai'
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
-    } catch (parseError) {
-      console.error('Failed to parse AI response:', parseError)
-    }
-
-    // Fallback if AI response parsing fails
     return new Response(
-      JSON.stringify(fallbackEvaluation(userAnswer, correctAnswer)),
+      JSON.stringify(result),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 
@@ -119,53 +40,104 @@ Evaluate if the user's answer is correct or close enough to be marked correct.`
   }
 })
 
-function fallbackEvaluation(userAnswer: string, correctAnswer: string): { isCorrect: boolean; confidence: number; feedback: string; method: string } {
+function evaluateAnswer(userAnswer: string, correctAnswer: string): { isCorrect: boolean; confidence: number; feedback: string; method: string } {
   const normalizedUser = userAnswer.toLowerCase().trim()
   const normalizedCorrect = correctAnswer.toLowerCase().trim()
   
-  // Extract key words (words with 4+ characters, not common words)
-  const stopWords = ['the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'with', 'they', 'this', 'that', 'from', 'have', 'been', 'will', 'what', 'when', 'where', 'which', 'their', 'there', 'these', 'those', 'would', 'could', 'should', 'because']
+  // Direct match check first
+  if (normalizedUser === normalizedCorrect) {
+    return {
+      isCorrect: true,
+      confidence: 1.0,
+      feedback: 'Perfect match!',
+      method: 'exact'
+    }
+  }
+  
+  // Check if one contains the other (for short answers)
+  if (normalizedCorrect.includes(normalizedUser) || normalizedUser.includes(normalizedCorrect)) {
+    const matchRatio = Math.min(normalizedUser.length, normalizedCorrect.length) / 
+                       Math.max(normalizedUser.length, normalizedCorrect.length)
+    if (matchRatio > 0.5) {
+      return {
+        isCorrect: true,
+        confidence: matchRatio,
+        feedback: 'Answer matches expected response',
+        method: 'substring'
+      }
+    }
+  }
+  
+  // Extract key words (words with 3+ characters, excluding common words)
+  const stopWords = new Set([
+    'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 
+    'was', 'one', 'our', 'out', 'with', 'they', 'this', 'that', 'from', 'have', 
+    'been', 'will', 'what', 'when', 'where', 'which', 'their', 'there', 'these', 
+    'those', 'would', 'could', 'should', 'because', 'into', 'then', 'than',
+    'its', 'also', 'just', 'only', 'such', 'more', 'some', 'very', 'most'
+  ])
   
   const extractKeywords = (text: string): string[] => {
     return text
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(word => word.length >= 3 && !stopWords.includes(word))
+      .filter(word => word.length >= 3 && !stopWords.has(word))
+      .map(word => word.toLowerCase())
+  }
+  
+  // Also extract important numbers
+  const extractNumbers = (text: string): string[] => {
+    const matches = text.match(/\d+/g)
+    return matches || []
   }
   
   const correctKeywords = extractKeywords(normalizedCorrect)
   const userKeywords = extractKeywords(normalizedUser)
+  const correctNumbers = extractNumbers(normalizedCorrect)
+  const userNumbers = extractNumbers(normalizedUser)
   
-  if (correctKeywords.length === 0) {
-    // For very short answers, check direct inclusion
-    const isCorrect = normalizedCorrect.includes(normalizedUser) || normalizedUser.includes(normalizedCorrect)
-    return {
-      isCorrect,
-      confidence: isCorrect ? 0.7 : 0.3,
-      feedback: isCorrect ? 'Answer matches' : 'Answer does not match',
-      method: 'fallback'
-    }
-  }
-  
-  // Count how many key terms the user got
-  let matchCount = 0
+  // Count keyword matches
+  let keywordMatches = 0
   for (const keyword of correctKeywords) {
-    if (normalizedUser.includes(keyword)) {
-      matchCount++
+    // Check for exact match or if user answer contains the keyword
+    if (userKeywords.includes(keyword) || normalizedUser.includes(keyword)) {
+      keywordMatches++
     }
   }
   
-  const matchRatio = matchCount / correctKeywords.length
+  // Count number matches (important for quantities like "6 oz", "22 seats", etc.)
+  let numberMatches = 0
+  for (const num of correctNumbers) {
+    if (userNumbers.includes(num)) {
+      numberMatches++
+    }
+  }
   
-  // Consider correct if they got at least 50% of key terms
-  const isCorrect = matchRatio >= 0.5
+  // Calculate match ratios
+  const keywordRatio = correctKeywords.length > 0 ? keywordMatches / correctKeywords.length : 0
+  const numberRatio = correctNumbers.length > 0 ? numberMatches / correctNumbers.length : 1 // If no numbers expected, don't penalize
+  
+  // Combined score - numbers are important for factual answers
+  const hasNumbers = correctNumbers.length > 0
+  const combinedScore = hasNumbers 
+    ? (keywordRatio * 0.5 + numberRatio * 0.5)  // Numbers matter for factual answers
+    : keywordRatio
+  
+  // Thresholds for acceptance
+  // - If numbers are expected and user got them right, be more lenient with keywords
+  // - If 50%+ of keywords match, consider it correct
+  const isCorrect = (hasNumbers && numberRatio >= 0.8 && keywordRatio >= 0.3) || 
+                    combinedScore >= 0.5 ||
+                    (keywordRatio >= 0.4 && keywordMatches >= 2)
+  
+  const feedback = isCorrect 
+    ? `Good! Matched ${keywordMatches}/${correctKeywords.length} key concepts${hasNumbers ? ` and ${numberMatches}/${correctNumbers.length} numbers` : ''}`
+    : `Matched ${keywordMatches}/${correctKeywords.length} key concepts${hasNumbers ? ` and ${numberMatches}/${correctNumbers.length} numbers` : ''} - review the correct answer`
   
   return {
     isCorrect,
-    confidence: matchRatio,
-    feedback: isCorrect 
-      ? `Matched ${matchCount}/${correctKeywords.length} key terms`
-      : `Only matched ${matchCount}/${correctKeywords.length} key terms`,
-    method: 'fallback'
+    confidence: combinedScore,
+    feedback,
+    method: 'keyword'
   }
 }
