@@ -292,7 +292,7 @@ export default function SpiritsQuizPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-copper/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-copper" />
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Spirits Quiz Complete!</h1>
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Spirits Test Complete!</h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8">
               You scored {score.correct} out of {shuffledQuestions.length}
             </p>
@@ -323,7 +323,7 @@ export default function SpiritsQuizPage() {
                 Try Again
               </Button>
               <Button variant="outline" size="sm" onClick={resetQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
-                Change Quiz Type
+                Change Test Type
               </Button>
             </div>
           </motion.div>
@@ -341,7 +341,7 @@ export default function SpiritsQuizPage() {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-copper/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <Martini className="w-6 h-6 sm:w-8 sm:h-8 text-copper" />
             </div>
-            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Spirits & Cocktails Quiz</h1>
+            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Spirits & Cocktails Test</h1>
             <p className="text-muted-foreground text-xs sm:text-sm">
               Test your knowledge of spirits, tasting notes, origins, and signature cocktails
             </p>
@@ -349,7 +349,7 @@ export default function SpiritsQuizPage() {
 
           <Card className="mb-6 sm:mb-8">
             <CardContent className="p-3 sm:p-4 md:p-6">
-              <h2 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Select Quiz Type</h2>
+              <h2 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Select Test Type</h2>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 <Button
                   variant={quizType === 'all' ? "burgundy" : "secondary"}
@@ -427,7 +427,7 @@ export default function SpiritsQuizPage() {
               disabled={allQuestions.length === 0}
               className="h-10 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
             >
-              Start Spirits Quiz
+              Start Spirits Test
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
             </Button>
           </div>

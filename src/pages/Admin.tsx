@@ -356,7 +356,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <p className="text-3xl font-serif font-bold text-copper">{stats.questions}</p>
-                <p className="text-sm text-muted-foreground">Quiz Questions</p>
+                <p className="text-sm text-muted-foreground">Test Questions</p>
               </div>
             </div>
           </CardContent>

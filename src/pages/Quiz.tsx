@@ -132,7 +132,7 @@ export default function QuizPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gold" />
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Quiz Complete!</h1>
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Test Complete!</h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8">
               You scored {score.correct} out of {shuffledQuestions.length}
             </p>
@@ -181,7 +181,7 @@ export default function QuizPage() {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-burgundy" />
             </div>
-            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Quiz Mode</h1>
+            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Test Mode</h1>
             <p className="text-muted-foreground text-xs sm:text-sm">
               Test your knowledge of menu items, ingredients, and selling points
             </p>
@@ -233,13 +233,13 @@ export default function QuizPage() {
               disabled={allQuestions.length === 0}
               className="h-10 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
             >
-              Start Quiz
+              Start Test
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
             </Button>
             
-            {/* Specialized Quiz Links */}
+            {/* Specialized Test Links */}
             <div className="pt-6 border-t border-border mt-6">
-              <p className="text-sm text-muted-foreground mb-4">Looking for specialized training?</p>
+              <p className="text-sm text-muted-foreground mb-4">Looking for specialized testing?</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
                 <Link to="/wine-quiz" className="group">
                   <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5">
@@ -248,7 +248,7 @@ export default function QuizPage() {
                         <Wine className="w-5 h-5 text-burgundy" />
                       </div>
                       <div className="text-left">
-                        <h3 className="font-semibold text-foreground group-hover:text-burgundy transition-colors">Wine Quiz</h3>
+                        <h3 className="font-semibold text-foreground group-hover:text-burgundy transition-colors">Wine Test</h3>
                         <p className="text-xs text-muted-foreground">Regions, varietals & pairings</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-burgundy group-hover:translate-x-1 transition-all ml-2" />
@@ -263,7 +263,7 @@ export default function QuizPage() {
                         <Martini className="w-5 h-5 text-copper" />
                       </div>
                       <div className="text-left">
-                        <h3 className="font-semibold text-foreground group-hover:text-copper transition-colors">Spirits Quiz</h3>
+                        <h3 className="font-semibold text-foreground group-hover:text-copper transition-colors">Spirits Test</h3>
                         <p className="text-xs text-muted-foreground">Bottles, origins & cocktails</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-copper group-hover:translate-x-1 transition-all ml-2" />
@@ -278,7 +278,7 @@ export default function QuizPage() {
                         <AlertTriangle className="w-5 h-5 text-destructive" />
                       </div>
                       <div className="text-left">
-                        <h3 className="font-semibold text-foreground group-hover:text-destructive transition-colors">Allergy Quiz</h3>
+                        <h3 className="font-semibold text-foreground group-hover:text-destructive transition-colors">Allergy Test</h3>
                         <p className="text-xs text-muted-foreground">Ingredient removal training</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-destructive group-hover:translate-x-1 transition-all ml-2" />
@@ -404,7 +404,7 @@ export default function QuizPage() {
         <div className="mt-6 sm:mt-8 text-center">
           <Button variant="ghost" onClick={resetQuiz} size="sm" className="h-9 text-xs sm:text-sm">
             <RotateCcw className="w-4 h-4 mr-2" />
-            End Quiz
+            End Test
           </Button>
         </div>
       </div>

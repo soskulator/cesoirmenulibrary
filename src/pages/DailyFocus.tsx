@@ -229,7 +229,7 @@ export default function DailyFocusPage() {
               className="h-10 sm:h-11 px-4 sm:px-6 text-sm"
               onClick={() => navigate('/quiz')}
             >
-              Start Quiz
+              Start Test
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             <Button 
