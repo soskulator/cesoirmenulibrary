@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
+import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
 import { 
   Crown,
   FileText,
@@ -49,6 +50,7 @@ export default function LeadAdminDashboard() {
     isLoading: menuLoading, 
     isInitialized,
     initializeFromStatic,
+    updateItem,
     deleteItem,
     fetchItems
   } = useMenuItems();
@@ -57,6 +59,7 @@ export default function LeadAdminDashboard() {
   const [menuTab, setMenuTab] = useState('food');
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   
   // Daily Focus state
   const [focusSearchQuery, setFocusSearchQuery] = useState('');
@@ -278,7 +281,12 @@ export default function LeadAdminDashboard() {
                               <p className="text-xs text-muted-foreground truncate">{item.shortDescription}</p>
                             </div>
                             <div className="flex items-center gap-1 ml-2">
-                              <Button size="icon" variant="ghost" className="h-8 w-8">
+                              <Button 
+                                size="icon" 
+                                variant="ghost" 
+                                className="h-8 w-8"
+                                onClick={() => setEditingItem(item)}
+                              >
                                 <Edit className="w-3.5 h-3.5 text-muted-foreground" />
                               </Button>
                               <Button 
@@ -494,6 +502,14 @@ export default function LeadAdminDashboard() {
             </h2>
             <TeamStudyProgressChart />
           </motion.div>
+
+          {/* Edit Dialog */}
+          <MenuItemEditDialog
+            item={editingItem}
+            open={!!editingItem}
+            onOpenChange={(open) => !open && setEditingItem(null)}
+            onSave={updateItem}
+          />
         </div>
       </div>
     </Layout>
