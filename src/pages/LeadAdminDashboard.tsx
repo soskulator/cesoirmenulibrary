@@ -270,14 +270,14 @@ export default function LeadAdminDashboard() {
                     />
                   </div>
                   
-                  <ScrollArea className="h-[200px]">
+                  <ScrollArea className="h-[320px]">
                     {menuLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                       </div>
                     ) : (
-                      <div className="space-y-2">
-                        {filteredMenuItems.slice(0, 8).map((item) => (
+                      <div className="space-y-2 pr-3">
+                        {filteredMenuItems.map((item) => (
                           <div
                             key={item.id}
                             className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
@@ -328,7 +328,7 @@ export default function LeadAdminDashboard() {
                   </ScrollArea>
                   
                   <p className="text-xs text-muted-foreground mt-3 text-center">
-                    Showing {Math.min(8, filteredMenuItems.length)} of {filteredMenuItems.length} items
+                    {filteredMenuItems.length} items
                   </p>
                 </CardContent>
               </Card>
