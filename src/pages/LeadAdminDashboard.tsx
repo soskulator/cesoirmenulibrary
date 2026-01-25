@@ -80,14 +80,18 @@ export default function LeadAdminDashboard() {
     }
   }, [authLoading, user, isLeadAdmin, navigate, toast]);
 
+  // Define beverage category IDs (wine, spirits, cocktails)
+  const beverageCategoryIds = ['wine', 'spirits', 'cocktails'];
+  
   // Filter menu items by tab
   const filteredMenuItems = useMemo(() => {
     let items: MenuItem[] = [];
     
     switch (menuTab) {
       case 'food':
+        // Food items are everything except wine, spirits, and cocktails
         items = menuItems.filter(item => 
-          !['wine-list', 'spirits', 'cocktails'].includes(item.categoryId)
+          !beverageCategoryIds.includes(item.categoryId)
         );
         break;
       case 'wines':
@@ -109,7 +113,7 @@ export default function LeadAdminDashboard() {
     }
     
     return items;
-  }, [menuTab, menuSearchQuery]);
+  }, [menuTab, menuSearchQuery, menuItems]);
 
   // Filter for daily focus searchable list
   const focusFilteredItems = useMemo(() => {
