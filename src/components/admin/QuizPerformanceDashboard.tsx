@@ -36,6 +36,7 @@ const testTypeLabels: Record<string, string> = {
   spirits: 'Spirits Test',
   cocktails: 'Cocktails Test',
   allergy: 'Allergy Test',
+  foh: 'FoH Test_beta',
 };
 
 export function QuizPerformanceDashboard() {
@@ -50,9 +51,8 @@ export function QuizPerformanceDashboard() {
 
   const fetchScores = async () => {
     try {
-      // Try to fetch quiz scores - the table may not exist yet
       const { data: scoresData, error: scoresError } = await supabase
-        .from('quiz_scores' as 'profiles') // Type cast to avoid TS error
+        .from('quiz_scores')
         .select('*')
         .order('completed_at', { ascending: false })
         .limit(100);
@@ -72,11 +72,8 @@ export function QuizPerformanceDashboard() {
         return;
       }
 
-      // Type cast the data
-      const typedData = scoresData as unknown as QuizScore[];
-
       // Get unique user IDs
-      const userIds = [...new Set(typedData.map(s => s.user_id))];
+      const userIds = [...new Set(scoresData.map(s => s.user_id))];
 
       // Fetch profiles
       const { data: profilesData } = await supabase
@@ -89,7 +86,7 @@ export function QuizPerformanceDashboard() {
       );
 
       // Enrich scores with user info
-      const enrichedScores = typedData.map(score => ({
+      const enrichedScores = scoresData.map(score => ({
         ...score,
         user_email: profilesMap.get(score.user_id)?.email || 'Unknown',
         user_name: profilesMap.get(score.user_id)?.name || null,
