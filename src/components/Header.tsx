@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown } from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import cesoirLogo from '@/assets/cesoir-logo.png';
@@ -42,6 +42,10 @@ const navItems = [{
   icon: AlertTriangle
 }];
 const testItems = [{
+  path: '/foh-test',
+  label: 'FoH Test_beta',
+  icon: ClipboardList
+}, {
   path: '/quiz',
   label: 'General Test',
   icon: HelpCircle
