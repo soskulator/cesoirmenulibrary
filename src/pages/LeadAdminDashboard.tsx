@@ -50,6 +50,7 @@ export default function LeadAdminDashboard() {
     isLoading: menuLoading, 
     isInitialized,
     initializeFromStatic,
+    addItem,
     updateItem,
     deleteItem,
     fetchItems
@@ -60,6 +61,7 @@ export default function LeadAdminDashboard() {
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [isAddingItem, setIsAddingItem] = useState(false);
   
   // Daily Focus state
   const [focusSearchQuery, setFocusSearchQuery] = useState('');
@@ -217,7 +219,11 @@ export default function LeadAdminDashboard() {
                           Sync to DB
                         </Button>
                       )}
-                      <Button size="sm" className="bg-terra-cotta hover:bg-terra-cotta/90 text-white text-xs sm:text-sm">
+                      <Button 
+                        size="sm" 
+                        className="bg-terra-cotta hover:bg-terra-cotta/90 text-white text-xs sm:text-sm"
+                        onClick={() => setIsAddingItem(true)}
+                      >
                         <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                         Add Item
                       </Button>
@@ -509,6 +515,17 @@ export default function LeadAdminDashboard() {
             open={!!editingItem}
             onOpenChange={(open) => !open && setEditingItem(null)}
             onSave={updateItem}
+            mode="edit"
+          />
+
+          {/* Add Dialog */}
+          <MenuItemEditDialog
+            item={null}
+            open={isAddingItem}
+            onOpenChange={setIsAddingItem}
+            onSave={updateItem}
+            onAdd={addItem}
+            mode="add"
           />
         </div>
       </div>
