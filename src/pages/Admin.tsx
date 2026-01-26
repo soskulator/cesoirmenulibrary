@@ -83,11 +83,11 @@ const adminSections = [
 
 // Calculate actual stats from menu data
 const getMenuStats = () => {
-  const wines = menuItems.filter(item => item.categoryId === 'wine-list');
+  const wines = menuItems.filter(item => item.categoryId === 'wine');
   const spirits = menuItems.filter(item => item.categoryId === 'spirits');
   const cocktails = menuItems.filter(item => item.categoryId === 'cocktails');
   const foodItems = menuItems.filter(item => 
-    !['wine-list', 'spirits', 'cocktails'].includes(item.categoryId)
+    !['wine', 'spirits', 'cocktails'].includes(item.categoryId)
   );
   
   const totalQuestions = menuItems.reduce((acc, item) => acc + item.questions.length, 0);
