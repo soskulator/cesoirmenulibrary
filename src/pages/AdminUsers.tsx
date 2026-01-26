@@ -188,13 +188,16 @@ export default function AdminUsersPage() {
     setIsSendingInvite(true);
     
     try {
-      const { error } = await supabase
+      // First create the invitation
+      const { data: invitation, error } = await supabase
         .from('invitations')
         .insert({
           email: inviteEmail.toLowerCase().trim(),
           role: inviteRole,
           invited_by: user!.id,
-        });
+        })
+        .select()
+        .single();
       
       if (error) {
         if (error.message.includes('duplicate')) {
@@ -206,16 +209,48 @@ export default function AdminUsersPage() {
         } else {
           throw error;
         }
-      } else {
+        return;
+      }
+
+      // Get the invite link
+      const inviteLink = `${window.location.origin}/auth?token=${invitation.token}`;
+      
+      // Get inviter's name for the email
+      const { data: inviterProfile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user!.id)
+        .single();
+
+      // Send the invitation email
+      const { error: emailError } = await supabase.functions.invoke('send-invitation-email', {
+        body: {
+          email: inviteEmail.toLowerCase().trim(),
+          inviteLink,
+          role: inviteRole,
+          invitedByName: inviterProfile?.full_name || 'Ce Soir Admin',
+        },
+      });
+
+      if (emailError) {
+        console.error('Failed to send email:', emailError);
+        // Still show success but note email failed
         toast({
           title: 'Invitation Created',
-          description: `Invitation link created for ${inviteEmail}. Share the link with them to complete signup.`,
+          description: `Invitation created for ${inviteEmail}. Email delivery failed - please share the link manually.`,
+          variant: 'default',
         });
-        setInviteEmail('');
-        setInviteRole('employee');
-        setInviteDialogOpen(false);
-        fetchData();
+      } else {
+        toast({
+          title: 'Invitation Sent!',
+          description: `An invitation email has been sent to ${inviteEmail} with their signup link.`,
+        });
       }
+      
+      setInviteEmail('');
+      setInviteRole('employee');
+      setInviteDialogOpen(false);
+      fetchData();
     } catch (error) {
       console.error('Error sending invitation:', error);
       toast({
@@ -263,23 +298,28 @@ export default function AdminUsersPage() {
     }
 
     try {
-      if (newRole === 'remove') {
-        await supabase
+      // First, delete all existing roles for this user
+      const { error: deleteError } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId);
+      
+      if (deleteError) throw deleteError;
+
+      // If not removing, insert the new role
+      if (newRole !== 'remove') {
+        const { error: insertError } = await supabase
           .from('user_roles')
-          .delete()
-          .eq('user_id', userId);
-      } else {
-        // Upsert the role
-        const { error } = await supabase
-          .from('user_roles')
-          .upsert({ user_id: userId, role: newRole }, { onConflict: 'user_id,role' });
+          .insert({ user_id: userId, role: newRole });
         
-        if (error) throw error;
+        if (insertError) throw insertError;
       }
       
       toast({
         title: 'Role Updated',
-        description: 'User role has been updated successfully.',
+        description: newRole === 'remove' 
+          ? 'User role has been removed.' 
+          : `User role has been updated to ${newRole.replace('_', ' ')}.`,
       });
       fetchData();
     } catch (error) {
