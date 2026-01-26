@@ -3,11 +3,13 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import cesoirLogo from '@/assets/cesoir-logo.png';
 import { useAuth } from '@/contexts/AuthContext';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
 const navItems = [{
   path: '/',
   label: 'Home',
@@ -69,6 +71,7 @@ const adminItems = [{
 }];
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pendingReviewCount, setPendingReviewCount] = useState(0);
   const location = useLocation();
   const {
     user,
@@ -76,6 +79,34 @@ export function Header() {
     signOut,
     loading
   } = useAuth();
+  
+  // Fetch pending review count for admins
+  useEffect(() => {
+    const fetchPendingCount = async () => {
+      if (!isAdmin) return;
+      
+      try {
+        const { count, error } = await supabase
+          .from('foh_test_attempts')
+          .select('*', { count: 'exact', head: true })
+          .not('completed_at', 'is', null)
+          .eq('is_reviewed', false);
+        
+        if (!error && count !== null) {
+          setPendingReviewCount(count);
+        }
+      } catch (err) {
+        console.error('Error fetching pending count:', err);
+      }
+    };
+
+    fetchPendingCount();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchPendingCount, 30000);
+    return () => clearInterval(interval);
+  }, [isAdmin]);
+  
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
   };
@@ -130,11 +161,16 @@ export function Header() {
           
           {isAdmin && <>
               <div className="w-px h-6 bg-border mx-2" />
-              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("px-3 py-2 text-sm font-medium rounded-lg transition-colors", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                   <span className="flex items-center gap-1.5">
                     <item.icon className="w-4 h-4" />
                     {item.label}
                   </span>
+                  {pendingReviewCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center text-[10px] bg-destructive text-destructive-foreground p-0">
+                      {pendingReviewCount}
+                    </Badge>
+                  )}
                 </Link>)}
             </>}
 
@@ -245,9 +281,16 @@ export function Header() {
           
           {isAdmin && <>
               <div className="h-px bg-border my-2" />
-              {adminItems.map(item => <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-3 rounded-lg transition-colors", location.pathname.startsWith(item.path) ? "bg-gold/10 text-gold" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-                  <item.icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
+              {adminItems.map(item => <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center justify-between px-4 py-3 rounded-lg transition-colors", location.pathname.startsWith(item.path) ? "bg-gold/10 text-gold" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+                  <span className="flex items-center gap-3">
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.label}</span>
+                  </span>
+                  {pendingReviewCount > 0 && (
+                    <Badge className="h-5 min-w-5 flex items-center justify-center text-[10px] bg-destructive text-destructive-foreground">
+                      {pendingReviewCount}
+                    </Badge>
+                  )}
                 </Link>)}
             </>}
 
