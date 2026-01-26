@@ -102,37 +102,7 @@ export default function FohTestPage() {
 
   const currentQuestion = shuffledQuestions[currentIndex];
 
-  // Evaluate short answer using AI
-  const evaluateShortAnswer = async (userAnswer: string, correctAnswer: string, question: string) => {
-    setIsEvaluating(true);
-    setEvaluationResult(null);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('evaluate-answer', {
-        body: { userAnswer, correctAnswer, question }
-      });
-
-      if (error) throw error;
-
-      setEvaluationResult({
-        isCorrect: data.isCorrect,
-        feedback: data.feedback || (data.isCorrect ? 'Good answer!' : 'Not quite right')
-      });
-
-      return data.isCorrect;
-    } catch (error) {
-      console.error('Error evaluating answer:', error);
-      // Fallback to simple keyword matching
-      const result = fallbackEvaluation(userAnswer, correctAnswer);
-      setEvaluationResult({
-        isCorrect: result,
-        feedback: result ? 'Answer matches key concepts' : 'Answer does not match expected response'
-      });
-      return result;
-    } finally {
-      setIsEvaluating(false);
-    }
-  };
+  // Simple fallback evaluation helper (moved up for use in submitShortAnswer)
 
   // Simple fallback evaluation
   const fallbackEvaluation = (userAnswer: string, correctAnswer: string): boolean => {
@@ -170,27 +140,32 @@ export default function FohTestPage() {
 
     const isCorrect = selectedAnswer === currentQuestion.correctIndex;
     const userAnswerText = currentQuestion.options?.[selectedAnswer] || String(selectedAnswer);
+    const feedback = isCorrect ? 'Correct answer selected' : 'Incorrect answer selected';
 
     setAnsweredQuestions(prev => [...prev, {
       questionId: currentQuestion.id,
       questionText: currentQuestion.question,
       correctAnswer: currentQuestion.correctAnswer,
       userAnswer: selectedAnswer,
-      isCorrect
+      isCorrect,
+      aiFeedback: feedback
     }]);
 
     // Save answer to database
     if (attemptId && user) {
       try {
-        await supabase.from('foh_test_answers').insert({
+        const { error } = await supabase.from('foh_test_answers').insert({
           attempt_id: attemptId,
           question_id: String(currentQuestion.id),
           question_text: currentQuestion.question,
           correct_answer: currentQuestion.correctAnswer,
           user_answer: userAnswerText,
           is_correct: isCorrect,
-          ai_feedback: isCorrect ? 'Correct answer selected' : 'Incorrect answer selected'
+          ai_feedback: feedback
         });
+        if (error) {
+          console.error('Error saving answer to database:', error);
+        }
       } catch (err) {
         console.error('Error saving answer:', err);
       }
@@ -211,11 +186,33 @@ export default function FohTestPage() {
   const submitShortAnswer = async () => {
     if (!currentQuestion || !shortAnswer.trim()) return;
 
-    const isCorrect = await evaluateShortAnswer(
-      shortAnswer.trim(),
-      currentQuestion.correctAnswer,
-      currentQuestion.question
-    );
+    setIsEvaluating(true);
+    let isCorrect = false;
+    let feedback = '';
+
+    try {
+      const { data, error } = await supabase.functions.invoke('evaluate-answer', {
+        body: { 
+          userAnswer: shortAnswer.trim(), 
+          correctAnswer: currentQuestion.correctAnswer, 
+          question: currentQuestion.question 
+        }
+      });
+
+      if (error) throw error;
+
+      isCorrect = data.isCorrect;
+      feedback = data.feedback || (data.isCorrect ? 'Good answer!' : 'Not quite right');
+    } catch (error) {
+      console.error('Error evaluating answer:', error);
+      // Fallback to simple keyword matching
+      isCorrect = fallbackEvaluation(shortAnswer.trim(), currentQuestion.correctAnswer);
+      feedback = isCorrect ? 'Answer matches key concepts' : 'Answer does not match expected response';
+    } finally {
+      setIsEvaluating(false);
+    }
+
+    setEvaluationResult({ isCorrect, feedback });
 
     setAnsweredQuestions(prev => [...prev, {
       questionId: currentQuestion.id,
@@ -223,21 +220,24 @@ export default function FohTestPage() {
       correctAnswer: currentQuestion.correctAnswer,
       userAnswer: shortAnswer.trim(),
       isCorrect,
-      aiFeedback: evaluationResult?.feedback
+      aiFeedback: feedback
     }]);
 
     // Save answer to database
     if (attemptId && user) {
       try {
-        await supabase.from('foh_test_answers').insert({
+        const { error } = await supabase.from('foh_test_answers').insert({
           attempt_id: attemptId,
           question_id: String(currentQuestion.id),
           question_text: currentQuestion.question,
           correct_answer: currentQuestion.correctAnswer,
           user_answer: shortAnswer.trim(),
           is_correct: isCorrect,
-          ai_feedback: evaluationResult?.feedback || null
+          ai_feedback: feedback
         });
+        if (error) {
+          console.error('Error saving answer to database:', error);
+        }
       } catch (err) {
         console.error('Error saving answer:', err);
       }
