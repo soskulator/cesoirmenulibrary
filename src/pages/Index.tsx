@@ -5,10 +5,13 @@ import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Layers, CreditCard, HelpCircle, Star, AlertTriangle, ArrowRight, ArrowDown, MapPin, LogIn, BookOpen, Brain } from 'lucide-react';
+import { Layers, CreditCard, HelpCircle, Star, AlertTriangle, ArrowRight, ArrowDown, MapPin, LogIn, BookOpen, Brain, Utensils } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { categories, menuItems, dailyFocus, getMenuItemById } from '@/data/menuData';
+import { categories, menuItems, getCategoryById } from '@/data/menuData';
 import { getCategoryIcon } from '@/data/categoryIcons';
+import { useDailyRotation } from '@/hooks/useDailyRotation';
+import { DailyCocktailCard } from '@/components/DailyCocktailCard';
+import { getDishImage } from '@/data/dishImages';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 import logoImage from '@/assets/cesoir-logo.png';
 const features = [{
@@ -62,7 +65,10 @@ export default function Index() {
     user
   } = useAuth();
   const [showTrainingOptions, setShowTrainingOptions] = useState(false);
-  const focusItems = dailyFocus.menuItemIds.map(id => getMenuItemById(id)).filter(Boolean);
+  
+  // Use automatic daily rotation instead of manual selection
+  const { foodItems, cocktailOfTheDay, dateString } = useDailyRotation(3, 1);
+  
   const {
     scrollY
   } = useScroll();
@@ -271,8 +277,28 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Daily Focus - Clean Cards */}
-      <section className="py-24 bg-muted/30">
+      {/* Cocktail of the Day - Featured Section */}
+      {cocktailOfTheDay && (
+        <section className="py-16 md:py-24 bg-muted/30">
+          <div className="container">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+              className="mb-8"
+            >
+              <h2 className="font-serif text-3xl font-semibold text-center mb-2">Featured Cocktail</h2>
+              <p className="text-muted-foreground text-center">Master today's spotlight drink</p>
+            </motion.div>
+            
+            <DailyCocktailCard cocktail={cocktailOfTheDay} dateString={dateString} />
+          </div>
+        </section>
+      )}
+
+      {/* Daily Food Focus - Clean Cards */}
+      <section className="py-16 md:py-24 bg-background">
         <div className="container">
           <motion.div initial={{
           opacity: 0,
@@ -288,14 +314,15 @@ export default function Index() {
         }} className="flex items-center justify-between mb-12">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <Star className="w-5 h-5 text-copper" />
+                <Utensils className="w-5 h-5 text-copper" />
                 <Badge className="bg-copper/10 text-copper border-0">
                   {new Date().toLocaleDateString('en-US', {
                   weekday: 'long'
                 })}
                 </Badge>
               </div>
-              <h2 className="font-serif text-3xl font-semibold">Today's Focus</h2>
+              <h2 className="font-serif text-3xl font-semibold">Today's Food Focus</h2>
+              <p className="text-muted-foreground text-sm mt-1">Daily rotating dishes to study</p>
             </div>
             <Button variant="ghost" className="text-copper hover:text-copper-light" asChild>
               <Link to="/daily-focus">
@@ -309,18 +336,40 @@ export default function Index() {
           once: true,
           margin: "-50px"
         }}>
-            {focusItems.map(menuItem => <motion.div key={menuItem!.id} variants={item}>
-                <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-500">
-                  <CardContent className="p-6">
-                    <h3 className="font-serif text-xl font-semibold mb-2 group-hover:text-copper transition-colors">
-                      {menuItem!.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {menuItem!.shortDescription}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>)}
+            {foodItems.map(menuItem => {
+              const category = getCategoryById(menuItem.categoryId);
+              const image = getDishImage(menuItem.id);
+              return (
+                <motion.div key={menuItem.id} variants={item}>
+                  <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden">
+                    {image && (
+                      <div className="relative h-40 overflow-hidden">
+                        <img 
+                          src={image} 
+                          alt={menuItem.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 to-transparent" />
+                        <Badge className="absolute top-3 left-3 bg-copper/90 text-charcoal text-xs">
+                          {category?.name || 'Menu Item'}
+                        </Badge>
+                      </div>
+                    )}
+                    <CardContent className="p-6">
+                      <h3 className="font-serif text-xl font-semibold mb-2 group-hover:text-copper transition-colors">
+                        {menuItem.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                        {menuItem.shortDescription}
+                      </p>
+                      <p className="text-xs text-muted-foreground/70 line-clamp-2">
+                        {menuItem.ingredientsText}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>
