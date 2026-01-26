@@ -5,10 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AllergenList } from '@/components/AllergenBadge';
-import { dailyFocus, getMenuItemById, getCategoryById, menuItems } from '@/data/menuData';
+import { getCategoryById, menuItems } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
-import { Star, CreditCard, Calendar, ArrowRight, RefreshCw } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useDailyRotation } from '@/hooks/useDailyRotation';
+import { DailyCocktailCard } from '@/components/DailyCocktailCard';
+import { Star, CreditCard, Calendar, ArrowRight, RefreshCw, Utensils, Wine } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -26,30 +29,30 @@ export default function DailyFocusPage() {
   const navigate = useNavigate();
   const [refreshKey, setRefreshKey] = useState(0);
   
-  // Get random focus items on refresh
+  // Get random focus items on manual refresh
   const getRandomFocusItems = useCallback(() => {
-    const publishedItems = menuItems.filter(item => item.isPublished);
+    const publishedItems = menuItems.filter(item => 
+      item.isPublished && 
+      item.categoryId !== 'cocktails' && 
+      item.categoryId !== 'wine' && 
+      item.categoryId !== 'spirits'
+    );
     const shuffled = [...publishedItems].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 5);
   }, []);
   
   const [customFocusItems, setCustomFocusItems] = useState<typeof menuItems | null>(null);
   
-  const focusItems = customFocusItems || dailyFocus.menuItemIds
-    .map(id => getMenuItemById(id))
-    .filter(Boolean);
+  // Use automatic daily rotation
+  const { foodItems: dailyFoodItems, cocktailOfTheDay, dateString } = useDailyRotation(5, 1);
+  
+  // Use custom items if manually refreshed, otherwise use daily rotation
+  const focusItems = customFocusItems || dailyFoodItems;
 
   const handleRefresh = () => {
     setCustomFocusItems(getRandomFocusItems());
     setRefreshKey(prev => prev + 1);
   };
-
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
   return (
     <Layout>
       <div className="container py-4 sm:py-6 md:py-8 max-w-4xl px-3 sm:px-4">
@@ -78,7 +81,7 @@ export default function DailyFocusPage() {
             </div>
             <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs sm:text-sm">
               <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>{today}</span>
+              <span>{dateString}</span>
             </div>
           </motion.div>
         </div>
@@ -216,6 +219,17 @@ export default function DailyFocusPage() {
             );
           })}
         </motion.div>
+
+        {/* Cocktail of the Day Section */}
+        {cocktailOfTheDay && (
+          <div className="mt-8 sm:mt-10 md:mt-12">
+            <div className="flex items-center gap-3 mb-4 sm:mb-6">
+              <Wine className="w-5 h-5 sm:w-6 sm:h-6 text-copper" />
+              <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-bold">Cocktail of the Day</h2>
+            </div>
+            <DailyCocktailCard cocktail={cocktailOfTheDay} dateString={dateString} />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="mt-6 sm:mt-8 md:mt-10 text-center">
