@@ -124,13 +124,20 @@ export default function AuthPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
       if (mode === 'signup') {
+        // Require valid invitation token for signup
+        if (!inviteToken || !inviteValid) {
+          setError('A valid invitation is required to create an account. Please contact your manager for an invitation.');
+          setIsLoading(false);
+          return;
+        }
+
         const validation = signUpSchema.safeParse({ email, password, fullName });
         if (!validation.success) {
           setError(validation.error.errors[0].message);
@@ -461,22 +468,24 @@ export default function AuthPage() {
                 </Button>
               </form>
 
-              {!inviteToken && (
-                <div className="mt-6 text-center">
+              <div className="mt-6 text-center">
+                {inviteToken ? (
                   <button
                     type="button"
                     onClick={() => {
-                      setMode(mode === 'signup' ? 'signin' : 'signup');
+                      setMode('signin');
                       setError('');
                     }}
                     className="text-sm text-copper hover:text-copper-light transition-colors"
                   >
-                    {mode === 'signup' 
-                      ? 'Already have an account? Sign in' 
-                      : 'Need an invitation? Contact your manager'}
+                    Already have an account? Sign in
                   </button>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Need an account? Contact your manager for an invitation.
+                  </p>
+                )}
+              </div>
             </CardContent>
           </Card>
         </motion.div>

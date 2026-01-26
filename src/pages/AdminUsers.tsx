@@ -47,7 +47,8 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  BarChart3
+  BarChart3,
+  RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -89,6 +90,7 @@ export default function AdminUsersPage() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<AppRole>('employee');
   const [isSendingInvite, setIsSendingInvite] = useState(false);
+  const [resendingInviteId, setResendingInviteId] = useState<string | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const totalMenuItems = menuItems.filter(i => i.isPublished).length;
@@ -287,6 +289,48 @@ export default function AdminUsersPage() {
     }
   };
 
+  const resendInvitation = async (invite: Invitation) => {
+    setResendingInviteId(invite.id);
+    
+    try {
+      const inviteLink = `${window.location.origin}/auth?token=${invite.token}`;
+      
+      // Get inviter's name for the email
+      const { data: inviterProfile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user!.id)
+        .single();
+
+      const { error: emailError } = await supabase.functions.invoke('send-invitation-email', {
+        body: {
+          email: invite.email,
+          inviteLink,
+          role: invite.role,
+          invitedByName: inviterProfile?.full_name || 'Ce Soir Admin',
+        },
+      });
+
+      if (emailError) {
+        throw emailError;
+      }
+
+      toast({
+        title: 'Invitation Resent!',
+        description: `A new invitation email has been sent to ${invite.email}.`,
+      });
+    } catch (error) {
+      console.error('Error resending invitation:', error);
+      toast({
+        title: 'Email Failed',
+        description: 'Failed to resend invitation email. You can still copy the link manually.',
+        variant: 'destructive',
+      });
+    } finally {
+      setResendingInviteId(null);
+    }
+  };
+
   const updateUserRole = async (userId: string, newRole: AppRole | 'remove') => {
     if (!isLeadAdmin) {
       toast({
@@ -469,6 +513,21 @@ export default function AdminUsersPage() {
                       {getRoleBadge(invite.role)}
                     </div>
                     <div className="flex items-center gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => resendInvitation(invite)}
+                        disabled={resendingInviteId === invite.id}
+                      >
+                        {resendingInviteId === invite.id ? (
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-1" />
+                            Resend
+                          </>
+                        )}
+                      </Button>
                       <Button 
                         variant="outline" 
                         size="sm"
