@@ -1,0 +1,177 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { Resend } from "https://esm.sh/resend@4.0.0";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+interface NotifyRequest {
+  attemptId: string;
+  employeeName: string;
+  employeeEmail: string;
+  testType: string;
+  score: number;
+  totalQuestions: number;
+  percentage: number;
+}
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendApiKey) {
+      console.error('RESEND_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ error: 'Email service not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const resend = new Resend(resendApiKey);
+
+    // Create Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { 
+      attemptId, 
+      employeeName, 
+      employeeEmail, 
+      testType, 
+      score, 
+      totalQuestions, 
+      percentage 
+    }: NotifyRequest = await req.json();
+
+    console.log(`Notifying lead admins about test completion: ${employeeName} (${testType})`);
+
+    // Get all lead admin emails from user_roles and profiles
+    const { data: leadAdmins, error: leadAdminsError } = await supabase
+      .from('user_roles')
+      .select('user_id')
+      .eq('role', 'lead_admin');
+
+    if (leadAdminsError) {
+      console.error('Error fetching lead admins:', leadAdminsError);
+      throw leadAdminsError;
+    }
+
+    if (!leadAdmins || leadAdmins.length === 0) {
+      console.log('No lead admins found to notify');
+      return new Response(
+        JSON.stringify({ success: true, message: 'No lead admins to notify' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Get lead admin emails from profiles
+    const userIds = leadAdmins.map(la => la.user_id);
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('email')
+      .in('id', userIds);
+
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError);
+      throw profilesError;
+    }
+
+    const adminEmails = profiles?.map(p => p.email).filter(Boolean) || [];
+
+    if (adminEmails.length === 0) {
+      console.log('No lead admin emails found');
+      return new Response(
+        JSON.stringify({ success: true, message: 'No lead admin emails found' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Sending notification to ${adminEmails.length} lead admin(s)`);
+
+    const testTypeName = testType === 'service_staff' ? 'Service Staff' : 'Server Assistant';
+    const displayName = employeeName || employeeEmail;
+    const passStatus = percentage >= 70 ? '✅ PASSED' : '⚠️ Needs Review';
+
+    // Send email to all lead admins
+    const { error: emailError } = await resend.emails.send({
+      from: 'Ce Soir Tests <onboarding@resend.dev>',
+      to: adminEmails,
+      subject: `[Action Required] ${displayName} completed ${testTypeName} Test`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">FoH Test Completed</h1>
+          </div>
+          
+          <div style="background: #f9f9f9; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
+            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+              A team member has completed their knowledge test and requires your review.
+            </p>
+            
+            <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Employee:</td>
+                  <td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${displayName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Test Type:</td>
+                  <td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${testTypeName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Score:</td>
+                  <td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${score}/${totalQuestions}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Percentage:</td>
+                  <td style="padding: 8px 0; color: ${percentage >= 70 ? '#22c55e' : '#f59e0b'}; font-weight: 600; text-align: right;">${percentage}%</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Status:</td>
+                  <td style="padding: 8px 0; font-weight: 600; text-align: right;">${passStatus}</td>
+                </tr>
+              </table>
+            </div>
+            
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+              Please review this test in the Lead Admin Dashboard to verify the AI-graded answers and finalize the score.
+            </p>
+            
+            <div style="text-align: center;">
+              <p style="font-size: 12px; color: #999; margin-top: 30px;">
+                This is an automated notification from Ce Soir Staff Training.
+              </p>
+            </div>
+          </div>
+        </div>
+      `,
+    });
+
+    if (emailError) {
+      console.error('Error sending email:', emailError);
+      throw emailError;
+    }
+
+    console.log('Notification email sent successfully');
+
+    return new Response(
+      JSON.stringify({ success: true, notifiedCount: adminEmails.length }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error in notify-test-complete:', errorMessage);
+    return new Response(
+      JSON.stringify({ error: errorMessage }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});
