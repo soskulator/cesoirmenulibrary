@@ -17,6 +17,7 @@ import Quiz from "./pages/Quiz";
 import WineQuiz from "./pages/WineQuiz";
 import SpiritsQuiz from "./pages/SpiritsQuiz";
 import AllergyQuiz from "./pages/AllergyQuiz";
+import FoodQuiz from "./pages/FoodQuiz";
 import FohTest from "./pages/FohTest";
 import DailyFocus from "./pages/DailyFocus";
 import Allergy from "./pages/Allergy";
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/wine-quiz" element={<WineQuiz />} />
               <Route path="/spirits-quiz" element={<SpiritsQuiz />} />
               <Route path="/allergy-quiz" element={<AllergyQuiz />} />
+              <Route path="/food-quiz" element={<FoodQuiz />} />
               <Route path="/foh-test" element={<FohTest />} />
               <Route path="/daily-focus" element={<DailyFocus />} />
               <Route path="/allergy" element={<Allergy />} />
