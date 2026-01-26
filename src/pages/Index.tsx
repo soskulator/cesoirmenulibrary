@@ -85,7 +85,15 @@ export default function Index() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-cream">
         {/* Sketch background image */}
         <div className="absolute inset-0">
-          <img src={bayfrontSketch} alt="Bayfront Place Naples Sketch" className="w-full h-full object-cover opacity-20" />
+          <img 
+            src={bayfrontSketch} 
+            alt="Bayfront Place Naples Sketch" 
+            className="w-full h-full object-cover opacity-20"
+            fetchPriority="high"
+            decoding="async"
+            width={1920}
+            height={1280}
+          />
           {/* Subtle gradient overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-cream/30 via-transparent to-cream/40" />
         </div>
@@ -103,7 +111,7 @@ export default function Index() {
           duration: 1,
           delay: 0.3
         }} className="mb-6">
-            <img src={logoImage} alt="Ce Soir" className="h-28 md:h-36 lg:h-44 mx-auto drop-shadow-lg" />
+            <img src={logoImage} alt="Ce Soir" className="h-28 md:h-36 lg:h-44 mx-auto drop-shadow-lg" width={530} height={176} decoding="async" />
           </motion.div>
           
           <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-semibold tracking-wide mb-8" initial={{
@@ -348,6 +356,10 @@ export default function Index() {
                           src={image} 
                           alt={menuItem.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          decoding="async"
+                          width={418}
+                          height={160}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 to-transparent" />
                         <Badge className="absolute top-3 left-3 bg-copper/90 text-charcoal text-xs">
@@ -410,13 +422,13 @@ export default function Index() {
                     <Card className="group border-0 bg-card/50 hover:bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden relative">
                       {/* Background icon */}
                       {categoryIcon && <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <img src={categoryIcon} alt="" className="w-full h-full object-cover opacity-10 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 drop-shadow-sm" />
+                          <img src={categoryIcon} alt="" className="w-full h-full object-cover opacity-10 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 drop-shadow-sm" loading="lazy" decoding="async" width={418} height={148} />
                           {/* Gradient overlay for text readability */}
                           <div className="absolute inset-0 bg-gradient-to-br from-card/80 via-card/60 to-card/80" />
                         </div>}
                       <CardContent className="p-8 relative z-10">
                         <div className="flex items-center gap-6">
-                          {categoryIcon ? <img src={categoryIcon} alt={category.name} className="w-14 h-14 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300" /> : <span className="text-5xl">{category.icon}</span>}
+                          {categoryIcon ? <img src={categoryIcon} alt={category.name} className="w-14 h-14 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300" loading="lazy" decoding="async" width={56} height={56} /> : <span className="text-5xl">{category.icon}</span>}
                           <div>
                             <h3 className="font-serif text-2xl font-semibold group-hover:text-copper transition-colors">
                               {category.name}
