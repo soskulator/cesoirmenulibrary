@@ -266,25 +266,53 @@ export default function FohTestPage() {
     };
   }, [answeredQuestions, shuffledQuestions.length]);
 
-  // Save score when test is complete
+  // Save score when test is complete and notify lead admins
   useEffect(() => {
     if (showResult && answeredQuestions.length === shuffledQuestions.length && shuffledQuestions.length > 0) {
       const quizType = selectedTestType === 'server_assistant' ? 'foh-sa' : 'foh-service';
       saveQuizScore(quizType, score.correct, score.total);
 
-      // Update the test attempt with final score
+      // Update the test attempt with final score and notify lead admins
       if (attemptId && user) {
-        supabase
-          .from('foh_test_attempts')
-          .update({
-            completed_at: new Date().toISOString(),
-            score: score.correct,
-            percentage: score.percentage
-          })
-          .eq('id', attemptId)
-          .then(({ error }) => {
-            if (error) console.error('Error updating attempt:', error);
-          });
+        const updateAndNotify = async () => {
+          try {
+            // Update the attempt
+            const { error: updateError } = await supabase
+              .from('foh_test_attempts')
+              .update({
+                completed_at: new Date().toISOString(),
+                score: score.correct,
+                percentage: score.percentage
+              })
+              .eq('id', attemptId);
+
+            if (updateError) {
+              console.error('Error updating attempt:', updateError);
+              return;
+            }
+
+            // Notify lead admins via email
+            const { error: notifyError } = await supabase.functions.invoke('notify-test-complete', {
+              body: {
+                attemptId,
+                employeeName: user.user_metadata?.full_name || null,
+                employeeEmail: user.email,
+                testType: selectedTestType,
+                score: score.correct,
+                totalQuestions: score.total,
+                percentage: score.percentage
+              }
+            });
+
+            if (notifyError) {
+              console.error('Error notifying lead admins:', notifyError);
+            }
+          } catch (err) {
+            console.error('Error in test completion:', err);
+          }
+        };
+
+        updateAndNotify();
       }
     }
   }, [showResult, answeredQuestions.length, shuffledQuestions.length, score.correct, score.total, score.percentage, saveQuizScore, attemptId, user, selectedTestType]);

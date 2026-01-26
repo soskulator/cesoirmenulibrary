@@ -2,3 +2,9 @@ project_id = "cchhvuotfdxswpxwnxgv"
 
 [functions.validate-invite]
 verify_jwt = false
+
+[functions.evaluate-answer]
+verify_jwt = false
+
+[functions.notify-test-complete]
+verify_jwt = false
