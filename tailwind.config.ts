@@ -117,6 +117,14 @@ export default {
 				DEFAULT: 'hsl(var(--gold))',
 				light: 'hsl(var(--gold-light))'
 			},
+			silver: {
+				DEFAULT: 'hsl(var(--silver))',
+				light: 'hsl(var(--silver-light))'
+			},
+			bronze: {
+				DEFAULT: 'hsl(var(--bronze))',
+				light: 'hsl(var(--bronze-light))'
+			},
 			sage: {
 				DEFAULT: 'hsl(var(--jade))',
 				light: 'hsl(var(--jade-light))'

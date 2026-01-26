@@ -164,7 +164,7 @@ export function Leaderboard() {
     switch (rank) {
       case 1: return <Trophy className="w-5 h-5 text-gold" />;
       case 2: return <Medal className="w-5 h-5 text-silver" />;
-      case 3: return <Award className="w-5 h-5 text-copper" />;
+      case 3: return <Award className="w-5 h-5 text-bronze" />;
       default: return <span className="text-sm font-bold text-muted-foreground w-5 text-center">{rank}</span>;
     }
   };
@@ -173,7 +173,7 @@ export function Leaderboard() {
     switch (rank) {
       case 1: return 'bg-gradient-to-r from-gold/20 via-gold/10 to-transparent border-gold/30';
       case 2: return 'bg-gradient-to-r from-silver/20 via-silver/10 to-transparent border-silver/30';
-      case 3: return 'bg-gradient-to-r from-copper/20 via-copper/10 to-transparent border-copper/30';
+      case 3: return 'bg-gradient-to-r from-bronze/20 via-bronze/10 to-transparent border-bronze/30';
       default: return 'bg-muted/50';
     }
   };
