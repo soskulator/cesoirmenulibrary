@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { menuItems, MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, Sparkles, Star, Clock } from 'lucide-react';
+import { ArrowLeft, GlassWater, Sparkles, Star, Clock, ChevronDown, Wine as WineGlass } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
+import { LazyImage } from '@/components/LazyImage';
 
 // Cocktail style classification
 const cocktailStyles = {
@@ -16,84 +17,64 @@ const cocktailStyles = {
     subtitle: 'Les Classiques',
     description: 'Time-honored recipes perfected over generations',
     icon: Clock,
+    ids: [
+      'cocktail-1', 'cocktail-2', 'cocktail-3', 'cocktail-4', 'cocktail-5',
+      'cocktail-6', 'cocktail-7', 'cocktail-8', 'cocktail-9', 'cocktail-10',
+      'cocktail-11', 'cocktail-12', 'cocktail-13', 'cocktail-14', 'cocktail-15'
+    ],
   },
   signature: {
     title: 'Signature Cocktails',
     subtitle: 'Nos Créations',
     description: 'Our bartenders\' unique interpretations and house specialties',
     icon: Star,
-  },
-  specials: {
-    title: 'Cocktail Specials',
-    subtitle: 'Les Spécialités',
-    description: 'Refreshing favorites and crowd-pleasers',
-    icon: Sparkles,
+    ids: [
+      'signature-cocktail-1', 'signature-cocktail-2', 'signature-cocktail-3',
+      'signature-cocktail-4', 'signature-cocktail-5', 'signature-cocktail-6',
+      'signature-cocktail-7'
+    ],
   },
 };
 
-// Classify cocktails by style
-const classifyCocktail = (cocktail: typeof menuItems[0]) => {
-  const id = cocktail.id;
-  const name = cocktail.name.toLowerCase();
-  
-  // Check if it's a signature cocktail first (by ID prefix)
-  if (id.startsWith('signature-cocktail')) return 'signature';
-  
-  // Classic cocktails - timeless recipes
-  const classics = [
-    'old fashioned', 'manhattan', 'negroni', 'martini', 'daiquiri',
-    'margarita', 'whiskey sour', 'boulevardier', 'pisco sour'
-  ];
-  
-  // Specials - lighter, refreshing
-  const specials = [
-    'moscow mule', 'aperol spritz', 'cosmopolitan', 'mojito',
-    'espresso martini', 'irish coffee', 'vodka martini'
-  ];
-  
-  if (classics.some(c => name.includes(c))) return 'classic';
-  if (specials.some(s => name.includes(s))) return 'specials';
-  
-  // Default based on cocktail type
-  return 'classic';
-};
+const styleOrder = ['classic', 'signature'] as const;
 
 const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: 0.05,
+      delayChildren: 0.05,
     },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 15, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' as const },
+    scale: 1,
+    transition: { duration: 0.3, ease: 'easeOut' as const },
   },
 };
 
 export default function CocktailsPage() {
   const [selectedCocktail, setSelectedCocktail] = useState<MenuItem | null>(null);
+  const [openStyles, setOpenStyles] = useState<string[]>(['classic']);
   
   // Get all cocktail items
   const cocktails = menuItems.filter((item) => item.categoryId === 'cocktails' && item.isPublished);
-  
-  // Group cocktails by style
-  const cocktailsByStyle = cocktails.reduce((acc, cocktail) => {
-    const style = classifyCocktail(cocktail);
-    if (!acc[style]) acc[style] = [];
-    acc[style].push(cocktail);
-    return acc;
-  }, {} as Record<string, typeof cocktails>);
 
-  // Order styles
-  const styleOrder = ['classic', 'signature', 'specials'] as const;
+  const toggleStyle = (styleKey: string) => {
+    setOpenStyles(prev => 
+      prev.includes(styleKey) 
+        ? prev.filter(s => s !== styleKey)
+        : [...prev, styleKey]
+    );
+  };
+
+  const isOpen = (styleKey: string) => openStyles.includes(styleKey);
 
   return (
     <Layout>
@@ -147,123 +128,148 @@ export default function CocktailsPage() {
           </div>
         </motion.header>
 
-        {/* Cocktail Sections by Style */}
+        {/* Cocktail Styles Accordion */}
         <div className="px-6 pb-24">
-          <div className="max-w-5xl mx-auto space-y-16">
-            {styleOrder.map((styleKey) => {
-              const styleCocktails = cocktailsByStyle[styleKey];
-              if (!styleCocktails || styleCocktails.length === 0) return null;
-              
+          <div className="max-w-4xl mx-auto space-y-4">
+            {styleOrder.map((styleKey, styleIndex) => {
               const style = cocktailStyles[styleKey];
               const StyleIcon = style.icon;
+              const styleCocktails = style.ids
+                .map((id) => cocktails.find((c) => c.id === id))
+                .filter(Boolean);
+
+              if (styleCocktails.length === 0) return null;
+
+              const open = isOpen(styleKey);
 
               return (
-                <motion.section
+                <motion.div
                   key={styleKey}
                   initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
-                  transition={{ duration: 0.6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: styleIndex * 0.1 }}
+                  className="overflow-hidden"
                 >
-                  {/* Style Header */}
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-copper/10">
-                      <StyleIcon className="w-6 h-6 text-copper" />
-                    </div>
-                    <div>
-                      <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
-                        {style.title}
-                      </h2>
-                      <p className="text-charcoal/50 font-serif italic">
-                        {style.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <p className="text-charcoal/60 mb-6 pl-16">
-                    {style.description}
-                  </p>
-
-                  {/* Cocktail Cards */}
-                  <motion.div
-                    variants={container}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true }}
-                    className="grid gap-4"
+                  {/* Style Header Button */}
+                  <button
+                    onClick={() => toggleStyle(styleKey)}
+                    className={`w-full flex items-center justify-between p-5 md:p-6 rounded-2xl transition-all duration-300 group border
+                      ${open 
+                        ? 'bg-copper/10 border-copper/30 shadow-lg' 
+                        : 'bg-background/60 backdrop-blur-sm border-border/50 hover:bg-background/80 hover:border-copper/20 hover:shadow-md'
+                      }`}
                   >
-                    {styleCocktails.map((cocktail) => (
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-xl transition-all duration-300 ${open ? 'bg-copper/20 scale-110' : 'bg-copper/5 group-hover:bg-copper/10 group-hover:scale-105'}`}>
+                        <StyleIcon className={`w-6 h-6 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} />
+                      </div>
+                      <div className="text-left">
+                        <h2 className={`font-serif text-xl md:text-2xl font-bold transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal group-hover:text-copper'}`}>
+                          {style.title}
+                        </h2>
+                        <p className="text-charcoal/50 text-sm mt-0.5 font-serif italic">
+                          {style.subtitle} • {styleCocktails.length} cocktails
+                        </p>
+                      </div>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: open ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className={`p-2 rounded-full transition-colors duration-300 ${open ? 'bg-copper/20' : 'group-hover:bg-copper/10'}`}
+                    >
+                      <ChevronDown className={`w-5 h-5 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/40 group-hover:text-copper'}`} />
+                    </motion.div>
+                  </button>
+
+                  {/* Style Content - Animated Dropdown */}
+                  <AnimatePresence initial={false}>
+                    {open && (
                       <motion.div
-                        key={cocktail.id}
-                        variants={item}
-                        className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
-                        onClick={() => setSelectedCocktail(cocktail)}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                        className="overflow-hidden"
                       >
-                        <div className="flex flex-col md:flex-row">
-                          {/* Cocktail Image */}
-                          <div className="relative w-32 md:w-36 h-44 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center p-4">
-                            {getDishImage(cocktail.id) ? (
-                              <img
-                                src={getDishImage(cocktail.id)}
-                                alt={cocktail.name}
-                                className="w-auto h-full max-h-36 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-lg"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <GlassWater className="w-12 h-12 text-copper/30" />
-                              </div>
-                            )}
-                          </div>
+                        <div className="pt-4 pb-2">
+                          <p className="text-charcoal/60 text-center mb-6 font-serif italic px-4">
+                            {style.description}
+                          </p>
+                          
+                          {/* Cocktail Cards Grid with Cascade Animation */}
+                          <motion.div
+                            variants={container}
+                            initial="hidden"
+                            animate="show"
+                            className="grid gap-3"
+                          >
+                            {styleCocktails.map((cocktail, index) => {
+                              if (!cocktail) return null;
+                              const image = getDishImage(cocktail.id);
 
-                          {/* Cocktail Details */}
-                          <div className="flex-1 p-6">
-                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-3">
-                              <div>
-                                <h3 className="font-serif text-xl font-semibold text-charcoal group-hover:text-copper transition-colors">
-                                  {cocktail.name}
-                                </h3>
-                                <p className="text-sm text-copper font-medium mt-1">
-                                  {cocktail.shortDescription}
-                                </p>
-                              </div>
-                            </div>
+                              return (
+                                <motion.div
+                                  key={cocktail.id}
+                                  variants={item}
+                                  custom={index}
+                                  onClick={() => setSelectedCocktail(cocktail)}
+                                  className="group relative bg-background/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                                >
+                                  <div className="flex items-stretch gap-4 p-4 min-h-[120px]">
+                                    {/* Cocktail Image */}
+                                    {image ? (
+                                      <div className="relative w-16 h-24 md:w-20 md:h-28 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 rounded-xl flex items-center justify-center">
+                                        <LazyImage
+                                          src={image}
+                                          alt={cocktail.name}
+                                          className="w-auto h-full max-h-20 md:max-h-24 object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-md"
+                                          containerClassName="w-full h-full flex items-center justify-center"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div className="w-16 md:w-20 flex-shrink-0 flex items-center justify-center">
+                                        <GlassWater className="w-8 h-8 text-copper/30" />
+                                      </div>
+                                    )}
 
-                            <p className="text-charcoal/70 text-sm leading-relaxed mb-4 line-clamp-2">
-                              {cocktail.longDescription}
-                            </p>
+                                    {/* Cocktail Details */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                      <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors line-clamp-1">
+                                        {cocktail.name}
+                                      </h3>
+                                      <p className="text-sm text-copper/80 font-medium mt-0.5 line-clamp-1">
+                                        {cocktail.shortDescription}
+                                      </p>
+                                      
+                                      {/* History/Description - truncated */}
+                                      <p className="text-charcoal/60 text-xs md:text-sm leading-relaxed mt-2 line-clamp-2">
+                                        {cocktail.longDescription}
+                                      </p>
 
-                            {/* Recipe */}
-                            <div className="bg-copper/5 rounded-lg p-3 mb-3 border border-copper/10">
-                              <h4 className="text-[10px] uppercase tracking-wider text-copper font-semibold mb-1">Recipe</h4>
-                              <p className="text-charcoal/80 text-sm font-medium">
-                                {cocktail.ingredientsText}
-                              </p>
-                            </div>
+                                      {/* Glassware hint from prepNotes */}
+                                      {cocktail.prepNotes && (
+                                        <p className="text-charcoal/40 text-xs mt-1 line-clamp-1 italic">
+                                          {cocktail.prepNotes.split('.')[0]}
+                                        </p>
+                                      )}
+                                    </div>
 
-                            {/* Method */}
-                            {cocktail.prepNotes && (
-                              <div className="bg-charcoal/5 rounded-lg p-3 mb-3">
-                                <h4 className="text-[10px] uppercase tracking-wider text-charcoal/50 font-semibold mb-1">Method</h4>
-                                <p className="text-charcoal/70 text-xs">
-                                  {cocktail.prepNotes}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Selling Points */}
-                            {cocktail.sellingPointsText && (
-                              <div className="pt-3 border-t border-border/50">
-                                <p className="text-xs text-charcoal/50 italic">
-                                  {cocktail.sellingPointsText}
-                                </p>
-                              </div>
-                            )}
-                          </div>
+                                    {/* Hover Indicator */}
+                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 self-center">
+                                      <div className="w-8 h-8 rounded-full bg-copper/10 flex items-center justify-center">
+                                        <ChevronDown className="w-4 h-4 text-copper -rotate-90" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              );
+                            })}
+                          </motion.div>
                         </div>
                       </motion.div>
-                    ))}
-                  </motion.div>
-                </motion.section>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               );
             })}
           </div>
@@ -281,15 +287,16 @@ export default function CocktailsPage() {
               Our bartenders are happy to customize any cocktail to your taste
             </p>
             <Button variant="outline" asChild className="border-copper text-copper hover:bg-copper hover:text-background">
-              <Link to="/categories/cocktails">
+              <Link to="/cocktail-flashcards">
                 <GlassWater className="w-4 h-4 mr-2" />
-                View Full Cocktail Category
+                Study Cocktail Flashcards
               </Link>
             </Button>
           </div>
         </motion.div>
       </div>
       
+      {/* Cocktail Detail Modal */}
       <BeverageSplashModal
         item={selectedCocktail}
         isOpen={!!selectedCocktail}

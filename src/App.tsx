@@ -11,6 +11,7 @@ import Categories from "./pages/Categories";
 import WineList from "./pages/WineList";
 import Spirits from "./pages/Spirits";
 import Cocktails from "./pages/Cocktails";
+import CocktailFlashcards from "./pages/CocktailFlashcards";
 import Flashcards from "./pages/Flashcards";
 import Quiz from "./pages/Quiz";
 import WineQuiz from "./pages/WineQuiz";
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="/wine-list" element={<WineList />} />
               <Route path="/spirits" element={<Spirits />} />
               <Route path="/cocktails" element={<Cocktails />} />
+              <Route path="/cocktail-flashcards" element={<CocktailFlashcards />} />
               <Route path="/flashcards" element={<Flashcards />} />
               <Route path="/quiz" element={<Quiz />} />
               <Route path="/wine-quiz" element={<WineQuiz />} />

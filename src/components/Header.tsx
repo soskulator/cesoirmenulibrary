@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown, ClipboardList } from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import cesoirLogo from '@/assets/cesoir-logo.png';
@@ -43,15 +43,19 @@ const navItems = [{
   label: 'Allergy Center',
   icon: AlertTriangle
 }];
-const testItems = [{
+// Knowledge Tests (was FoH)
+const knowledgeTestItems = [{
   path: '/foh-test',
-  label: 'FoH Test_beta',
-  icon: ClipboardList
-}, {
-  path: '/quiz',
-  label: 'General Test',
-  icon: HelpCircle
-}, {
+  label: 'Knowledge Test',
+  icon: ClipboardList,
+  subItems: [
+    { path: '/foh-test?type=service_staff', label: 'Bartender/Server Test', icon: UserCheck },
+    { path: '/foh-test?type=server_assistant', label: 'Server Assistant', icon: Users }
+  ]
+}];
+
+// Menu Knowledge Tests
+const menuTestItems = [{
   path: '/wine-quiz',
   label: 'Wine Test',
   icon: Wine
@@ -60,6 +64,13 @@ const testItems = [{
   label: 'Spirits Test',
   icon: Martini
 }, {
+  path: '/quiz',
+  label: 'Food Test',
+  icon: HelpCircle
+}];
+
+// Other Tests
+const otherTestItems = [{
   path: '/allergy-quiz',
   label: 'Allergy Test',
   icon: AlertTriangle
@@ -135,27 +146,58 @@ export function Header() {
               </Link>;
         })}
 
-          {/* Test Dropdown */}
+          {/* Test Dropdown - Redesigned with submenus */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5", testItems.some(item => location.pathname === item.path) ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              <button className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5", 
+                [...knowledgeTestItems, ...menuTestItems, ...otherTestItems].some(item => location.pathname === item.path || location.pathname.startsWith(item.path.split('?')[0])) 
+                  ? "text-burgundy" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <HelpCircle className="w-4 h-4" />
                 Test
                 <ChevronDown className="w-3 h-3" />
-                {testItems.some(item => location.pathname === item.path) && <motion.div layoutId="activeTabTest" className="absolute inset-0 bg-burgundy/10 rounded-lg -z-10" transition={{
-                type: "spring",
-                bounce: 0.2,
-                duration: 0.6
-              }} />}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
-              {testItems.map(item => <DropdownMenuItem key={item.path} asChild>
+            <DropdownMenuContent align="start" className="w-56 bg-background">
+              {/* Knowledge Test */}
+              <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link to="/foh-test?type=service_staff" className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
+                  <UserCheck className="w-4 h-4" />
+                  Bartender/Server Test
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/foh-test?type=server_assistant" className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
+                  <Users className="w-4 h-4" />
+                  Server Assistant
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuSeparator />
+              
+              {/* Menu Tests */}
+              <DropdownMenuLabel className="text-xs text-muted-foreground">Menu Tests</DropdownMenuLabel>
+              {menuTestItems.map(item => (
+                <DropdownMenuItem key={item.path} asChild>
                   <Link to={item.path} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
                     {item.label}
                   </Link>
-                </DropdownMenuItem>)}
+                </DropdownMenuItem>
+              ))}
+              
+              <DropdownMenuSeparator />
+              
+              {/* Other Tests */}
+              {otherTestItems.map(item => (
+                <DropdownMenuItem key={item.path} asChild>
+                  <Link to={item.path} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
+                    <item.icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
           
@@ -261,7 +303,10 @@ export function Header() {
           <div className="h-px bg-border my-2" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors", testItems.some(item => location.pathname === item.path) ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              <button className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors", 
+                [...knowledgeTestItems, ...menuTestItems, ...otherTestItems].some(item => location.pathname === item.path || location.pathname.startsWith(item.path.split('?')[0])) 
+                  ? "bg-burgundy/10 text-burgundy" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-3">
                   <HelpCircle className="w-5 h-5" />
                   <span className="font-medium">Test</span>
@@ -270,12 +315,45 @@ export function Header() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 bg-background">
-              {testItems.map(item => <DropdownMenuItem key={item.path} asChild>
+              {/* Knowledge Test */}
+              <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link to="/foh-test?type=service_staff" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
+                  <UserCheck className="w-4 h-4" />
+                  Bartender/Server Test
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/foh-test?type=server_assistant" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
+                  <Users className="w-4 h-4" />
+                  Server Assistant
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuSeparator />
+              
+              {/* Menu Tests */}
+              <DropdownMenuLabel className="text-xs text-muted-foreground">Menu Tests</DropdownMenuLabel>
+              {menuTestItems.map(item => (
+                <DropdownMenuItem key={item.path} asChild>
                   <Link to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
                     {item.label}
                   </Link>
-                </DropdownMenuItem>)}
+                </DropdownMenuItem>
+              ))}
+              
+              <DropdownMenuSeparator />
+              
+              {/* Other Tests */}
+              {otherTestItems.map(item => (
+                <DropdownMenuItem key={item.path} asChild>
+                  <Link to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
+                    <item.icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
           

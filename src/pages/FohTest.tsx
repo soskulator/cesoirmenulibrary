@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -39,7 +40,9 @@ interface AnsweredQuestion {
 }
 
 export default function FohTestPage() {
-  const [selectedTestType, setSelectedTestType] = useState<TestType | null>(null);
+  const [searchParams] = useSearchParams();
+  const urlTestType = searchParams.get('type') as TestType | null;
+  const [selectedTestType, setSelectedTestType] = useState<TestType | null>(urlTestType);
   const [testStarted, setTestStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
