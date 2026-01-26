@@ -47,6 +47,13 @@ import wineQuintessa from '@/assets/drinks/wine-quintessa-rutherford.webp';
 import wineKathrynHall from '@/assets/drinks/wine-kathryn-hall.jpg';
 import wineSancerreRose from '@/assets/drinks/wine-sancerre-rose.jpg';
 import wineInniskillin from '@/assets/drinks/wine-inniskillin-icewine.png';
+// Rosé wine images
+import wineSancerreRoseAbbaye from '@/assets/drinks/wine-sancerre-rose-abbaye.jpg';
+import wineProvenceRose from '@/assets/drinks/wine-provence-rose.jpg';
+import wineStollerRose from '@/assets/drinks/wine-stoller-rose.jpg';
+import wineScalabroneRose from '@/assets/drinks/wine-scalabrone-rose.jpg';
+import wineOrangePullus from '@/assets/drinks/wine-orange-pullus.jpg';
+import wineBlackbirdRose from '@/assets/drinks/wine-blackbird-rose.jpg';
 // New wine imports
 import wineRuinartBlanc from '@/assets/drinks/wine-ruinart-blanc.jpg';
 import wineLaurentPerrierRose from '@/assets/drinks/wine-laurent-perrier-rose.jpg';
@@ -202,7 +209,7 @@ export const dishImages: Record<string, string> = {
   'wine-4': wineChablis, // Moillard Chablis
   'wine-5': wineLaboureRoi, // Labouré-Roi Bourgogne Pinot Noir
   'wine-6': wineKathrynHall, // Baca Kathryn Hall Cabernet
-  'wine-7': wineSancerreRose, // Domaine Roc de l'Abbaye Sancerre Rosé
+  'wine-7': wineSancerreRoseAbbaye, // Domaine Roc de l'Abbaye Sancerre Rosé
   'wine-8': wineDomPerignon, // Dom Pérignon Brut
   'wine-9': wineAceOfSpades, // Armand de Brignac Brut Gold
   'wine-10': wineKrug, // Krug Grand Cuvée
@@ -245,13 +252,13 @@ export const dishImages: Record<string, string> = {
   // Wines - White (By the Bottle)
   'wine-38': wineSancerre, // Thierry & Pascale Reverdy Sancerre
   'wine-39': wineChablis, // Maison Roland Lavantureux Chablis
-  'wine-40': wineCakebread, // Jordan Chardonnay
+  'wine-40': wineProvenceRose, // Maîtres Vignerons Côtes de Provence Rosé
   
   // Wines - Rosé
-  'wine-41': wineSancerreRose, // Château du Rouët Côtes de Provence
-  'wine-42': wineSancerreRose, // Domaine des Parpaïouns Rosé
-  'wine-43': wineWhisperingAngel, // Whispering Angel
-  'wine-44': wineSancerreRose, // Blackbird Vineyards Arriviste Rosé
+  'wine-41': wineStollerRose, // Stoller Family Estate Rosé
+  'wine-42': wineScalabroneRose, // Guado al Tasso Scalabrone Bolgheri Rosé
+  'wine-43': wineOrangePullus, // Puklavec Pullus Haložan Orange Wine
+  'wine-44': wineBlackbirdRose, // Blackbird Vineyards Arriviste Rosé
   
   // Wines - Red (By the Glass)
   'wine-45': wineChateauMargaux, // Château Payrabon Haut-Médoc
