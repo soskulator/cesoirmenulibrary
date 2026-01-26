@@ -441,7 +441,7 @@ const uniqueWineImages = new Set([
   'wine-8', 'wine-9', 'wine-10', 'wine-11', 'wine-12',
   'wine-13', 'wine-14', 'wine-15', 'wine-16', 'wine-17', 'wine-18',
   'wine-19', 'wine-22', 'wine-24', 'wine-30',
-  'wine-34', 'wine-36', 'wine-37', 'wine-43', 'wine-53',
+  'wine-34', 'wine-36', 'wine-37', 'wine-40', 'wine-41', 'wine-42', 'wine-43', 'wine-44', 'wine-53',
 ]);
 
 // Spirit items with unique bottle images  
