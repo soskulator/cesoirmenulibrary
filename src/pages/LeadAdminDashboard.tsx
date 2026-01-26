@@ -17,6 +17,7 @@ import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChar
 import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
 import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
 import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
+import { Leaderboard } from '@/components/admin/Leaderboard';
 import { 
   Crown,
   FileText,
@@ -516,6 +517,15 @@ export default function LeadAdminDashboard() {
               transition={{ delay: 0.5 }}
             >
               <FohTestReviewManager />
+            </motion.div>
+
+            {/* 7. Leaderboard */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Leaderboard />
             </motion.div>
           </div>
 

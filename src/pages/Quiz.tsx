@@ -19,7 +19,8 @@ import {
   Martini,
   AlertTriangle,
   UserCheck,
-  Users
+  Users,
+  UtensilsCrossed
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -238,10 +239,10 @@ export default function QuizPage() {
                 </div>
               </Link>
 
-              <Link to="/quiz" className="group">
+              <Link to="/food-quiz" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-sage/10 via-sage/5 to-transparent border border-sage/20 p-4 transition-all duration-300 hover:border-sage/40 hover:shadow-lg hover:shadow-sage/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-sage/10 flex items-center justify-center group-hover:bg-sage/20 transition-colors mx-auto mb-2">
-                    <HelpCircle className="w-5 h-5 text-sage" />
+                    <UtensilsCrossed className="w-5 h-5 text-sage" />
                   </div>
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-sage transition-colors">Food</h3>
                 </div>
