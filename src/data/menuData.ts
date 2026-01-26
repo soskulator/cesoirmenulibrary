@@ -4128,6 +4128,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c1', type: 'selling', prompt: 'What\'s the story behind the Espresso Martini?', answer: 'Created in 1983 by Dick Bradsell when Kate Moss asked for a drink to wake her up and mess her up.' },
       { id: 'c2', type: 'quiz', prompt: 'What garnish goes on an Espresso Martini?', answer: 'Three coffee beans' },
+      { id: 'c1a', type: 'quiz', prompt: 'What are the ingredients in an Espresso Martini?', answer: 'Vodka 1.5oz, Coffee Liqueur 1.5oz, Fresh Espresso 3oz' },
+      { id: 'c1b', type: 'quiz', prompt: 'How is an Espresso Martini prepared?', answer: 'Hard shake and double strain. Serve in a coupe glass.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4147,6 +4149,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c3', type: 'selling', prompt: 'Why the copper mug?', answer: 'The copper mug keeps it ice cold and was part of the original 1941 creation.' },
       { id: 'c4', type: 'quiz', prompt: 'What year was the Moscow Mule created?', answer: '1941' },
+      { id: 'c3a', type: 'quiz', prompt: 'What are the ingredients in a Moscow Mule?', answer: 'Vodka 2oz, Lime juice 0.5oz, Ginger Beer 6oz, Angostura bitters 2 dashes' },
+      { id: 'c3b', type: 'quiz', prompt: 'What garnish goes on a Moscow Mule?', answer: 'Mint and lime wedge' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4165,7 +4169,9 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'c5', type: 'selling', prompt: 'Why is it called Old Fashioned?', answer: 'Drinkers wanted their cocktail made "the old-fashioned way" when recipes became too complicated.' },
-      { id: 'c6', type: 'quiz', prompt: 'What bitters are used in an Old Fashioned?', answer: 'Angostura bitters' },
+      { id: 'c6', type: 'quiz', prompt: 'What bitters are used in an Old Fashioned?', answer: 'Angostura bitters - 3 dashes' },
+      { id: 'c5a', type: 'quiz', prompt: 'What is the bourbon pour in an Old Fashioned?', answer: '3oz bourbon' },
+      { id: 'c5b', type: 'quiz', prompt: 'How is an Old Fashioned prepared?', answer: 'Build in glass, stir with a big rock. Garnish with orange twist.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4185,6 +4191,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c7', type: 'selling', prompt: 'What\'s the origin of the Manhattan?', answer: 'Created in the early 1880s, likely at the Manhattan Club in New York City.' },
       { id: 'c8', type: 'quiz', prompt: 'Is a Manhattan shaken or stirred?', answer: 'Stirred' },
+      { id: 'c7a', type: 'quiz', prompt: 'What are the ingredients in a Manhattan?', answer: 'Rye whiskey 2oz, Red sweet vermouth 1oz, Angostura bitters 2 dashes' },
+      { id: 'c7b', type: 'quiz', prompt: 'What glass and garnish for a Manhattan?', answer: 'Couptini glass with black maraschino cherry' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4204,6 +4212,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c9', type: 'selling', prompt: 'Who invented the Negroni?', answer: 'Created in 1919 when Count Negroni asked for a stronger Americano at Caffe Casoni in Florence.' },
       { id: 'c10', type: 'quiz', prompt: 'What replaced soda in the Americano to make a Negroni?', answer: 'Gin' },
+      { id: 'c9a', type: 'quiz', prompt: 'What are the equal parts in a Negroni?', answer: 'Gin 1oz, Red sweet vermouth 1oz, Campari 1oz' },
+      { id: 'c9b', type: 'quiz', prompt: 'How is a Negroni prepared?', answer: 'Build and stir with king cube. Garnish with orange twist.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4222,7 +4232,9 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'c11', type: 'selling', prompt: 'What\'s the origin of the Margarita?', answer: 'Created in 1938 by Danny Herrera for a dancer allergic to all spirits except tequila.' },
-      { id: 'c12', type: 'quiz', prompt: 'What is the orange liqueur in a Margarita?', answer: 'Cointreau or Triple Sec' },
+      { id: 'c12', type: 'quiz', prompt: 'What is the orange liqueur in a Margarita?', answer: 'Cointreau' },
+      { id: 'c11a', type: 'quiz', prompt: 'What are the ingredients in a Margarita?', answer: 'Tequila 2oz, Cointreau 1oz, Fresh lime juice 1oz' },
+      { id: 'c11b', type: 'quiz', prompt: 'How is a Margarita served?', answer: 'Shake and strain into old fashioned glass with salted rim and dehydrated lime, over king cube.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4242,6 +4254,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c13', type: 'selling', prompt: 'What is an Aperol Spritz best for?', answer: 'The perfect aperitivo - light, refreshing, and ideal before dinner.' },
       { id: 'c14', type: 'quiz', prompt: 'What region of Italy is the Spritz from?', answer: 'Veneto region' },
+      { id: 'c13a', type: 'quiz', prompt: 'What are the ingredients in an Aperol Spritz?', answer: 'Aperol 2.5oz, Sparkling wine 4oz, Soda 1oz' },
+      { id: 'c13b', type: 'quiz', prompt: 'How is an Aperol Spritz prepared?', answer: 'Build in glass with draft ice. Garnish with orange wedge.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4261,6 +4275,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c15', type: 'selling', prompt: 'Why the egg white?', answer: 'Creates a velvety foam on top and a silky texture throughout the drink.' },
       { id: 'c16', type: 'quiz', prompt: 'When was the Whiskey Sour first documented?', answer: '1862 in Jerry Thomas\'s Bartender\'s Guide' },
+      { id: 'c15a', type: 'quiz', prompt: 'What are the ingredients in a Whiskey Sour?', answer: 'Bourbon 2.5oz, Lemon juice 1oz, Simple syrup 1oz, Egg white' },
+      { id: 'c15b', type: 'quiz', prompt: 'How is a Whiskey Sour prepared?', answer: 'Dry shake, then shake with ice. Serve with king cube and dry orange garnish.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4280,6 +4296,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c17', type: 'selling', prompt: 'What show popularized the Cosmo?', answer: 'Sex and the City in the 1990s made it iconic.' },
       { id: 'c18', type: 'quiz', prompt: 'What gives the Cosmopolitan its pink color?', answer: 'Cranberry juice' },
+      { id: 'c17a', type: 'quiz', prompt: 'What are the ingredients in a Cosmopolitan?', answer: 'Vodka 1.75oz, Triple Sec ¾oz, Lime juice 1oz, Cranberry juice' },
+      { id: 'c17b', type: 'quiz', prompt: 'How is a Cosmopolitan garnished?', answer: 'Circled orange peel, burned' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4299,6 +4317,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c19', type: 'selling', prompt: 'What does Mojito mean?', answer: 'From "mojo" meaning "to place a little spell" - it\'s that good!' },
       { id: 'c20', type: 'quiz', prompt: 'What country is the Mojito from?', answer: 'Cuba' },
+      { id: 'c19a', type: 'quiz', prompt: 'What are the ingredients in a Mojito?', answer: 'White rum 2oz, Lime juice ¾oz, Mint 3 sprigs, Simple syrup, Soda' },
+      { id: 'c19b', type: 'quiz', prompt: 'How is a Mojito built?', answer: 'Build in highball with regular cubed ice and crushed. Garnish with mint and dry lime wheel.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4318,6 +4338,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c21', type: 'selling', prompt: 'What\'s a bone dry martini?', answer: 'Minimal vermouth - just a spray - letting the spirit shine through.' },
       { id: 'c22', type: 'quiz', prompt: 'What are the garnish options for a martini?', answer: 'Lemon peel, olives, or blue cheese olives' },
+      { id: 'c21a', type: 'quiz', prompt: 'What is the vodka pour in our house Martini?', answer: '3.5oz frozen vodka' },
+      { id: 'c21b', type: 'quiz', prompt: 'How is our house Martini prepared?', answer: 'Pour frozen vodka, spray with vermouth. Serve in frozen martini glass.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4337,6 +4359,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c23', type: 'selling', prompt: 'How does it differ from a Negroni?', answer: 'Uses bourbon instead of gin for a richer, warmer character.' },
       { id: 'c24', type: 'quiz', prompt: 'Who created the Boulevardier?', answer: 'Erskine Gwynne in late 1920s Paris' },
+      { id: 'c23a', type: 'quiz', prompt: 'What are the ingredients in a Boulevardier?', answer: 'Bourbon 1oz, Red sweet vermouth 1oz, Campari 1oz' },
+      { id: 'c23b', type: 'quiz', prompt: 'How is a Boulevardier served?', answer: 'Stir and strain into a coupe with orange peel.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4356,6 +4380,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c25', type: 'selling', prompt: 'Where was Irish Coffee invented?', answer: 'Created in 1943 at Foynes Port in Ireland for transatlantic flight passengers.' },
       { id: 'c26', type: 'quiz', prompt: 'What whiskey is traditionally used?', answer: 'Irish whiskey - we use Jameson' },
+      { id: 'c25a', type: 'quiz', prompt: 'What are the ingredients in an Irish Coffee?', answer: 'Jameson 2oz, Black coffee 3oz, Brown sugar 1.5oz, Cream 18%' },
+      { id: 'c25b', type: 'quiz', prompt: 'How is an Irish Coffee prepared?', answer: 'Build up, froth the cream. Garnish with chocolate powder.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4375,6 +4401,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c27', type: 'selling', prompt: 'Is this a frozen Daiquiri?', answer: 'No, this is a classic shaken Daiquiri - clean, bright, and elegant.' },
       { id: 'c28', type: 'quiz', prompt: 'Where does the name Daiquiri come from?', answer: 'A beach and iron mine near Santiago de Cuba' },
+      { id: 'c27a', type: 'quiz', prompt: 'What are the ingredients in a Daiquiri?', answer: 'White rum 2oz, Lime juice 0.75oz, Simple syrup 0.75oz' },
+      { id: 'c27b', type: 'quiz', prompt: 'How is a Daiquiri served?', answer: 'Shake and double strain into coupe with dry lime garnish.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4394,6 +4422,8 @@ export const menuItems: MenuItem[] = [
     questions: [
       { id: 'c29', type: 'selling', prompt: 'What is Pisco?', answer: 'A South American brandy from Peru or Chile, made from grapes.' },
       { id: 'c30', type: 'quiz', prompt: 'Where was the Pisco Sour invented?', answer: 'Lima, Peru in the 1920s' },
+      { id: 'c29a', type: 'quiz', prompt: 'What are the ingredients in a Pisco Sour?', answer: 'Pisco 2.5oz, Lemon juice 1oz, Simple syrup 1oz, Pasteurized egg white 1oz' },
+      { id: 'c29b', type: 'quiz', prompt: 'How is a Pisco Sour garnished?', answer: '3 dashes of Angostura bitters on the foam' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4414,6 +4444,8 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'sig1', type: 'selling', prompt: 'What makes the Grilled Avocado Passionfruit Sour unique?', answer: 'House-made avocado-infused rhum Agricole gives it a creamy, tropical profile with subtle heat from serrano.' },
+      { id: 'sig1a', type: 'quiz', prompt: 'What are the main ingredients in the Grilled Avocado Passionfruit Sour?', answer: 'Avocado infused rhum Agricole, Briottet passion fruit liqueur, acidified passion fruit nectar, serrano tincture' },
+      { id: 'sig1b', type: 'quiz', prompt: 'How is the Grilled Avocado Passionfruit Sour garnished?', answer: 'Passion fruit half' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4432,6 +4464,8 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'sig2', type: 'selling', prompt: 'Describe the Grapefruit Brûlée experience.', answer: 'Dramatic tableside presentation with torched grapefruit, combining smoky mezcal with caramelized citrus and herbal Chartreuse.' },
+      { id: 'sig2a', type: 'quiz', prompt: 'What spirits are in the Grapefruit Brûlée?', answer: 'Tequila and mezcal' },
+      { id: 'sig2b', type: 'quiz', prompt: 'What liqueur adds herbal complexity to the Grapefruit Brûlée?', answer: 'Green Chartreuse' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4450,6 +4484,8 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'sig3', type: 'selling', prompt: 'What makes the Torched Guava Olive Spritz different?', answer: 'The unexpected olive syrup adds a savory depth that balances the tropical guava and floral elderflower.' },
+      { id: 'sig3a', type: 'quiz', prompt: 'What ingredients are in the Torched Guava Olive Spritz?', answer: 'Aperol Guava Justino, elderflower liqueur, olive syrup, lemon acid, prosecco' },
+      { id: 'sig3b', type: 'quiz', prompt: 'How is the Torched Guava Olive Spritz garnished?', answer: 'Torched guava slice and olive' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4468,6 +4504,8 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'sig4', type: 'selling', prompt: 'Describe the Scorpino to a guest.', answer: 'A garden-inspired frozen cocktail with sugar snap pea gin and dill liqueur blended with lemon sorbet, topped with prosecco.' },
+      { id: 'sig4a', type: 'quiz', prompt: 'What are the key ingredients in the Scorpino?', answer: 'Sugar snap pea gin, dill liqueur, lemon sorbet, prosecco' },
+      { id: 'sig4b', type: 'quiz', prompt: 'How is the Scorpino prepared?', answer: 'Blend gin, dill liqueur, and sorbet. Pour into flute. Top with prosecco. Garnish with dill sprig.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4486,6 +4524,8 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'sig5', type: 'selling', prompt: 'How does this differ from a classic Espresso Martini?', answer: 'Coconut-infused vodka adds tropical richness, while chocolate stout syrup brings malty depth beyond the classic recipe.' },
+      { id: 'sig5a', type: 'quiz', prompt: 'What are the ingredients in the Toasted Coconut Espresso Martini?', answer: 'Coconut infused vodka, dark rum coffee liqueur, espresso, chocolate stout syrup' },
+      { id: 'sig5b', type: 'quiz', prompt: 'How is the Toasted Coconut Espresso Martini garnished?', answer: 'Toasted coconut flakes and coffee beans' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4504,6 +4544,8 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'sig6', type: 'selling', prompt: 'What makes the Negroni Verde special?', answer: 'Mexican-Italian fusion with cacao tequila, poblano Campari spice, and a dramatic Lagavulin float for peat smoke.' },
+      { id: 'sig6a', type: 'quiz', prompt: 'What are the ingredients in the Negroni Verde?', answer: 'Cacao tequila, sweet vermouth, poblano Campari, Lagavulin float' },
+      { id: 'sig6b', type: 'quiz', prompt: 'How is the Negroni Verde prepared?', answer: 'Stir tequila, vermouth, and poblano Campari. Strain over king cube. Float Lagavulin on top. Orange twist.' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
@@ -4522,6 +4564,8 @@ export const menuItems: MenuItem[] = [
     allergens: [],
     questions: [
       { id: 'sig7', type: 'selling', prompt: 'Describe the Footnote cocktail.', answer: 'A contemplative blend of Irish and peated Scotch whiskeys with alpine Genepì and volcanic salt for mineral depth.' },
+      { id: 'sig7a', type: 'quiz', prompt: 'What whiskeys are in the Footnote?', answer: 'Glendalough Irish whiskey and Caol Ila peated Scotch' },
+      { id: 'sig7b', type: 'quiz', prompt: 'What unique ingredient adds mineral complexity to the Footnote?', answer: 'Volcanic salt solution' },
     ],
     isPublished: true,
     createdAt: '2024-01-01',
