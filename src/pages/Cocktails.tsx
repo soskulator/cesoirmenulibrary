@@ -228,20 +228,31 @@ export default function CocktailsPage() {
                               </div>
                             </div>
 
-                            <p className="text-charcoal/70 text-sm leading-relaxed mb-4 line-clamp-3">
+                            <p className="text-charcoal/70 text-sm leading-relaxed mb-4 line-clamp-2">
                               {cocktail.longDescription}
                             </p>
 
-                            {/* Ingredients */}
-                            <div className="flex flex-wrap items-center gap-2 text-xs text-charcoal/50">
-                              <span className="px-2 py-1 bg-charcoal/5 rounded-full">
-                                {cocktail.ingredientsText.split(',')[0].trim()}
-                              </span>
+                            {/* Recipe */}
+                            <div className="bg-copper/5 rounded-lg p-3 mb-3 border border-copper/10">
+                              <h4 className="text-[10px] uppercase tracking-wider text-copper font-semibold mb-1">Recipe</h4>
+                              <p className="text-charcoal/80 text-sm font-medium">
+                                {cocktail.ingredientsText}
+                              </p>
                             </div>
+
+                            {/* Method */}
+                            {cocktail.prepNotes && (
+                              <div className="bg-charcoal/5 rounded-lg p-3 mb-3">
+                                <h4 className="text-[10px] uppercase tracking-wider text-charcoal/50 font-semibold mb-1">Method</h4>
+                                <p className="text-charcoal/70 text-xs">
+                                  {cocktail.prepNotes}
+                                </p>
+                              </div>
+                            )}
 
                             {/* Selling Points */}
                             {cocktail.sellingPointsText && (
-                              <div className="mt-4 pt-4 border-t border-border/50">
+                              <div className="pt-3 border-t border-border/50">
                                 <p className="text-xs text-charcoal/50 italic">
                                   {cocktail.sellingPointsText}
                                 </p>

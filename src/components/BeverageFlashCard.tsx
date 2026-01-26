@@ -194,15 +194,29 @@ export function BeverageFlashCard({
 
             {/* Details Grid */}
             <div className="space-y-2.5">
-              {/* Grape/Spirit/Ingredients */}
+              {/* Recipe / Ingredients with measurements - prominent for cocktails */}
               <div className="bg-white/5 rounded-lg p-2.5 sm:p-3">
                 <h3 className={cn("text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-1", beverageType.accentColor)}>
-                  {item.categoryId === 'wine' ? 'Grape & Region' : 'Profile'}
+                  {item.categoryId === 'cocktails' ? 'Recipe' : item.categoryId === 'wine' ? 'Grape & Region' : 'Profile'}
                 </h3>
-                <p className="text-cream/90 text-xs sm:text-sm">
+                <p className="text-cream/90 text-xs sm:text-sm font-medium">
                   {item.ingredientsText}
                 </p>
               </div>
+
+              {/* Method / Prep Notes - always show for cocktails */}
+              {item.prepNotes && (
+                <div className="bg-white/5 rounded-lg p-2.5 sm:p-3">
+                  <h3 className={cn("text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-1", 
+                    item.categoryId === 'cocktails' ? beverageType.accentColor : "text-cream/60"
+                  )}>
+                    {item.categoryId === 'cocktails' ? 'Method' : 'Notes'}
+                  </h3>
+                  <p className="text-cream/90 text-xs sm:text-sm">
+                    {item.prepNotes}
+                  </p>
+                </div>
+              )}
 
               {/* Selling Points */}
               <div className="bg-white/5 rounded-lg p-2.5 sm:p-3">
@@ -213,18 +227,6 @@ export function BeverageFlashCard({
                   {item.sellingPointsText}
                 </p>
               </div>
-
-              {/* Prep Notes if available */}
-              {item.prepNotes && (
-                <div className="bg-white/5 rounded-lg p-2.5 sm:p-3">
-                  <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-1 text-cream/60">
-                    Notes
-                  </h3>
-                  <p className="text-cream/80 text-xs sm:text-sm">
-                    {item.prepNotes}
-                  </p>
-                </div>
-              )}
             </div>
           </div>
 

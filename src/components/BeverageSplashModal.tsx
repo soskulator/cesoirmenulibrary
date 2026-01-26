@@ -202,10 +202,44 @@ export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModa
                   </p>
                 </div>
 
-                {/* Details Grid */}
+                {/* Recipe Section - Full Width for Cocktails */}
+                {type === 'cocktail' && item.ingredientsText && (
+                  <motion.div
+                    className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm border border-copper/20"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.4 }}
+                  >
+                    <h3 className="text-copper text-sm font-semibold uppercase tracking-wide mb-3">
+                      Recipe
+                    </h3>
+                    <p className="text-white font-medium text-base leading-relaxed">
+                      {item.ingredientsText}
+                    </p>
+                  </motion.div>
+                )}
+
+                {/* Method - Full Width for Cocktails */}
+                {type === 'cocktail' && item.prepNotes && (
+                  <motion.div
+                    className="bg-copper/15 rounded-2xl p-4 backdrop-blur-sm border border-copper/20"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.55, duration: 0.4 }}
+                  >
+                    <h3 className="text-copper text-sm font-semibold uppercase tracking-wide mb-3">
+                      Method
+                    </h3>
+                    <p className="text-white/90 text-sm leading-relaxed">
+                      {item.prepNotes}
+                    </p>
+                  </motion.div>
+                )}
+
+                {/* Details Grid - for non-cocktails or additional info */}
                 <div className="grid gap-4 md:grid-cols-2">
-                  {/* Origin/Ingredients */}
-                  {item.ingredientsText && (
+                  {/* Origin/Ingredients - only show for non-cocktails */}
+                  {type !== 'cocktail' && item.ingredientsText && (
                     <motion.div
                       className="bg-white/5 rounded-2xl p-4 backdrop-blur-sm"
                       initial={{ x: -20, opacity: 0 }}
@@ -213,7 +247,7 @@ export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModa
                       transition={{ delay: 0.5, duration: 0.4 }}
                     >
                       <h3 className="text-copper text-sm font-semibold uppercase tracking-wide mb-2">
-                        {type === 'wine' ? 'Origin & Grape' : type === 'cocktail' ? 'Ingredients' : 'Details'}
+                        {type === 'wine' ? 'Origin & Grape' : 'Details'}
                       </h3>
                       <p className="text-white/70 text-sm leading-relaxed">
                         {item.ingredientsText}
@@ -224,13 +258,16 @@ export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModa
                   {/* Selling Points */}
                   {item.sellingPointsText && (
                     <motion.div
-                      className="bg-white/5 rounded-2xl p-4 backdrop-blur-sm"
+                      className={cn(
+                        "bg-white/5 rounded-2xl p-4 backdrop-blur-sm",
+                        type === 'cocktail' && "md:col-span-2"
+                      )}
                       initial={{ x: 20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.6, duration: 0.4 }}
                     >
                       <h3 className="text-copper text-sm font-semibold uppercase tracking-wide mb-2">
-                        Tasting Notes
+                        {type === 'cocktail' ? 'Selling Points' : 'Tasting Notes'}
                       </h3>
                       <p className="text-white/70 text-sm leading-relaxed">
                         {item.sellingPointsText}
@@ -239,8 +276,8 @@ export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModa
                   )}
                 </div>
 
-                {/* Pairing/Prep Notes */}
-                {item.prepNotes && (
+                {/* Pairing/Prep Notes - only for non-cocktails */}
+                {type !== 'cocktail' && item.prepNotes && (
                   <motion.div
                     className="bg-copper/10 rounded-2xl p-4 backdrop-blur-sm"
                     initial={{ y: 20, opacity: 0 }}
@@ -248,7 +285,7 @@ export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModa
                     transition={{ delay: 0.7, duration: 0.4 }}
                   >
                     <h3 className="text-copper text-sm font-semibold uppercase tracking-wide mb-2">
-                      {type === 'wine' ? 'Pairing Suggestions' : type === 'cocktail' ? 'Bartender Notes' : 'Serving Notes'}
+                      {type === 'wine' ? 'Pairing Suggestions' : 'Serving Notes'}
                     </h3>
                     <p className="text-white/70 text-sm leading-relaxed italic">
                       {item.prepNotes}
