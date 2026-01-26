@@ -138,7 +138,7 @@ export default function AdminPage() {
 
   return (
     <Layout>
-      <div className="container py-6 sm:py-8 px-4 max-w-5xl mx-auto">
+      <div className="py-6 sm:py-8 px-4 max-w-5xl mx-auto w-full overflow-x-hidden">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-2">
