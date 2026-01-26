@@ -17,7 +17,9 @@ import {
   HelpCircle,
   Wine,
   Martini,
-  AlertTriangle
+  AlertTriangle,
+  UserCheck,
+  Users
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -181,112 +183,104 @@ export default function QuizPage() {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-burgundy" />
             </div>
-            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Test Mode</h1>
+            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Staff Testing Center</h1>
             <p className="text-muted-foreground text-xs sm:text-sm">
-              Test your knowledge of menu items, ingredients, and selling points
+              Choose your test category below
             </p>
           </div>
 
-          <Card className="mb-6 sm:mb-8">
-            <CardContent className="p-3 sm:p-4 md:p-6">
-              <h2 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Select a Category</h2>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                <Button
-                  variant={selectedCategory === '' ? "burgundy" : "secondary"}
-                  onClick={() => setSelectedCategory('')}
-                  size="sm"
-                  className="h-8 sm:h-9 text-xs sm:text-sm"
-                >
-                  All
-                </Button>
-                {categories.map((cat) => {
-                  const questionCount = menuItems
-                    .filter(i => i.categoryId === cat.id && i.isPublished)
-                    .reduce((acc, item) => acc + item.questions.length, 0);
-                  return (
-                    <Button
-                      key={cat.id}
-                      variant={selectedCategory === cat.id ? "burgundy" : "secondary"}
-                      onClick={() => setSelectedCategory(cat.id)}
-                      size="sm"
-                      className="h-8 sm:h-9 text-xs sm:text-sm"
-                    >
-                      {cat.icon} <span className="hidden sm:inline ml-1">{cat.name}</span>
-                      <Badge variant="cream" className="ml-1 sm:ml-2 text-[10px] sm:text-xs">
-                        {questionCount}
-                      </Badge>
-                    </Button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="text-center space-y-4">
-            <p className="text-muted-foreground mb-3 sm:mb-4 text-xs sm:text-sm">
-              {allQuestions.length} questions available
-            </p>
-            <Button 
-              variant="burgundy" 
-              size="sm"
-              onClick={startQuiz}
-              disabled={allQuestions.length === 0}
-              className="h-10 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
-            >
-              Start Test
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-            </Button>
-            
-            {/* Specialized Test Links */}
-            <div className="pt-6 border-t border-border mt-6">
-              <p className="text-sm text-muted-foreground mb-4">Looking for specialized testing?</p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
-                <Link to="/wine-quiz" className="group">
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-burgundy/10 flex items-center justify-center group-hover:bg-burgundy/20 transition-colors">
-                        <Wine className="w-5 h-5 text-burgundy" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="font-semibold text-foreground group-hover:text-burgundy transition-colors">Wine Test</h3>
-                        <p className="text-xs text-muted-foreground">Regions, varietals & pairings</p>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-burgundy group-hover:translate-x-1 transition-all ml-2" />
+          {/* Primary Tests - Knowledge Tests */}
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Knowledge Tests</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link to="/foh-test?type=service_staff" className="group">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-burgundy/10 flex items-center justify-center group-hover:bg-burgundy/20 transition-colors">
+                      <UserCheck className="w-5 h-5 text-burgundy" />
                     </div>
-                  </div>
-                </Link>
-                
-                <Link to="/spirits-quiz" className="group">
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors">
-                        <Martini className="w-5 h-5 text-copper" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="font-semibold text-foreground group-hover:text-copper transition-colors">Spirits Test</h3>
-                        <p className="text-xs text-muted-foreground">Bottles, origins & cocktails</p>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-copper group-hover:translate-x-1 transition-all ml-2" />
+                    <div className="text-left flex-1">
+                      <h3 className="font-semibold text-foreground group-hover:text-burgundy transition-colors">Bartender/Server Test</h3>
+                      <p className="text-xs text-muted-foreground">Complete service knowledge</p>
                     </div>
+                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-burgundy group-hover:translate-x-1 transition-all" />
                   </div>
-                </Link>
-
-                <Link to="/allergy-quiz" className="group">
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 transition-colors">
-                        <AlertTriangle className="w-5 h-5 text-destructive" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="font-semibold text-foreground group-hover:text-destructive transition-colors">Allergy Test</h3>
-                        <p className="text-xs text-muted-foreground">Ingredient removal training</p>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-destructive group-hover:translate-x-1 transition-all ml-2" />
+                </div>
+              </Link>
+              
+              <Link to="/foh-test?type=server_assistant" className="group">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors">
+                      <Users className="w-5 h-5 text-copper" />
                     </div>
+                    <div className="text-left flex-1">
+                      <h3 className="font-semibold text-foreground group-hover:text-copper transition-colors">Server Assistant Test</h3>
+                      <p className="text-xs text-muted-foreground">Essential service skills</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-copper group-hover:translate-x-1 transition-all" />
                   </div>
-                </Link>
-              </div>
+                </div>
+              </Link>
             </div>
+          </div>
+
+          {/* Optional Categorized Tests */}
+          <div className="pt-6 border-t border-border">
+            <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Menu Tests (Optional)</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+              <Link to="/wine-quiz" className="group">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-burgundy/10 flex items-center justify-center group-hover:bg-burgundy/20 transition-colors mx-auto mb-2">
+                    <Wine className="w-5 h-5 text-burgundy" />
+                  </div>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-burgundy transition-colors">Wine</h3>
+                </div>
+              </Link>
+
+              <Link to="/quiz" className="group">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-sage/10 via-sage/5 to-transparent border border-sage/20 p-4 transition-all duration-300 hover:border-sage/40 hover:shadow-lg hover:shadow-sage/10 hover:-translate-y-0.5 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-sage/10 flex items-center justify-center group-hover:bg-sage/20 transition-colors mx-auto mb-2">
+                    <HelpCircle className="w-5 h-5 text-sage" />
+                  </div>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-sage transition-colors">Food</h3>
+                </div>
+              </Link>
+
+              <Link to="/cocktail-flashcards" className="group">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gold/10 via-gold/5 to-transparent border border-gold/20 p-4 transition-all duration-300 hover:border-gold/40 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-0.5 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors mx-auto mb-2">
+                    <Martini className="w-5 h-5 text-gold" />
+                  </div>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-gold transition-colors">Cocktails</h3>
+                </div>
+              </Link>
+
+              <Link to="/spirits-quiz" className="group">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
+                    <Martini className="w-5 h-5 text-copper" />
+                  </div>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-copper transition-colors">Spirits</h3>
+                </div>
+              </Link>
+            </div>
+
+            {/* Allergy Test */}
+            <Link to="/allergy-quiz" className="group block">
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 transition-colors">
+                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                  </div>
+                  <div className="text-left flex-1">
+                    <h3 className="font-semibold text-foreground group-hover:text-destructive transition-colors">Allergy Test</h3>
+                    <p className="text-xs text-muted-foreground">Ingredient removal training</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-destructive group-hover:translate-x-1 transition-all" />
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </Layout>

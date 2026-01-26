@@ -147,7 +147,7 @@ export function Header() {
         })}
 
           {/* Test Dropdown - Redesigned with submenus */}
-          <DropdownMenu>
+          <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <button className={cn("relative px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5", 
                 [...knowledgeTestItems, ...menuTestItems, ...otherTestItems].some(item => location.pathname === item.path || location.pathname.startsWith(item.path.split('?')[0])) 
@@ -158,7 +158,7 @@ export function Header() {
                 <ChevronDown className="w-3 h-3" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 bg-background">
+            <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg">
               {/* Knowledge Test */}
               <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
               <DropdownMenuItem asChild>
@@ -301,7 +301,7 @@ export function Header() {
 
           {/* Test Section - Mobile (Collapsible) */}
           <div className="h-px bg-border my-2" />
-          <DropdownMenu>
+          <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <button className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors", 
                 [...knowledgeTestItems, ...menuTestItems, ...otherTestItems].some(item => location.pathname === item.path || location.pathname.startsWith(item.path.split('?')[0])) 
@@ -314,7 +314,7 @@ export function Header() {
                 <ChevronDown className="w-4 h-4" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 bg-background">
+            <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg">
               {/* Knowledge Test */}
               <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
               <DropdownMenuItem asChild>

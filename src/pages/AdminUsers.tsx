@@ -492,55 +492,57 @@ export default function AdminUsersPage() {
         {/* Pending Invitations */}
         {invitations.filter(i => !i.accepted_at).length > 0 && (
           <Card className="mb-6">
-            <CardHeader>
+            <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Clock className="w-5 h-5 text-copper" />
                 Pending Invitations
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-3 sm:px-6">
               <div className="space-y-3">
                 {invitations.filter(i => !i.accepted_at).map((invite) => (
-                  <div key={invite.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium text-sm">{invite.email}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Expires: {new Date(invite.expires_at).toLocaleDateString()}
-                        </p>
+                  <div key={invite.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-muted rounded-lg">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm truncate">{invite.email}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-xs text-muted-foreground">
+                            Exp: {new Date(invite.expires_at).toLocaleDateString()}
+                          </p>
+                          {getRoleBadge(invite.role)}
+                        </div>
                       </div>
-                      {getRoleBadge(invite.role)}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 justify-end">
                       <Button 
                         variant="outline" 
                         size="sm"
+                        className="h-8 px-2 text-xs"
                         onClick={() => resendInvitation(invite)}
                         disabled={resendingInviteId === invite.id}
                       >
                         {resendingInviteId === invite.id ? (
-                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                         ) : (
-                          <>
-                            <RefreshCw className="w-4 h-4 mr-1" />
-                            Resend
-                          </>
+                          <RefreshCw className="w-3.5 h-3.5" />
                         )}
                       </Button>
                       <Button 
                         variant="outline" 
                         size="sm"
+                        className="h-8 px-2 text-xs"
                         onClick={() => copyInviteLink(invite.token)}
                       >
-                        Copy Link
+                        Copy
                       </Button>
                       <Button 
                         variant="ghost" 
                         size="sm"
+                        className="h-8 px-2"
                         onClick={() => deleteInvitation(invite.id)}
                       >
-                        <Trash2 className="w-4 h-4 text-destructive" />
+                        <Trash2 className="w-3.5 h-3.5 text-destructive" />
                       </Button>
                     </div>
                   </div>
@@ -552,7 +554,7 @@ export default function AdminUsersPage() {
 
         {/* Team Members */}
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-copper" />
               Team Progress
@@ -561,8 +563,59 @@ export default function AdminUsersPage() {
               Track study progress for each team member
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
+          <CardContent className="px-3 sm:px-6">
+            {/* Mobile Card Layout */}
+            <div className="sm:hidden space-y-3">
+              {users.map((u) => {
+                const progress = studyProgress[u.id];
+                const progressPercent = progress 
+                  ? Math.round((progress.known_count / totalMenuItems) * 100)
+                  : 0;
+                
+                return (
+                  <div key={u.id} className="bg-muted rounded-lg p-3 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm truncate">
+                          {u.full_name || 'Unknown'}
+                          {u.id === user?.id && (
+                            <Badge variant="outline" className="ml-2 text-[10px]">You</Badge>
+                          )}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                      </div>
+                      {isLeadAdmin && u.id !== user?.id ? (
+                        <Select 
+                          value={u.role || 'none'} 
+                          onValueChange={(v) => updateUserRole(u.id, v === 'none' ? 'remove' : v as AppRole)}
+                        >
+                          <SelectTrigger className="w-[100px] h-7 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">No Role</SelectItem>
+                            <SelectItem value="employee">Employee</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                            <SelectItem value="lead_admin">Lead Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        getRoleBadge(u.role)
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Progress value={progressPercent} className="flex-1 h-2" />
+                      <span className="text-xs text-muted-foreground w-16 text-right">
+                        {progress?.known_count || 0}/{totalMenuItems}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table Layout */}
+            <div className="hidden sm:block overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
