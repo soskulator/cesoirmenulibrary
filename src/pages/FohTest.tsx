@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useFohTestQuestions } from '@/hooks/useFohTestQuestions';
-import { getCategoryLabel, getCategoryColor, FohTestQuestion } from '@/data/fohTestData';
+import { getCategoryLabel, getCategoryColor, FohTestQuestion, TestType, getTestTypeLabel } from '@/data/fohTestData';
 import { useQuizScores } from '@/hooks/useQuizScores';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,7 +22,9 @@ import {
   Medal,
   Target,
   Clock,
-  Loader2
+  Loader2,
+  Users,
+  UserCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -38,6 +39,7 @@ interface AnsweredQuestion {
 }
 
 export default function FohTestPage() {
+  const [selectedTestType, setSelectedTestType] = useState<TestType | null>(null);
   const [testStarted, setTestStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -54,13 +56,17 @@ export default function FohTestPage() {
   const { getTestQuestions } = useFohTestQuestions();
   const { user } = useAuth();
 
-  // Get all questions (no category filtering)
-  const allQuestions = useMemo(() => getTestQuestions(), [getTestQuestions]);
+  // Get questions for the selected test type
+  const allQuestions = useMemo(() => {
+    return selectedTestType ? getTestQuestions(selectedTestType) : [];
+  }, [getTestQuestions, selectedTestType]);
 
   // Shuffle questions for the test
   const [shuffledQuestions, setShuffledQuestions] = useState<FohTestQuestion[]>([]);
 
   const startTest = async () => {
+    if (!selectedTestType) return;
+    
     const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
     setShuffledQuestions(shuffled);
     setTestStarted(true);
@@ -79,7 +85,8 @@ export default function FohTestPage() {
           .from('foh_test_attempts')
           .insert({
             user_id: user.id,
-            total_questions: shuffled.length
+            total_questions: shuffled.length,
+            test_type: selectedTestType
           })
           .select('id')
           .single();
@@ -262,7 +269,8 @@ export default function FohTestPage() {
   // Save score when test is complete
   useEffect(() => {
     if (showResult && answeredQuestions.length === shuffledQuestions.length && shuffledQuestions.length > 0) {
-      saveQuizScore('foh', score.correct, score.total);
+      const quizType = selectedTestType === 'server_assistant' ? 'foh-sa' : 'foh-service';
+      saveQuizScore(quizType, score.correct, score.total);
 
       // Update the test attempt with final score
       if (attemptId && user) {
@@ -279,7 +287,7 @@ export default function FohTestPage() {
           });
       }
     }
-  }, [showResult, answeredQuestions.length, shuffledQuestions.length, score.correct, score.total, score.percentage, saveQuizScore, attemptId, user]);
+  }, [showResult, answeredQuestions.length, shuffledQuestions.length, score.correct, score.total, score.percentage, saveQuizScore, attemptId, user, selectedTestType]);
 
   const getTimeSpent = () => {
     if (!startTime || !endTime) return '0 min';
@@ -310,6 +318,14 @@ export default function FohTestPage() {
     setAttemptId(null);
   };
 
+  const goBack = () => {
+    if (testStarted) {
+      resetTest();
+    } else {
+      setSelectedTestType(null);
+    }
+  };
+
   // Results screen with scoreboard
   if (showResult) {
     const gradeInfo = getScoreGrade(score.percentage);
@@ -326,7 +342,9 @@ export default function FohTestPage() {
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
                 <Trophy className="w-10 h-10 sm:w-12 sm:h-12 text-gold" />
               </div>
-              <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">FoH Test Complete!</h1>
+              <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
+                {selectedTestType === 'server_assistant' ? 'Server Assistant Test' : 'Service Staff Test'} Complete!
+              </h1>
               <p className={cn("text-xl sm:text-2xl font-bold", gradeInfo.color)}>
                 {gradeInfo.label}
               </p>
@@ -394,6 +412,8 @@ export default function FohTestPage() {
                     const catCorrect = catAnswered.filter(a => a.isCorrect).length;
                     const catPercentage = catQuestions.length > 0 ? Math.round((catCorrect / catQuestions.length) * 100) : 0;
 
+                    if (catQuestions.length === 0) return null;
+
                     return (
                       <div key={cat} className="flex items-center gap-3">
                         <Badge className={cn(getCategoryColor(cat), "w-24 sm:w-32 justify-center text-xs")}>
@@ -418,14 +438,100 @@ export default function FohTestPage() {
                 <RotateCcw className="w-5 h-5 mr-2" />
                 Retake Test
               </Button>
-              <Button variant="outline" asChild className="h-11">
-                <Link to="/quiz">
-                  <ArrowLeft className="w-5 h-5 mr-2" />
-                  Back to Tests
-                </Link>
+              <Button variant="outline" onClick={() => setSelectedTestType(null)} className="h-11">
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Choose Different Test
               </Button>
             </div>
           </motion.div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Test type selection screen
+  if (!selectedTestType) {
+    return (
+      <Layout>
+        <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-4">
+              <ClipboardList className="w-8 h-8 sm:w-10 sm:h-10 text-burgundy" />
+            </div>
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">FoH Knowledge Tests</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
+              Select your position to take the appropriate test
+            </p>
+          </div>
+
+          <div className="grid gap-4">
+            {/* Service Staff Test */}
+            <Card 
+              className="cursor-pointer hover:border-burgundy transition-colors"
+              onClick={() => setSelectedTestType('service_staff')}
+            >
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-burgundy/10 flex items-center justify-center flex-shrink-0">
+                    <Users className="w-6 h-6 text-burgundy" />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="font-semibold text-lg mb-1">Service Staff Test</h2>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Complete Service & Food Knowledge Test including beverage knowledge for servers and bartenders
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline" className="text-xs">69 Questions</Badge>
+                      <Badge variant="outline" className="text-xs">~45 min</Badge>
+                      <Badge className="bg-burgundy/10 text-burgundy text-xs">Full Menu & Beverage</Badge>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Server Assistant Test */}
+            <Card 
+              className="cursor-pointer hover:border-burgundy transition-colors"
+              onClick={() => setSelectedTestType('server_assistant')}
+            >
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-jade/10 flex items-center justify-center flex-shrink-0">
+                    <UserCheck className="w-6 h-6 text-jade" />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="font-semibold text-lg mb-1">Server Assistant Test</h2>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Focused test for server assistants covering service standards, operations, and basic knowledge
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline" className="text-xs">33 Questions</Badge>
+                      <Badge variant="outline" className="text-xs">~20 min</Badge>
+                      <Badge className="bg-jade/10 text-jade text-xs">SA Focused</Badge>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+            <p className="text-xs text-muted-foreground text-center">
+              <strong>AI-Powered Grading:</strong> Short answers are automatically evaluated - you don't need verbatim answers, just demonstrate understanding of the key concepts.
+            </p>
+          </div>
+
+          <div className="mt-6 text-center">
+            <Button variant="outline" asChild>
+              <Link to="/quiz">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Tests
+              </Link>
+            </Button>
+          </div>
         </div>
       </Layout>
     );
@@ -445,12 +551,23 @@ export default function FohTestPage() {
       <Layout>
         <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
           <div className="text-center mb-6 sm:mb-8">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-4">
-              <ClipboardList className="w-8 h-8 sm:w-10 sm:h-10 text-burgundy" />
+            <div className={cn(
+              "w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-4",
+              selectedTestType === 'server_assistant' ? "bg-jade/10" : "bg-burgundy/10"
+            )}>
+              {selectedTestType === 'server_assistant' ? (
+                <UserCheck className="w-8 h-8 sm:w-10 sm:h-10 text-jade" />
+              ) : (
+                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-burgundy" />
+              )}
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">FoH Test_beta</h1>
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
+              {getTestTypeLabel(selectedTestType)}
+            </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
-              Front of House Comprehensive Test
+              {selectedTestType === 'server_assistant' 
+                ? 'Server Assistant Knowledge Test' 
+                : 'Full Service & Beverage Knowledge Test'}
             </p>
           </div>
 
@@ -463,18 +580,22 @@ export default function FohTestPage() {
                   <p className="text-xs text-muted-foreground">Total Questions</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg text-center">
-                  <p className="text-2xl font-bold text-copper">~30</p>
+                  <p className="text-2xl font-bold text-copper">
+                    ~{selectedTestType === 'server_assistant' ? '20' : '45'}
+                  </p>
                   <p className="text-xs text-muted-foreground">Minutes Est.</p>
                 </div>
               </div>
 
               <h3 className="text-sm font-medium mb-3">Categories Covered:</h3>
               <div className="flex flex-wrap gap-2">
-                {Object.entries(categoryCount).map(([cat, count]) => (
-                  <Badge key={cat} className={cn(getCategoryColor(cat as FohTestQuestion['category']), "text-xs")}>
-                    {getCategoryLabel(cat as FohTestQuestion['category'])} ({count})
-                  </Badge>
-                ))}
+                {Object.entries(categoryCount)
+                  .filter(([_, count]) => count > 0)
+                  .map(([cat, count]) => (
+                    <Badge key={cat} className={cn(getCategoryColor(cat as FohTestQuestion['category']), "text-xs")}>
+                      {getCategoryLabel(cat as FohTestQuestion['category'])} ({count})
+                    </Badge>
+                  ))}
               </div>
 
               <div className="mt-4 p-3 bg-sage/10 rounded-lg border border-sage/20">
@@ -485,10 +606,14 @@ export default function FohTestPage() {
             </CardContent>
           </Card>
 
-          <div className="text-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button variant="burgundy" size="lg" onClick={startTest} className="h-12 px-8">
               Start Test
               <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => setSelectedTestType(null)} className="h-12">
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Choose Different Test
             </Button>
           </div>
         </div>

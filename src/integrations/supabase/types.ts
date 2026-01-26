@@ -74,6 +74,7 @@ export type Database = {
           reviewed_by: string | null
           score: number | null
           started_at: string
+          test_type: string
           total_questions: number | null
           user_id: string
         }
@@ -86,6 +87,7 @@ export type Database = {
           reviewed_by?: string | null
           score?: number | null
           started_at?: string
+          test_type?: string
           total_questions?: number | null
           user_id: string
         }
@@ -98,6 +100,7 @@ export type Database = {
           reviewed_by?: string | null
           score?: number | null
           started_at?: string
+          test_type?: string
           total_questions?: number | null
           user_id?: string
         }
@@ -113,6 +116,7 @@ export type Database = {
           is_active: boolean
           options: Json | null
           question: string
+          test_type: string
           type: string
           updated_at: string
         }
@@ -125,6 +129,7 @@ export type Database = {
           is_active?: boolean
           options?: Json | null
           question: string
+          test_type?: string
           type: string
           updated_at?: string
         }
@@ -137,6 +142,7 @@ export type Database = {
           is_active?: boolean
           options?: Json | null
           question?: string
+          test_type?: string
           type?: string
           updated_at?: string
         }
