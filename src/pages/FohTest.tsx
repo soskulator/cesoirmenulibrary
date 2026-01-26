@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useFohTestQuestions } from '@/hooks/useFohTestQuestions';
 import { getCategoryLabel, getCategoryColor, FohTestQuestion } from '@/data/fohTestData';
 import { useQuizScores } from '@/hooks/useQuizScores';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Check, 
@@ -29,8 +30,11 @@ import { Link } from 'react-router-dom';
 
 interface AnsweredQuestion {
   questionId: number;
+  questionText: string;
+  correctAnswer: string;
   userAnswer: string | number;
   isCorrect: boolean;
+  aiFeedback?: string;
 }
 
 export default function FohTestPage() {
@@ -44,9 +48,11 @@ export default function FohTestPage() {
   const [evaluationResult, setEvaluationResult] = useState<{isCorrect: boolean; feedback: string} | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
+  const [attemptId, setAttemptId] = useState<string | null>(null);
   
   const { saveQuizScore } = useQuizScores();
   const { getTestQuestions } = useFohTestQuestions();
+  const { user } = useAuth();
 
   // Get all questions (no category filtering)
   const allQuestions = useMemo(() => getTestQuestions(), [getTestQuestions]);
@@ -54,7 +60,7 @@ export default function FohTestPage() {
   // Shuffle questions for the test
   const [shuffledQuestions, setShuffledQuestions] = useState<FohTestQuestion[]>([]);
 
-  const startTest = () => {
+  const startTest = async () => {
     const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
     setShuffledQuestions(shuffled);
     setTestStarted(true);
@@ -64,6 +70,27 @@ export default function FohTestPage() {
     setEvaluationResult(null);
     setStartTime(new Date());
     setEndTime(null);
+    setAttemptId(null);
+
+    // Create a new test attempt in the database
+    if (user) {
+      try {
+        const { data, error } = await supabase
+          .from('foh_test_attempts')
+          .insert({
+            user_id: user.id,
+            total_questions: shuffled.length
+          })
+          .select('id')
+          .single();
+
+        if (!error && data) {
+          setAttemptId(data.id);
+        }
+      } catch (err) {
+        console.error('Error creating test attempt:', err);
+      }
+    }
   };
 
   const currentQuestion = shuffledQuestions[currentIndex];
@@ -131,16 +158,36 @@ export default function FohTestPage() {
     return (matchCount / correctKeywords.length) >= 0.5;
   };
 
-  const submitMultipleChoice = () => {
+  const submitMultipleChoice = async () => {
     if (!currentQuestion || selectedAnswer === null) return;
 
     const isCorrect = selectedAnswer === currentQuestion.correctIndex;
+    const userAnswerText = currentQuestion.options?.[selectedAnswer] || String(selectedAnswer);
 
     setAnsweredQuestions(prev => [...prev, {
       questionId: currentQuestion.id,
+      questionText: currentQuestion.question,
+      correctAnswer: currentQuestion.correctAnswer,
       userAnswer: selectedAnswer,
       isCorrect
     }]);
+
+    // Save answer to database
+    if (attemptId && user) {
+      try {
+        await supabase.from('foh_test_answers').insert({
+          attempt_id: attemptId,
+          question_id: String(currentQuestion.id),
+          question_text: currentQuestion.question,
+          correct_answer: currentQuestion.correctAnswer,
+          user_answer: userAnswerText,
+          is_correct: isCorrect,
+          ai_feedback: isCorrect ? 'Correct answer selected' : 'Incorrect answer selected'
+        });
+      } catch (err) {
+        console.error('Error saving answer:', err);
+      }
+    }
 
     // Move to next question or show results
     if (currentIndex < shuffledQuestions.length - 1) {
@@ -165,9 +212,29 @@ export default function FohTestPage() {
 
     setAnsweredQuestions(prev => [...prev, {
       questionId: currentQuestion.id,
+      questionText: currentQuestion.question,
+      correctAnswer: currentQuestion.correctAnswer,
       userAnswer: shortAnswer.trim(),
-      isCorrect
+      isCorrect,
+      aiFeedback: evaluationResult?.feedback
     }]);
+
+    // Save answer to database
+    if (attemptId && user) {
+      try {
+        await supabase.from('foh_test_answers').insert({
+          attempt_id: attemptId,
+          question_id: String(currentQuestion.id),
+          question_text: currentQuestion.question,
+          correct_answer: currentQuestion.correctAnswer,
+          user_answer: shortAnswer.trim(),
+          is_correct: isCorrect,
+          ai_feedback: evaluationResult?.feedback || null
+        });
+      } catch (err) {
+        console.error('Error saving answer:', err);
+      }
+    }
   };
 
   const proceedToNext = () => {
@@ -196,8 +263,23 @@ export default function FohTestPage() {
   useEffect(() => {
     if (showResult && answeredQuestions.length === shuffledQuestions.length && shuffledQuestions.length > 0) {
       saveQuizScore('foh', score.correct, score.total);
+
+      // Update the test attempt with final score
+      if (attemptId && user) {
+        supabase
+          .from('foh_test_attempts')
+          .update({
+            completed_at: new Date().toISOString(),
+            score: score.correct,
+            percentage: score.percentage
+          })
+          .eq('id', attemptId)
+          .then(({ error }) => {
+            if (error) console.error('Error updating attempt:', error);
+          });
+      }
     }
-  }, [showResult, answeredQuestions.length, shuffledQuestions.length, score.correct, score.total, saveQuizScore]);
+  }, [showResult, answeredQuestions.length, shuffledQuestions.length, score.correct, score.total, score.percentage, saveQuizScore, attemptId, user]);
 
   const getTimeSpent = () => {
     if (!startTime || !endTime) return '0 min';
@@ -225,6 +307,7 @@ export default function FohTestPage() {
     setEvaluationResult(null);
     setStartTime(null);
     setEndTime(null);
+    setAttemptId(null);
   };
 
   // Results screen with scoreboard

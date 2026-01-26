@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      foh_test_answers: {
+        Row: {
+          admin_notes: string | null
+          admin_override: boolean | null
+          ai_feedback: string | null
+          attempt_id: string
+          correct_answer: string
+          created_at: string
+          id: string
+          is_correct: boolean | null
+          question_id: string
+          question_text: string
+          user_answer: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          admin_override?: boolean | null
+          ai_feedback?: string | null
+          attempt_id: string
+          correct_answer: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean | null
+          question_id: string
+          question_text: string
+          user_answer: string
+        }
+        Update: {
+          admin_notes?: string | null
+          admin_override?: boolean | null
+          ai_feedback?: string | null
+          attempt_id?: string
+          correct_answer?: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean | null
+          question_id?: string
+          question_text?: string
+          user_answer?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "foh_test_answers_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "foh_test_attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      foh_test_attempts: {
+        Row: {
+          completed_at: string | null
+          id: string
+          is_reviewed: boolean | null
+          percentage: number | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          score: number | null
+          started_at: string
+          total_questions: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          is_reviewed?: boolean | null
+          percentage?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number | null
+          started_at?: string
+          total_questions?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          is_reviewed?: boolean | null
+          percentage?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number | null
+          started_at?: string
+          total_questions?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       foh_test_questions: {
         Row: {
           category: string
