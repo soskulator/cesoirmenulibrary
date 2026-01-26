@@ -9,8 +9,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFohTestQuestions, DbFohTestQuestion } from '@/hooks/useFohTestQuestions';
-import { getCategoryLabel, getCategoryColor } from '@/data/fohTestData';
+import { getCategoryLabel, getCategoryColor, TestType, getTestTypeLabel } from '@/data/fohTestData';
 import { 
   ClipboardList, 
   Plus, 
@@ -19,7 +20,8 @@ import {
   Trash2, 
   Loader2,
   RefreshCw,
-  X
+  Users,
+  UserCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -30,6 +32,7 @@ interface QuestionFormData {
   correct_answer: string;
   correct_index: number | null;
   category: 'service' | 'menu' | 'drinks' | 'operations' | 'general';
+  test_type: TestType;
   is_active: boolean;
 }
 
@@ -40,10 +43,12 @@ const defaultFormData: QuestionFormData = {
   correct_answer: '',
   correct_index: null,
   category: 'general',
+  test_type: 'service_staff',
   is_active: true,
 };
 
 export function FohTestQuestionManager() {
+  const [activeTab, setActiveTab] = useState<TestType>('service_staff');
   const {
     questions,
     isLoading,
@@ -61,17 +66,23 @@ export function FohTestQuestionManager() {
   const [formData, setFormData] = useState<QuestionFormData>(defaultFormData);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
 
+  // Filter questions by test type and search
   const filteredQuestions = questions.filter(q => {
+    const matchesTestType = q.test_type === activeTab;
     const matchesSearch = q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           q.correct_answer.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || q.category === categoryFilter;
-    return matchesSearch && matchesCategory;
+    return matchesTestType && matchesSearch && matchesCategory;
   });
+
+  const serviceStaffCount = questions.filter(q => q.test_type === 'service_staff').length;
+  const serverAssistantCount = questions.filter(q => q.test_type === 'server_assistant').length;
 
   const openAddDialog = () => {
     setEditingQuestion(null);
-    setFormData(defaultFormData);
+    setFormData({ ...defaultFormData, test_type: activeTab });
     setIsDialogOpen(true);
   };
 
@@ -84,6 +95,7 @@ export function FohTestQuestionManager() {
       correct_answer: question.correct_answer,
       correct_index: question.correct_index,
       category: question.category,
+      test_type: question.test_type,
       is_active: question.is_active,
     });
     setIsDialogOpen(true);
@@ -101,6 +113,7 @@ export function FohTestQuestionManager() {
       correct_answer: formData.correct_answer,
       correct_index: formData.type === 'multiple_choice' ? formData.correct_index : null,
       category: formData.category,
+      test_type: formData.test_type,
       is_active: formData.is_active,
     };
 
@@ -124,6 +137,12 @@ export function FohTestQuestionManager() {
     setDeletingId(null);
   };
 
+  const handleInitialize = async (testType?: TestType) => {
+    setIsInitializing(true);
+    await initializeFromStatic(testType);
+    setIsInitializing(false);
+  };
+
   const updateOption = (index: number, value: string) => {
     const newOptions = [...formData.options];
     newOptions[index] = value;
@@ -142,16 +161,16 @@ export function FohTestQuestionManager() {
               <Button 
                 size="sm" 
                 variant="outline"
-                onClick={initializeFromStatic}
-                disabled={isLoading}
+                onClick={() => handleInitialize()}
+                disabled={isLoading || isInitializing}
                 className="text-xs sm:text-sm"
               >
-                {isLoading ? (
+                {isInitializing ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
                 ) : (
                   <RefreshCw className="w-3.5 h-3.5 mr-1" />
                 )}
-                Sync Questions
+                Sync All
               </Button>
             )}
             <Button 
@@ -169,11 +188,25 @@ export function FohTestQuestionManager() {
           {isInitialized ? (
             <span className="text-jade">✓ {questions.length} questions in database</span>
           ) : (
-            'Click "Sync Questions" to initialize'
+            'Click "Sync All" to initialize both tests'
           )}
         </CardDescription>
       </CardHeader>
       <CardContent className="px-3 sm:px-6">
+        {/* Test Type Tabs */}
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TestType)} className="mb-4">
+          <TabsList className="grid w-full grid-cols-2 h-9">
+            <TabsTrigger value="service_staff" className="text-xs sm:text-sm gap-1">
+              <Users className="w-3.5 h-3.5" />
+              Service ({serviceStaffCount})
+            </TabsTrigger>
+            <TabsTrigger value="server_assistant" className="text-xs sm:text-sm gap-1">
+              <UserCheck className="w-3.5 h-3.5" />
+              SA ({serverAssistantCount})
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
         {/* Filters */}
         <div className="flex gap-2 mb-4">
           <div className="relative flex-1">
@@ -261,16 +294,31 @@ export function FohTestQuestionManager() {
                 </div>
               ))}
               {filteredQuestions.length === 0 && !isLoading && (
-                <p className="text-center text-muted-foreground text-sm py-8">
-                  No questions found
-                </p>
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground text-sm mb-3">
+                    No questions found for {getTestTypeLabel(activeTab)}
+                  </p>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => handleInitialize(activeTab)}
+                    disabled={isInitializing}
+                  >
+                    {isInitializing ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
+                    ) : (
+                      <RefreshCw className="w-3.5 h-3.5 mr-1" />
+                    )}
+                    Initialize {activeTab === 'service_staff' ? 'Service' : 'SA'} Questions
+                  </Button>
+                </div>
               )}
             </div>
           )}
         </ScrollArea>
 
         <p className="text-xs text-muted-foreground mt-3 text-center">
-          {filteredQuestions.length} of {questions.length} questions
+          {filteredQuestions.length} of {questions.filter(q => q.test_type === activeTab).length} questions
         </p>
       </CardContent>
 
@@ -296,6 +344,22 @@ export function FohTestQuestionManager() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
+                <Label>Test Type</Label>
+                <Select 
+                  value={formData.test_type} 
+                  onValueChange={(v: TestType) => setFormData({ ...formData, test_type: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="service_staff">Service Staff</SelectItem>
+                    <SelectItem value="server_assistant">Server Assistant</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
                 <Label>Type</Label>
                 <Select 
                   value={formData.type} 
@@ -310,25 +374,25 @@ export function FohTestQuestionManager() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <Select 
-                  value={formData.category} 
-                  onValueChange={(v: typeof formData.category) => setFormData({ ...formData, category: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="service">Service</SelectItem>
-                    <SelectItem value="menu">Menu</SelectItem>
-                    <SelectItem value="drinks">Drinks</SelectItem>
-                    <SelectItem value="operations">Operations</SelectItem>
-                    <SelectItem value="general">General</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label>Category</Label>
+              <Select 
+                value={formData.category} 
+                onValueChange={(v: typeof formData.category) => setFormData({ ...formData, category: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="service">Service</SelectItem>
+                  <SelectItem value="menu">Menu</SelectItem>
+                  <SelectItem value="drinks">Drinks</SelectItem>
+                  <SelectItem value="operations">Operations</SelectItem>
+                  <SelectItem value="general">General</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {formData.type === 'multiple_choice' && (

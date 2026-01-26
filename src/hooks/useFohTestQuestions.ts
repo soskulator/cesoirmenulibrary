@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { fohTestQuestions as staticQuestions, FohTestQuestion } from '@/data/fohTestData';
+import { 
+  serviceStaffQuestions, 
+  serverAssistantQuestions, 
+  FohTestQuestion,
+  TestType 
+} from '@/data/fohTestData';
 
 export interface DbFohTestQuestion {
   id: string;
@@ -11,12 +16,13 @@ export interface DbFohTestQuestion {
   correct_answer: string;
   correct_index: number | null;
   category: 'service' | 'menu' | 'drinks' | 'operations' | 'general';
+  test_type: TestType;
   is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
-export function useFohTestQuestions() {
+export function useFohTestQuestions(testType?: TestType) {
   const [questions, setQuestions] = useState<DbFohTestQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -25,18 +31,24 @@ export function useFohTestQuestions() {
   const fetchQuestions = useCallback(async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('foh_test_questions')
         .select('*')
         .order('created_at', { ascending: true });
 
+      if (testType) {
+        query = query.eq('test_type', testType);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
 
       if (data && data.length > 0) {
-        // Transform the data to match our expected format
         const transformedData = data.map(item => ({
           ...item,
           options: Array.isArray(item.options) ? item.options : [],
+          test_type: (item.test_type as TestType) || 'service_staff',
         })) as DbFohTestQuestion[];
         
         setQuestions(transformedData);
@@ -50,11 +62,18 @@ export function useFohTestQuestions() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [testType]);
 
-  const initializeFromStatic = useCallback(async () => {
+  const initializeFromStatic = useCallback(async (targetTestType?: TestType) => {
     try {
       setIsLoading(true);
+      
+      // Get the appropriate static questions
+      const staticQuestions = targetTestType === 'server_assistant' 
+        ? serverAssistantQuestions 
+        : targetTestType === 'service_staff'
+        ? serviceStaffQuestions
+        : [...serviceStaffQuestions, ...serverAssistantQuestions];
       
       // Transform static questions to database format
       const dbQuestions = staticQuestions.map(q => ({
@@ -64,6 +83,7 @@ export function useFohTestQuestions() {
         correct_answer: q.correctAnswer,
         correct_index: q.correctIndex ?? null,
         category: q.category,
+        test_type: q.testType,
         is_active: true,
       }));
 
@@ -175,24 +195,35 @@ export function useFohTestQuestions() {
     fetchQuestions();
   }, [fetchQuestions]);
 
-  // Convert to test format
-  const getTestQuestions = useCallback((): FohTestQuestion[] => {
+  // Convert to test format for a specific test type
+  const getTestQuestions = useCallback((forTestType?: TestType): FohTestQuestion[] => {
+    const targetType = forTestType || testType;
+    
     if (isInitialized && questions.length > 0) {
-      return questions
-        .filter(q => q.is_active)
-        .map((q, index) => ({
-          id: index + 1,
-          question: q.question,
-          type: q.type,
-          options: q.options,
-          correctAnswer: q.correct_answer,
-          correctIndex: q.correct_index ?? undefined,
-          category: q.category,
-        }));
+      const filtered = targetType 
+        ? questions.filter(q => q.is_active && q.test_type === targetType)
+        : questions.filter(q => q.is_active);
+      
+      return filtered.map((q, index) => ({
+        id: index + 1,
+        question: q.question,
+        type: q.type,
+        options: q.options,
+        correctAnswer: q.correct_answer,
+        correctIndex: q.correct_index ?? undefined,
+        category: q.category,
+        testType: q.test_type,
+      }));
     }
+    
     // Fallback to static questions
-    return staticQuestions;
-  }, [questions, isInitialized]);
+    if (targetType === 'server_assistant') {
+      return serverAssistantQuestions;
+    } else if (targetType === 'service_staff') {
+      return serviceStaffQuestions;
+    }
+    return [...serviceStaffQuestions, ...serverAssistantQuestions];
+  }, [questions, isInitialized, testType]);
 
   return {
     questions,
