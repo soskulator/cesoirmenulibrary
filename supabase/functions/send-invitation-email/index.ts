@@ -96,7 +96,7 @@ const handler = async (req: Request): Promise<Response> => {
               <!-- Footer -->
               <div style="background-color: #2C241E; padding: 24px 30px; text-align: center;">
                 <p style="color: #D99572; font-size: 12px; margin: 0; letter-spacing: 0.5px;">
-                  © 2026 Ce Soir Naples · 215 Ninth Street South, Naples, FL 34102
+                  © 2026 Ce Soir Naples · 492 Bayfront Pl, Naples FL, 34102
                 </p>
               </div>
             </div>
