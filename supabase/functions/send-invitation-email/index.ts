@@ -42,7 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Ce Soir <noreply@cesoirnaples.com>",
+        from: "Ce Soir <onboarding@resend.dev>",
         to: [email],
         subject: "You're Invited to Join Ce Soir Staff Portal",
         html: `
