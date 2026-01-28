@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { AllergenList } from '@/components/AllergenBadge';
-import { categories, menuItems, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
+import { categories, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { getCategoryIcon } from '@/data/categoryIcons';
-import { ArrowLeft, CreditCard, ChevronRight, ChevronDown } from 'lucide-react';
+import { ArrowLeft, CreditCard, ChevronRight, ChevronDown, Loader2 } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 // Illustrated category images
@@ -178,11 +179,14 @@ const item = {
 export default function CategoriesPage() {
   const { categoryId } = useParams();
   const [expandedSubcategory, setExpandedSubcategory] = useState<string | null>(null);
+  
+  // Get menu items from database
+  const { items: menuItems, isLoading } = useMenuItems();
 
   // Show single category if specified
   if (categoryId) {
     const category = getCategoryById(categoryId);
-    const items = getMenuItemsByCategory(categoryId);
+    const items = menuItems.filter(item => item.categoryId === categoryId && item.isPublished);
     if (!category) {
       return <Layout>
           <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">

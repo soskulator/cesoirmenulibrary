@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { menuItems, MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, Wine, Sparkles, GlassWater, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Wine, Sparkles, GlassWater, ChevronDown, Loader2 } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
@@ -85,6 +86,9 @@ const item = {
 export default function WineListPage() {
   const [selectedWine, setSelectedWine] = useState<MenuItem | null>(null);
   const [openCategories, setOpenCategories] = useState<string[]>(['sparkling']);
+  
+  // Get menu items from database
+  const { items: menuItems, isLoading } = useMenuItems();
   
   // Get all wine items
   const wines = menuItems.filter((item) => item.categoryId === 'wine' && item.isPublished);
@@ -228,7 +232,7 @@ export default function WineListPage() {
                           >
                             {categoryWines.map((wine, index) => {
                               if (!wine) return null;
-                              const image = getUniqueImage(wine.id);
+                              const image = getUniqueImage(wine.id, wine.imageUrl);
 
                               return (
                                 <motion.div

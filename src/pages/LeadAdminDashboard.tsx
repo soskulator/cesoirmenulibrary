@@ -20,7 +20,6 @@ import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManage
 import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
 import { Leaderboard } from '@/components/admin/Leaderboard';
 import { PhotoGallery } from '@/components/admin/PhotoGallery';
-import { CategoryMenuList } from '@/components/admin/CategoryMenuList';
 import { 
   Crown,
   FileText,
@@ -37,6 +36,8 @@ import {
   Martini,
   GlassWater,
   UtensilsCrossed,
+  Edit,
+  Trash2,
   Check,
   RefreshCw,
   Loader2
@@ -62,6 +63,8 @@ export default function LeadAdminDashboard() {
   
   // Menu Management state
   const [menuTab, setMenuTab] = useState<'food' | 'wines' | 'cocktails' | 'spirits'>('food');
+  const [menuSearchQuery, setMenuSearchQuery] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [isAddingItem, setIsAddingItem] = useState(false);
   
@@ -82,9 +85,48 @@ export default function LeadAdminDashboard() {
     }
   }, [authLoading, user, isLeadAdmin, navigate, toast]);
 
-  // Handle photo assignment
+  // Define beverage category IDs (wine, spirits, cocktails)
+  const beverageCategoryIds = ['wine', 'spirits', 'cocktails'];
+  
+  // Filter menu items by tab
+  const filteredMenuItems = useMemo(() => {
+    let items: MenuItem[] = [];
+    
+    switch (menuTab) {
+      case 'food':
+        items = menuItems.filter(item => 
+          !beverageCategoryIds.includes(item.categoryId)
+        );
+        break;
+      case 'wines':
+        items = menuItems.filter(item => item.categoryId === 'wine');
+        break;
+      case 'cocktails':
+        items = menuItems.filter(item => item.categoryId === 'cocktails');
+        break;
+      case 'spirits':
+        items = menuItems.filter(item => item.categoryId === 'spirits');
+        break;
+    }
+    
+    if (menuSearchQuery) {
+      items = items.filter(item => 
+        item.name.toLowerCase().includes(menuSearchQuery.toLowerCase()) ||
+        item.shortDescription.toLowerCase().includes(menuSearchQuery.toLowerCase())
+      );
+    }
+    
+    return items;
+  }, [menuTab, menuSearchQuery, menuItems]);
+
+  // Handle photo assignment - updates DB and refreshes items
   const handleAssignPhoto = async (itemId: string, photoUrl: string): Promise<boolean> => {
-    return await updateItem(itemId, { imageUrl: photoUrl });
+    const success = await updateItem(itemId, { imageUrl: photoUrl });
+    if (success) {
+      // Refresh to ensure UI updates
+      await fetchItems();
+    }
+    return success;
   };
 
   // Filter for daily focus searchable list
@@ -299,19 +341,92 @@ export default function LeadAdminDashboard() {
                     </TabsList>
                   </Tabs>
                   
-                  {menuLoading ? (
-                    <div className="flex items-center justify-center h-[340px]">
-                      <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-                    </div>
-                  ) : (
-                    <CategoryMenuList
-                      items={menuItems}
-                      categoryFilter={menuTab}
-                      isInitialized={isInitialized}
-                      onEdit={setEditingItem}
-                      onDelete={deleteItem}
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search items..."
+                      value={menuSearchQuery}
+                      onChange={(e) => setMenuSearchQuery(e.target.value)}
+                      className="pl-10"
                     />
-                  )}
+                  </div>
+                  
+                  <ScrollArea className="h-[320px]">
+                    {menuLoading ? (
+                      <div className="flex items-center justify-center h-full">
+                        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : (
+                      <div className="space-y-2 pr-3">
+                        {filteredMenuItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                          >
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                              {/* Photo thumbnail */}
+                              <div className="w-10 h-10 rounded-md bg-muted overflow-hidden flex-shrink-0">
+                                {item.imageUrl && item.imageUrl !== '/placeholder.svg' ? (
+                                  <img 
+                                    src={item.imageUrl} 
+                                    alt={item.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center bg-muted-foreground/10">
+                                    <span className="text-xs text-muted-foreground">—</span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm truncate">{item.name}</p>
+                                <p className="text-xs text-muted-foreground truncate">{item.shortDescription}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1 ml-2">
+                              <Button 
+                                size="icon" 
+                                variant="ghost" 
+                                className="h-8 w-8"
+                                onClick={() => setEditingItem(item)}
+                              >
+                                <Edit className="w-3.5 h-3.5 text-muted-foreground" />
+                              </Button>
+                              <Button 
+                                size="icon" 
+                                variant="ghost" 
+                                className="h-8 w-8 text-destructive"
+                                disabled={deletingId === item.id}
+                                onClick={async () => {
+                                  if (!isInitialized) {
+                                    toast({
+                                      title: 'Sync Required',
+                                      description: 'Please sync menu to database first.',
+                                      variant: 'destructive',
+                                    });
+                                    return;
+                                  }
+                                  setDeletingId(item.id);
+                                  await deleteItem(item.id);
+                                  setDeletingId(null);
+                                }}
+                              >
+                                {deletingId === item.id ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </ScrollArea>
+                  
+                  <p className="text-xs text-muted-foreground mt-3 text-center">
+                    {filteredMenuItems.length} items
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>
