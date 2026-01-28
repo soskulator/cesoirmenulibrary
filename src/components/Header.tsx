@@ -99,6 +99,7 @@ export function Header() {
     isAdmin,
     isLeadAdmin,
     role,
+    fullName,
     signOut,
     loading
   } = useAuth();
@@ -161,7 +162,14 @@ export function Header() {
     return () => clearInterval(interval);
   }, [isAdmin]);
   
-  const getInitials = (email: string) => {
+  const getInitials = (name: string | null, email: string) => {
+    if (name) {
+      const parts = name.trim().split(/\s+/);
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+      return name.substring(0, 2).toUpperCase();
+    }
     return email.substring(0, 2).toUpperCase();
   };
   return <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-[env(safe-area-inset-top)]">
@@ -262,12 +270,18 @@ export function Header() {
 
           {/* Auth Section */}
           <div className="w-px h-6 bg-border mx-2" />
-          {loading ? <div className="w-8 h-8 rounded-full bg-muted animate-pulse" /> : user ? <DropdownMenu>
+          {loading ? <div className="w-8 h-8 rounded-full bg-muted animate-pulse" /> : user ? <div className="flex items-center gap-2">
+              {/* Role Badge - visible next to avatar */}
+              <Badge variant="outline" className={cn("hidden lg:flex items-center gap-1 text-xs", roleDisplay.color)}>
+                <roleDisplay.icon className="w-3 h-3" />
+                {roleDisplay.label}
+              </Badge>
+              <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-copper/20 text-copper text-xs">
-                      {getInitials(user.email || '')}
+                      {getInitials(fullName, user.email || '')}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -291,12 +305,13 @@ export function Header() {
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>
+              <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu> : <Button variant="ghost" size="sm" asChild>
+            </DropdownMenu>
+            </div> : <Button variant="ghost" size="sm" asChild>
               <Link to="/auth">
                 <LogIn className="w-4 h-4 mr-2" />
                 Sign In
@@ -311,7 +326,7 @@ export function Header() {
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-copper/20 text-copper text-xs">
-                      {getInitials(user.email || '')}
+                      {getInitials(fullName, user.email || '')}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

@@ -11,6 +11,7 @@ interface AuthContextType {
   role: AppRole | null;
   isAdmin: boolean;
   isLeadAdmin: boolean;
+  fullName: string | null;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -26,6 +27,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<AppRole | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLeadAdmin, setIsLeadAdmin] = useState(false);
+  const [fullName, setFullName] = useState<string | null>(null);
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching profile');
+        return null;
+      }
+      
+      return data?.full_name ?? null;
+    } catch {
+      console.error('Error in fetchUserProfile');
+      return null;
+    }
+  };
 
   const fetchUserRole = async (userId: string) => {
     try {
@@ -67,14 +89,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshRole = async () => {
     if (!user) return;
 
-    const [userRole, flags] = await Promise.all([
+    const [userRole, flags, name] = await Promise.all([
       fetchUserRole(user.id),
       fetchAdminFlags(user.id),
+      fetchUserProfile(user.id),
     ]);
 
     setRole(userRole);
     setIsAdmin(flags.isAdmin);
     setIsLeadAdmin(flags.isLeadAdmin);
+    setFullName(name);
   };
 
   useEffect(() => {
@@ -90,16 +114,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             Promise.all([
               fetchUserRole(session.user.id),
               fetchAdminFlags(session.user.id),
-            ]).then(([userRole, flags]) => {
+              fetchUserProfile(session.user.id),
+            ]).then(([userRole, flags, name]) => {
               setRole(userRole);
               setIsAdmin(flags.isAdmin);
               setIsLeadAdmin(flags.isLeadAdmin);
+              setFullName(name);
             });
           }, 0);
         } else {
           setRole(null);
           setIsAdmin(false);
           setIsLeadAdmin(false);
+          setFullName(null);
         }
       }
     );
@@ -111,17 +138,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         // Wait for role fetch to complete BEFORE setting loading to false
-        const [userRole, flags] = await Promise.all([
+        const [userRole, flags, name] = await Promise.all([
           fetchUserRole(session.user.id),
           fetchAdminFlags(session.user.id),
+          fetchUserProfile(session.user.id),
         ]);
         setRole(userRole);
         setIsAdmin(flags.isAdmin);
         setIsLeadAdmin(flags.isLeadAdmin);
+        setFullName(name);
       } else {
         setRole(null);
         setIsAdmin(false);
         setIsLeadAdmin(false);
+        setFullName(null);
       }
 
       setLoading(false);
@@ -156,6 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRole(null);
     setIsAdmin(false);
     setIsLeadAdmin(false);
+    setFullName(null);
   };
 
 
@@ -168,6 +199,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role,
         isAdmin,
         isLeadAdmin,
+        fullName,
         signIn,
         signUp,
         signOut,
