@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/sheet';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDistanceToNow } from 'date-fns';
-import { Trophy, TrendingUp, Target, Medal, User, AlertCircle, ChevronRight, CheckCircle2, XCircle, Clock, Loader2 } from 'lucide-react';
+import { Trophy, TrendingUp, Target, Medal, User, AlertCircle, ChevronRight, CheckCircle2, XCircle, Clock, Loader2, Hourglass } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -94,6 +94,7 @@ export function QuizPerformanceDashboard() {
   
   // Review states
   const [attempts, setAttempts] = useState<TestAttempt[]>([]);
+  const [inProgressAttempts, setInProgressAttempts] = useState<TestAttempt[]>([]);
   const [selectedAttempt, setSelectedAttempt] = useState<TestAttempt | null>(null);
   const [answers, setAnswers] = useState<TestAnswer[]>([]);
   const [reviewSheetOpen, setReviewSheetOpen] = useState(false);
@@ -105,6 +106,7 @@ export function QuizPerformanceDashboard() {
     fetchScores();
     if (isLeadAdmin) {
       fetchAttempts();
+      fetchInProgressAttempts();
     }
   }, [isLeadAdmin]);
 
@@ -135,6 +137,41 @@ export function QuizPerformanceDashboard() {
       setAttempts(enrichedAttempts);
     } catch (error) {
       console.error('Error fetching attempts:', error);
+    }
+  };
+
+  const fetchInProgressAttempts = async () => {
+    try {
+      const { data: attemptsData, error: attemptsError } = await supabase
+        .from('foh_test_attempts')
+        .select('*')
+        .is('completed_at', null)
+        .order('started_at', { ascending: false });
+
+      if (attemptsError) throw attemptsError;
+
+      const userIds = [...new Set(attemptsData?.map(a => a.user_id) || [])];
+      if (userIds.length === 0) {
+        setInProgressAttempts([]);
+        return;
+      }
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, email, full_name')
+        .in('id', userIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
+      const enrichedAttempts = attemptsData?.map(attempt => ({
+        ...attempt,
+        user_email: profileMap.get(attempt.user_id)?.email || 'Unknown',
+        user_name: profileMap.get(attempt.user_id)?.full_name || undefined
+      })) || [];
+
+      setInProgressAttempts(enrichedAttempts);
+    } catch (error) {
+      console.error('Error fetching in-progress attempts:', error);
     }
   };
 
@@ -442,6 +479,53 @@ export function QuizPerformanceDashboard() {
                         <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
                       </div>
                     </button>
+                  ))}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* In-Progress Tests - Lead Admin Only */}
+        {isLeadAdmin && inProgressAttempts.length > 0 && (
+          <Card>
+            <CardHeader className="px-4 sm:px-6 pb-3">
+              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                <Hourglass className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
+                In-Progress Tests
+                <Badge variant="outline" className="ml-auto text-[10px] bg-amber-500/10 text-amber-600 border-amber-500/30">
+                  {inProgressAttempts.length} active
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 sm:px-6">
+              <ScrollArea className="h-[150px] sm:h-[200px]">
+                <div className="space-y-2">
+                  {inProgressAttempts.map((attempt) => (
+                    <div
+                      key={attempt.id}
+                      className="flex items-center justify-between p-2.5 sm:p-3 rounded-lg bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-800/30"
+                    >
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                          <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-xs sm:text-sm truncate">
+                            {attempt.user_name || attempt.user_email}
+                          </p>
+                          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                            <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
+                            <span>Started {formatDistanceToNow(new Date(attempt.started_at), { addSuffix: true })}</span>
+                            <span>•</span>
+                            <span>{testTypeLabels[attempt.test_type] || attempt.test_type}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30 text-[10px] px-1.5">
+                        In Progress
+                      </Badge>
+                    </div>
                   ))}
                 </div>
               </ScrollArea>
