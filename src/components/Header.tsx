@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen } from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import cesoirLogo from '@/assets/cesoir-logo.png';
 import { useAuth } from '@/contexts/AuthContext';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -80,16 +80,59 @@ const adminItems = [{
   label: 'Admin Center',
   icon: Settings
 }];
+
+// Role display helper
+const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: boolean) => {
+  if (isLeadAdmin) return { label: 'Lead Admin', icon: ShieldCheck, color: 'text-gold' };
+  if (isAdmin) return { label: 'Admin', icon: Shield, color: 'text-copper' };
+  if (role === 'employee') return { label: 'Staff', icon: User, color: 'text-muted-foreground' };
+  return { label: 'Staff', icon: User, color: 'text-muted-foreground' };
+};
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const {
     user,
     isAdmin,
+    isLeadAdmin,
+    role,
     signOut,
     loading
   } = useAuth();
+  
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [mobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const roleDisplay = getRoleDisplay(role, isLeadAdmin, isAdmin);
   
   // Fetch pending review count for admins
   useEffect(() => {
@@ -229,7 +272,7 @@ export function Header() {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuContent className="w-56 bg-background border shadow-lg" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">Account</p>
@@ -238,6 +281,15 @@ export function Header() {
                     </p>
                   </div>
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="px-2 py-1.5">
+                  <div className="flex items-center gap-2">
+                    <roleDisplay.icon className={cn("w-4 h-4", roleDisplay.color)} />
+                    <span className={cn("text-sm font-medium", roleDisplay.color)}>
+                      {roleDisplay.label}
+                    </span>
+                  </div>
+                </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -264,7 +316,7 @@ export function Header() {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuContent className="w-56 bg-background border shadow-lg" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">Account</p>
@@ -273,6 +325,15 @@ export function Header() {
                     </p>
                   </div>
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="px-2 py-1.5">
+                  <div className="flex items-center gap-2">
+                    <roleDisplay.icon className={cn("w-4 h-4", roleDisplay.color)} />
+                    <span className={cn("text-sm font-medium", roleDisplay.color)}>
+                      {roleDisplay.label}
+                    </span>
+                  </div>
+                </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -286,10 +347,17 @@ export function Header() {
         </div>
       </div>
 
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />
+      )}
+
       {/* Mobile Menu */}
-      <motion.div initial={false} animate={{
-      height: mobileMenuOpen ? 'auto' : 0
-    }} className="md:hidden overflow-hidden border-t border-border bg-background">
+      <motion.div 
+        ref={mobileMenuRef}
+        initial={false} 
+        animate={{ height: mobileMenuOpen ? 'auto' : 0 }}
+        className="md:hidden overflow-hidden border-t border-border bg-background relative z-50">
         <nav className="container py-4 flex flex-col gap-1">
           {navItems.map(item => {
           const isActive = location.pathname === item.path;
