@@ -67,7 +67,7 @@ export function BeverageFlashCard({
   onSwipeRight 
 }: BeverageFlashCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const dishImage = getDishImage(item.id);
+  const dishImage = getDishImage(item.id, item.imageUrl);
   const beverageType = getBeverageType(item.categoryId);
   const BeverageIcon = beverageType.icon;
 

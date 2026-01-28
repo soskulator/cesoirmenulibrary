@@ -9,13 +9,13 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
   categories, 
-  menuItems, 
+  menuItems as staticMenuItems, 
   allergens, 
   AllergenType,
-  getMenuItemById,
   filterByAllergen,
-  searchMenuItems 
+  MenuItem
 } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 
 import { 
   Search, 
@@ -23,7 +23,8 @@ import {
   X,
   Check,
   RotateCcw,
-  Shuffle
+  Shuffle,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStudyProgress } from '@/hooks/useStudyProgress';
@@ -36,6 +37,10 @@ export default function FlashcardsPage() {
 
   const { user } = useAuth();
   const { markAsKnown: saveKnown, markForReview: saveReview, isKnown, isStudied, getStats } = useStudyProgress();
+  
+  // Use database items if available, fall back to static
+  const { items: dbMenuItems, isLoading: menuLoading } = useMenuItems();
+  const menuItems: MenuItem[] = dbMenuItems.length > 0 ? dbMenuItems : staticMenuItems;
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [excludeAllergens, setExcludeAllergens] = useState<AllergenType[]>([]);
@@ -55,10 +60,12 @@ export default function FlashcardsPage() {
     }
 
     if (searchQuery) {
-      items = searchMenuItems(searchQuery).filter((i) => i.isPublished);
-      if (selectedCategory) {
-        items = items.filter((i) => i.categoryId === selectedCategory);
-      }
+      const query = searchQuery.toLowerCase();
+      items = items.filter((i) => 
+        i.name.toLowerCase().includes(query) ||
+        i.shortDescription.toLowerCase().includes(query) ||
+        i.longDescription.toLowerCase().includes(query)
+      );
     }
 
     if (excludeAllergens.length > 0) {
@@ -66,7 +73,7 @@ export default function FlashcardsPage() {
     }
 
     return items;
-  }, [selectedCategory, searchQuery, excludeAllergens]);
+  }, [selectedCategory, searchQuery, excludeAllergens, menuItems]);
 
   useEffect(() => {
     if (!initialItem) return;
