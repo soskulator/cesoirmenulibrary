@@ -19,6 +19,8 @@ import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
 import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
 import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
 import { Leaderboard } from '@/components/admin/Leaderboard';
+import { PhotoGallery } from '@/components/admin/PhotoGallery';
+import { CategoryMenuList } from '@/components/admin/CategoryMenuList';
 import { 
   Crown,
   FileText,
@@ -35,8 +37,6 @@ import {
   Martini,
   GlassWater,
   UtensilsCrossed,
-  Edit,
-  Trash2,
   Check,
   RefreshCw,
   Loader2
@@ -61,9 +61,7 @@ export default function LeadAdminDashboard() {
   } = useMenuItems();
   
   // Menu Management state
-  const [menuTab, setMenuTab] = useState('food');
-  const [menuSearchQuery, setMenuSearchQuery] = useState('');
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [menuTab, setMenuTab] = useState<'food' | 'wines' | 'cocktails' | 'spirits'>('food');
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [isAddingItem, setIsAddingItem] = useState(false);
   
@@ -84,40 +82,10 @@ export default function LeadAdminDashboard() {
     }
   }, [authLoading, user, isLeadAdmin, navigate, toast]);
 
-  // Define beverage category IDs (wine, spirits, cocktails)
-  const beverageCategoryIds = ['wine', 'spirits', 'cocktails'];
-  
-  // Filter menu items by tab
-  const filteredMenuItems = useMemo(() => {
-    let items: MenuItem[] = [];
-    
-    switch (menuTab) {
-      case 'food':
-        // Food items are everything except wine, spirits, and cocktails
-        items = menuItems.filter(item => 
-          !beverageCategoryIds.includes(item.categoryId)
-        );
-        break;
-      case 'wines':
-        items = menuItems.filter(item => item.categoryId === 'wine');
-        break;
-      case 'cocktails':
-        items = menuItems.filter(item => item.categoryId === 'cocktails');
-        break;
-      case 'spirits':
-        items = menuItems.filter(item => item.categoryId === 'spirits');
-        break;
-    }
-    
-    if (menuSearchQuery) {
-      items = items.filter(item => 
-        item.name.toLowerCase().includes(menuSearchQuery.toLowerCase()) ||
-        item.shortDescription.toLowerCase().includes(menuSearchQuery.toLowerCase())
-      );
-    }
-    
-    return items;
-  }, [menuTab, menuSearchQuery, menuItems]);
+  // Handle photo assignment
+  const handleAssignPhoto = async (itemId: string, photoUrl: string): Promise<boolean> => {
+    return await updateItem(itemId, { imageUrl: photoUrl });
+  };
 
   // Filter for daily focus searchable list
   const focusFilteredItems = useMemo(() => {
@@ -306,7 +274,11 @@ export default function LeadAdminDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <Tabs value={menuTab} onValueChange={setMenuTab} className="mb-4">
+                  <Tabs 
+                    value={menuTab} 
+                    onValueChange={(val) => setMenuTab(val as 'food' | 'wines' | 'cocktails' | 'spirits')} 
+                    className="mb-4"
+                  >
                     <TabsList className="w-full grid grid-cols-4 h-auto p-1">
                       <TabsTrigger value="food" className="text-[10px] sm:text-xs py-2 px-1 sm:px-2 flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1">
                         <UtensilsCrossed className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
@@ -327,76 +299,19 @@ export default function LeadAdminDashboard() {
                     </TabsList>
                   </Tabs>
                   
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search items..."
-                      value={menuSearchQuery}
-                      onChange={(e) => setMenuSearchQuery(e.target.value)}
-                      className="pl-10"
+                  {menuLoading ? (
+                    <div className="flex items-center justify-center h-[340px]">
+                      <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : (
+                    <CategoryMenuList
+                      items={menuItems}
+                      categoryFilter={menuTab}
+                      isInitialized={isInitialized}
+                      onEdit={setEditingItem}
+                      onDelete={deleteItem}
                     />
-                  </div>
-                  
-                  <ScrollArea className="h-[320px]">
-                    {menuLoading ? (
-                      <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-                      </div>
-                    ) : (
-                      <div className="space-y-2 pr-3">
-                        {filteredMenuItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                          >
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-sm truncate">{item.name}</p>
-                              <p className="text-xs text-muted-foreground truncate">{item.shortDescription}</p>
-                            </div>
-                            <div className="flex items-center gap-1 ml-2">
-                              <Button 
-                                size="icon" 
-                                variant="ghost" 
-                                className="h-8 w-8"
-                                onClick={() => setEditingItem(item)}
-                              >
-                                <Edit className="w-3.5 h-3.5 text-muted-foreground" />
-                              </Button>
-                              <Button 
-                                size="icon" 
-                                variant="ghost" 
-                                className="h-8 w-8 text-destructive"
-                                disabled={deletingId === item.id}
-                                onClick={async () => {
-                                  if (!isInitialized) {
-                                    toast({
-                                      title: 'Sync Required',
-                                      description: 'Please sync menu to database first.',
-                                      variant: 'destructive',
-                                    });
-                                    return;
-                                  }
-                                  setDeletingId(item.id);
-                                  await deleteItem(item.id);
-                                  setDeletingId(null);
-                                }}
-                              >
-                                {deletingId === item.id ? (
-                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                ) : (
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                )}
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </ScrollArea>
-                  
-                  <p className="text-xs text-muted-foreground mt-3 text-center">
-                    {filteredMenuItems.length} items
-                  </p>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -577,7 +492,19 @@ export default function LeadAdminDashboard() {
               </Card>
             </motion.div>
 
-            {/* 5. FoH Test Question Manager */}
+            {/* 5. Photo Gallery */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+            >
+              <PhotoGallery 
+                menuItems={menuItems}
+                onAssignPhoto={handleAssignPhoto}
+              />
+            </motion.div>
+
+            {/* 6. FoH Test Question Manager */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
