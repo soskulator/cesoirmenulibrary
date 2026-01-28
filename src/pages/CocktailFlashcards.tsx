@@ -5,7 +5,8 @@ import { Layout } from '@/components/Layout';
 import { BeverageFlashCard } from '@/components/BeverageFlashCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { menuItems } from '@/data/menuData';
+import { menuItems as staticMenuItems, MenuItem } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { 
   Check,
   RotateCcw,
@@ -23,7 +24,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 // Cocktail style classification (same as Cocktails page)
-const classifyCocktail = (cocktail: typeof menuItems[0]) => {
+const classifyCocktail = (cocktail: MenuItem) => {
   const id = cocktail.id;
   const name = cocktail.name.toLowerCase();
   
@@ -54,6 +55,10 @@ const styleInfo = {
 export default function CocktailFlashcardsPage() {
   const { user } = useAuth();
   const { markAsKnown: saveKnown, markForReview: saveReview, isKnown, isStudied, getStats } = useStudyProgress();
+  
+  // Use database items if available, fall back to static
+  const { items: dbMenuItems } = useMenuItems();
+  const menuItems: MenuItem[] = dbMenuItems.length > 0 ? dbMenuItems : staticMenuItems;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRandomMode, setIsRandomMode] = useState(true);
@@ -64,7 +69,7 @@ export default function CocktailFlashcardsPage() {
   // Get all cocktail items
   const allCocktails = useMemo(() => {
     return menuItems.filter((item) => item.categoryId === 'cocktails' && item.isPublished);
-  }, []);
+  }, [menuItems]);
 
   // Filter by style if selected
   const filteredCocktails = useMemo(() => {

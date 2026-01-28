@@ -29,7 +29,7 @@ export const BeverageSplashModal = forwardRef<HTMLDivElement, BeverageSplashModa
 
   if (!item) return null;
 
-  const image = getDishImage(item.id);
+  const image = getDishImage(item.id, item.imageUrl);
   
   const bgGradient = type === 'wine' 
     ? 'from-[#2a1f3d] via-[#1a1525] to-[#0d0a12]'
