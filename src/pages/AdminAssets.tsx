@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -7,6 +7,7 @@ import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { FileUploadZone } from '@/components/admin/FileUploadZone';
 import { 
   Image, 
   Upload, 
@@ -15,8 +16,17 @@ import {
   Download,
   CheckCircle,
   Circle,
-  ArrowLeft
+  ArrowLeft,
+  ImagePlus,
+  FileSpreadsheet,
+  BookOpen
 } from 'lucide-react';
+
+interface UploadedAsset {
+  type: string;
+  url: string;
+  fileName: string;
+}
 
 const requiredAssets = [
   {
@@ -24,6 +34,8 @@ const requiredAssets = [
     description: 'Primary logo for header and branding. Recommended: SVG for scalability, or PNG at 200x200px minimum.',
     status: 'missing',
     fileTypes: '.svg, .png',
+    uploadKey: 'logo',
+    accept: '.svg,.png',
   },
   {
     name: 'Brand Colors',
@@ -42,18 +54,24 @@ const requiredAssets = [
     description: 'High-quality photos of each dish. Recommended: 800x600px, JPG format, consistent lighting.',
     status: 'missing',
     fileTypes: '.jpg, .png, .webp',
+    uploadKey: 'photos',
+    accept: '.jpg,.jpeg,.png,.webp',
   },
   {
     name: 'Menu Spreadsheet (CSV)',
     description: 'Bulk import menu data including names, descriptions, ingredients, allergens, and questions.',
     status: 'missing',
     fileTypes: '.csv',
+    uploadKey: 'csv',
+    accept: '.csv',
   },
   {
     name: 'Recipe PDFs (Optional)',
     description: 'Detailed recipe documents for manager/kitchen reference.',
     status: 'missing',
     fileTypes: '.pdf',
+    uploadKey: 'recipes',
+    accept: '.pdf',
   },
 ];
 
@@ -61,6 +79,37 @@ export default function AdminAssetsPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [uploadedAssets, setUploadedAssets] = useState<UploadedAsset[]>([]);
+
+  const handleUploadComplete = (type: string, url: string, fileName: string) => {
+    setUploadedAssets(prev => [...prev, { type, url, fileName }]);
+    toast({
+      title: 'Asset Uploaded',
+      description: `${fileName} has been uploaded successfully.`,
+    });
+  };
+
+  const getAssetStatus = (uploadKey?: string) => {
+    if (!uploadKey) return 'configured';
+    return uploadedAssets.some(a => a.type === uploadKey) ? 'uploaded' : 'missing';
+  };
+
+  const downloadCSVTemplate = () => {
+    const csvContent = `name,category,shortDescription,longDescription,ingredients,allergens,sellingPoints,question1,answer1,question2,answer2
+"French Onion Soup","appetizers","Classic caramelized onion soup with Gruyère crouton","Our signature French onion soup features Vidalia onions slowly caramelized for 4 hours in beef stock, finished with a toasted baguette and melted Gruyère cheese.","Vidalia onions, beef stock, fresh thyme, baguette, Gruyère cheese, butter","gluten,dairy,allium","House-made stock • 4-hour caramelized onions • Imported Gruyère","What makes our French onion soup special?","Our onions are caramelized for 4 hours to develop deep, rich flavor.","Is it gluten-free?","The soup itself is gluten-free, but the traditional crouton contains gluten. We can serve without the crouton upon request."`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'menu-import-template.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+    
+    toast({
+      title: 'Template Downloaded',
+      description: 'Check your downloads folder for menu-import-template.csv',
+    });
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -117,48 +166,122 @@ export default function AdminAssetsPage() {
         <div className="space-y-4 mb-8">
           <h2 className="font-serif text-xl font-semibold">Required Assets Checklist</h2>
           
-          {requiredAssets.map((asset, index) => (
-            <motion.div
-              key={asset.name}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className={asset.status === 'configured' ? 'border-sage/50 bg-sage/5' : ''}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-4">
-                    <div className="mt-1">
-                      {asset.status === 'configured' ? (
-                        <CheckCircle className="w-5 h-5 text-sage" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-muted-foreground" />
+          {requiredAssets.map((asset, index) => {
+            const currentStatus = getAssetStatus(asset.uploadKey);
+            const isComplete = currentStatus === 'configured' || currentStatus === 'uploaded';
+            
+            return (
+              <motion.div
+                key={asset.name}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className={isComplete ? 'border-sage/50 bg-sage/5' : ''}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-4">
+                      <div className="mt-1">
+                        {isComplete ? (
+                          <CheckCircle className="w-5 h-5 text-sage" />
+                        ) : (
+                          <Circle className="w-5 h-5 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold">{asset.name}</h3>
+                          <Badge variant={isComplete ? 'sage' : 'secondary'}>
+                            {currentStatus === 'uploaded' ? 'Uploaded' : currentStatus === 'configured' ? 'Configured' : 'Needed'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {asset.description}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Accepted formats: {asset.fileTypes}
+                        </p>
+                      </div>
+                      {asset.uploadKey && (
+                        <FileUploadZone
+                          bucketName="admin-assets"
+                          folderPath={asset.uploadKey}
+                          acceptedTypes={asset.accept || ''}
+                          maxSizeMB={asset.uploadKey === 'photos' ? 5 : 10}
+                          onUploadComplete={(url, fileName) => handleUploadComplete(asset.uploadKey!, url, fileName)}
+                          label="Upload"
+                          description=""
+                          variant="compact"
+                        />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold">{asset.name}</h3>
-                        <Badge variant={asset.status === 'configured' ? 'sage' : 'secondary'}>
-                          {asset.status === 'configured' ? 'Configured' : 'Needed'}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {asset.description}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Accepted formats: {asset.fileTypes}
-                      </p>
-                    </div>
-                    {asset.status !== 'configured' && (
-                      <Button variant="outline" size="sm" disabled>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Quick Upload Cards */}
+        <div className="grid md:grid-cols-3 gap-4 mb-8">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <ImagePlus className="w-5 h-5 text-terra-cotta" />
+                Menu Photos
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FileUploadZone
+                bucketName="admin-assets"
+                folderPath="photos"
+                acceptedTypes=".jpg,.jpeg,.png,.webp"
+                maxSizeMB={5}
+                onUploadComplete={(url, fileName) => handleUploadComplete('photos', url, fileName)}
+                label="Drop photo here"
+                description="or tap to browse"
+              />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <FileSpreadsheet className="w-5 h-5 text-jade" />
+                Menu Spreadsheet
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FileUploadZone
+                bucketName="admin-assets"
+                folderPath="csv"
+                acceptedTypes=".csv"
+                maxSizeMB={5}
+                onUploadComplete={(url, fileName) => handleUploadComplete('csv', url, fileName)}
+                label="Drop CSV file here"
+                description="or tap to browse"
+              />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <BookOpen className="w-5 h-5 text-copper" />
+                Recipe PDFs
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FileUploadZone
+                bucketName="admin-assets"
+                folderPath="recipes"
+                acceptedTypes=".pdf"
+                maxSizeMB={20}
+                onUploadComplete={(url, fileName) => handleUploadComplete('recipes', url, fileName)}
+                label="Drop PDF here"
+                description="or tap to browse"
+              />
+            </CardContent>
+          </Card>
         </div>
 
         {/* CSV Template */}
@@ -177,13 +300,10 @@ export default function AdminAssetsPage() {
               <p>name,category,shortDescription,longDescription,ingredients,allergens,sellingPoints,question1,answer1,question2,answer2</p>
               <p>"French Onion Soup","appetizers","Classic caramelized onion soup...","Our signature...","Vidalia onions, beef stock...","gluten,dairy,allium","House-made stock • 4-hour caramelized...","What makes our soup special?","4-hour caramelized onions...","Is it gluten-free?","Yes, without crouton"</p>
             </div>
-            <Button variant="burgundy" disabled>
+            <Button variant="burgundy" onClick={downloadCSVTemplate}>
               <Download className="w-4 h-4 mr-2" />
               Download CSV Template
             </Button>
-            <p className="text-xs text-muted-foreground mt-2">
-              Note: CSV import requires Lovable Cloud connection for database storage.
-            </p>
           </CardContent>
         </Card>
 
@@ -243,19 +363,18 @@ export default function AdminAssetsPage() {
           </CardContent>
         </Card>
 
-        {/* Cloud CTA */}
-        <Card className="mt-8 bg-gradient-to-r from-burgundy/5 to-gold/5 border-none">
+        {/* Cloud Status */}
+        <Card className="mt-8 bg-gradient-to-r from-jade/5 to-sage/5 border-jade/30">
           <CardContent className="p-6 text-center">
-            <h3 className="font-serif text-xl font-semibold mb-2">
-              Ready to go live?
-            </h3>
-            <p className="text-muted-foreground mb-4">
-              Connect to Lovable Cloud to enable file uploads, user authentication, 
-              and persistent data storage.
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <CheckCircle className="w-5 h-5 text-jade" />
+              <h3 className="font-serif text-xl font-semibold text-jade">
+                Connected to Lovable Cloud
+              </h3>
+            </div>
+            <p className="text-muted-foreground">
+              File uploads, user authentication, and persistent data storage are active.
             </p>
-            <Button variant="burgundy" disabled>
-              Connect Lovable Cloud
-            </Button>
           </CardContent>
         </Card>
       </div>
