@@ -172,7 +172,10 @@ export function Header() {
     }
     return email.substring(0, 2).toUpperCase();
   };
-  return <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-[env(safe-area-inset-top)]">
+  return <>
+      {/* Status bar background - extends behind notch/dynamic island */}
+      <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top)] bg-background z-[60]" />
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-[env(safe-area-inset-top)]">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex flex-col items-center gap-0.5">
@@ -473,5 +476,6 @@ export function Header() {
           
         </nav>
       </motion.div>
-    </header>;
+    </header>
+  </>;
 }
