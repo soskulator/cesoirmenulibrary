@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMenuItems } from '@/hooks/useMenuItems';
+import { supabase } from '@/integrations/supabase/client';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -141,10 +142,69 @@ export default function LeadAdminDashboard() {
     });
   };
 
-  const handleCSVUpload = () => {
+  // CSV file input ref
+  const csvInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingCSV, setIsUploadingCSV] = useState(false);
+
+  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setIsUploadingCSV(true);
+    
+    try {
+      // Upload to Supabase Storage
+      const timestamp = Date.now();
+      const fileName = `${timestamp}-${file.name}`;
+      
+      const { data, error } = await supabase.storage
+        .from('admin-assets')
+        .upload(`csv/${fileName}`, file);
+      
+      if (error) throw error;
+      
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('admin-assets')
+        .getPublicUrl(data.path);
+      
+      toast({
+        title: 'CSV Uploaded Successfully',
+        description: `${file.name} has been uploaded. Processing will be available soon.`,
+      });
+      
+      // TODO: Parse CSV and import menu items
+      console.log('CSV uploaded to:', urlData.publicUrl);
+    } catch (error: any) {
+      console.error('CSV upload error:', error);
+      toast({
+        title: 'Upload Failed',
+        description: error.message || 'Failed to upload CSV file.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploadingCSV(false);
+      // Reset input
+      if (csvInputRef.current) {
+        csvInputRef.current.value = '';
+      }
+    }
+  };
+
+  const downloadCSVTemplate = () => {
+    const csvContent = `name,category,shortDescription,longDescription,ingredients,allergens,sellingPoints,question1,answer1,question2,answer2
+"French Onion Soup","appetizers","Classic caramelized onion soup with Gruyère crouton","Our signature French onion soup features Vidalia onions slowly caramelized for 4 hours in beef stock, finished with a toasted baguette and melted Gruyère cheese.","Vidalia onions, beef stock, fresh thyme, baguette, Gruyère cheese, butter","gluten,dairy,allium","House-made stock • 4-hour caramelized onions • Imported Gruyère","What makes our French onion soup special?","Our onions are caramelized for 4 hours to develop deep, rich flavor.","Is it gluten-free?","The soup itself is gluten-free, but the traditional crouton contains gluten. We can serve without the crouton upon request."`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'menu-import-template.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+    
     toast({
-      title: 'Coming Soon',
-      description: 'CSV import functionality will be available soon.',
+      title: 'Template Downloaded',
+      description: 'Check your downloads folder for menu-import-template.csv',
     });
   };
 
@@ -470,31 +530,47 @@ export default function LeadAdminDashboard() {
                   <CardDescription className="text-xs sm:text-sm">Import menu items from CSV</CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
+                  <input
+                    ref={csvInputRef}
+                    type="file"
+                    accept=".csv"
+                    onChange={handleCSVUpload}
+                    className="hidden"
+                  />
+                  
                   <div className="mb-3 sm:mb-4">
-                    <Button variant="link" className="p-0 h-auto text-terra-cotta text-xs sm:text-sm">
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto text-terra-cotta text-xs sm:text-sm"
+                      onClick={downloadCSVTemplate}
+                    >
                       <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                       Download CSV Template
                     </Button>
                   </div>
                   
                   <div
-                    onClick={handleCSVUpload}
-                    className="border-2 border-dashed border-muted rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:border-terra-cotta/50 hover:bg-terra-cotta/5 active:bg-terra-cotta/10 transition-colors"
+                    onClick={() => !isUploadingCSV && csvInputRef.current?.click()}
+                    className={`border-2 border-dashed border-muted rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:border-terra-cotta/50 hover:bg-terra-cotta/5 active:bg-terra-cotta/10 transition-colors ${isUploadingCSV ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-muted/80 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                      <File className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+                      {isUploadingCSV ? (
+                        <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 text-terra-cotta animate-spin" />
+                      ) : (
+                        <File className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+                      )}
                     </div>
                     <p className="text-xs sm:text-sm font-medium text-foreground mb-1">
-                      Drop CSV file here
+                      {isUploadingCSV ? 'Uploading...' : 'Drop CSV file here'}
                     </p>
                     <p className="text-[10px] sm:text-xs text-muted-foreground">
                       or tap to browse
                     </p>
                   </div>
                   
-                  <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-lg bg-amber-50 border border-amber-200">
-                    <p className="text-[10px] sm:text-xs text-amber-700">
-                      <strong>Note:</strong> CSV import requires database storage.
+                  <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-lg bg-jade/10 border border-jade/30">
+                    <p className="text-[10px] sm:text-xs text-jade-dark">
+                      <strong>✓ Ready:</strong> CSV uploads enabled via Lovable Cloud.
                     </p>
                   </div>
                 </CardContent>
