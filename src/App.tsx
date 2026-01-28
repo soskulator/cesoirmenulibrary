@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import WineList from "./pages/WineList";
@@ -41,31 +42,34 @@ const App = () => (
           <AuthProvider>
             <ScrollToTop />
             <Routes>
-              <Route path="/" element={<Index />} />
+              {/* Public routes */}
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/categories/:categoryId" element={<Categories />} />
-              <Route path="/wine-list" element={<WineList />} />
-              <Route path="/spirits" element={<Spirits />} />
-              <Route path="/cocktails" element={<Cocktails />} />
-              <Route path="/cocktail-flashcards" element={<CocktailFlashcards />} />
-              <Route path="/flashcards" element={<Flashcards />} />
-              <Route path="/quiz" element={<Quiz />} />
-              <Route path="/wine-quiz" element={<WineQuiz />} />
-              <Route path="/spirits-quiz" element={<SpiritsQuiz />} />
-              <Route path="/allergy-quiz" element={<AllergyQuiz />} />
-              <Route path="/food-quiz" element={<FoodQuiz />} />
-              <Route path="/foh-test" element={<FohTest />} />
-              <Route path="/daily-focus" element={<DailyFocus />} />
-              <Route path="/allergy" element={<Allergy />} />
+              
+              {/* Protected routes - require authentication */}
+              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+              <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
+              <Route path="/categories/:categoryId" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
+              <Route path="/wine-list" element={<ProtectedRoute><WineList /></ProtectedRoute>} />
+              <Route path="/spirits" element={<ProtectedRoute><Spirits /></ProtectedRoute>} />
+              <Route path="/cocktails" element={<ProtectedRoute><Cocktails /></ProtectedRoute>} />
+              <Route path="/cocktail-flashcards" element={<ProtectedRoute><CocktailFlashcards /></ProtectedRoute>} />
+              <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
+              <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
+              <Route path="/wine-quiz" element={<ProtectedRoute><WineQuiz /></ProtectedRoute>} />
+              <Route path="/spirits-quiz" element={<ProtectedRoute><SpiritsQuiz /></ProtectedRoute>} />
+              <Route path="/allergy-quiz" element={<ProtectedRoute><AllergyQuiz /></ProtectedRoute>} />
+              <Route path="/food-quiz" element={<ProtectedRoute><FoodQuiz /></ProtectedRoute>} />
+              <Route path="/foh-test" element={<ProtectedRoute><FohTest /></ProtectedRoute>} />
+              <Route path="/daily-focus" element={<ProtectedRoute><DailyFocus /></ProtectedRoute>} />
+              <Route path="/allergy" element={<ProtectedRoute><Allergy /></ProtectedRoute>} />
               {/* Redirects for old routes */}
               <Route path="/allergy-check" element={<Navigate to="/allergy" replace />} />
               <Route path="/allergy-training" element={<Navigate to="/allergy" replace />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/assets" element={<AdminAssets />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/dashboard" element={<LeadAdminDashboard />} />
+              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+              <Route path="/admin/assets" element={<ProtectedRoute><AdminAssets /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+              <Route path="/admin/dashboard" element={<ProtectedRoute><LeadAdminDashboard /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
