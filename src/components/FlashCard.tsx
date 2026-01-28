@@ -42,7 +42,7 @@ export function FlashCard({
   onSwipeRight 
 }: FlashCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const dishImage = getDishImage(item.id);
+  const dishImage = getDishImage(item.id, item.imageUrl);
 
   const bgClass = categoryBackgrounds[item.categoryId] || categoryBackgrounds.appetizers;
   const borderClass = categoryAccents[item.categoryId] || categoryAccents.appetizers;
