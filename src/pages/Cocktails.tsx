@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { menuItems, MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, Sparkles, Star, Clock, ChevronDown, Wine as WineGlass } from 'lucide-react';
+import { ArrowLeft, GlassWater, Sparkles, Star, Clock, ChevronDown, Wine as WineGlass, Loader2 } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
@@ -62,6 +63,9 @@ const item = {
 export default function CocktailsPage() {
   const [selectedCocktail, setSelectedCocktail] = useState<MenuItem | null>(null);
   const [openStyles, setOpenStyles] = useState<string[]>(['classic']);
+  
+  // Get menu items from database
+  const { items: menuItems, isLoading } = useMenuItems();
   
   // Get all cocktail items
   const cocktails = menuItems.filter((item) => item.categoryId === 'cocktails' && item.isPublished);

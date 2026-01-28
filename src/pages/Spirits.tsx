@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { menuItems, MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, Wine } from 'lucide-react';
+import { ArrowLeft, Wine, Loader2 } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
@@ -108,6 +109,9 @@ const item = {
 export default function SpiritsPage() {
   const [selectedSpirit, setSelectedSpirit] = useState<MenuItem | null>(null);
   
+  // Get menu items from database
+  const { items: menuItems, isLoading } = useMenuItems();
+  
   // Get all spirits
   const spirits = menuItems.filter((item) => item.categoryId === 'spirits' && item.isPublished);
 
@@ -205,7 +209,7 @@ export default function SpiritsPage() {
                   >
                     {categorySpirits.map((spirit) => {
                       if (!spirit) return null;
-                      const image = getUniqueImage(spirit.id);
+                      const image = getUniqueImage(spirit.id, spirit.imageUrl);
 
                       return (
                         <motion.div

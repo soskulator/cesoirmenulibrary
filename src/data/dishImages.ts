@@ -430,7 +430,17 @@ export const dishImages: Record<string, string> = {
   'cocktail-15': cocktailPiscoSour, // Pisco Sour
 };
 
-export const getDishImage = (itemId: string): string | undefined => {
+/**
+ * Get image for a dish. Prioritizes database URL if provided and valid.
+ * @param itemId - The item ID to look up in static images
+ * @param dbImageUrl - Optional database image URL (takes priority if valid)
+ */
+export const getDishImage = (itemId: string, dbImageUrl?: string): string | undefined => {
+  // If a valid database URL is provided, use it
+  if (dbImageUrl && dbImageUrl !== '/placeholder.svg' && dbImageUrl.startsWith('http')) {
+    return dbImageUrl;
+  }
+  // Otherwise fall back to static images
   return dishImages[itemId];
 };
 
@@ -487,9 +497,16 @@ export const hasUniqueImage = (itemId: string): boolean => {
 
 /**
  * Get image only if the item has a unique verified image
- * Returns undefined for items using fallback images
+ * Prioritizes database URL if provided and valid.
+ * @param itemId - The item ID to check
+ * @param dbImageUrl - Optional database image URL (takes priority if valid)
  */
-export const getUniqueImage = (itemId: string): string | undefined => {
+export const getUniqueImage = (itemId: string, dbImageUrl?: string): string | undefined => {
+  // If a valid database URL is provided, use it (DB images are always unique)
+  if (dbImageUrl && dbImageUrl !== '/placeholder.svg' && dbImageUrl.startsWith('http')) {
+    return dbImageUrl;
+  }
+  // Otherwise check if static image is unique
   if (hasUniqueImage(itemId)) {
     return dishImages[itemId];
   }
