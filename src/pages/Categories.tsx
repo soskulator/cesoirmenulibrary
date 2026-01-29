@@ -18,23 +18,25 @@ import fruitsDeMerIcon from '@/assets/categories/fruits-de-mer-icon.png';
 import pastaIcon from '@/assets/categories/pasta-icon.png';
 import entreesIcon from '@/assets/categories/entrees-icon.png';
 import sidesIcon from '@/assets/categories/sides-icon.png';
-import dessertsIcon from '@/assets/categories/desserts-icon.png';
-import wineIcon from '@/assets/categories/wine-icon.png';
-import spiritsIcon from '@/assets/categories/spirits-icon.png';
-import cocktailsIcon from '@/assets/categories/cocktails-icon.png';
 
-// Map category IDs to minimalistic icons with theme
-const categoryIcons: Record<string, { icon: string; isDark: boolean }> = {
-  'crudo': { icon: crudoIcon, isDark: false },
-  'appetizers': { icon: appetizersIcon, isDark: false },
-  'fruits-de-mer': { icon: fruitsDeMerIcon, isDark: false },
-  'pasta': { icon: pastaIcon, isDark: false },
-  'entrees': { icon: entreesIcon, isDark: false },
-  'desserts': { icon: dessertsIcon, isDark: false },
-  'sides': { icon: sidesIcon, isDark: false },
-  'wine': { icon: wineIcon, isDark: true },
-  'spirits': { icon: spiritsIcon, isDark: true },
-  'cocktails': { icon: cocktailsIcon, isDark: true },
+// Illustrated category images for drinks (keep existing)
+import dessertsIllustrated from '@/assets/categories/desserts-illustrated.jpg';
+import wineIllustrated from '@/assets/categories/wine-illustrated.jpg';
+import spiritsIllustrated from '@/assets/categories/spirits-illustrated.jpg';
+import cocktailsIllustrated from '@/assets/categories/cocktails-illustrated.jpg';
+
+// Map category IDs to minimalistic icons (food) or illustrated images (drinks)
+const categoryIcons: Record<string, { icon?: string; illustrated?: string; isFood: boolean }> = {
+  'crudo': { icon: crudoIcon, isFood: true },
+  'appetizers': { icon: appetizersIcon, isFood: true },
+  'fruits-de-mer': { icon: fruitsDeMerIcon, isFood: true },
+  'pasta': { icon: pastaIcon, isFood: true },
+  'entrees': { icon: entreesIcon, isFood: true },
+  'desserts': { illustrated: dessertsIllustrated, isFood: true },
+  'sides': { icon: sidesIcon, isFood: true },
+  'wine': { illustrated: wineIllustrated, isFood: false },
+  'spirits': { illustrated: spiritsIllustrated, isFood: false },
+  'cocktails': { illustrated: cocktailsIllustrated, isFood: false },
 };
 
 // Spirit subcategories with their IDs
@@ -518,77 +520,99 @@ export default function CategoriesPage() {
             {categories.map((category) => {
               const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
               const categoryData = categoryIcons[category.id];
-              const isDark = categoryData?.isDark ?? false;
-              
-              // Determine item label
-              const getItemLabel = () => {
-                if (category.id === 'wine') return itemCount === 1 ? 'wine' : 'wines';
-                if (category.id === 'cocktails') return itemCount === 1 ? 'cocktail' : 'cocktails';
-                if (category.id === 'spirits') return itemCount === 1 ? 'spirit' : 'spirits';
-                return itemCount === 1 ? 'dish' : 'dishes';
-              };
+              const isDarkCategory = ['wine', 'spirits', 'cocktails'].includes(category.id);
+              const hasMinimalistIcon = categoryData?.icon;
               
               return (
                 <motion.div key={category.id} variants={item}>
                   <Link to={`/categories/${category.id}`} className="group block h-full">
-                    {/* Unified button style - light or warm dark theme */}
-                    <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 border transition-all duration-500 hover:shadow-lg ${
-                      isDark 
-                        ? 'bg-wood border-wood-light/30 hover:border-copper/50' 
-                        : 'bg-cream border-charcoal/8 hover:border-copper/30 hover:bg-cream-dark/30'
-                    }`}>
-                      {/* Minimalistic Icon - Higher opacity for dark themes */}
-                      {categoryData?.icon && (
-                        <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 h-28 sm:h-36 transition-opacity duration-500 ${
-                          isDark 
-                            ? 'opacity-70 group-hover:opacity-90' 
-                            : 'opacity-50 group-hover:opacity-70'
-                        }`}>
+                    {/* Food categories with minimalistic icons - Opaque button style */}
+                    {hasMinimalistIcon ? (
+                      <div className="relative overflow-hidden rounded-2xl h-36 sm:h-44 bg-cream border border-charcoal/8 transition-all duration-500 hover:shadow-lg hover:border-copper/30 hover:bg-cream-dark/30">
+                        {/* Minimalistic Icon - Semi-transparent in corner */}
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 h-28 sm:h-36 opacity-40 group-hover:opacity-60 transition-opacity duration-500">
                           <img 
                             src={categoryData.icon} 
                             alt="" 
                             className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700" 
                           />
                         </div>
-                      )}
-                      
-                      {/* Subtle gradient from left for text readability */}
-                      <div className={`absolute inset-0 ${
-                        isDark 
-                          ? 'bg-gradient-to-r from-wood via-wood/85 to-wood/30' 
-                          : 'bg-gradient-to-r from-cream via-cream/90 to-transparent'
-                      }`} />
+                        
+                        {/* Subtle gradient from left for text readability */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/90 to-transparent" />
 
-                      {/* Text Content - Left Aligned */}
-                      <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5">
-                        <h2 className={`font-serif text-lg sm:text-2xl font-bold transition-colors duration-300 ${
-                          isDark 
-                            ? 'text-cream group-hover:text-copper-light' 
-                            : 'text-charcoal group-hover:text-copper'
-                        }`}>
-                          {category.name}
-                        </h2>
-                        <p className={`font-serif italic text-xs sm:text-sm mt-0.5 ${
-                          isDark ? 'text-rose-gold-light' : 'text-copper/80'
-                        }`}>
-                          {category.nameFrench}
-                        </p>
+                        {/* Text Content - Left Aligned */}
+                        <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5">
+                          <h2 className="font-serif text-lg sm:text-2xl font-bold text-charcoal group-hover:text-copper transition-colors duration-300">
+                            {category.name}
+                          </h2>
+                          <p className="font-serif italic text-xs sm:text-sm mt-0.5 text-copper/80">
+                            {category.nameFrench}
+                          </p>
 
-                        {/* Count */}
-                        <div className="mt-2 flex items-center gap-1">
-                          <span className={`text-[10px] sm:text-xs tracking-wide uppercase ${
-                            isDark ? 'text-cream/60' : 'text-charcoal/50'
-                          }`}>
-                            {itemCount} {getItemLabel()}
-                          </span>
-                          <ChevronRight className={`w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-all ${
-                            isDark 
-                              ? 'text-cream/40 group-hover:text-copper-light' 
-                              : 'text-charcoal/30 group-hover:text-copper'
-                          }`} />
+                          {/* Count */}
+                          <div className="mt-2 flex items-center gap-1">
+                            <span className="text-[10px] sm:text-xs tracking-wide uppercase text-charcoal/50">
+                              {itemCount} {itemCount === 1 ? 'dish' : 'dishes'}
+                            </span>
+                            <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-charcoal/30 group-hover:text-copper group-hover:translate-x-1 transition-all" />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      /* Drinks and other categories with illustrated backgrounds */
+                      <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 border transition-all duration-500 hover:shadow-xl ${
+                        isDarkCategory 
+                          ? 'border-charcoal/20 hover:border-charcoal/40' 
+                          : 'border-charcoal/10 hover:border-copper/30'
+                      }`}>
+                        {/* Background Image - Illustrated Style */}
+                        {categoryData?.illustrated && (
+                          <img 
+                            src={categoryData.illustrated} 
+                            alt="" 
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                          />
+                        )}
+                        
+                        {/* Subtle Gradient Overlay */}
+                        <div className={`absolute inset-0 transition-all duration-500 ${
+                          isDarkCategory
+                            ? 'bg-gradient-to-r from-charcoal/70 via-charcoal/30 to-transparent'
+                            : 'bg-gradient-to-r from-cream/80 via-cream/40 to-transparent'
+                        }`} />
+
+                        {/* Text Content - Left Aligned */}
+                        <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5">
+                          <h2 className={`font-serif text-lg sm:text-2xl font-bold drop-shadow-sm transition-colors duration-300 ${
+                            isDarkCategory
+                              ? 'text-white group-hover:text-copper-light'
+                              : 'text-charcoal group-hover:text-copper'
+                          }`}>
+                            {category.name}
+                          </h2>
+                          <p className={`font-serif italic text-xs sm:text-sm mt-0.5 ${
+                            isDarkCategory ? 'text-white/70' : 'text-copper'
+                          }`}>
+                            {category.nameFrench}
+                          </p>
+
+                          {/* Count */}
+                          <div className="mt-2 flex items-center gap-1">
+                            <span className={`text-[10px] sm:text-xs tracking-wide uppercase ${
+                              isDarkCategory ? 'text-white/60' : 'text-charcoal/50'
+                            }`}>
+                              {itemCount} {category.id === 'wine' ? 'wines' : category.id === 'cocktails' ? 'cocktails' : category.id === 'spirits' ? 'spirits' : 'items'}
+                            </span>
+                            <ChevronRight className={`w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-all ${
+                              isDarkCategory 
+                                ? 'text-white/40 group-hover:text-copper-light' 
+                                : 'text-charcoal/30 group-hover:text-copper'
+                            }`} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </Link>
                 </motion.div>
               );
