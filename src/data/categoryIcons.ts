@@ -8,14 +8,19 @@ import spiritsIcon from '@/assets/icons/spirits-icon.png';
 import cocktailsIcon from '@/assets/icons/cocktails-icon.png';
 
 export const categoryIcons: Record<string, string> = {
+  // New category structure
+  crudo: appetizersIcon, // Using appetizers icon for crudo
   appetizers: appetizersIcon,
+  'fruits-de-mer': specialsIcon, // Using specials icon for seafood
+  pasta: entreesIcon, // Using entrees icon for pasta
   entrees: entreesIcon,
-  desserts: dessertsIcon,
   sides: sidesIcon,
-  specials: specialsIcon,
+  desserts: dessertsIcon,
   wine: wineIcon,
   spirits: spiritsIcon,
   cocktails: cocktailsIcon,
+  // Legacy support
+  specials: specialsIcon,
 };
 
 export const getCategoryIcon = (categoryId: string): string | undefined => {
