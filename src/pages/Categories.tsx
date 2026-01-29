@@ -18,9 +18,9 @@ import fruitsDeMerIcon from '@/assets/categories/fruits-de-mer-icon.png';
 import pastaIcon from '@/assets/categories/pasta-icon.png';
 import entreesIcon from '@/assets/categories/entrees-icon.png';
 import sidesIcon from '@/assets/categories/sides-icon.png';
+import dessertsIcon from '@/assets/categories/desserts-icon.png';
 
 // Illustrated category images for drinks (keep existing)
-import dessertsIllustrated from '@/assets/categories/desserts-illustrated.jpg';
 import wineIllustrated from '@/assets/categories/wine-illustrated.jpg';
 import spiritsIllustrated from '@/assets/categories/spirits-illustrated.jpg';
 import cocktailsIllustrated from '@/assets/categories/cocktails-illustrated.jpg';
@@ -32,7 +32,7 @@ const categoryIcons: Record<string, { icon?: string; illustrated?: string; isFoo
   'fruits-de-mer': { icon: fruitsDeMerIcon, isFood: true },
   'pasta': { icon: pastaIcon, isFood: true },
   'entrees': { icon: entreesIcon, isFood: true },
-  'desserts': { illustrated: dessertsIllustrated, isFood: true },
+  'desserts': { icon: dessertsIcon, isFood: true },
   'sides': { icon: sidesIcon, isFood: true },
   'wine': { illustrated: wineIllustrated, isFood: false },
   'spirits': { illustrated: spiritsIllustrated, isFood: false },
