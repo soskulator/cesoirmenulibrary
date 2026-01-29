@@ -16,7 +16,7 @@ const navItems = [{
   icon: Home
 }, {
   path: '/categories',
-  label: 'The Menu',
+  label: 'Menu',
   icon: Layers
 }, {
   path: '/wine-list',
