@@ -9,7 +9,7 @@ import cocktailsIcon from '@/assets/icons/cocktails-icon.png';
 
 export const categoryIcons: Record<string, string> = {
   // New category structure
-  crudo: appetizersIcon, // Using appetizers icon for crudo
+  crudo: appetizersIcon, // Using appetizers icon for crudo (raw dishes)
   appetizers: appetizersIcon,
   'fruits-de-mer': specialsIcon, // Using specials icon for seafood
   pasta: entreesIcon, // Using entrees icon for pasta

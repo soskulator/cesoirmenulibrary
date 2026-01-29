@@ -20,10 +20,16 @@ import specialsIllustrated from '@/assets/categories/specials-illustrated.jpg';
 import wineIllustrated from '@/assets/categories/wine-illustrated.jpg';
 import spiritsIllustrated from '@/assets/categories/spirits-illustrated.jpg';
 import cocktailsIllustrated from '@/assets/categories/cocktails-illustrated.jpg';
+import crudoIllustrated from '@/assets/categories/crudo-illustrated.jpg';
+import fruitsDeMerIllustrated from '@/assets/categories/fruits-de-mer-illustrated.jpg';
+import pastaIllustrated from '@/assets/categories/pasta-illustrated.jpg';
 
 // Map category IDs to illustrated images
 const categoryIllustratedImages: Record<string, string> = {
+  'crudo': crudoIllustrated,
   'appetizers': appetizersIllustrated,
+  'fruits-de-mer': fruitsDeMerIllustrated,
+  'pasta': pastaIllustrated,
   'entrees': entreesIllustrated,
   'desserts': dessertsIllustrated,
   'sides': sidesIllustrated,
