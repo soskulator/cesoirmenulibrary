@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_focus_settings: {
+        Row: {
+          created_at: string
+          created_by: string
+          focus_date: string
+          id: string
+          menu_item_ids: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          focus_date: string
+          id?: string
+          menu_item_ids?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          focus_date?: string
+          id?: string
+          menu_item_ids?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       foh_test_answers: {
         Row: {
           admin_notes: string | null
@@ -178,6 +205,39 @@ export type Database = {
           invited_by?: string
           role?: Database["public"]["Enums"]["app_role"]
           token?: string
+        }
+        Relationships: []
+      }
+      menu_categories: {
+        Row: {
+          created_at: string
+          icon: string
+          id: string
+          is_active: boolean
+          name: string
+          name_french: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string
+          id: string
+          is_active?: boolean
+          name: string
+          name_french?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_french?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }

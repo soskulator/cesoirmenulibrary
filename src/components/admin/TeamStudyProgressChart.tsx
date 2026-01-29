@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -27,28 +27,32 @@ interface CustomTooltipProps {
   }>;
 }
 
-const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div className="bg-card border border-border rounded-lg shadow-lg p-3 sm:p-4 min-w-[160px] sm:min-w-[180px] max-w-[200px]">
-        <p className="font-serif font-semibold text-foreground text-sm sm:text-base mb-0.5 sm:mb-1 truncate">{data.name}</p>
-        <p className="text-xs sm:text-sm text-muted-foreground mb-1.5 sm:mb-2 truncate">{data.email}</p>
-        <div className="flex items-center justify-between border-t border-border pt-1.5 sm:pt-2">
-          <span className="text-xs sm:text-sm text-muted-foreground">Avg Score</span>
-          <span className="font-bold text-terra-cotta text-sm sm:text-base">{data.score}%</span>
+const CustomTooltip = forwardRef<HTMLDivElement, CustomTooltipProps>(
+  ({ active, payload }, ref) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div ref={ref} className="bg-card border border-border rounded-lg shadow-lg p-3 sm:p-4 min-w-[160px] sm:min-w-[180px] max-w-[200px]">
+          <p className="font-serif font-semibold text-foreground text-sm sm:text-base mb-0.5 sm:mb-1 truncate">{data.name}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-1.5 sm:mb-2 truncate">{data.email}</p>
+          <div className="flex items-center justify-between border-t border-border pt-1.5 sm:pt-2">
+            <span className="text-xs sm:text-sm text-muted-foreground">Avg Score</span>
+            <span className="font-bold text-terra-cotta text-sm sm:text-base">{data.score}%</span>
+          </div>
+          <div className="flex items-center justify-between mt-1">
+            <span className="text-xs text-muted-foreground">Last Active</span>
+            <span className="text-[10px] sm:text-xs text-muted-foreground">
+              {formatDistanceToNow(new Date(data.lastActive), { addSuffix: true })}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center justify-between mt-1">
-          <span className="text-xs text-muted-foreground">Last Active</span>
-          <span className="text-[10px] sm:text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(data.lastActive), { addSuffix: true })}
-          </span>
-        </div>
-      </div>
-    );
+      );
+    }
+    return null;
   }
-  return null;
-};
+);
+
+CustomTooltip.displayName = 'CustomTooltip';
 
 export function TeamStudyProgressChart() {
   const [data, setData] = useState<EmployeeScore[]>([]);

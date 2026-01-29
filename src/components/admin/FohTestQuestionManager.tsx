@@ -150,7 +150,7 @@ export function FohTestQuestionManager() {
   };
 
   return (
-    <Card className="bg-card shadow-card h-full">
+    <Card className="bg-card shadow-card h-full overflow-hidden">
       <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
         <div className="flex items-center justify-between gap-2">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-burgundy/10 flex items-center justify-center flex-shrink-0">
