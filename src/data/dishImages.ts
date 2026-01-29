@@ -42,6 +42,9 @@ import wagyuTomahawk from '@/assets/dishes/wagyu-tomahawk.jpg';
 import roastedBranzino from '@/assets/dishes/roasted-branzino.jpg';
 import oysters from '@/assets/dishes/oysters.jpg';
 import charcuterieBoard from '@/assets/dishes/charcuterie-board.jpg';
+// Crudo et Tartare images
+import ceviche from '@/assets/dishes/ceviche.jpg';
+import hamachiCrudo from '@/assets/dishes/hamachi-crudo.jpg';
 
 // Drink images - Wines
 import wineMoetImperial from '@/assets/drinks/wine-moet-imperial.jpg';
@@ -167,6 +170,13 @@ import cocktailPiscoSour from '@/assets/drinks/cocktail-pisco-sour.jpg';
 
 // Map menu item IDs to their images
 export const dishImages: Record<string, string> = {
+  // Crudo et Tartare
+  'crudo-1': burrataSalad, // Burrata
+  'crudo-2': tunaTartare, // Tuna Tartare
+  'crudo-3': steakTartare, // Steak Tartare
+  'crudo-4': ceviche, // Ceviche
+  'crudo-5': hamachiCrudo, // Hamachi Crudo
+  
   // Appetizers
   'app-1': frenchOnionSoup,
   'app-2': escargots,
