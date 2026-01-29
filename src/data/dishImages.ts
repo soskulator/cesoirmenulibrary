@@ -45,6 +45,11 @@ import charcuterieBoard from '@/assets/dishes/charcuterie-board.jpg';
 // Crudo et Tartare images
 import ceviche from '@/assets/dishes/ceviche.jpg';
 import hamachiCrudo from '@/assets/dishes/hamachi-crudo.jpg';
+// Additional Appetizers
+import friseeLardons from '@/assets/dishes/frisee-lardons.jpg';
+// Additional Pasta
+import linguineVongole from '@/assets/dishes/linguine-vongole.jpg';
+import risotto from '@/assets/dishes/risotto.jpg';
 
 // Drink images - Wines
 import wineMoetImperial from '@/assets/drinks/wine-moet-imperial.jpg';
@@ -177,28 +182,39 @@ export const dishImages: Record<string, string> = {
   'crudo-4': ceviche, // Ceviche
   'crudo-5': hamachiCrudo, // Hamachi Crudo
   
-  // Appetizers
+  // Appetizers (Petites Assiettes)
   'app-1': frenchOnionSoup,
   'app-2': escargots,
-  'app-3': steakTartare,
-  'app-4': searedScallops,
-  'app-5': foieGrasTerrine,
-  'app-6': tunaTartare,
-  'app-7': mouleFrites,
-  'app-8': burrataSalad,
-  'app-9': caesarSalad,
-  'app-10': charredOctopus,
+  'app-3': foieGrasTerrine,
+  'app-4': caesarSalad,
+  'app-5': friseeLardons,
   
-  // Entrees
-  'ent-1': lobsterSpaghetti,
-  'ent-2': wildMushroomRavioli,
-  'ent-3': bouillabaisse,
-  'ent-4': chileanSeaBass,
-  'ent-5': crispySkinSalmon,
-  'ent-6': rackOfLamb,
-  'ent-7': roastedChicken,
-  'ent-8': duckCassoulet,
-  'ent-9': lambBolognese,
+  // Fruits de Mer (Seafood)
+  'fdm-1': plateauFruitsMer,
+  'fdm-2': oysters,
+  'fdm-3': mouleFrites,
+  'fdm-4': searedScallops,
+  'fdm-5': doverSole,
+  'fdm-6': roastedBranzino,
+  'fdm-7': bouillabaisse,
+  'fdm-8': chileanSeaBass,
+  
+  // Pasta & Risotto
+  'pasta-1': lobsterSpaghetti,
+  'pasta-2': wildMushroomRavioli,
+  'pasta-3': lambBolognese,
+  'pasta-4': linguineVongole,
+  'pasta-5': risotto,
+  
+  // Entrees (From the Charcoal Grill)
+  'ent-1': wagyuTomahawk, // Wagyu Filet
+  'ent-2': wagyuTomahawk, // Wagyu Ribeye
+  'ent-3': wagyuTomahawk, // Wagyu NY Strip
+  'ent-4': wagyuTomahawk, // Wagyu Tomahawk
+  'ent-5': rackOfLamb,
+  'ent-6': roastedChicken,
+  'ent-7': duckCassoulet,
+  'ent-8': charredOctopus,
   
   // Desserts (new pastry menu)
   'des-1': milleFeuille, // Mille Feuille

@@ -68,16 +68,16 @@ export const allergens: Allergen[] = [
 ];
 
 export const categories: Category[] = [
-  { id: 'crudo', name: 'Crudo et Tartare', nameFrench: 'Crudo et Tartare', sortOrder: 1, icon: '🍣' },
-  { id: 'appetizers', name: 'Les Petites et Salades', nameFrench: 'Les Petites et Salades', sortOrder: 2, icon: '🥗' },
-  { id: 'fruits-de-mer', name: 'Fruits de Mer', nameFrench: 'Fruits de Mer', sortOrder: 3, icon: '🦪' },
-  { id: 'pasta', name: 'Pâtes et Risottos', nameFrench: 'Pâtes et Risottos', sortOrder: 4, icon: '🍝' },
-  { id: 'entrees', name: 'Au Feu de Charbon', nameFrench: 'Au Feu de Charbon', sortOrder: 5, icon: '🔥' },
-  { id: 'sides', name: 'Accompagnements', nameFrench: 'Les Accompagnements', sortOrder: 6, icon: '🥔' },
-  { id: 'desserts', name: 'Desserts', nameFrench: 'Les Desserts', sortOrder: 7, icon: '🍰' },
-  { id: 'wine', name: 'Wine', nameFrench: 'Les Vins', sortOrder: 8, icon: '🍷' },
-  { id: 'spirits', name: 'Spirits', nameFrench: 'Les Spiritueux', sortOrder: 9, icon: '🥃' },
-  { id: 'cocktails', name: 'Cocktails', nameFrench: 'Les Cocktails', sortOrder: 10, icon: '🍸' },
+  { id: 'crudo', name: 'Crudo et Tartare', nameFrench: 'Raw & Cured Preparations', sortOrder: 1, icon: '🍣' },
+  { id: 'appetizers', name: 'Petites Assiettes', nameFrench: 'Small Plates & Salads', sortOrder: 2, icon: '🥗' },
+  { id: 'fruits-de-mer', name: 'Fruits de Mer', nameFrench: 'Seafood Selections', sortOrder: 3, icon: '🦪' },
+  { id: 'pasta', name: 'Pasta & Risotto', nameFrench: 'House-Made Pasta & Risotto', sortOrder: 4, icon: '🍝' },
+  { id: 'entrees', name: 'From the Grill', nameFrench: 'Prime Cuts & Roasts', sortOrder: 5, icon: '🔥' },
+  { id: 'sides', name: 'Accompaniments', nameFrench: 'Seasonal Sides', sortOrder: 6, icon: '🥔' },
+  { id: 'desserts', name: 'Desserts', nameFrench: 'Pastry Selections', sortOrder: 7, icon: '🍰' },
+  { id: 'wine', name: 'Wine', nameFrench: 'Curated Wine Selection', sortOrder: 8, icon: '🍷' },
+  { id: 'spirits', name: 'Spirits', nameFrench: 'Premium Spirits', sortOrder: 9, icon: '🥃' },
+  { id: 'cocktails', name: 'Cocktails', nameFrench: 'Craft Cocktails', sortOrder: 10, icon: '🍸' },
 ];
 
 export const menuItems: MenuItem[] = [
