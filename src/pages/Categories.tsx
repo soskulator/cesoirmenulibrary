@@ -531,15 +531,19 @@ export default function CategoriesPage() {
               return (
                 <motion.div key={category.id} variants={item}>
                   <Link to={`/categories/${category.id}`} className="group block h-full">
-                    {/* Unified button style - light or dark theme */}
+                    {/* Unified button style - light or warm dark theme */}
                     <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 border transition-all duration-500 hover:shadow-lg ${
                       isDark 
-                        ? 'bg-charcoal border-charcoal-light/20 hover:border-copper/40' 
+                        ? 'bg-wood border-wood-light/30 hover:border-copper/50' 
                         : 'bg-cream border-charcoal/8 hover:border-copper/30 hover:bg-cream-dark/30'
                     }`}>
-                      {/* Minimalistic Icon - Semi-transparent in corner */}
+                      {/* Minimalistic Icon - Higher opacity for dark themes */}
                       {categoryData?.icon && (
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 h-28 sm:h-36 opacity-50 group-hover:opacity-70 transition-opacity duration-500">
+                        <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 h-28 sm:h-36 transition-opacity duration-500 ${
+                          isDark 
+                            ? 'opacity-70 group-hover:opacity-90' 
+                            : 'opacity-50 group-hover:opacity-70'
+                        }`}>
                           <img 
                             src={categoryData.icon} 
                             alt="" 
@@ -551,7 +555,7 @@ export default function CategoriesPage() {
                       {/* Subtle gradient from left for text readability */}
                       <div className={`absolute inset-0 ${
                         isDark 
-                          ? 'bg-gradient-to-r from-charcoal via-charcoal/90 to-charcoal/40' 
+                          ? 'bg-gradient-to-r from-wood via-wood/85 to-wood/30' 
                           : 'bg-gradient-to-r from-cream via-cream/90 to-transparent'
                       }`} />
 
@@ -565,7 +569,7 @@ export default function CategoriesPage() {
                           {category.name}
                         </h2>
                         <p className={`font-serif italic text-xs sm:text-sm mt-0.5 ${
-                          isDark ? 'text-copper-light/80' : 'text-copper/80'
+                          isDark ? 'text-rose-gold-light' : 'text-copper/80'
                         }`}>
                           {category.nameFrench}
                         </p>
@@ -573,13 +577,13 @@ export default function CategoriesPage() {
                         {/* Count */}
                         <div className="mt-2 flex items-center gap-1">
                           <span className={`text-[10px] sm:text-xs tracking-wide uppercase ${
-                            isDark ? 'text-cream/50' : 'text-charcoal/50'
+                            isDark ? 'text-cream/60' : 'text-charcoal/50'
                           }`}>
                             {itemCount} {getItemLabel()}
                           </span>
                           <ChevronRight className={`w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-all ${
                             isDark 
-                              ? 'text-cream/30 group-hover:text-copper-light' 
+                              ? 'text-cream/40 group-hover:text-copper-light' 
                               : 'text-charcoal/30 group-hover:text-copper'
                           }`} />
                         </div>
