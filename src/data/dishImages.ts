@@ -21,6 +21,15 @@ import lambBolognese from '@/assets/dishes/lamb-bolognese.jpg';
 import cremeBrulee from '@/assets/dishes/creme-brulee.jpg';
 import tarteTatin from '@/assets/dishes/tarte-tatin.jpg';
 import mousseChocolat from '@/assets/dishes/mousse-chocolat.jpg';
+// New dessert images
+import milleFeuille from '@/assets/dishes/mille-feuille.jpg';
+import chocolateEntremet from '@/assets/dishes/chocolate-entremet.jpg';
+import cremeBruleeLavender from '@/assets/dishes/creme-brulee-lavender.jpg';
+import thePearDessert from '@/assets/dishes/the-pear-dessert.jpg';
+import pistachioIceCream from '@/assets/dishes/pistachio-ice-cream.jpg';
+import figTart from '@/assets/dishes/fig-tart.jpg';
+import citrusPistachioTart from '@/assets/dishes/citrus-pistachio-tart.jpg';
+import iceCreamSorbet from '@/assets/dishes/ice-cream-sorbet.jpg';
 import pommesFrites from '@/assets/dishes/pommes-frites.jpg';
 import fingerlingPotatoes from '@/assets/dishes/fingerling-potatoes.jpg';
 import creamySpinach from '@/assets/dishes/creamy-spinach.jpg';
@@ -181,10 +190,15 @@ export const dishImages: Record<string, string> = {
   'ent-8': duckCassoulet,
   'ent-9': lambBolognese,
   
-  // Desserts
-  'des-1': cremeBrulee,
-  'des-2': tarteTatin,
-  'des-3': mousseChocolat,
+  // Desserts (new pastry menu)
+  'des-1': milleFeuille, // Mille Feuille
+  'des-2': chocolateEntremet, // Chocolate Entremet
+  'des-3': cremeBruleeLavender, // Crème Brûlée (lavender-honey)
+  'des-4': thePearDessert, // The Pear
+  'des-5': pistachioIceCream, // Pistachio Ice Cream for Two
+  'des-6': figTart, // Fig Tart
+  'des-7': citrusPistachioTart, // Citrus Pistachio Tart
+  'des-8': iceCreamSorbet, // Ice Cream & Sorbet
   
   // Sides
   'side-1': pommesFrites,
