@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -67,6 +67,28 @@ export function FohTestQuestionManager() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
+  
+  // Track scroll position to restore after edit
+  const scrollPositionRef = useRef<number>(0);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  // Capture scroll position before opening edit dialog
+  const captureScrollPosition = useCallback(() => {
+    const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    if (viewport) {
+      scrollPositionRef.current = viewport.scrollTop;
+    }
+  }, []);
+  
+  // Restore scroll position after dialog closes
+  const restoreScrollPosition = useCallback(() => {
+    setTimeout(() => {
+      const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) {
+        viewport.scrollTop = scrollPositionRef.current;
+      }
+    }, 50);
+  }, []);
 
   // Filter questions by test type and search
   const filteredQuestions = questions.filter(q => {
@@ -87,6 +109,7 @@ export function FohTestQuestionManager() {
   };
 
   const openEditDialog = (question: DbFohTestQuestion) => {
+    captureScrollPosition();
     setEditingQuestion(question);
     setFormData({
       question: question.question,
@@ -127,6 +150,10 @@ export function FohTestQuestionManager() {
     if (success) {
       setIsDialogOpen(false);
       setFormData(defaultFormData);
+      // Restore scroll position after successful save
+      if (editingQuestion) {
+        restoreScrollPosition();
+      }
     }
     setIsSaving(false);
   };
@@ -156,30 +183,30 @@ export function FohTestQuestionManager() {
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-burgundy/10 flex items-center justify-center flex-shrink-0">
             <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5 text-burgundy" />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 flex-shrink-0">
             {!isInitialized && (
               <Button 
                 size="sm" 
                 variant="outline"
                 onClick={() => handleInitialize()}
                 disabled={isLoading || isInitializing}
-                className="text-xs sm:text-sm"
+                className="text-xs h-7 px-2"
               >
                 {isInitializing ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
+                  <Loader2 className="w-3 h-3 animate-spin" />
                 ) : (
-                  <RefreshCw className="w-3.5 h-3.5 mr-1" />
+                  <RefreshCw className="w-3 h-3" />
                 )}
-                Sync All
+                <span className="ml-1 hidden sm:inline">Sync</span>
               </Button>
             )}
             <Button 
               size="sm" 
-              className="bg-burgundy hover:bg-burgundy/90 text-white text-xs sm:text-sm"
+              className="bg-burgundy hover:bg-burgundy/90 text-white text-xs h-7 px-2"
               onClick={openAddDialog}
             >
-              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-              Add
+              <Plus className="w-3 h-3" />
+              <span className="ml-1 hidden sm:inline">Add</span>
             </Button>
           </div>
         </div>
@@ -192,7 +219,7 @@ export function FohTestQuestionManager() {
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent className="px-3 sm:px-6">
+      <CardContent className="px-3 sm:px-6 pb-4 overflow-hidden">
         {/* Test Type Tabs */}
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TestType)} className="mb-4">
           <TabsList className="grid w-full grid-cols-2 h-9">
@@ -234,7 +261,7 @@ export function FohTestQuestionManager() {
         </div>
 
         {/* Questions List */}
-        <ScrollArea className="h-[320px]">
+        <ScrollArea className="h-[320px]" ref={scrollAreaRef}>
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />

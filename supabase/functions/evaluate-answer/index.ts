@@ -151,16 +151,26 @@ async function evaluateWithAI(userAnswer: string, correctAnswer: string, questio
         messages: [
           {
             role: 'system',
-            content: `You are an expert evaluator for restaurant staff training tests. Your job is to determine if an employee's answer demonstrates sufficient knowledge of the correct information.
+            content: `You are a LENIENT evaluator for restaurant staff training tests. Your primary goal is to ACCEPT answers that show the employee understands the concept, even if imperfect.
 
-IMPORTANT RULES:
-1. The answer does NOT need to be word-for-word identical to the correct answer
-2. Accept answers that convey the same meaning, key concepts, or essential information
-3. Accept partial answers if they include the most critical elements
-4. Be lenient with spelling, grammar, and phrasing variations
-5. Consider synonyms and alternative phrasings as correct
-6. For lists, accept if the employee mentions the key items even if not all
-7. For procedural answers, accept if the main steps/actions are correct
+CRITICAL EVALUATION RULES - BE GENEROUS:
+1. SPELLING: Accept answers with typos, phonetic spelling, or minor misspellings (e.g., "burgandy" = "burgundy", "vinaigrette" = "vinigrette")
+2. WORD ORDER: Accept if key concepts are present regardless of order
+3. SYNONYMS: Accept equivalent terms (e.g., "garnish" = "topping", "entree" = "main course", "appetizer" = "starter")
+4. PARTIAL ANSWERS: Accept if 50%+ of the key concepts are mentioned
+5. ABBREVIATIONS: Accept common abbreviations (e.g., "OJ" = "orange juice", "SA" = "server assistant")
+6. MISSING ARTICLES/PREPOSITIONS: Ignore missing "the", "a", "an", "with", "and", etc.
+7. EXTRA DETAILS: Accept answers with additional correct information
+8. PLURAL/SINGULAR: Treat as equivalent
+9. INGREDIENTS: Accept if major components are mentioned even if minor ones are missing
+10. DESCRIPTIONS: Accept if the essence/meaning matches, not verbatim
+
+MARKING INCORRECT - Only mark wrong if:
+- The answer is fundamentally wrong or describes a different dish/concept
+- Critical safety information is incorrect (allergens, dietary restrictions)
+- The answer shows complete misunderstanding
+
+DEFAULT TO ACCEPTING if there's reasonable doubt.
 
 Respond ONLY with a JSON object (no markdown, no code blocks):
 {"isCorrect": true/false, "confidence": 0.0-1.0, "feedback": "brief explanation"}`
@@ -169,11 +179,11 @@ Respond ONLY with a JSON object (no markdown, no code blocks):
             role: 'user',
             content: `Question: ${question}
 
-Correct Answer: ${correctAnswer}
+Expected Answer: ${correctAnswer}
 
 Employee's Answer: ${userAnswer}
 
-Is the employee's answer acceptable?`
+Is this answer acceptable? Remember to be lenient - accept if they understand the concept.`
           }
         ],
         temperature: 0.1,
@@ -230,7 +240,7 @@ function keywordFallback(userAnswer: string, correctAnswer: string): { isCorrect
   if (normalizedCorrect.includes(normalizedUser) || normalizedUser.includes(normalizedCorrect)) {
     const matchRatio = Math.min(normalizedUser.length, normalizedCorrect.length) / 
                        Math.max(normalizedUser.length, normalizedCorrect.length)
-    if (matchRatio > 0.4) {
+    if (matchRatio > 0.3) {
       return {
         isCorrect: true,
         confidence: matchRatio,
@@ -238,6 +248,28 @@ function keywordFallback(userAnswer: string, correctAnswer: string): { isCorrect
         method: 'keyword'
       }
     }
+  }
+  
+  // Simple Levenshtein-like similarity for fuzzy matching
+  const calculateSimilarity = (str1: string, str2: string): number => {
+    if (str1 === str2) return 1.0
+    const longer = str1.length > str2.length ? str1 : str2
+    const shorter = str1.length > str2.length ? str2 : str1
+    if (longer.length === 0) return 1.0
+    
+    // Check if shorter is contained in longer
+    if (longer.includes(shorter)) {
+      return shorter.length / longer.length
+    }
+    
+    // Character overlap ratio
+    const longerChars = new Set(longer.split(''))
+    const shorterChars = new Set(shorter.split(''))
+    let matches = 0
+    shorterChars.forEach(char => {
+      if (longerChars.has(char)) matches++
+    })
+    return matches / Math.max(longerChars.size, shorterChars.size)
   }
   
   // Extract key words (words with 3+ characters, excluding common words)
@@ -260,22 +292,36 @@ function keywordFallback(userAnswer: string, correctAnswer: string): { isCorrect
   const correctKeywords = extractKeywords(normalizedCorrect)
   const userKeywords = extractKeywords(normalizedUser)
   
-  // Count keyword matches
+  // Count keyword matches with fuzzy matching
   let keywordMatches = 0
-  for (const keyword of correctKeywords) {
-    if (userKeywords.includes(keyword) || normalizedUser.includes(keyword)) {
+  let fuzzyMatches = 0
+  
+  for (const correctWord of correctKeywords) {
+    // Exact match
+    if (userKeywords.includes(correctWord) || normalizedUser.includes(correctWord)) {
       keywordMatches++
+      continue
+    }
+    
+    // Fuzzy match - check if any user word is similar (handles typos)
+    for (const userWord of userKeywords) {
+      const similarity = calculateSimilarity(correctWord, userWord)
+      if (similarity >= 0.7) { // 70% similar = accept (handles 1-2 typos)
+        fuzzyMatches++
+        break
+      }
     }
   }
   
-  const keywordRatio = correctKeywords.length > 0 ? keywordMatches / correctKeywords.length : 0
+  const totalMatches = keywordMatches + (fuzzyMatches * 0.8) // Fuzzy matches count as 80%
+  const keywordRatio = correctKeywords.length > 0 ? totalMatches / correctKeywords.length : 0
   
-  // More lenient threshold
-  const isCorrect = keywordRatio >= 0.35 || keywordMatches >= 2
+  // More lenient threshold - accept at 25% match or 2+ matches
+  const isCorrect = keywordRatio >= 0.25 || totalMatches >= 2
   
   const feedback = isCorrect 
-    ? `Good! Matched ${keywordMatches}/${correctKeywords.length} key concepts`
-    : `Matched ${keywordMatches}/${correctKeywords.length} key concepts - needs review`
+    ? `Good! Matched ${Math.round(totalMatches)}/${correctKeywords.length} key concepts`
+    : `Matched ${Math.round(totalMatches)}/${correctKeywords.length} key concepts - needs review`
   
   return {
     isCorrect,
