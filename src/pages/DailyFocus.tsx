@@ -1,16 +1,18 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AllergenList } from '@/components/AllergenBadge';
-import { getCategoryById, menuItems } from '@/data/menuData';
+import { getCategoryById, menuItems, MenuItem } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { useDailyRotation } from '@/hooks/useDailyRotation';
 import { DailyCocktailCard } from '@/components/DailyCocktailCard';
-import { Star, CreditCard, Calendar, ArrowRight, RefreshCw, Utensils, Wine } from 'lucide-react';
+import { Star, CreditCard, Calendar, ArrowRight, RefreshCw, Utensils, Wine, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { format } from 'date-fns';
 
 const container = {
   hidden: { opacity: 0 },
@@ -28,6 +30,38 @@ const item = {
 export default function DailyFocusPage() {
   const navigate = useNavigate();
   const [refreshKey, setRefreshKey] = useState(0);
+  const [savedFocusItems, setSavedFocusItems] = useState<MenuItem[]>([]);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(true);
+  const today = format(new Date(), 'yyyy-MM-dd');
+  
+  // Fetch saved focus items from database
+  useEffect(() => {
+    const fetchSavedFocus = async () => {
+      try {
+        setIsLoadingSaved(true);
+        const { data, error } = await supabase
+          .from('daily_focus_settings')
+          .select('menu_item_ids')
+          .eq('focus_date', today)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (data && data.menu_item_ids?.length > 0) {
+          const items = data.menu_item_ids
+            .map(id => menuItems.find(item => item.id === id))
+            .filter((item): item is MenuItem => item !== undefined);
+          setSavedFocusItems(items);
+        }
+      } catch (error) {
+        console.error('Error fetching saved focus:', error);
+      } finally {
+        setIsLoadingSaved(false);
+      }
+    };
+
+    fetchSavedFocus();
+  }, [today]);
   
   // Get random focus items on manual refresh
   const getRandomFocusItems = useCallback(() => {
@@ -43,11 +77,13 @@ export default function DailyFocusPage() {
   
   const [customFocusItems, setCustomFocusItems] = useState<typeof menuItems | null>(null);
   
-  // Use automatic daily rotation
+  // Use automatic daily rotation as fallback
   const { foodItems: dailyFoodItems, cocktailOfTheDay, dateString } = useDailyRotation(5, 1);
   
-  // Use custom items if manually refreshed, otherwise use daily rotation
-  const focusItems = customFocusItems || dailyFoodItems;
+  // Priority: saved focus items > custom items > daily rotation
+  const focusItems = savedFocusItems.length > 0 
+    ? savedFocusItems 
+    : customFocusItems || dailyFoodItems;
 
   const handleRefresh = () => {
     setCustomFocusItems(getRandomFocusItems());

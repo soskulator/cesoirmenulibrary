@@ -4,16 +4,20 @@ import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMenuItems } from '@/hooks/useMenuItems';
+import { useDailyFocusSettings } from '@/hooks/useDailyFocusSettings';
+import { useCategories, DbCategory } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
 import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
 import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
@@ -42,7 +46,7 @@ import {
   RefreshCw,
   Loader2
 } from 'lucide-react';
-import { categories, MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuData';
 
 export default function LeadAdminDashboard() {
   const { user, isLeadAdmin, loading: authLoading } = useAuth();
@@ -61,6 +65,25 @@ export default function LeadAdminDashboard() {
     fetchItems
   } = useMenuItems();
   
+  // Daily Focus settings from database
+  const { 
+    selectedItemIds: savedFocusItems, 
+    isSaving: isSavingFocus, 
+    saveDailyFocus,
+    isLoading: focusLoading 
+  } = useDailyFocusSettings();
+  
+  // Categories from database
+  const {
+    categories,
+    isLoading: categoriesLoading,
+    isInitialized: categoriesInitialized,
+    initializeFromStatic: initializeCategories,
+    updateCategory,
+    addCategory,
+    deleteCategory,
+  } = useCategories();
+  
   // Menu Management state
   const [menuTab, setMenuTab] = useState<'food' | 'wines' | 'cocktails' | 'spirits'>('food');
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
@@ -71,6 +94,24 @@ export default function LeadAdminDashboard() {
   // Daily Focus state
   const [focusSearchQuery, setFocusSearchQuery] = useState('');
   const [selectedFocusItems, setSelectedFocusItems] = useState<string[]>([]);
+  
+  // Category editing state
+  const [editingCategory, setEditingCategory] = useState<DbCategory | null>(null);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [categoryFormData, setCategoryFormData] = useState({
+    id: '',
+    name: '',
+    name_french: '',
+    icon: '🍽️',
+  });
+  const [deletingCategoryId, setDeletingCategoryId] = useState<string | null>(null);
+
+  // Initialize selected focus items from saved data
+  useEffect(() => {
+    if (savedFocusItems.length > 0) {
+      setSelectedFocusItems(savedFocusItems);
+    }
+  }, [savedFocusItems]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -145,11 +186,56 @@ export default function LeadAdminDashboard() {
     );
   };
 
-  const handleSaveDailyFocus = () => {
-    toast({
-      title: 'Daily Focus Saved',
-      description: `${selectedFocusItems.length} items selected for today's focus.`,
+  const handleSaveDailyFocus = async () => {
+    await saveDailyFocus(selectedFocusItems);
+  };
+
+  // Category dialog handlers
+  const openAddCategoryDialog = () => {
+    setEditingCategory(null);
+    setCategoryFormData({ id: '', name: '', name_french: '', icon: '🍽️' });
+    setIsAddingCategory(true);
+  };
+
+  const openEditCategoryDialog = (category: DbCategory) => {
+    setEditingCategory(category);
+    setCategoryFormData({
+      id: category.id,
+      name: category.name,
+      name_french: category.name_french,
+      icon: category.icon,
     });
+    setIsAddingCategory(true);
+  };
+
+  const handleSaveCategory = async () => {
+    if (!categoryFormData.name.trim()) return;
+    
+    if (editingCategory) {
+      await updateCategory(editingCategory.id, {
+        name: categoryFormData.name,
+        name_french: categoryFormData.name_french,
+        icon: categoryFormData.icon,
+      });
+    } else {
+      const newId = categoryFormData.id.trim() || categoryFormData.name.toLowerCase().replace(/\s+/g, '-');
+      await addCategory({
+        id: newId,
+        name: categoryFormData.name,
+        name_french: categoryFormData.name_french,
+        icon: categoryFormData.icon,
+        sort_order: categories.length,
+        is_active: true,
+      });
+    }
+    setIsAddingCategory(false);
+    setEditingCategory(null);
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    setDeletingCategoryId(id);
+    await deleteCategory(id);
+    setDeletingCategoryId(null);
   };
 
   // CSV file input ref
@@ -437,41 +523,98 @@ export default function LeadAdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <Card className="bg-card shadow-card h-full">
+              <Card className="bg-card shadow-card h-full overflow-hidden">
                 <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
                   <div className="flex items-center justify-between gap-2">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-soft-clay/20 flex items-center justify-center flex-shrink-0">
                       <DatabaseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-soft-clay" />
                     </div>
-                    <Button size="sm" variant="outline" className="border-soft-clay/30 text-soft-clay hover:bg-soft-clay/10 text-xs sm:text-sm">
-                      <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-                      Add Category
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      {!categoriesInitialized && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={initializeCategories}
+                          disabled={categoriesLoading}
+                          className="text-xs sm:text-sm"
+                        >
+                          {categoriesLoading ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
+                          ) : (
+                            <RefreshCw className="w-3.5 h-3.5 mr-1" />
+                          )}
+                          Sync
+                        </Button>
+                      )}
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-soft-clay/30 text-soft-clay hover:bg-soft-clay/10 text-xs sm:text-sm"
+                        onClick={openAddCategoryDialog}
+                      >
+                        <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                        Add
+                      </Button>
+                    </div>
                   </div>
                   <CardTitle className="font-serif text-lg sm:text-xl">Category Manager</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Organize and reorder categories</CardDescription>
+                  <CardDescription className="text-xs sm:text-sm">
+                    {categoriesInitialized ? (
+                      <span className="text-jade">✓ {categories.length} categories in database</span>
+                    ) : (
+                      'Click "Sync" to enable persistent storage'
+                    )}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">Drag to reorder categories</p>
                   <ScrollArea className="h-[260px] sm:h-[280px]">
-                    <div className="space-y-1.5 sm:space-y-2">
-                      {categories.map((category, index) => (
-                        <div
-                          key={category.id}
-                          className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-move active:bg-muted"
-                        >
-                          <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                          <span className="text-lg sm:text-xl">{category.icon}</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-xs sm:text-sm truncate">{category.name}</p>
-                            <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{category.nameFrench}</p>
+                    {categoriesLoading ? (
+                      <div className="flex items-center justify-center h-full">
+                        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : (
+                      <div className="space-y-1.5 sm:space-y-2">
+                        {categories.map((category) => (
+                          <div
+                            key={category.id}
+                            className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                          >
+                            <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0 cursor-move" />
+                            <span className="text-lg sm:text-xl">{category.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-xs sm:text-sm truncate">{category.name}</p>
+                              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{category.name_french}</p>
+                            </div>
+                            <Badge variant="secondary" className="text-[10px] sm:text-xs flex-shrink-0">
+                              {menuItems.filter(m => m.categoryId === category.id).length}
+                            </Badge>
+                            <div className="flex items-center gap-1">
+                              <Button 
+                                size="icon" 
+                                variant="ghost" 
+                                className="h-7 w-7"
+                                onClick={() => openEditCategoryDialog(category)}
+                              >
+                                <Edit className="w-3 h-3 text-muted-foreground" />
+                              </Button>
+                              <Button 
+                                size="icon" 
+                                variant="ghost" 
+                                className="h-7 w-7 text-destructive"
+                                disabled={deletingCategoryId === category.id}
+                                onClick={() => handleDeleteCategory(category.id)}
+                              >
+                                {deletingCategoryId === category.id ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <Trash2 className="w-3 h-3" />
+                                )}
+                              </Button>
+                            </div>
                           </div>
-                          <Badge variant="secondary" className="text-[10px] sm:text-xs flex-shrink-0">
-                            {menuItems.filter(m => m.categoryId === category.id).length}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </ScrollArea>
                 </CardContent>
               </Card>
@@ -537,9 +680,17 @@ export default function LeadAdminDashboard() {
                   
                   <Button 
                     onClick={handleSaveDailyFocus}
+                    disabled={isSavingFocus}
                     className="w-full bg-jade hover:bg-jade/90 text-white h-10 sm:h-11 text-sm"
                   >
-                    Save Daily Focus
+                    {isSavingFocus ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Daily Focus'
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -679,6 +830,67 @@ export default function LeadAdminDashboard() {
             onAdd={addItem}
             mode="add"
           />
+
+          {/* Category Edit Dialog */}
+          <Dialog open={isAddingCategory} onOpenChange={setIsAddingCategory}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingCategory ? 'Edit Category' : 'Add New Category'}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                {!editingCategory && (
+                  <div className="space-y-2">
+                    <Label>Category ID</Label>
+                    <Input
+                      value={categoryFormData.id}
+                      onChange={(e) => setCategoryFormData({ ...categoryFormData, id: e.target.value })}
+                      placeholder="e.g., appetizers (auto-generated if empty)"
+                    />
+                    <p className="text-xs text-muted-foreground">Leave empty to auto-generate from name</p>
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <Label>Name</Label>
+                  <Input
+                    value={categoryFormData.name}
+                    onChange={(e) => setCategoryFormData({ ...categoryFormData, name: e.target.value })}
+                    placeholder="e.g., Appetizers"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>French Name</Label>
+                  <Input
+                    value={categoryFormData.name_french}
+                    onChange={(e) => setCategoryFormData({ ...categoryFormData, name_french: e.target.value })}
+                    placeholder="e.g., Entrées"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Icon (Emoji)</Label>
+                  <Input
+                    value={categoryFormData.icon}
+                    onChange={(e) => setCategoryFormData({ ...categoryFormData, icon: e.target.value })}
+                    placeholder="e.g., 🍽️"
+                    className="text-2xl"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddingCategory(false)}>
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleSaveCategory}
+                  disabled={!categoryFormData.name.trim()}
+                  className="bg-soft-clay hover:bg-soft-clay/90"
+                >
+                  {editingCategory ? 'Update' : 'Add'} Category
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </Layout>
