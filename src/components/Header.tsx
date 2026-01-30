@@ -187,9 +187,9 @@ export function Header() {
         <nav className="hidden lg:flex items-center gap-0.5">
           {navItems.map(item => {
           const isActive = location.pathname === item.path;
-          return <Link key={item.path} to={item.path} className={cn("relative px-2 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+          return <Link key={item.path} to={item.path} className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5">
-                  <item.icon className="w-3.5 h-3.5" />
+                  <item.icon className="w-4 h-4" />
                   {item.label}
                 </span>
                 {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{
@@ -203,13 +203,13 @@ export function Header() {
           {/* Test Dropdown - Redesigned with submenus */}
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-              <button className={cn("relative px-2 py-1.5 text-xs font-medium rounded-md transition-colors flex items-center gap-1.5", 
+              <button className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors flex items-center gap-1.5", 
                 [...knowledgeTestItems, ...menuTestItems, ...otherTestItems].some(item => location.pathname === item.path || location.pathname.startsWith(item.path.split('?')[0])) 
                   ? "text-burgundy" 
                   : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-                <HelpCircle className="w-3.5 h-3.5" />
+                <HelpCircle className="w-4 h-4" />
                 Test
-                <ChevronDown className="w-2.5 h-2.5" />
+                <ChevronDown className="w-3 h-3" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg">
@@ -257,9 +257,9 @@ export function Header() {
           
           {isAdmin && <>
               <div className="w-px h-5 bg-border mx-1.5" />
-              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("relative px-2 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                   <span className="flex items-center gap-1.5">
-                    <item.icon className="w-3.5 h-3.5" />
+                    <item.icon className="w-4 h-4" />
                     {item.label}
                   </span>
                   {pendingReviewCount > 0 && (
@@ -273,7 +273,7 @@ export function Header() {
 
           {/* Auth Section */}
           <div className="w-px h-5 bg-border mx-1.5" />
-          {loading ? <div className="w-7 h-7 rounded-full bg-muted animate-pulse" /> : user ? <div className="flex items-center gap-1.5">
+          {loading ? <div className="w-8 h-8 rounded-full bg-muted animate-pulse" /> : user ? <div className="flex items-center gap-2">
               {/* Role Badge - visible next to avatar */}
               <Badge variant="outline" className={cn("hidden xl:flex items-center gap-1 text-[10px] px-1.5 py-0.5", roleDisplay.color)}>
                 <roleDisplay.icon className="w-2.5 h-2.5" />
@@ -281,9 +281,9 @@ export function Header() {
               </Badge>
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0">
-                  <Avatar className="h-7 w-7">
-                    <AvatarFallback className="bg-copper/20 text-copper text-[10px]">
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-copper/20 text-copper text-[11px]">
                       {getInitials(fullName, user.email || '')}
                     </AvatarFallback>
                   </Avatar>
@@ -314,7 +314,7 @@ export function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            </div> : <Button variant="ghost" size="sm" className="text-xs px-2 h-7" asChild>
+            </div> : <Button variant="ghost" size="sm" className="text-[13px] px-3 h-8" asChild>
               <Link to="/auth">
                 Sign In
               </Link>
