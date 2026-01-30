@@ -178,47 +178,49 @@ export function FohTestQuestionManager() {
 
   return (
     <Card className="bg-card shadow-card h-full overflow-hidden">
-      <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
-        <div className="flex items-start gap-3 mb-2">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-burgundy/10 flex items-center justify-center flex-shrink-0">
-            <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5 text-burgundy" />
+      <CardHeader className="pb-4 px-3 sm:px-6">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-burgundy/10 flex items-center justify-center flex-shrink-0">
+              <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5 text-burgundy" />
+            </div>
+            <div className="min-w-0">
+              <CardTitle className="font-serif text-lg sm:text-xl mb-0.5">FoH Test Questions</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
+                {isInitialized ? (
+                  <span className="text-jade">✓ {questions.length} questions in database</span>
+                ) : (
+                  'Click "Sync" to initialize tests'
+                )}
+              </CardDescription>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <CardTitle className="font-serif text-lg sm:text-xl mb-0.5">FoH Test Questions</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              {isInitialized ? (
-                <span className="text-jade">✓ {questions.length} questions in database</span>
-              ) : (
-                'Click "Sync" to initialize tests'
-              )}
-            </CardDescription>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {!isInitialized && (
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {!isInitialized && (
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => handleInitialize()}
+                disabled={isLoading || isInitializing}
+                className="text-xs h-8 px-3"
+              >
+                {isInitializing ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                ) : (
+                  <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                )}
+                Sync
+              </Button>
+            )}
             <Button 
               size="sm" 
-              variant="outline"
-              onClick={() => handleInitialize()}
-              disabled={isLoading || isInitializing}
-              className="text-xs h-8 px-3"
+              className="bg-burgundy hover:bg-burgundy/90 text-white text-xs h-8 px-3"
+              onClick={openAddDialog}
             >
-              {isInitializing ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-              ) : (
-                <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-              )}
-              Sync All
+              <Plus className="w-3.5 h-3.5 mr-1.5" />
+              Add
             </Button>
-          )}
-          <Button 
-            size="sm" 
-            className="bg-burgundy hover:bg-burgundy/90 text-white text-xs h-8 px-3"
-            onClick={openAddDialog}
-          >
-            <Plus className="w-3.5 h-3.5 mr-1.5" />
-            Add Question
-          </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="px-3 sm:px-6 pb-4 overflow-hidden">
