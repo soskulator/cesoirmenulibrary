@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -24,11 +24,14 @@ import {
   Shield,
   Crown,
   Activity,
-  TrendingUp
+  TrendingUp,
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
 import { menuItems, categories } from '@/data/menuData';
 import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
 import { QuizPerformanceDashboard } from '@/components/admin/QuizPerformanceDashboard';
+import { useMenuItems } from '@/hooks/useMenuItems';
 
 const adminSections = [
   {
@@ -110,6 +113,27 @@ export default function AdminPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const stats = getMenuStats();
+  const { fetchItems, isLoading: isMenuLoading } = useMenuItems();
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleSyncMenuData = async () => {
+    setIsSyncing(true);
+    try {
+      await fetchItems();
+      toast({
+        title: 'Menu Data Synced',
+        description: 'All training materials now use the latest menu data.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Sync Failed',
+        description: 'Could not refresh menu data. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -261,6 +285,20 @@ export default function AdminPage() {
                     <Image className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                     Assets
                   </Link>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-jade/30 hover:bg-jade/10 hover:text-jade text-xs sm:text-sm"
+                  onClick={handleSyncMenuData}
+                  disabled={isSyncing || isMenuLoading}
+                >
+                  {isSyncing ? (
+                    <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                  )}
+                  Sync Menu
                 </Button>
               </div>
             </CardContent>
