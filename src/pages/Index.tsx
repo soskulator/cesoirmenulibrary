@@ -111,7 +111,7 @@ export default function Index() {
           duration: 1,
           delay: 0.3
         }} className="mb-6">
-            <img src={logoImage} alt="Ce Soir" className="h-28 md:h-36 lg:h-44 mx-auto drop-shadow-lg" width={530} height={176} decoding="async" />
+            <img src={logoImage} alt="Ce Soir" className="h-32 md:h-36 lg:h-44 w-auto mx-auto drop-shadow-lg" width={530} height={176} decoding="async" />
           </motion.div>
           
           <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-semibold tracking-wide mb-8" initial={{
