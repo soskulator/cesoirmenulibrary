@@ -11,13 +11,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AllergenList, AllergenBadge } from '@/components/AllergenBadge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
-  menuItems, 
   allergens, 
   categories,
   AllergenType, 
   getAllergenById,
-  getCategoryById 
+  getCategoryById,
+  MenuItem
 } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { 
   AlertTriangle, 
@@ -31,19 +32,12 @@ import {
   XCircle,
   Sparkles,
   GraduationCap,
-  ClipboardCheck
+  ClipboardCheck,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-
-// ============ ALLERGY CHECK FUNCTIONALITY ============
-
-const getAllergenRelevantItems = () => {
-  return menuItems.filter(item => 
-    item.isPublished && 
-    item.categoryId !== 'spirits'
-  );
-};
+import { Skeleton } from '@/components/ui/skeleton';
 
 // ============ ALLERGY TRAINING FUNCTIONALITY ============
 
@@ -102,26 +96,32 @@ const parseIngredients = (ingredientsText: string, dishAllergens: AllergenType[]
   });
 };
 
-const foodCategories = ['appetizers', 'entrees', 'desserts', 'sides', 'specials'];
-const trainingDishes: TrainingDish[] = menuItems
-  .filter(item => foodCategories.includes(item.categoryId) && item.isPublished)
-  .map(item => ({
-    id: item.id,
-    name: item.name,
-    image: getDishImage(item.id) || '/placeholder.svg',
-    description: item.shortDescription,
-    categoryId: item.categoryId,
-    ingredients: parseIngredients(item.ingredientsText, item.allergens)
-  }));
+const foodCategories = ['appetizers', 'entrees', 'desserts', 'sides', 'specials', 'crudo', 'fruits-de-mer', 'pasta'];
 
-// Group dishes by category
-const dishesByCategory = trainingDishes.reduce((acc, dish) => {
-  if (!acc[dish.categoryId]) {
-    acc[dish.categoryId] = [];
-  }
-  acc[dish.categoryId].push(dish);
-  return acc;
-}, {} as Record<string, TrainingDish[]>);
+// Helper to create training dishes from menu items
+const createTrainingDishes = (menuItems: MenuItem[]): TrainingDish[] => {
+  return menuItems
+    .filter(item => foodCategories.includes(item.categoryId) && item.isPublished)
+    .map(item => ({
+      id: item.id,
+      name: item.name,
+      image: getDishImage(item.id) || '/placeholder.svg',
+      description: item.shortDescription,
+      categoryId: item.categoryId,
+      ingredients: parseIngredients(item.ingredientsText, item.allergens)
+    }));
+};
+
+// Helper to group dishes by category
+const groupDishesByCategory = (dishes: TrainingDish[]): Record<string, TrainingDish[]> => {
+  return dishes.reduce((acc, dish) => {
+    if (!acc[dish.categoryId]) {
+      acc[dish.categoryId] = [];
+    }
+    acc[dish.categoryId].push(dish);
+    return acc;
+  }, {} as Record<string, TrainingDish[]>);
+};
 
 // Allergen Icon Component
 const AllergenIcon = ({ allergenId, size = 'md' }: { allergenId: AllergenType; size?: 'sm' | 'md' }) => {
@@ -191,6 +191,7 @@ export default function AllergyPage() {
 // ============ ALLERGY CHECK TAB ============
 
 function AllergyCheckContent() {
+  const { items: menuItems, isLoading } = useMenuItems();
   const [selectedAllergens, setSelectedAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categorySearchQuery, setCategorySearchQuery] = useState('');
@@ -204,7 +205,13 @@ function AllergyCheckContent() {
     );
   };
 
-  const allergenRelevantItems = useMemo(() => getAllergenRelevantItems(), []);
+  // Get allergen-relevant items from database menu items
+  const allergenRelevantItems = useMemo(() => {
+    return menuItems.filter(item => 
+      item.isPublished && 
+      item.categoryId !== 'spirits'
+    );
+  }, [menuItems]);
 
   const toggleAllergen = (id: AllergenType) => {
     setSelectedAllergens(prev =>
@@ -240,6 +247,15 @@ function AllergyCheckContent() {
   const handlePrint = () => {
     window.print();
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-copper" />
+        <span className="ml-3 text-muted-foreground">Loading menu items...</span>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -484,14 +500,21 @@ function AllergyCheckContent() {
 // ============ ALLERGY TRAINING TAB ============
 
 function AllergyTrainingContent() {
+  const { items: menuItems, isLoading } = useMenuItems();
   const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['appetizers']);
   const [omittedIngredients, setOmittedIngredients] = useState<Set<string>>(new Set());
 
+  // Create training dishes from database menu items
+  const trainingDishes = useMemo(() => createTrainingDishes(menuItems), [menuItems]);
+  
+  // Group dishes by category
+  const dishesByCategory = useMemo(() => groupDishesByCategory(trainingDishes), [trainingDishes]);
+
   const selectedDish = useMemo(() => 
     trainingDishes.find(d => d.id === selectedDishId) || null, 
-    [selectedDishId]
+    [trainingDishes, selectedDishId]
   );
 
   const toggleCategory = (categoryId: string) => {
@@ -520,7 +543,7 @@ function AllergyTrainingContent() {
     });
     
     return filtered;
-  }, [searchQuery]);
+  }, [searchQuery, dishesByCategory]);
 
   // Calculate current allergens based on active ingredients
   const currentAllergens = useMemo(() => {
@@ -584,6 +607,15 @@ function AllergyTrainingContent() {
       });
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-copper" />
+        <span className="ml-3 text-muted-foreground">Loading menu items...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="grid lg:grid-cols-[350px_1fr] gap-8">
