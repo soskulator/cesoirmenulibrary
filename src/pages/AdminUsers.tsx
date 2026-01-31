@@ -214,8 +214,9 @@ export default function AdminUsersPage() {
         return;
       }
 
-      // Get the invite link
-      const inviteLink = `${window.location.origin}/auth?token=${invitation.token}`;
+      // Get the invite link - always use published URL to avoid preview domain issues
+      const publishedUrl = 'https://cesoirmenulibrary.lovable.app';
+      const inviteLink = `${publishedUrl}/auth?token=${invitation.token}`;
       
       // Get inviter's name for the email
       const { data: inviterProfile } = await supabase
@@ -293,7 +294,9 @@ export default function AdminUsersPage() {
     setResendingInviteId(invite.id);
     
     try {
-      const inviteLink = `${window.location.origin}/auth?token=${invite.token}`;
+      // Always use published URL for invite links
+      const publishedUrl = 'https://cesoirmenulibrary.lovable.app';
+      const inviteLink = `${publishedUrl}/auth?token=${invite.token}`;
       
       // Get inviter's name for the email
       const { data: inviterProfile } = await supabase
@@ -377,7 +380,9 @@ export default function AdminUsersPage() {
   };
 
   const getInviteLink = (token: string) => {
-    return `${window.location.origin}/auth?token=${token}`;
+    // Always use published URL for invite links
+    const publishedUrl = 'https://cesoirmenulibrary.lovable.app';
+    return `${publishedUrl}/auth?token=${token}`;
   };
 
   const copyInviteLink = (token: string) => {
