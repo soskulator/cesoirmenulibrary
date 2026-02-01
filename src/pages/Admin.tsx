@@ -10,10 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Settings, 
   Database, 
-  Upload, 
   Users, 
-  Calendar,
-  FileText,
   Image,
   Lock,
   ArrowRight,
@@ -35,33 +32,9 @@ import { useMenuItems } from '@/hooks/useMenuItems';
 
 const adminSections = [
   {
-    title: 'Menu Items',
-    description: 'Add, edit, or remove menu items',
-    icon: FileText,
-    path: '/admin/dashboard',
-    badge: null,
-    disabled: false,
-  },
-  {
-    title: 'Categories',
-    description: 'Manage menu categories',
+    title: 'Dashboard',
+    description: 'Menu items, categories, CSV import & daily focus',
     icon: Database,
-    path: '/admin/dashboard',
-    badge: null,
-    disabled: false,
-  },
-  {
-    title: 'CSV Import',
-    description: 'Bulk import menu items from CSV',
-    icon: Upload,
-    path: '/admin/dashboard',
-    badge: null,
-    disabled: false,
-  },
-  {
-    title: 'Daily Focus',
-    description: 'Schedule featured items for each day',
-    icon: Calendar,
     path: '/admin/dashboard',
     badge: null,
     disabled: false,
