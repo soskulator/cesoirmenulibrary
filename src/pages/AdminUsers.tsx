@@ -109,6 +109,7 @@ export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [employeeToRemove, setEmployeeToRemove] = useState<UserWithRole | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
+  const [removeType, setRemoveType] = useState<'data' | 'complete'>('data');
 
   const totalMenuItems = menuItems.filter(i => i.isPublished).length;
 
@@ -401,36 +402,55 @@ export default function AdminUsersPage() {
 
     setIsRemoving(true);
     try {
-      // Delete quiz scores for this user
-      await supabase
-        .from('quiz_scores')
-        .delete()
-        .eq('user_id', employeeToRemove.id);
+      if (removeType === 'complete') {
+        // Complete removal via edge function
+        const { data, error } = await supabase.functions.invoke('delete-user', {
+          body: { userId: employeeToRemove.id },
+        });
 
-      // Delete study progress for this user
-      await supabase
-        .from('study_progress')
-        .delete()
-        .eq('user_id', employeeToRemove.id);
+        if (error) {
+          throw new Error(error.message || 'Failed to delete user');
+        }
 
-      // Delete staff activity log for this user
-      await supabase
-        .from('staff_activity_log')
-        .delete()
-        .eq('user_id', employeeToRemove.id);
+        if (data?.error) {
+          throw new Error(data.error);
+        }
 
-      toast({
-        title: 'Employee Data Removed',
-        description: `All training data for ${employeeToRemove.full_name || employeeToRemove.email} has been removed.`,
-      });
+        toast({
+          title: 'Employee Completely Removed',
+          description: `${employeeToRemove.full_name || employeeToRemove.email} has been permanently removed from the system.`,
+        });
+      } else {
+        // Data-only removal
+        await supabase
+          .from('quiz_scores')
+          .delete()
+          .eq('user_id', employeeToRemove.id);
+
+        await supabase
+          .from('study_progress')
+          .delete()
+          .eq('user_id', employeeToRemove.id);
+
+        await supabase
+          .from('staff_activity_log')
+          .delete()
+          .eq('user_id', employeeToRemove.id);
+
+        toast({
+          title: 'Employee Data Removed',
+          description: `All training data for ${employeeToRemove.full_name || employeeToRemove.email} has been removed.`,
+        });
+      }
 
       setEmployeeToRemove(null);
+      setRemoveType('data');
       fetchData();
     } catch (error: any) {
       console.error('Error removing employee:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to remove employee data.',
+        description: error.message || 'Failed to remove employee.',
         variant: 'destructive',
       });
     } finally {
@@ -817,15 +837,77 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Remove Employee Confirmation Dialog */}
-      <AlertDialog open={!!employeeToRemove} onOpenChange={() => setEmployeeToRemove(null)}>
-        <AlertDialogContent>
+      <AlertDialog open={!!employeeToRemove} onOpenChange={(open) => {
+        if (!open) {
+          setEmployeeToRemove(null);
+          setRemoveType('data');
+        }
+      }}>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove Employee Data?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete all quiz scores, study progress, and activity logs for{' '}
-              <strong>{employeeToRemove?.full_name || employeeToRemove?.email}</strong>.
-              <br /><br />
-              This action cannot be undone. The user account itself will remain.
+            <AlertDialogTitle>Remove Employee</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p>
+                  Choose how to remove <strong>{employeeToRemove?.full_name || employeeToRemove?.email}</strong>:
+                </p>
+                
+                <div className="space-y-3">
+                  <label 
+                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                      removeType === 'data' 
+                        ? 'border-copper bg-copper/5' 
+                        : 'border-border hover:border-muted-foreground/50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="removeType"
+                      value="data"
+                      checked={removeType === 'data'}
+                      onChange={() => setRemoveType('data')}
+                      className="mt-1"
+                    />
+                    <div>
+                      <p className="font-medium text-foreground">Remove Training Data Only</p>
+                      <p className="text-sm text-muted-foreground">
+                        Deletes quiz scores, study progress, and activity logs. User can still log in.
+                      </p>
+                    </div>
+                  </label>
+                  
+                  <label 
+                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                      removeType === 'complete' 
+                        ? 'border-destructive bg-destructive/5' 
+                        : 'border-border hover:border-muted-foreground/50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="removeType"
+                      value="complete"
+                      checked={removeType === 'complete'}
+                      onChange={() => setRemoveType('complete')}
+                      className="mt-1"
+                    />
+                    <div>
+                      <p className="font-medium text-foreground">Completely Remove from System</p>
+                      <p className="text-sm text-muted-foreground">
+                        Permanently deletes the user account, profile, roles, and all associated data.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {removeType === 'complete' && (
+                  <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <p className="text-sm text-destructive font-medium">
+                      ⚠️ This action is permanent and cannot be undone. The employee will need a new invitation to regain access.
+                    </p>
+                  </div>
+                )}
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -833,15 +915,20 @@ export default function AdminUsersPage() {
             <AlertDialogAction 
               onClick={handleRemoveEmployee}
               disabled={isRemoving}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className={removeType === 'complete' 
+                ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                : 'bg-copper text-charcoal hover:bg-copper-light'
+              }
             >
               {isRemoving ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Removing...
                 </>
+              ) : removeType === 'complete' ? (
+                'Permanently Delete'
               ) : (
-                'Remove Data'
+                'Remove Data Only'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
