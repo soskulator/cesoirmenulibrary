@@ -48,8 +48,20 @@ import {
   CheckCircle,
   XCircle,
   BarChart3,
-  RefreshCw
+  RefreshCw,
+  Search,
+  Loader2
 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Link } from 'react-router-dom';
 
 interface UserWithRole {
@@ -92,6 +104,11 @@ export default function AdminUsersPage() {
   const [isSendingInvite, setIsSendingInvite] = useState(false);
   const [resendingInviteId, setResendingInviteId] = useState<string | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  
+  // Search/filter and remove employee
+  const [searchQuery, setSearchQuery] = useState('');
+  const [employeeToRemove, setEmployeeToRemove] = useState<UserWithRole | null>(null);
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const totalMenuItems = menuItems.filter(i => i.isPublished).length;
 
@@ -379,6 +396,57 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleRemoveEmployee = async () => {
+    if (!employeeToRemove) return;
+
+    setIsRemoving(true);
+    try {
+      // Delete quiz scores for this user
+      await supabase
+        .from('quiz_scores')
+        .delete()
+        .eq('user_id', employeeToRemove.id);
+
+      // Delete study progress for this user
+      await supabase
+        .from('study_progress')
+        .delete()
+        .eq('user_id', employeeToRemove.id);
+
+      // Delete staff activity log for this user
+      await supabase
+        .from('staff_activity_log')
+        .delete()
+        .eq('user_id', employeeToRemove.id);
+
+      toast({
+        title: 'Employee Data Removed',
+        description: `All training data for ${employeeToRemove.full_name || employeeToRemove.email} has been removed.`,
+      });
+
+      setEmployeeToRemove(null);
+      fetchData();
+    } catch (error: any) {
+      console.error('Error removing employee:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to remove employee data.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
+  // Filter users based on search query
+  const filteredUsers = users.filter(u => {
+    const query = searchQuery.toLowerCase();
+    return (
+      u.email.toLowerCase().includes(query) ||
+      (u.full_name && u.full_name.toLowerCase().includes(query))
+    );
+  });
+
   const getInviteLink = (token: string) => {
     // Always use published URL for invite links
     const publishedUrl = 'https://cesoirmenulibrary.lovable.app';
@@ -560,18 +628,32 @@ export default function AdminUsersPage() {
         {/* Team Members */}
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-copper" />
-              Team Progress
-            </CardTitle>
-            <CardDescription>
-              Track study progress for each team member
-            </CardDescription>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-copper" />
+                  Team Progress
+                </CardTitle>
+                <CardDescription>
+                  Track study progress for each team member
+                </CardDescription>
+              </div>
+              {/* Search input */}
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search employees..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="px-3 sm:px-6">
             {/* Mobile Card Layout */}
             <div className="sm:hidden space-y-3">
-              {users.map((u) => {
+              {filteredUsers.map((u) => {
                 const progress = studyProgress[u.id];
                 const progressPercent = progress 
                   ? Math.round((progress.known_count / totalMenuItems) * 100)
@@ -589,24 +671,36 @@ export default function AdminUsersPage() {
                         </p>
                         <p className="text-xs text-muted-foreground truncate">{u.email}</p>
                       </div>
-                      {isLeadAdmin && u.id !== user?.id ? (
-                        <Select 
-                          value={u.role || 'none'} 
-                          onValueChange={(v) => updateUserRole(u.id, v === 'none' ? 'remove' : v as AppRole)}
-                        >
-                          <SelectTrigger className="w-[100px] h-7 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">No Role</SelectItem>
-                            <SelectItem value="employee">Employee</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                            <SelectItem value="lead_admin">Lead Admin</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        getRoleBadge(u.role)
-                      )}
+                      <div className="flex items-center gap-1">
+                        {isLeadAdmin && u.id !== user?.id ? (
+                          <>
+                            <Select 
+                              value={u.role || 'none'} 
+                              onValueChange={(v) => updateUserRole(u.id, v === 'none' ? 'remove' : v as AppRole)}
+                            >
+                              <SelectTrigger className="w-[100px] h-7 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">No Role</SelectItem>
+                                <SelectItem value="employee">Employee</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                                <SelectItem value="lead_admin">Lead Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => setEmployeeToRemove(u)}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </>
+                        ) : (
+                          getRoleBadge(u.role)
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Progress value={progressPercent} className="flex-1 h-2" />
@@ -617,6 +711,11 @@ export default function AdminUsersPage() {
                   </div>
                 );
               })}
+              {filteredUsers.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  {searchQuery ? 'No employees match your search.' : 'No employees found.'}
+                </p>
+              )}
             </div>
 
             {/* Desktop Table Layout */}
@@ -629,10 +728,11 @@ export default function AdminUsersPage() {
                     <TableHead>Role</TableHead>
                     <TableHead>Study Progress</TableHead>
                     <TableHead className="text-right">Mastered</TableHead>
+                    {isLeadAdmin && <TableHead className="w-[60px]"></TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((u) => {
+                  {filteredUsers.map((u) => {
                     const progress = studyProgress[u.id];
                     const progressPercent = progress 
                       ? Math.round((progress.known_count / totalMenuItems) * 100)
@@ -685,15 +785,68 @@ export default function AdminUsersPage() {
                             /{totalMenuItems}
                           </span>
                         </TableCell>
+                        {isLeadAdmin && (
+                          <TableCell>
+                            {u.id !== user?.id && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                onClick={() => setEmployeeToRemove(u)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })}
+                  {filteredUsers.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={isLeadAdmin ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                        {searchQuery ? 'No employees match your search.' : 'No employees found.'}
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Remove Employee Confirmation Dialog */}
+      <AlertDialog open={!!employeeToRemove} onOpenChange={() => setEmployeeToRemove(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Employee Data?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete all quiz scores, study progress, and activity logs for{' '}
+              <strong>{employeeToRemove?.full_name || employeeToRemove?.email}</strong>.
+              <br /><br />
+              This action cannot be undone. The user account itself will remain.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isRemoving}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleRemoveEmployee}
+              disabled={isRemoving}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isRemoving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Removing...
+                </>
+              ) : (
+                'Remove Data'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Layout>
   );
 }
