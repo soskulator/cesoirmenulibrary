@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SessionTracker } from "@/components/SessionTracker";
 import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import WineList from "./pages/WineList";
@@ -40,6 +41,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <SessionTracker />
             <ScrollToTop />
             <Routes>
               {/* Public routes */}
