@@ -12,6 +12,7 @@ import { getCategoryLabel, getCategoryColor, FohTestQuestion, TestType, getTestT
 import { useQuizScores } from '@/hooks/useQuizScores';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 import { 
   Check, 
   X, 
@@ -41,6 +42,7 @@ interface AnsweredQuestion {
 
 export default function FohTestPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const urlTestType = searchParams.get('type') as TestType | null;
   const [selectedTestType, setSelectedTestType] = useState<TestType | null>(urlTestType);
   const [testStarted, setTestStarted] = useState(false);
@@ -57,7 +59,14 @@ export default function FohTestPage() {
   
   const { saveQuizScore } = useQuizScores();
   const { getTestQuestions } = useFohTestQuestions();
-  const { user } = useAuth();
+  const { user, isServerAssistant, hasBeverageAccess } = useAuth();
+
+  // Redirect Server Assistants trying to access the service_staff test
+  useEffect(() => {
+    if (isServerAssistant && urlTestType === 'service_staff') {
+      navigate('/foh-test?type=server_assistant', { replace: true });
+    }
+  }, [isServerAssistant, urlTestType, navigate]);
 
   // Get questions for the selected test type
   const allQuestions = useMemo(() => {
@@ -496,31 +505,33 @@ export default function FohTestPage() {
           </div>
 
           <div className="grid gap-4">
-            {/* Service Staff Test */}
-            <Card 
-              className="cursor-pointer hover:border-burgundy transition-colors"
-              onClick={() => setSelectedTestType('service_staff')}
-            >
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-burgundy/10 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-burgundy" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="font-semibold text-lg mb-1">Service Staff Test</h2>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Complete Service & Food Knowledge Test including beverage knowledge for servers and bartenders
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="text-xs">69 Questions</Badge>
-                      <Badge variant="outline" className="text-xs">~45 min</Badge>
-                      <Badge className="bg-burgundy/10 text-burgundy text-xs">Full Menu & Beverage</Badge>
+            {/* Service Staff Test - Only show if user has beverage access */}
+            {hasBeverageAccess && (
+              <Card 
+                className="cursor-pointer hover:border-burgundy transition-colors"
+                onClick={() => setSelectedTestType('service_staff')}
+              >
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-burgundy/10 flex items-center justify-center flex-shrink-0">
+                      <Users className="w-6 h-6 text-burgundy" />
                     </div>
+                    <div className="flex-1">
+                      <h2 className="font-semibold text-lg mb-1">Service Staff Test</h2>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Complete Service & Food Knowledge Test including beverage knowledge for servers and bartenders
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">69 Questions</Badge>
+                        <Badge variant="outline" className="text-xs">~45 min</Badge>
+                        <Badge className="bg-burgundy/10 text-burgundy text-xs">Full Menu & Beverage</Badge>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                   </div>
-                  <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Server Assistant Test */}
             <Card 

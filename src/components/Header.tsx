@@ -85,6 +85,9 @@ const adminItems = [{
 const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: boolean) => {
   if (isLeadAdmin) return { label: 'Lead Admin', icon: ShieldCheck, color: 'text-gold' };
   if (isAdmin) return { label: 'Admin', icon: Shield, color: 'text-copper' };
+  if (role === 'server') return { label: 'Server', icon: User, color: 'text-muted-foreground' };
+  if (role === 'bartender') return { label: 'Bartender', icon: User, color: 'text-muted-foreground' };
+  if (role === 'server_assistant') return { label: 'Server Assistant', icon: User, color: 'text-muted-foreground' };
   if (role === 'employee') return { label: 'Staff', icon: User, color: 'text-muted-foreground' };
   return { label: 'Staff', icon: User, color: 'text-muted-foreground' };
 };
@@ -98,11 +101,22 @@ export function Header() {
     user,
     isAdmin,
     isLeadAdmin,
+    isServerAssistant,
+    hasBeverageAccess,
     role,
     fullName,
     signOut,
     loading
   } = useAuth();
+  
+  // Filter nav items based on role
+  const filteredNavItems = navItems.filter(item => {
+    // Server Assistants cannot see Wine, Spirits, Cocktails
+    if (isServerAssistant && ['wine-list', 'spirits', 'cocktails'].some(path => item.path.includes(path))) {
+      return false;
+    }
+    return true;
+  });
   
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -185,7 +199,7 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-0.5">
-          {navItems.map(item => {
+          {filteredNavItems.map(item => {
           const isActive = location.pathname === item.path;
           return <Link key={item.path} to={item.path} className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5">
@@ -215,24 +229,33 @@ export function Header() {
             <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg">
               {/* Knowledge Test */}
               <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link to="/foh-test?type=service_staff" className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
-                  <UserCheck className="w-4 h-4" />
-                  Bartender/Server Test
-                </Link>
-              </DropdownMenuItem>
+              {/* Only show Bartender/Server test if user has beverage access (not SA) */}
+              {hasBeverageAccess && (
+                <DropdownMenuItem asChild>
+                  <Link to="/foh-test?type=service_staff" className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
+                    <UserCheck className="w-4 h-4" />
+                    Bartender/Server Test
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem asChild>
                 <Link to="/foh-test?type=server_assistant" className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
                   <Users className="w-4 h-4" />
-                  Server Assistant
+                  Server Assistant Test
                 </Link>
               </DropdownMenuItem>
               
               <DropdownMenuSeparator />
               
-              {/* Menu Tests */}
+              {/* Menu Tests - filter out beverage tests for SAs */}
               <DropdownMenuLabel className="text-xs text-muted-foreground">Menu Tests</DropdownMenuLabel>
-              {menuTestItems.map(item => (
+              {menuTestItems.filter(item => {
+                // Server Assistants cannot see Wine or Spirits tests
+                if (isServerAssistant && (item.path.includes('wine') || item.path.includes('spirits'))) {
+                  return false;
+                }
+                return true;
+              }).map(item => (
                 <DropdownMenuItem key={item.path} asChild>
                   <Link to={item.path} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
@@ -383,7 +406,7 @@ export function Header() {
         animate={{ height: mobileMenuOpen ? 'auto' : 0 }}
         className="md:hidden overflow-hidden border-t border-border bg-background relative z-50">
         <nav className="container py-4 flex flex-col gap-1">
-          {navItems.map(item => {
+          {filteredNavItems.map(item => {
           const isActive = location.pathname === item.path;
           return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-3 rounded-lg transition-colors", isActive ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <item.icon className="w-5 h-5" />
@@ -409,24 +432,33 @@ export function Header() {
             <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg">
               {/* Knowledge Test */}
               <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link to="/foh-test?type=service_staff" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
-                  <UserCheck className="w-4 h-4" />
-                  Bartender/Server Test
-                </Link>
-              </DropdownMenuItem>
+              {/* Only show Bartender/Server test if user has beverage access */}
+              {hasBeverageAccess && (
+                <DropdownMenuItem asChild>
+                  <Link to="/foh-test?type=service_staff" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
+                    <UserCheck className="w-4 h-4" />
+                    Bartender/Server Test
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem asChild>
                 <Link to="/foh-test?type=server_assistant" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
                   <Users className="w-4 h-4" />
-                  Server Assistant
+                  Server Assistant Test
                 </Link>
               </DropdownMenuItem>
               
               <DropdownMenuSeparator />
               
-              {/* Menu Tests */}
+              {/* Menu Tests - filter out beverage tests for SAs */}
               <DropdownMenuLabel className="text-xs text-muted-foreground">Menu Tests</DropdownMenuLabel>
-              {menuTestItems.map(item => (
+              {menuTestItems.filter(item => {
+                // Server Assistants cannot see Wine or Spirits tests
+                if (isServerAssistant && (item.path.includes('wine') || item.path.includes('spirits'))) {
+                  return false;
+                }
+                return true;
+              }).map(item => (
                 <DropdownMenuItem key={item.path} asChild>
                   <Link to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
                     <item.icon className="w-4 h-4" />
