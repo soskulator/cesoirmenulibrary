@@ -100,7 +100,7 @@ export default function AdminUsersPage() {
   
   // Invite form
   const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState<AppRole>('employee');
+  const [inviteRole, setInviteRole] = useState<AppRole>('server');
   const [isSendingInvite, setIsSendingInvite] = useState(false);
   const [resendingInviteId, setResendingInviteId] = useState<string | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
@@ -487,8 +487,14 @@ export default function AdminUsersPage() {
         return <Badge className="bg-burgundy text-cream"><ShieldCheck className="w-3 h-3 mr-1" />Lead Admin</Badge>;
       case 'admin':
         return <Badge className="bg-copper text-charcoal"><Shield className="w-3 h-3 mr-1" />Admin</Badge>;
+      case 'server':
+        return <Badge variant="secondary">Server</Badge>;
+      case 'bartender':
+        return <Badge variant="secondary">Bartender</Badge>;
+      case 'server_assistant':
+        return <Badge variant="outline">Server Assistant</Badge>;
       case 'employee':
-        return <Badge variant="secondary">Employee</Badge>;
+        return <Badge variant="secondary">Staff</Badge>;
       default:
         return <Badge variant="outline">No Role</Badge>;
     }
@@ -563,11 +569,21 @@ export default function AdminUsersPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="employee">Employee</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="server">Server (Full Access)</SelectItem>
+                      <SelectItem value="bartender">Bartender (Full Access)</SelectItem>
+                      <SelectItem value="server_assistant">Server Assistant (Limited)</SelectItem>
+                      {isLeadAdmin && <SelectItem value="admin">Admin</SelectItem>}
                       {isLeadAdmin && <SelectItem value="lead_admin">Lead Admin</SelectItem>}
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-muted-foreground">
+                    {inviteRole === 'server' && 'Full access to all training materials and tests'}
+                    {inviteRole === 'bartender' && 'Full access to all training materials and tests'}
+                    {inviteRole === 'server_assistant' && 'Food training only - no wine/spirits/cocktails access'}
+                    {inviteRole === 'admin' && 'Can manage menu and review tests, no user management'}
+                    {inviteRole === 'lead_admin' && 'Full access including user management and analytics'}
+                    {inviteRole === 'employee' && 'Full access to all training materials'}
+                  </p>
                 </div>
               </div>
               <DialogFooter>
@@ -703,7 +719,9 @@ export default function AdminUsersPage() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="none">No Role</SelectItem>
-                                <SelectItem value="employee">Employee</SelectItem>
+                                <SelectItem value="server">Server</SelectItem>
+                                <SelectItem value="bartender">Bartender</SelectItem>
+                                <SelectItem value="server_assistant">Server Assistant</SelectItem>
                                 <SelectItem value="admin">Admin</SelectItem>
                                 <SelectItem value="lead_admin">Lead Admin</SelectItem>
                               </SelectContent>
@@ -780,7 +798,9 @@ export default function AdminUsersPage() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="none">No Role</SelectItem>
-                                <SelectItem value="employee">Employee</SelectItem>
+                                <SelectItem value="server">Server</SelectItem>
+                                <SelectItem value="bartender">Bartender</SelectItem>
+                                <SelectItem value="server_assistant">Server Assistant</SelectItem>
                                 <SelectItem value="admin">Admin</SelectItem>
                                 <SelectItem value="lead_admin">Lead Admin</SelectItem>
                               </SelectContent>

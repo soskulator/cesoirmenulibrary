@@ -52,14 +52,14 @@ const App = () => (
               <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
               <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
               <Route path="/categories/:categoryId" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-              <Route path="/wine-list" element={<ProtectedRoute><WineList /></ProtectedRoute>} />
-              <Route path="/spirits" element={<ProtectedRoute><Spirits /></ProtectedRoute>} />
-              <Route path="/cocktails" element={<ProtectedRoute><Cocktails /></ProtectedRoute>} />
-              <Route path="/cocktail-flashcards" element={<ProtectedRoute><CocktailFlashcards /></ProtectedRoute>} />
+              <Route path="/wine-list" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><WineList /></ProtectedRoute>} />
+              <Route path="/spirits" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><Spirits /></ProtectedRoute>} />
+              <Route path="/cocktails" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><Cocktails /></ProtectedRoute>} />
+              <Route path="/cocktail-flashcards" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><CocktailFlashcards /></ProtectedRoute>} />
               <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
               <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
-              <Route path="/wine-quiz" element={<ProtectedRoute><WineQuiz /></ProtectedRoute>} />
-              <Route path="/spirits-quiz" element={<ProtectedRoute><SpiritsQuiz /></ProtectedRoute>} />
+              <Route path="/wine-quiz" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><WineQuiz /></ProtectedRoute>} />
+              <Route path="/spirits-quiz" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><SpiritsQuiz /></ProtectedRoute>} />
               <Route path="/allergy-quiz" element={<ProtectedRoute><AllergyQuiz /></ProtectedRoute>} />
               <Route path="/food-quiz" element={<ProtectedRoute><FoodQuiz /></ProtectedRoute>} />
               <Route path="/foh-test" element={<ProtectedRoute><FohTest /></ProtectedRoute>} />

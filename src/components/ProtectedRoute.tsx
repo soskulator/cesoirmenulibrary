@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
-  const { user, loading, role, isAdmin, isLeadAdmin } = useAuth();
+  const { user, loading, role, isAdmin, isLeadAdmin, hasBeverageAccess } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -33,7 +33,12 @@ export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) 
     const hasRequiredRole = requiredRoles.some((r) => {
       if (r === 'lead_admin') return isLeadAdmin;
       if (r === 'admin') return isAdmin; // isAdmin includes lead_admin
-      if (r === 'employee') return true; // All authenticated users are at least employees
+      // For beverage-related roles, check if user has any of these roles
+      if (['server', 'bartender', 'employee'].includes(r)) {
+        // If user is server_assistant, they don't have access to beverage pages
+        return hasBeverageAccess;
+      }
+      if (r === 'server_assistant') return true; // All authenticated users can access SA content
       return role === r;
     });
 

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
-export type AppRole = 'lead_admin' | 'admin' | 'employee';
+export type AppRole = 'lead_admin' | 'admin' | 'employee' | 'server' | 'bartender' | 'server_assistant';
 
 interface AuthContextType {
   user: User | null;
@@ -11,6 +11,8 @@ interface AuthContextType {
   role: AppRole | null;
   isAdmin: boolean;
   isLeadAdmin: boolean;
+  isServerAssistant: boolean;
+  hasBeverageAccess: boolean;
   fullName: string | null;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
@@ -27,6 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<AppRole | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLeadAdmin, setIsLeadAdmin] = useState(false);
+  const [isServerAssistant, setIsServerAssistant] = useState(false);
+  const [hasBeverageAccess, setHasBeverageAccess] = useState(false);
   const [fullName, setFullName] = useState<string | null>(null);
 
   const fetchUserProfile = async (userId: string) => {
@@ -71,19 +75,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchAdminFlags = async (userId: string) => {
     try {
-      const [{ data: adminData }, { data: leadAdminData }] = await Promise.all([
+      const [{ data: adminData }, { data: leadAdminData }, { data: beverageData }] = await Promise.all([
         supabase.rpc('is_admin', { _user_id: userId }),
         supabase.rpc('has_role', { _user_id: userId, _role: 'lead_admin' }),
+        supabase.rpc('has_beverage_access', { _user_id: userId }),
       ]);
 
       return {
         isAdmin: Boolean(adminData),
         isLeadAdmin: Boolean(leadAdminData),
+        hasBeverageAccess: Boolean(beverageData),
       };
     } catch {
       console.error('Error checking admin permissions');
-      return { isAdmin: false, isLeadAdmin: false };
+      return { isAdmin: false, isLeadAdmin: false, hasBeverageAccess: false };
     }
+  };
+
+  const computeRoleFlags = (userRole: AppRole | null, flags: { isAdmin: boolean; isLeadAdmin: boolean; hasBeverageAccess: boolean }) => {
+    const isServerAssistant = userRole === 'server_assistant';
+    // Server assistants don't have beverage access
+    const hasBeverageAccess = isServerAssistant ? false : flags.hasBeverageAccess;
+    
+    return { isServerAssistant, hasBeverageAccess };
   };
 
   const refreshRole = async () => {
@@ -95,9 +109,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       fetchUserProfile(user.id),
     ]);
 
+    const roleFlags = computeRoleFlags(userRole, flags);
+
     setRole(userRole);
     setIsAdmin(flags.isAdmin);
     setIsLeadAdmin(flags.isLeadAdmin);
+    setIsServerAssistant(roleFlags.isServerAssistant);
+    setHasBeverageAccess(roleFlags.hasBeverageAccess);
     setFullName(name);
   };
 
@@ -116,9 +134,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               fetchAdminFlags(session.user.id),
               fetchUserProfile(session.user.id),
             ]).then(([userRole, flags, name]) => {
+              const roleFlags = computeRoleFlags(userRole, flags);
               setRole(userRole);
               setIsAdmin(flags.isAdmin);
               setIsLeadAdmin(flags.isLeadAdmin);
+              setIsServerAssistant(roleFlags.isServerAssistant);
+              setHasBeverageAccess(roleFlags.hasBeverageAccess);
               setFullName(name);
             });
           }, 0);
@@ -126,6 +147,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setRole(null);
           setIsAdmin(false);
           setIsLeadAdmin(false);
+          setIsServerAssistant(false);
+          setHasBeverageAccess(false);
           setFullName(null);
         }
       }
@@ -143,14 +166,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           fetchAdminFlags(session.user.id),
           fetchUserProfile(session.user.id),
         ]);
+        const roleFlags = computeRoleFlags(userRole, flags);
         setRole(userRole);
         setIsAdmin(flags.isAdmin);
         setIsLeadAdmin(flags.isLeadAdmin);
+        setIsServerAssistant(roleFlags.isServerAssistant);
+        setHasBeverageAccess(roleFlags.hasBeverageAccess);
         setFullName(name);
       } else {
         setRole(null);
         setIsAdmin(false);
         setIsLeadAdmin(false);
+        setIsServerAssistant(false);
+        setHasBeverageAccess(false);
         setFullName(null);
       }
 
@@ -186,6 +214,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRole(null);
     setIsAdmin(false);
     setIsLeadAdmin(false);
+    setIsServerAssistant(false);
+    setHasBeverageAccess(false);
     setFullName(null);
   };
 
@@ -199,6 +229,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role,
         isAdmin,
         isLeadAdmin,
+        isServerAssistant,
+        hasBeverageAccess,
         fullName,
         signIn,
         signUp,
