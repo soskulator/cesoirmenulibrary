@@ -1,157 +1,196 @@
 
-# Main Page Redesign - Learning Platform Style
+# Role-Based Permissions System
 
-## Overview
-Redesigning the main page (Index.tsx) to adopt the clean, modern learning platform layout shown in the reference image. The new design will feature a left sidebar navigation with a scrollable content list, while maintaining the Ce Soir brand identity.
-
-## Design Analysis from Reference Image
-
-**Key Layout Elements:**
-- Fixed left sidebar (approximately 80px wide) with icon-based navigation
-- Main content area with a list of course/content cards
-- Filter tabs at the top (All, Active, Completed)
-- Category filter pills (for filtering by type)
-- Clean card design with thumbnail, title, description, rating, and level badge
-- Optional right panel for detailed view (can be omitted for simplicity)
-
-**Styling Observations:**
-- Cream/warm white background (matches existing brand)
-- Rounded corners on all elements
-- Subtle shadows on cards
-- Clean sans-serif typography
-- Warm accent colors (orange/terracotta - matches existing copper palette)
-- Star ratings and level badges on content items
+This plan implements a comprehensive role-based access control (RBAC) system for the Ce Soir training portal, distinguishing between four distinct roles with tailored permissions.
 
 ---
 
-## Implementation Plan
-
-### Phase 1: Create New Layout Structure
-
-**1.1 Create a Sidebar Navigation Component**
-- New file: `src/components/MainSidebar.tsx`
-- Icon-based navigation with labels on hover/expanded state
-- Navigation items: Main, Menu, Wine, Spirits, Cocktails, Study, Tests, Allergy, Settings
-- Login/Logout at the bottom
-- Uses existing SidebarProvider from shadcn/ui
-
-**1.2 Create a New Index Layout Wrapper**
-- Modify `src/pages/Index.tsx` to use sidebar layout
-- Replace full-screen hero with compact header
-- Main content becomes a scrollable list
-
----
-
-### Phase 2: Redesign Main Content Area
-
-**2.1 Create Filter/Tab System**
-- Horizontal tabs: "All", "Food", "Drinks", "Tests"
-- Category filter pills below tabs (Appetizers, Entrees, Wine, Cocktails, etc.)
-- Search icon in top right
-
-**2.2 Create New Content Card Component**
-- New file: `src/components/ContentCard.tsx`
-- Horizontal card layout with:
-  - Left: Square thumbnail image
-  - Right: Title, description, category badge, star rating indicator
-- Links to appropriate category/flashcard pages
-
-**2.3 Populate Content List**
-- Display menu categories and featured items
-- Show daily focus items prominently
-- Include quick access to study materials and tests
-
----
-
-### Phase 3: Content Cards Design
-
-**Card Structure:**
-```text
-+--------+----------------------------------------+
-|        | Title (bold)                  [Badge] |
-| Image  | Description (2 lines, muted)          |
-|        | [Star Rating]        [Level Badge]    |
-+--------+----------------------------------------+
-```
-
-**Content Types to Display:**
-1. Menu Categories (Appetizers, Entrees, Desserts, etc.)
-2. Featured Items (Daily Focus dishes)
-3. Study Modes (Flashcards, Wine Quiz, Food Quiz)
-4. Training Modules (FOH Test, Allergy Center)
-
----
-
-### Phase 4: Mobile Responsiveness
-
-- Sidebar collapses to bottom tab bar on mobile
-- Content cards stack vertically
-- Filter pills become horizontally scrollable
-- Maintain touch-friendly sizing
-
----
-
-## File Changes Summary
-
-| File | Action | Description |
-|------|--------|-------------|
-| `src/components/MainSidebar.tsx` | Create | New sidebar navigation component |
-| `src/components/ContentCard.tsx` | Create | New horizontal card component for content items |
-| `src/components/ContentFilters.tsx` | Create | Tab and filter pill components |
-| `src/pages/Index.tsx` | Modify | Complete redesign with new layout |
-| `src/components/Layout.tsx` | Modify | Optional: Add variant for sidebar layout |
-
----
-
-## Technical Considerations
-
-**Using Existing Components:**
-- SidebarProvider, Sidebar, SidebarMenu from `@/components/ui/sidebar`
-- Tabs from `@/components/ui/tabs`
-- Badge for category/level indicators
-- Card components with custom styling
-- Existing menu data from `@/data/menuData.ts`
-
-**Brand Consistency:**
-- Maintain cream background (`bg-cream`)
-- Use copper accent for active states and CTAs
-- Playfair Display for headings, Source Sans for body
-- Existing shadow tokens for card elevation
-
-**Performance:**
-- Lazy load images in content cards
-- Maintain existing image optimization patterns
-- Keep hero logo for brand recognition (smaller)
-
----
-
-## Visual Mockup
+## Role Hierarchy
 
 ```text
-+-------+------------------------------------------+
-| LOGO  |  [All] [Food] [Drinks] [Tests]     [Q]  |
-+-------+------------------------------------------+
-| Main  | [Appetizers] [Entrees] [Wine] [...]     |
-| Menu  |                                          |
-| Wine  | +------+----------------------------+    |
-|Drinks | |      | French Onion Soup   [App] |    |
-|Study  | | IMG  | Oxtail broth, Gruyere...  |    |
-| Test  | |      | [Stars]        [Featured] |    |
-|Allergy| +------+----------------------------+    |
-|-------+                                          |
-|Settings +------+----------------------------+    |
-| Login  | |      | Lobster Spaghetti  [Ent] |    |
-+-------+------------------------------------------+
+┌─────────────────────────────────────────────────────────────────────┐
+│                           LEAD ADMIN                                 │
+│   Full access to all features + exclusive management capabilities    │
+├─────────────────────────────────────────────────────────────────────┤
+│                              ADMIN                                   │
+│   Menu management + Test review (no user management/analytics)       │
+├─────────────────────────────────────────────────────────────────────┤
+│                     SERVER / BARTENDER                               │
+│   Full training materials + Full knowledge test                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                       SERVER ASSISTANT                               │
+│   Limited training (no beverages) + SA-specific test only            │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Expected Outcome
+## Summary of Changes
 
-A modern, clean training portal interface that:
-- Provides quick access to all menu categories
-- Displays content in scannable card format
-- Maintains brand identity with warm cream/copper palette
-- Improves navigation with persistent sidebar
-- Feels like a professional learning management system
-- Works seamlessly on mobile devices
+### 1. Database Updates
+- Expand the `app_role` enum to include: `lead_admin`, `admin`, `server`, `bartender`, `server_assistant`
+- Update invitation system to support new roles
+- Update RLS policies to handle new role hierarchy
+
+### 2. Frontend Content Restrictions by Role
+
+| Feature | Lead Admin | Admin | Server/Bartender | Server Assistant |
+|---------|------------|-------|------------------|------------------|
+| Wine List Page | Yes | Yes | Yes | **No** |
+| Spirits Page | Yes | Yes | Yes | **No** |
+| Cocktails Page | Yes | Yes | Yes | **No** |
+| Wine Quiz | Yes | Yes | Yes | **No** |
+| Spirits Quiz | Yes | Yes | Yes | **No** |
+| Bartender/Server Test | Yes | Yes | Yes | **No** |
+| Server Assistant Test | Yes | Yes | Yes | Yes |
+| Flashcards (full) | Yes | Yes | Yes | **No (food only)** |
+| Menu Categories | Yes | Yes | Yes | Yes |
+| Daily Focus | Yes | Yes | Yes | Yes |
+| Allergy Center | Yes | Yes | Yes | Yes |
+| Admin Center | Yes | Yes | No | No |
+| User Management | Yes | **No** | No | No |
+| Staff Activity Log | Yes | **No** | No | No |
+| Quiz Analytics | Yes | **No** | No | No |
+| Menu Management | Yes | Yes | No | No |
+| Test Review | Yes | Yes | No | No |
+
+### 3. Navigation Updates
+Hide restricted menu items based on role in Header component.
+
+### 4. Route Protection
+Add role-based protection to pages that require specific access levels.
+
+---
+
+## Technical Implementation Details
+
+### Phase 1: Database Schema Updates
+
+**Migration: Expand app_role enum**
+```sql
+-- Add new employee role variants to the enum
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'server';
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'bartender';
+ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'server_assistant';
+```
+
+**Update security functions:**
+```sql
+-- Create function to check if user is staff with beverage access
+CREATE OR REPLACE FUNCTION public.has_beverage_access(_user_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE SECURITY DEFINER
+SET search_path TO 'public'
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.user_roles
+    WHERE user_id = _user_id 
+    AND role IN ('lead_admin', 'admin', 'server', 'bartender')
+  )
+$$;
+```
+
+### Phase 2: AuthContext Enhancement
+
+Update `src/contexts/AuthContext.tsx` to expose granular role information:
+
+```typescript
+// New role helpers
+const roleInfo = {
+  isLeadAdmin: boolean,
+  isAdmin: boolean,
+  isServer: boolean,
+  isBartender: boolean,
+  isServerAssistant: boolean,
+  hasBeverageAccess: boolean,  // true for lead_admin, admin, server, bartender
+  hasAdminAccess: boolean,     // true for lead_admin, admin
+  canManageUsers: boolean,     // true for lead_admin only
+  canViewAnalytics: boolean,   // true for lead_admin only
+}
+```
+
+### Phase 3: Navigation Restrictions
+
+Update `src/components/Header.tsx`:
+
+- Hide "Wine", "Spirits", "Cocktails" nav items for Server Assistants
+- Hide beverage-related tests in the Test dropdown for Server Assistants
+- Keep Admin Center visible only for admin/lead_admin roles
+- Show role-appropriate badge (Server, Bartender, SA, Admin, Lead Admin)
+
+### Phase 4: Page-Level Route Protection
+
+Update `src/App.tsx` with role-specific route guards:
+
+```typescript
+// Beverage pages - require beverage access
+<Route path="/wine-list" element={
+  <ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender']}>
+    <WineList />
+  </ProtectedRoute>
+} />
+
+// Admin pages with granular permissions
+<Route path="/admin" element={
+  <ProtectedRoute requiredRole={['admin', 'lead_admin']}>
+    <Admin />
+  </ProtectedRoute>
+} />
+```
+
+### Phase 5: Content Filtering
+
+**Flashcards Page (`src/pages/Flashcards.tsx`):**
+- Server Assistants see only food categories (filter out wine, spirits, cocktails)
+
+**Admin Page (`src/pages/Admin.tsx`):**
+- Hide Staff Insights section (Activity Log, Quiz Performance) for regular Admins
+- Show only for Lead Admins
+
+**AdminUsers Page:**
+- Keep restricted to Lead Admin only (already implemented)
+
+### Phase 6: Invitation System Updates
+
+Update `src/pages/AdminUsers.tsx` invite form:
+- Add new role options: Server, Bartender, Server Assistant
+- Keep Admin and Lead Admin options for Lead Admins only
+- Show role descriptions explaining access levels
+
+### Phase 7: Test Type Restrictions
+
+Update `src/pages/FohTest.tsx` and test selection:
+- Server Assistants can only access `server_assistant` test type
+- Hide Bartender/Server test option for SAs
+- Redirect SAs attempting to access `service_staff` test type
+
+---
+
+## Files to Modify
+
+1. **Database Migration** - New migration file for enum expansion
+2. `src/contexts/AuthContext.tsx` - Add granular role helpers
+3. `src/components/Header.tsx` - Role-based navigation filtering
+4. `src/App.tsx` - Enhanced route protection
+5. `src/pages/Flashcards.tsx` - Filter categories for SAs
+6. `src/pages/Admin.tsx` - Hide analytics for regular Admins
+7. `src/pages/FohTest.tsx` - Restrict test types for SAs
+8. `src/pages/AdminUsers.tsx` - Update invite role options
+9. `src/pages/Quiz.tsx` - Hide beverage tests for SAs
+10. `src/pages/WineList.tsx` - Add role protection
+11. `src/pages/Spirits.tsx` - Add role protection
+12. `src/pages/Cocktails.tsx` - Add role protection
+13. `src/pages/WineQuiz.tsx` - Add role protection
+14. `src/pages/SpiritsQuiz.tsx` - Add role protection
+
+---
+
+## Migration Path for Existing Users
+
+Existing users with `employee` role will need to be assigned a specific role:
+- Option A: Auto-migrate all `employee` to `server` (full access)
+- Option B: Leave as `employee` and treat as `server` by default
+- Option C: Require Lead Admin to manually update each user's role
+
+Recommended: **Option B** - existing `employee` roles are treated as `server` for backward compatibility.
