@@ -213,9 +213,9 @@ export default function AdminUsersPage() {
         .from('invitations')
         .insert({
           email: inviteEmail.toLowerCase().trim(),
-          role: inviteRole,
+          role: inviteRole as any,
           invited_by: user!.id,
-        })
+        } as any)
         .select()
         .single();
       
@@ -375,7 +375,7 @@ export default function AdminUsersPage() {
       if (newRole !== 'remove') {
         const { error: insertError } = await supabase
           .from('user_roles')
-          .insert({ user_id: userId, role: newRole });
+          .insert({ user_id: userId, role: newRole } as any);
         
         if (insertError) throw insertError;
       }
