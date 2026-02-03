@@ -70,7 +70,7 @@ const App = () => (
               <Route path="/allergy-training" element={<Navigate to="/allergy" replace />} />
               <Route path="/admin" element={<ProtectedRoute requiredRole={['admin', 'lead_admin']}><Admin /></ProtectedRoute>} />
               <Route path="/admin/assets" element={<ProtectedRoute requiredRole={['admin', 'lead_admin']}><AdminAssets /></ProtectedRoute>} />
-              <Route path="/admin/users" element={<ProtectedRoute requiredRole="lead_admin"><AdminUsers /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute requiredRole={['admin', 'lead_admin']}><AdminUsers /></ProtectedRoute>} />
               <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="lead_admin"><LeadAdminDashboard /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
