@@ -612,6 +612,7 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
 ];
 
 // Server Assistant Test - Focused on SA-specific duties
+// Note: Duplicates with Service Staff test have been removed to keep tests distinct
 export const serverAssistantQuestions: FohTestQuestion[] = [
   {
     id: 1,
@@ -631,28 +632,6 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
   },
   {
     id: 3,
-    question: "What bottled water options do we carry?",
-    type: 'short_answer',
-    correctAnswer: "Evian Still and Evian Sparkling",
-    category: 'drinks',
-    testType: 'server_assistant'
-  },
-  {
-    id: 4,
-    question: "How long should it take to greet a table after they are seated?",
-    type: 'multiple_choice',
-    options: [
-      "Less than 3 minutes",
-      "Less than 2 minutes",
-      "Within 1 minute"
-    ],
-    correctAnswer: "Within 1 minute",
-    correctIndex: 2,
-    category: 'service',
-    testType: 'server_assistant'
-  },
-  {
-    id: 5,
     question: "What should your initial water greet at a table include?",
     type: 'short_answer',
     correctAnswer: "Offer still or sparkling water, pour water for guests, mention bottled water options",
@@ -660,107 +639,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 6,
-    question: "When should you notify a manager about an issue with a table?",
-    type: 'multiple_choice',
-    options: [
-      "Only if the guest asks for a manager",
-      "Only when food is sent back",
-      "Anytime the guest is unhappy or something goes wrong"
-    ],
-    correctAnswer: "Anytime the guest is unhappy or something goes wrong",
-    correctIndex: 2,
-    category: 'service',
-    testType: 'server_assistant'
-  },
-  {
-    id: 7,
-    question: "How do you explain a dish if a guest asks a question you don't know the answer to?",
-    type: 'multiple_choice',
-    options: [
-      "Guess",
-      "Make something up",
-      "Apologize and go get the correct information"
-    ],
-    correctAnswer: "Apologize and go get the correct information",
-    correctIndex: 2,
-    category: 'service',
-    testType: 'server_assistant'
-  },
-  {
-    id: 8,
-    question: "What kind of shortening do we use for deep frying, and what oil do we use in the house?",
-    type: 'short_answer',
-    correctAnswer: "Beef tallow for deep frying, avocado oil in the house",
-    category: 'menu',
-    testType: 'server_assistant'
-  },
-  {
-    id: 9,
-    question: "If a vegetarian or vegan guest wants our French fries, can they have them? Explain why or why not.",
-    type: 'short_answer',
-    correctAnswer: "No, because we use beef tallow for frying",
-    category: 'menu',
-    testType: 'server_assistant'
-  },
-  {
-    id: 10,
-    question: "What type of fish is Hamachi?",
-    type: 'short_answer',
-    correctAnswer: "Japanese Yellowtail",
-    category: 'menu',
-    testType: 'server_assistant'
-  },
-  {
-    id: 11,
-    question: "What is foie gras?",
-    type: 'short_answer',
-    correctAnswer: "Fatty duck liver, considered a French delicacy",
-    category: 'menu',
-    testType: 'server_assistant'
-  },
-  {
-    id: 12,
-    question: "What accoutrements come with the oysters?",
-    type: 'short_answer',
-    correctAnswer: "Green apple mignonette, pink peppercorn foam, and pernod citrus granita",
-    category: 'menu',
-    testType: 'server_assistant'
-  },
-  {
-    id: 13,
-    question: "What does 'Ce Soir' mean?",
-    type: 'short_answer',
-    correctAnswer: "Tonight or This evening (French)",
-    category: 'general',
-    testType: 'server_assistant'
-  },
-  {
-    id: 14,
-    question: "What is Ce Soir's full address?",
-    type: 'short_answer',
-    correctAnswer: "492 Bayfront Place, Naples, FL 34102",
-    category: 'general',
-    testType: 'server_assistant'
-  },
-  {
-    id: 15,
-    question: "What are our hours of operation?",
-    type: 'short_answer',
-    correctAnswer: "Happy hour 3-6pm, 7 days a week. Dinner service 5-10pm, 7 days a week. Friday and Saturday late night 10pm-2am.",
-    category: 'operations',
-    testType: 'server_assistant'
-  },
-  {
-    id: 16,
-    question: "What types of sodas do we offer? Do we provide free refills?",
-    type: 'short_answer',
-    correctAnswer: "Coke, Sprite, Diet Coke, Ginger Ale. No free refills.",
-    category: 'drinks',
-    testType: 'server_assistant'
-  },
-  {
-    id: 17,
+    id: 4,
     question: "If a guest asks you to take their order, what should you do?",
     type: 'short_answer',
     correctAnswer: "Politely let them know their server will be right with them, or find their server immediately",
@@ -768,15 +647,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 18,
-    question: "What should you always check before running food to a table?",
-    type: 'short_answer',
-    correctAnswer: "That the dish meets standards, seat numbers, modifications, and who the server is",
-    category: 'service',
-    testType: 'server_assistant'
-  },
-  {
-    id: 19,
+    id: 5,
     question: "What should you do if food arrives at the table and the guest says it is not what they ordered?",
     type: 'short_answer',
     correctAnswer: "Apologize, do not leave the dish, notify the server and/or manager immediately",
@@ -784,7 +655,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 20,
+    id: 6,
     question: "What should you do if you notice a guest has finished a course and their plates have not yet been cleared?",
     type: 'short_answer',
     correctAnswer: "Clear the plates promptly or notify the server that the table needs attention",
@@ -792,15 +663,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 21,
-    question: "What is a ghost seat number and why is it important?",
-    type: 'short_answer',
-    correctAnswer: "Empty seats that still need a number assigned so food runners know the correct seat positions",
-    category: 'service',
-    testType: 'server_assistant'
-  },
-  {
-    id: 22,
+    id: 7,
     question: "When clearing plates, what should you always ask or confirm with the guest?",
     type: 'short_answer',
     correctAnswer: "Ask if they are finished or if you may clear their plate",
@@ -808,7 +671,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 23,
+    id: 8,
     question: "What should you do if a guest drops silverware or a napkin on the floor?",
     type: 'short_answer',
     correctAnswer: "Immediately replace it with fresh silverware/napkin without being asked",
@@ -816,7 +679,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 24,
+    id: 9,
     question: "What items should never be touched with bare hands?",
     type: 'short_answer',
     correctAnswer: "Ice, garnishes, ready-to-eat food, and the eating surfaces of plates/silverware",
@@ -824,7 +687,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 25,
+    id: 10,
     question: "What should you do if you notice a table needs water refills but the server is busy?",
     type: 'short_answer',
     correctAnswer: "Refill the water yourself - it's a team effort",
@@ -832,7 +695,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 26,
+    id: 11,
     question: "What should you do if you overhear a guest mentioning an allergy at the table?",
     type: 'short_answer',
     correctAnswer: "Immediately inform the server and/or manager about the allergy",
@@ -840,7 +703,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 27,
+    id: 12,
     question: "What does 'full hands in, full hands out' mean?",
     type: 'short_answer',
     correctAnswer: "Never walk through the restaurant empty-handed - always carry something (plates, glasses, etc.) in both directions",
@@ -848,7 +711,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 28,
+    id: 13,
     question: "What is your responsibility when resetting a table for the next seating?",
     type: 'short_answer',
     correctAnswer: "Clear all items, wipe down table, reset with clean linens, silverware, glassware, and any standard table settings",
@@ -856,7 +719,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 29,
+    id: 14,
     question: "If a dish is hot, what must you communicate to the guest?",
     type: 'short_answer',
     correctAnswer: "Warn them that the plate is hot - 'Careful, the plate is very hot'",
@@ -864,7 +727,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 30,
+    id: 15,
     question: "What should you do if a guest stops you to ask for the restroom?",
     type: 'short_answer',
     correctAnswer: "Politely direct them or personally escort them to the restroom location",
@@ -872,7 +735,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 31,
+    id: 16,
     question: "Who do you communicate with if you are unsure about a task or instruction?",
     type: 'short_answer',
     correctAnswer: "Your server, a manager, or the floor supervisor",
@@ -880,7 +743,7 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 32,
+    id: 17,
     question: "Why is teamwork especially important during peak service?",
     type: 'short_answer',
     correctAnswer: "To ensure smooth guest experience, prevent delays, and maintain service standards when the restaurant is busiest",
@@ -888,10 +751,50 @@ export const serverAssistantQuestions: FohTestQuestion[] = [
     testType: 'server_assistant'
   },
   {
-    id: 33,
+    id: 18,
     question: "What is the proper response if a guest thanks you?",
     type: 'short_answer',
     correctAnswer: "'You're welcome' or 'My pleasure' - always acknowledge with warmth and professionalism",
+    category: 'service',
+    testType: 'server_assistant'
+  },
+  {
+    id: 19,
+    question: "How should you carry multiple plates safely to a table?",
+    type: 'short_answer',
+    correctAnswer: "Use proper hand positioning, balance weight evenly, never stack plates too high, and use a tray when appropriate",
+    category: 'service',
+    testType: 'server_assistant'
+  },
+  {
+    id: 20,
+    question: "What is the correct way to present a dish to a guest?",
+    type: 'short_answer',
+    correctAnswer: "Serve from the left side, announce the dish name, place it gently with the protein facing the guest",
+    category: 'service',
+    testType: 'server_assistant'
+  },
+  {
+    id: 21,
+    question: "What should you do if you accidentally bump into a guest?",
+    type: 'short_answer',
+    correctAnswer: "Immediately apologize sincerely and ask if they are okay",
+    category: 'service',
+    testType: 'server_assistant'
+  },
+  {
+    id: 22,
+    question: "When should you refill bread or butter for a table?",
+    type: 'short_answer',
+    correctAnswer: "When the basket is less than half full or upon guest request",
+    category: 'service',
+    testType: 'server_assistant'
+  },
+  {
+    id: 23,
+    question: "How do you handle a spill on a guest's table?",
+    type: 'short_answer',
+    correctAnswer: "Apologize, quickly bring clean napkins, offer to replace any affected items, notify the server/manager",
     category: 'service',
     testType: 'server_assistant'
   }

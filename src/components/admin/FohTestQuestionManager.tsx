@@ -226,14 +226,20 @@ export function FohTestQuestionManager() {
       <CardContent className="px-3 sm:px-6 pb-4 overflow-hidden">
         {/* Test Type Tabs */}
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TestType)} className="mb-4">
-          <TabsList className="grid w-full grid-cols-2 h-9">
-            <TabsTrigger value="service_staff" className="text-xs sm:text-sm gap-1">
+          <TabsList className="grid w-full grid-cols-2 h-10 p-1 bg-muted/60">
+            <TabsTrigger 
+              value="service_staff" 
+              className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md"
+            >
               <Users className="w-3.5 h-3.5" />
-              Service ({serviceStaffCount})
+              <span>Service ({serviceStaffCount})</span>
             </TabsTrigger>
-            <TabsTrigger value="server_assistant" className="text-xs sm:text-sm gap-1">
+            <TabsTrigger 
+              value="server_assistant" 
+              className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md"
+            >
               <UserCheck className="w-3.5 h-3.5" />
-              SA ({serverAssistantCount})
+              <span>SA ({serverAssistantCount})</span>
             </TabsTrigger>
           </TabsList>
         </Tabs>
