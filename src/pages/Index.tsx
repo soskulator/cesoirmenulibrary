@@ -142,30 +142,57 @@ export default function Index() {
             <span className="text-sm font-semibold tracking-widest uppercase">Naples, Florida</span>
           </motion.div>
 
-          {/* ── Hero CTAs — simplified to 2 buttons ── */}
+          {/* ── Hero CTAs — module navigation ── */}
           <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col items-center gap-6"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
-            <Button
-              size="lg"
-              className="bg-charcoal text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300 group"
-              asChild
-            >
-              <Link to="/flashcards">
-                <BookOpen className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                Start Training
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              className="bg-copper text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300"
-              asChild
-            >
-              <Link to="/categories">Explore Menu</Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <Button
+                size="lg"
+                className="bg-charcoal text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300 group"
+                asChild
+              >
+                <Link to="/flashcards">
+                  <BookOpen className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  Study Flashcards
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                className="bg-copper text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300"
+                asChild
+              >
+                <Link to="/categories">
+                  <Layers className="w-5 h-5 mr-2" />
+                  Explore Menu
+                </Link>
+              </Button>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Button
+                variant="outline"
+                className="border-charcoal/30 text-charcoal hover:bg-charcoal/10 font-medium px-5 py-2"
+                asChild
+              >
+                <Link to="/quiz">
+                  <HelpCircle className="w-4 h-4 mr-2" />
+                  Tests
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                className="border-charcoal/30 text-charcoal hover:bg-charcoal/10 font-medium px-5 py-2"
+                asChild
+              >
+                <Link to="/allergy">
+                  <AlertTriangle className="w-4 h-4 mr-2" />
+                  Allergy Center
+                </Link>
+              </Button>
+            </div>
           </motion.div>
         </motion.div>
 
