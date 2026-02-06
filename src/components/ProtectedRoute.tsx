@@ -14,9 +14,9 @@ const ROUTE_PERMISSION_MAP: Record<string, string> = {
   '/foh-test': 'test:knowledge-server', // resolved dynamically below
   '/wine-quiz': 'quiz:wine',
   '/spirits-quiz': 'quiz:spirits',
-  '/quiz': 'quiz:food',
   '/food-quiz': 'quiz:food',
   '/allergy-quiz': 'quiz:allergy',
+  // Note: '/quiz' is the test hub — accessible to all authenticated users, individual tests are filtered within
 };
 
 interface ProtectedRouteProps {
