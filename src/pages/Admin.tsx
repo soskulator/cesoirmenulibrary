@@ -24,7 +24,8 @@ import {
   Activity,
   TrendingUp,
   RefreshCw,
-  Loader2
+  Loader2,
+  Trophy,
 } from 'lucide-react';
 import { menuItems, categories } from '@/data/menuData';
 import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
@@ -61,6 +62,14 @@ const adminSections = [
     description: 'Manage admin and staff access',
     icon: Users,
     path: '/admin/users',
+    badge: null,
+    disabled: false,
+  },
+  {
+    title: 'Staff Scoring',
+    description: 'Performance tracking & leaderboard',
+    icon: Trophy,
+    path: '/admin/scoring',
     badge: null,
     disabled: false,
   },

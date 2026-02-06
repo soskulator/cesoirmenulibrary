@@ -37,6 +37,7 @@ const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const LeadAdminDashboard = lazy(() => import("./pages/LeadAdminDashboard"));
 const AdminSeedQuestions = lazy(() => import("./pages/AdminSeedQuestions"));
 const QuizBuilder = lazy(() => import("./pages/QuizBuilder"));
+const ScoringDashboard = lazy(() => import("./pages/ScoringDashboard"));
 
 // ─── Role constants (single source of truth) ───
 const ROLES = {
@@ -268,6 +269,14 @@ const App = () => (
                   element={
                     <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
                       <QuizBuilder />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/scoring"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
+                      <ScoringDashboard />
                     </ProtectedRoute>
                   }
                 />
