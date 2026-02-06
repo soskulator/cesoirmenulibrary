@@ -4,7 +4,7 @@ import { Resend } from "https://esm.sh/resend@4.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 interface NotifyRequest {
@@ -18,12 +18,32 @@ interface NotifyRequest {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    const userId = claimsData.claims.sub;
+    console.log(`Authenticated user ${userId} requesting test completion notification`);
+
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (!resendApiKey) {
       console.error('RESEND_API_KEY not configured');
@@ -35,10 +55,7 @@ serve(async (req) => {
 
     const resend = new Resend(resendApiKey);
 
-    // Create Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
     const { 
       attemptId, 
@@ -52,8 +69,8 @@ serve(async (req) => {
 
     console.log(`Notifying lead admins about test completion: ${employeeName} (${testType})`);
 
-    // Get all lead admin emails from user_roles and profiles
-    const { data: leadAdmins, error: leadAdminsError } = await supabase
+    // Get all lead admin emails
+    const { data: leadAdmins, error: leadAdminsError } = await supabaseAdmin
       .from('user_roles')
       .select('user_id')
       .eq('role', 'lead_admin');
@@ -71,9 +88,8 @@ serve(async (req) => {
       );
     }
 
-    // Get lead admin emails from profiles
     const userIds = leadAdmins.map(la => la.user_id);
-    const { data: profiles, error: profilesError } = await supabase
+    const { data: profiles, error: profilesError } = await supabaseAdmin
       .from('profiles')
       .select('email')
       .in('id', userIds);
@@ -99,7 +115,6 @@ serve(async (req) => {
     const displayName = employeeName || employeeEmail;
     const passStatus = percentage >= 70 ? '✅ PASSED' : '⚠️ Needs Review';
 
-    // Send email to all lead admins
     const { error: emailError } = await resend.emails.send({
       from: 'Ce Soir Tests <onboarding@resend.dev>',
       to: adminEmails,
@@ -109,41 +124,22 @@ serve(async (req) => {
           <div style="background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 24px;">FoH Test Completed</h1>
           </div>
-          
           <div style="background: #f9f9f9; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
             <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
               A team member has completed their knowledge test and requires your review.
             </p>
-            
             <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0;">
               <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Employee:</td>
-                  <td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${displayName}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Test Type:</td>
-                  <td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${testTypeName}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Score:</td>
-                  <td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${score}/${totalQuestions}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Percentage:</td>
-                  <td style="padding: 8px 0; color: ${percentage >= 70 ? '#22c55e' : '#f59e0b'}; font-weight: 600; text-align: right;">${percentage}%</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #666; font-size: 14px;">Status:</td>
-                  <td style="padding: 8px 0; font-weight: 600; text-align: right;">${passStatus}</td>
-                </tr>
+                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Employee:</td><td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${displayName}</td></tr>
+                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Test Type:</td><td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${testTypeName}</td></tr>
+                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Score:</td><td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${score}/${totalQuestions}</td></tr>
+                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Percentage:</td><td style="padding: 8px 0; color: ${percentage >= 70 ? '#22c55e' : '#f59e0b'}; font-weight: 600; text-align: right;">${percentage}%</td></tr>
+                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Status:</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">${passStatus}</td></tr>
               </table>
             </div>
-            
             <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
               Please review this test in the Lead Admin Dashboard to verify the AI-graded answers and finalize the score.
             </p>
-            
             <div style="text-align: center;">
               <p style="font-size: 12px; color: #999; margin-top: 30px;">
                 This is an automated notification from Ce Soir Staff Training.
