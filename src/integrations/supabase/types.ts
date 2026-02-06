@@ -316,6 +316,54 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_questions: {
+        Row: {
+          category: string
+          correct_answer: string
+          correct_index: number | null
+          created_at: string
+          created_by: string | null
+          difficulty: string
+          id: string
+          is_active: boolean
+          options: Json | null
+          question_text: string
+          question_type: string
+          target_roles: string[]
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          correct_answer: string
+          correct_index?: number | null
+          created_at?: string
+          created_by?: string | null
+          difficulty?: string
+          id?: string
+          is_active?: boolean
+          options?: Json | null
+          question_text: string
+          question_type: string
+          target_roles?: string[]
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          correct_answer?: string
+          correct_index?: number | null
+          created_at?: string
+          created_by?: string | null
+          difficulty?: string
+          id?: string
+          is_active?: boolean
+          options?: Json | null
+          question_text?: string
+          question_type?: string
+          target_roles?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       quiz_scores: {
         Row: {
           completed_at: string
@@ -396,6 +444,81 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      test_configurations: {
+        Row: {
+          created_by: string | null
+          id: string
+          is_active: boolean
+          passing_score: number
+          test_name: string
+          test_type: string
+          time_limit_minutes: number | null
+          total_questions: number
+          updated_at: string
+        }
+        Insert: {
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          passing_score?: number
+          test_name: string
+          test_type: string
+          time_limit_minutes?: number | null
+          total_questions?: number
+          updated_at?: string
+        }
+        Update: {
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          passing_score?: number
+          test_name?: string
+          test_type?: string
+          time_limit_minutes?: number | null
+          total_questions?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      test_question_assignments: {
+        Row: {
+          id: string
+          is_required: boolean
+          question_id: string
+          sort_order: number | null
+          test_config_id: string
+        }
+        Insert: {
+          id?: string
+          is_required?: boolean
+          question_id: string
+          sort_order?: number | null
+          test_config_id: string
+        }
+        Update: {
+          id?: string
+          is_required?: boolean
+          question_id?: string
+          sort_order?: number | null
+          test_config_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_question_assignments_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "test_question_assignments_test_config_id_fkey"
+            columns: ["test_config_id"]
+            isOneToOne: false
+            referencedRelation: "test_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
