@@ -221,17 +221,6 @@ export default function Index() {
                 </Link>
               </Button>
             </div>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-charcoal/30 text-charcoal hover:bg-charcoal/10 font-medium px-6 py-4"
-              asChild
-            >
-              <Link to="/categories">
-                <Layers className="w-4 h-4 mr-2" />
-                Explore Menu
-              </Link>
-            </Button>
           </motion.div>
         </motion.div>
 
