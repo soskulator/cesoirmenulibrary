@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,30 +9,68 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SessionTracker } from "@/components/SessionTracker";
-import Index from "./pages/Index";
-import Categories from "./pages/Categories";
-import WineList from "./pages/WineList";
-import Spirits from "./pages/Spirits";
-import Cocktails from "./pages/Cocktails";
-import CocktailFlashcards from "./pages/CocktailFlashcards";
-import Flashcards from "./pages/Flashcards";
-import Quiz from "./pages/Quiz";
-import WineQuiz from "./pages/WineQuiz";
-import SpiritsQuiz from "./pages/SpiritsQuiz";
-import AllergyQuiz from "./pages/AllergyQuiz";
-import FoodQuiz from "./pages/FoodQuiz";
-import FohTest from "./pages/FohTest";
-import DailyFocus from "./pages/DailyFocus";
-import Allergy from "./pages/Allergy";
-import Admin from "./pages/Admin";
-import AdminAssets from "./pages/AdminAssets";
-import AdminUsers from "./pages/AdminUsers";
-import LeadAdminDashboard from "./pages/LeadAdminDashboard";
+
+// ─── Eager imports (needed on first load) ───
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
+import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// ─── Lazy-loaded pages (split into separate chunks) ───
+const Categories = lazy(() => import("./pages/Categories"));
+const WineList = lazy(() => import("./pages/WineList"));
+const Spirits = lazy(() => import("./pages/Spirits"));
+const Cocktails = lazy(() => import("./pages/Cocktails"));
+const CocktailFlashcards = lazy(() => import("./pages/CocktailFlashcards"));
+const Flashcards = lazy(() => import("./pages/Flashcards"));
+const Quiz = lazy(() => import("./pages/Quiz"));
+const WineQuiz = lazy(() => import("./pages/WineQuiz"));
+const SpiritsQuiz = lazy(() => import("./pages/SpiritsQuiz"));
+const AllergyQuiz = lazy(() => import("./pages/AllergyQuiz"));
+const FoodQuiz = lazy(() => import("./pages/FoodQuiz"));
+const FohTest = lazy(() => import("./pages/FohTest"));
+const DailyFocus = lazy(() => import("./pages/DailyFocus"));
+const Allergy = lazy(() => import("./pages/Allergy"));
+const Admin = lazy(() => import("./pages/Admin"));
+const AdminAssets = lazy(() => import("./pages/AdminAssets"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers"));
+const LeadAdminDashboard = lazy(() => import("./pages/LeadAdminDashboard"));
+
+// ─── Role constants (single source of truth) ───
+const ROLES = {
+  ALL_STAFF: ["lead_admin", "admin", "server", "bartender", "employee"] as const,
+  ADMIN: ["admin", "lead_admin"] as const,
+  LEAD_ONLY: "lead_admin" as const,
+};
+
+// ─── Loading fallback for lazy routes ───
+const PageLoader = () => (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "60vh",
+      fontFamily: "'Playfair Display', serif",
+      fontSize: "1.1rem",
+      color: "#8A8A8A",
+      letterSpacing: "0.05em",
+    }}
+  >
+    Loading…
+  </div>
+);
+
+// ─── QueryClient with sensible caching for a training app ───
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 10,
+      gcTime: 1000 * 60 * 30,
+      retry: 1,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -43,37 +82,186 @@ const App = () => (
           <AuthProvider>
             <SessionTracker />
             <ScrollToTop />
-            <Routes>
-              {/* Public routes */}
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              
-              {/* Protected routes - require authentication */}
-              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-              <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-              <Route path="/categories/:categoryId" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-              <Route path="/wine-list" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><WineList /></ProtectedRoute>} />
-              <Route path="/spirits" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><Spirits /></ProtectedRoute>} />
-              <Route path="/cocktails" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><Cocktails /></ProtectedRoute>} />
-              <Route path="/cocktail-flashcards" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><CocktailFlashcards /></ProtectedRoute>} />
-              <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
-              <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
-              <Route path="/wine-quiz" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><WineQuiz /></ProtectedRoute>} />
-              <Route path="/spirits-quiz" element={<ProtectedRoute requiredRole={['lead_admin', 'admin', 'server', 'bartender', 'employee']}><SpiritsQuiz /></ProtectedRoute>} />
-              <Route path="/allergy-quiz" element={<ProtectedRoute><AllergyQuiz /></ProtectedRoute>} />
-              <Route path="/food-quiz" element={<ProtectedRoute><FoodQuiz /></ProtectedRoute>} />
-              <Route path="/foh-test" element={<ProtectedRoute><FohTest /></ProtectedRoute>} />
-              <Route path="/daily-focus" element={<ProtectedRoute><DailyFocus /></ProtectedRoute>} />
-              <Route path="/allergy" element={<ProtectedRoute><Allergy /></ProtectedRoute>} />
-              {/* Redirects for old routes */}
-              <Route path="/allergy-check" element={<Navigate to="/allergy" replace />} />
-              <Route path="/allergy-training" element={<Navigate to="/allergy" replace />} />
-              <Route path="/admin" element={<ProtectedRoute requiredRole={['admin', 'lead_admin']}><Admin /></ProtectedRoute>} />
-              <Route path="/admin/assets" element={<ProtectedRoute requiredRole={['admin', 'lead_admin']}><AdminAssets /></ProtectedRoute>} />
-              <Route path="/admin/users" element={<ProtectedRoute requiredRole={['admin', 'lead_admin']}><AdminUsers /></ProtectedRoute>} />
-              <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="lead_admin"><LeadAdminDashboard /></ProtectedRoute>} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* ── Public routes ── */}
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+
+                {/* ── Protected routes — any authenticated user ── */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <Index />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/categories"
+                  element={
+                    <ProtectedRoute>
+                      <Categories />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/categories/:categoryId"
+                  element={
+                    <ProtectedRoute>
+                      <Categories />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/flashcards"
+                  element={
+                    <ProtectedRoute>
+                      <Flashcards />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/quiz"
+                  element={
+                    <ProtectedRoute>
+                      <Quiz />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/allergy-quiz"
+                  element={
+                    <ProtectedRoute>
+                      <AllergyQuiz />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/food-quiz"
+                  element={
+                    <ProtectedRoute>
+                      <FoodQuiz />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/foh-test"
+                  element={
+                    <ProtectedRoute>
+                      <FohTest />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/daily-focus"
+                  element={
+                    <ProtectedRoute>
+                      <DailyFocus />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/allergy"
+                  element={
+                    <ProtectedRoute>
+                      <Allergy />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* ── Role-restricted routes — all staff roles ── */}
+                <Route
+                  path="/wine-list"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ALL_STAFF]}>
+                      <WineList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/spirits"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ALL_STAFF]}>
+                      <Spirits />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/cocktails"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ALL_STAFF]}>
+                      <Cocktails />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/cocktail-flashcards"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ALL_STAFF]}>
+                      <CocktailFlashcards />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/wine-quiz"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ALL_STAFF]}>
+                      <WineQuiz />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/spirits-quiz"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ALL_STAFF]}>
+                      <SpiritsQuiz />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* ── Admin routes ── */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
+                      <Admin />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/assets"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
+                      <AdminAssets />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
+                      <AdminUsers />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/dashboard"
+                  element={
+                    <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
+                      <LeadAdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* ── Redirects for old routes ── */}
+                <Route path="/allergy-check" element={<Navigate to="/allergy" replace />} />
+                <Route path="/allergy-training" element={<Navigate to="/allergy" replace />} />
+
+                {/* ── 404 ── */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
