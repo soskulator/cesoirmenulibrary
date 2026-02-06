@@ -103,18 +103,27 @@ export function Header() {
     isLeadAdmin,
     isServerAssistant,
     hasBeverageAccess,
+    hasPermission,
     role,
     fullName,
     signOut,
     loading
   } = useAuth();
   
-  // Filter nav items based on role
+  // Map nav paths to permission keys
+  const navPermissionMap: Record<string, string> = {
+    '/wine-list': 'page:wine-list',
+    '/spirits': 'page:spirits',
+    '/cocktails': 'page:cocktails',
+    '/flashcards': 'page:flashcards',
+    '/daily-focus': 'page:daily-focus',
+    '/allergy': 'page:allergy',
+    '/categories': 'page:categories',
+  };
+
   const filteredNavItems = navItems.filter(item => {
-    // Server Assistants cannot see Wine, Spirits, Cocktails
-    if (isServerAssistant && ['wine-list', 'spirits', 'cocktails'].some(path => item.path.includes(path))) {
-      return false;
-    }
+    const permKey = navPermissionMap[item.path];
+    if (permKey && !hasPermission(permKey)) return false;
     return true;
   });
   

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, UserPlus, History, ArrowLeft, Loader2 } from 'lucide-react';
+import { Users, UserPlus, History, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useStaffManagement } from '@/hooks/useStaffManagement';
 import { ActiveStaffTab } from '@/components/admin/ActiveStaffTab';
 import { InviteStaffTab } from '@/components/admin/InviteStaffTab';
 import { RoleHistoryTab } from '@/components/admin/RoleHistoryTab';
+import { RolePermissionsTab } from '@/components/admin/RolePermissionsTab';
 
 export default function AdminUsersPage() {
   const { user, isAdmin, isLeadAdmin, loading: authLoading } = useAuth();
@@ -95,6 +96,11 @@ export default function AdminUsersPage() {
               <span className="hidden sm:inline">Invite Staff</span>
               <span className="sm:hidden">Invite</span>
             </TabsTrigger>
+            <TabsTrigger value="permissions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <ShieldCheck className="w-4 h-4 mr-1.5 sm:mr-2" />
+              <span className="hidden sm:inline">Role Access</span>
+              <span className="sm:hidden">Access</span>
+            </TabsTrigger>
             {isLeadAdmin && (
               <TabsTrigger value="history" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <History className="w-4 h-4 mr-1.5 sm:mr-2" />
@@ -122,6 +128,10 @@ export default function AdminUsersPage() {
               onRevoke={revokeInvitation}
               onRefresh={fetchInvitations}
             />
+          </TabsContent>
+
+          <TabsContent value="permissions">
+            <RolePermissionsTab />
           </TabsContent>
 
           {isLeadAdmin && (

@@ -14,6 +14,7 @@ interface AuthContextType {
   isServerAssistant: boolean;
   hasBeverageAccess: boolean;
   fullName: string | null;
+  hasPermission: (permissionKey: string) => boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -32,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isServerAssistant, setIsServerAssistant] = useState(false);
   const [hasBeverageAccess, setHasBeverageAccess] = useState(false);
   const [fullName, setFullName] = useState<string | null>(null);
+  const [rolePermissions, setRolePermissions] = useState<Record<string, boolean>>({});
 
   const fetchUserProfile = async (userId: string) => {
     try {
@@ -94,10 +96,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const computeRoleFlags = (userRole: AppRole | null, flags: { isAdmin: boolean; isLeadAdmin: boolean; hasBeverageAccess: boolean }) => {
     const isServerAssistant = userRole === 'server_assistant';
-    // Server assistants don't have beverage access
     const hasBeverageAccess = isServerAssistant ? false : flags.hasBeverageAccess;
-    
     return { isServerAssistant, hasBeverageAccess };
+  };
+
+  const fetchRolePermissions = async (userRole: AppRole | null) => {
+    if (!userRole) { setRolePermissions({}); return; }
+    try {
+      const { data, error } = await supabase
+        .from('role_permissions')
+        .select('permission_key, is_enabled')
+        .eq('role', userRole);
+      if (error) throw error;
+      const map: Record<string, boolean> = {};
+      (data || []).forEach(p => { map[p.permission_key] = p.is_enabled; });
+      setRolePermissions(map);
+    } catch {
+      console.error('Error fetching role permissions');
+      setRolePermissions({});
+    }
+  };
+
+  const hasPermission = (permissionKey: string): boolean => {
+    if (isAdmin || isLeadAdmin) return true; // admins bypass
+    if (!role) return false;
+    return rolePermissions[permissionKey] ?? true; // default allowed if no row
   };
 
   const refreshRole = async () => {
@@ -117,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsServerAssistant(roleFlags.isServerAssistant);
     setHasBeverageAccess(roleFlags.hasBeverageAccess);
     setFullName(name);
+    await fetchRolePermissions(userRole);
   };
 
   useEffect(() => {
@@ -141,6 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               setIsServerAssistant(roleFlags.isServerAssistant);
               setHasBeverageAccess(roleFlags.hasBeverageAccess);
               setFullName(name);
+              fetchRolePermissions(userRole);
             });
           }, 0);
         } else {
@@ -150,6 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsServerAssistant(false);
           setHasBeverageAccess(false);
           setFullName(null);
+          setRolePermissions({});
         }
       }
     );
@@ -173,6 +199,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsServerAssistant(roleFlags.isServerAssistant);
         setHasBeverageAccess(roleFlags.hasBeverageAccess);
         setFullName(name);
+        await fetchRolePermissions(userRole);
       } else {
         setRole(null);
         setIsAdmin(false);
@@ -217,6 +244,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsServerAssistant(false);
     setHasBeverageAccess(false);
     setFullName(null);
+    setRolePermissions({});
   };
 
 
@@ -232,6 +260,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isServerAssistant,
         hasBeverageAccess,
         fullName,
+        hasPermission,
         signIn,
         signUp,
         signOut,

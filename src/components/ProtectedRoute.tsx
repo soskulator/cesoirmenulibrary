@@ -1,13 +1,32 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth, AppRole } from '@/contexts/AuthContext';
 
+// Map route paths to permission keys
+const ROUTE_PERMISSION_MAP: Record<string, string> = {
+  '/categories': 'page:categories',
+  '/wine-list': 'page:wine-list',
+  '/spirits': 'page:spirits',
+  '/cocktails': 'page:cocktails',
+  '/flashcards': 'page:flashcards',
+  '/cocktail-flashcards': 'page:cocktail-flashcards',
+  '/daily-focus': 'page:daily-focus',
+  '/allergy': 'page:allergy',
+  '/foh-test': 'test:knowledge-server', // resolved dynamically below
+  '/wine-quiz': 'quiz:wine',
+  '/spirits-quiz': 'quiz:spirits',
+  '/quiz': 'quiz:food',
+  '/food-quiz': 'quiz:food',
+  '/allergy-quiz': 'quiz:allergy',
+};
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: AppRole | AppRole[];
+  permissionKey?: string; // optional explicit override
 }
 
-export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
-  const { user, loading, role, isAdmin, isLeadAdmin, hasBeverageAccess } = useAuth();
+export function ProtectedRoute({ children, requiredRole, permissionKey }: ProtectedRouteProps) {
+  const { user, loading, role, isAdmin, isLeadAdmin, hasBeverageAccess, hasPermission } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -22,7 +41,6 @@ export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) 
   }
 
   if (!user) {
-    // Redirect to auth page, preserving the intended destination
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
@@ -32,18 +50,31 @@ export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) 
     
     const hasRequiredRole = requiredRoles.some((r) => {
       if (r === 'lead_admin') return isLeadAdmin;
-      if (r === 'admin') return isAdmin; // isAdmin includes lead_admin
-      // For beverage-related roles, check if user has any of these roles
+      if (r === 'admin') return isAdmin;
       if (['server', 'bartender', 'employee'].includes(r)) {
-        // If user is server_assistant, they don't have access to beverage pages
         return hasBeverageAccess;
       }
-      if (r === 'server_assistant') return true; // All authenticated users can access SA content
+      if (r === 'server_assistant') return true;
       return role === r;
     });
 
     if (!hasRequiredRole) {
-      // Redirect to home if user doesn't have required role
+      return <Navigate to="/" replace />;
+    }
+  }
+
+  // Check DB-driven permission
+  const resolvedKey = permissionKey || ROUTE_PERMISSION_MAP[location.pathname];
+  if (resolvedKey && !isAdmin && !isLeadAdmin) {
+    // For /foh-test, check based on query param
+    let effectiveKey = resolvedKey;
+    if (location.pathname === '/foh-test') {
+      const params = new URLSearchParams(location.search);
+      const testType = params.get('type');
+      effectiveKey = testType === 'server_assistant' ? 'test:knowledge-sa' : 'test:knowledge-server';
+    }
+    
+    if (!hasPermission(effectiveKey)) {
       return <Navigate to="/" replace />;
     }
   }
