@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ChevronDown, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User } from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import cesoirLogo from '@/assets/cesoir-logo.png';
@@ -214,69 +214,15 @@ export function Header() {
               </Link>;
         })}
 
-          {/* Test Dropdown - Redesigned with submenus */}
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <button className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors flex items-center gap-1.5", 
-                [...knowledgeTestItems, ...menuTestItems, ...otherTestItems].some(item => location.pathname === item.path || location.pathname.startsWith(item.path.split('?')[0])) 
-                  ? "text-burgundy" 
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-                <HelpCircle className="w-4 h-4" />
-                Test
-                <ChevronDown className="w-3 h-3" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg">
-              {/* Knowledge Test */}
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
-              {/* Only show Bartender/Server test if user has beverage access (not SA) */}
-              {hasBeverageAccess && (
-                <DropdownMenuItem asChild>
-                  <Link to="/foh-test?type=service_staff" className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
-                    <UserCheck className="w-4 h-4" />
-                    Bartender/Server Test
-                  </Link>
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem asChild>
-                <Link to="/foh-test?type=server_assistant" className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
-                  <Users className="w-4 h-4" />
-                  Server Assistant Test
-                </Link>
-              </DropdownMenuItem>
-              
-              <DropdownMenuSeparator />
-              
-              {/* Menu Tests - filter out beverage tests for SAs */}
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Menu Tests</DropdownMenuLabel>
-              {menuTestItems.filter(item => {
-                // Server Assistants cannot see Wine or Spirits tests
-                if (isServerAssistant && (item.path.includes('wine') || item.path.includes('spirits'))) {
-                  return false;
-                }
-                return true;
-              }).map(item => (
-                <DropdownMenuItem key={item.path} asChild>
-                  <Link to={item.path} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
-                    <item.icon className="w-4 h-4" />
-                    {item.label}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-              
-              <DropdownMenuSeparator />
-              
-              {/* Other Tests */}
-              {otherTestItems.map(item => (
-                <DropdownMenuItem key={item.path} asChild>
-                  <Link to={item.path} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
-                    <item.icon className="w-4 h-4" />
-                    {item.label}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Test Link - Direct */}
+          <Link to="/quiz" className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors flex items-center gap-1.5",
+            location.pathname === '/quiz' || location.pathname === '/foh-test' || location.pathname === '/wine-quiz' || location.pathname === '/spirits-quiz' || location.pathname === '/food-quiz' || location.pathname === '/allergy-quiz'
+              ? "text-burgundy"
+              : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+            <HelpCircle className="w-4 h-4" />
+            Test
+            {location.pathname === '/quiz' && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
+          </Link>
           
           {isAdmin && <>
               <div className="w-px h-5 bg-border mx-1.5" />
@@ -414,72 +360,13 @@ export function Header() {
               </Link>;
         })}
 
-          {/* Test Section - Mobile (Collapsible) */}
+          {/* Test Link - Mobile Direct */}
           <div className="h-px bg-border my-2" />
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <button className={cn("w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors", 
-                [...knowledgeTestItems, ...menuTestItems, ...otherTestItems].some(item => location.pathname === item.path || location.pathname.startsWith(item.path.split('?')[0])) 
-                  ? "bg-burgundy/10 text-burgundy" 
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-                <span className="flex items-center gap-3">
-                  <HelpCircle className="w-5 h-5" />
-                  <span className="font-medium">Test</span>
-                </span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg">
-              {/* Knowledge Test */}
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Knowledge Test</DropdownMenuLabel>
-              {/* Only show Bartender/Server test if user has beverage access */}
-              {hasBeverageAccess && (
-                <DropdownMenuItem asChild>
-                  <Link to="/foh-test?type=service_staff" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
-                    <UserCheck className="w-4 h-4" />
-                    Bartender/Server Test
-                  </Link>
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem asChild>
-                <Link to="/foh-test?type=server_assistant" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === '/foh-test' && "text-burgundy")}>
-                  <Users className="w-4 h-4" />
-                  Server Assistant Test
-                </Link>
-              </DropdownMenuItem>
-              
-              <DropdownMenuSeparator />
-              
-              {/* Menu Tests - filter out beverage tests for SAs */}
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Menu Tests</DropdownMenuLabel>
-              {menuTestItems.filter(item => {
-                // Server Assistants cannot see Wine or Spirits tests
-                if (isServerAssistant && (item.path.includes('wine') || item.path.includes('spirits'))) {
-                  return false;
-                }
-                return true;
-              }).map(item => (
-                <DropdownMenuItem key={item.path} asChild>
-                  <Link to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
-                    <item.icon className="w-4 h-4" />
-                    {item.label}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-              
-              <DropdownMenuSeparator />
-              
-              {/* Other Tests */}
-              {otherTestItems.map(item => (
-                <DropdownMenuItem key={item.path} asChild>
-                  <Link to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-2 cursor-pointer", location.pathname === item.path && "text-burgundy")}>
-                    <item.icon className="w-4 h-4" />
-                    {item.label}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link to="/quiz" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+            location.pathname === '/quiz' ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+            <HelpCircle className="w-5 h-5" />
+            <span className="font-medium">Test</span>
+          </Link>
           
           {isAdmin && <>
               <div className="h-px bg-border my-2" />
