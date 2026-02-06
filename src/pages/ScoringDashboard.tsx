@@ -119,7 +119,7 @@ export default function ScoringDashboard() {
 
         {/* SECTION 1: Team Overview */}
         {overview && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
             <OverviewCard
               icon={<TrendingUp className="w-5 h-5 text-copper" />}
               label="Avg Team Score"
@@ -137,13 +137,6 @@ export default function ScoringDashboard() {
               label="Staff Not Tested"
               value={overview.staffNotTested.toString()}
               delay={0.2}
-            />
-            <OverviewCard
-              icon={<AlertTriangle className="w-5 h-5 text-copper" />}
-              label="Lowest Category"
-              value={overview.lowestCategory}
-              sub={overview.lowestCategory !== 'N/A' ? `${overview.lowestCategoryScore}%` : undefined}
-              delay={0.3}
             />
           </div>
         )}
