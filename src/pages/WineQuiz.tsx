@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { menuItems } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
+import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 
 import { 
   Check, 
@@ -52,6 +53,8 @@ export default function WineQuizPage() {
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
   const [quizType, setQuizType] = useState<'all' | 'identify' | 'knowledge'>('all');
 
+  const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('wine');
+
   // Get wine items
   const wines = useMemo(() => 
     menuItems.filter(i => i.categoryId === 'wine' && i.isPublished),
@@ -61,7 +64,22 @@ export default function WineQuizPage() {
   // Build wine-specific questions
   const allQuestions: WineQuizQuestion[] = useMemo(() => {
     const questions: WineQuizQuestion[] = [];
+
+    // If DB has wine questions, add them as knowledge questions
+    if (!dbIsEmpty) {
+      dbQuestions.forEach(dbQ => {
+        questions.push({
+          id: `db-${dbQ.id}`,
+          wineId: '',
+          wineName: '',
+          questionType: 'knowledge',
+          prompt: dbQ.question_text,
+          answer: dbQ.correct_answer,
+        });
+      });
+    }
     
+    // Always include menu-generated questions as well
     wines.forEach(wine => {
       const image = getDishImage(wine.id);
       const region = getWineRegion(wine);
@@ -124,7 +142,7 @@ export default function WineQuizPage() {
     }
     
     return questions;
-  }, [wines, quizType]);
+  }, [wines, quizType, dbQuestions, dbIsEmpty]);
 
   // Shuffle questions
   const [shuffledQuestions, setShuffledQuestions] = useState<WineQuizQuestion[]>([]);

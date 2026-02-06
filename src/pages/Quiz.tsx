@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { menuItems, categories } from '@/data/menuData';
+import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 
 import { 
   Check, 
@@ -42,21 +43,42 @@ export default function QuizPage() {
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
 
-  // Build questions from menu items
+  // Check DB for general questions
+  const { questions: dbGeneralQuestions, isEmpty: dbIsEmpty } = useCategoryQuestions('general');
+
+  // Build questions from menu items + DB
   const allQuestions: QuizQuestion[] = useMemo(() => {
+    const questions: QuizQuestion[] = [];
+
+    // Add DB general questions first
+    if (!dbIsEmpty) {
+      dbGeneralQuestions.forEach(dbQ => {
+        questions.push({
+          id: `db-${dbQ.id}`,
+          menuItemId: '',
+          menuItemName: 'Database Question',
+          type: 'quiz',
+          prompt: dbQ.question_text,
+          answer: dbQ.correct_answer,
+        });
+      });
+    }
+
     let items = menuItems.filter(i => i.isPublished);
     if (selectedCategory) {
       items = items.filter(i => i.categoryId === selectedCategory);
     }
     
-    return items.flatMap(item => 
+    items.flatMap(item => 
       item.questions.map(q => ({
         ...q,
         menuItemId: item.id,
         menuItemName: item.name,
       }))
-    );
-  }, [selectedCategory]);
+    ).forEach(q => questions.push(q));
+
+    return questions;
+  }, [selectedCategory, dbGeneralQuestions, dbIsEmpty]);
 
   // Shuffle questions
   const [shuffledQuestions, setShuffledQuestions] = useState<QuizQuestion[]>([]);

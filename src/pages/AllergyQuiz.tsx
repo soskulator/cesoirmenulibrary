@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { menuItems, categories, allergens, AllergenType } from '@/data/menuData';
+import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 import { 
   Check, 
   X, 
@@ -108,6 +109,10 @@ export default function AllergyQuizPage() {
   const [selectedIngredients, setSelectedIngredients] = useState<Set<string>>(new Set());
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [shuffledQuestions, setShuffledQuestions] = useState<AllergyQuizQuestion[]>([]);
+  
+  // DB allergy questions are available but this quiz format is specialized
+  // (ingredient removal), so DB questions are currently informational only
+  const { questions: dbAllergyQuestions, isEmpty: dbIsEmpty } = useCategoryQuestions('allergy');
 
   const allQuestions = useMemo(() => generateQuestions(), []);
 

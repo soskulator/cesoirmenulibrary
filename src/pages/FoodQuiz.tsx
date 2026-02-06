@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { menuItems } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
 import { useQuizScores } from '@/hooks/useQuizScores';
+import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 
 import { 
   Check, 
@@ -57,6 +58,7 @@ export default function FoodQuizPage() {
   const [isCorrect, setIsCorrect] = useState(false);
 
   const { saveQuizScore } = useQuizScores();
+  const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('food');
 
   // Get food items only
   const foodItems = useMemo(() => 
@@ -71,6 +73,33 @@ export default function FoodQuizPage() {
   // Build simplified questions - max 30
   const allQuestions: FoodQuizQuestion[] = useMemo(() => {
     const questions: FoodQuizQuestion[] = [];
+
+    // Add DB questions first if available
+    if (!dbIsEmpty) {
+      dbQuestions.forEach(dbQ => {
+        if (dbQ.question_type === 'multiple_choice' && dbQ.options && dbQ.options.length > 0) {
+          questions.push({
+            id: `db-${dbQ.id}`,
+            itemId: '',
+            itemName: '',
+            format: 'select',
+            prompt: dbQ.question_text,
+            correctAnswer: dbQ.correct_answer,
+            options: dbQ.options,
+          });
+        } else {
+          questions.push({
+            id: `db-${dbQ.id}`,
+            itemId: '',
+            itemName: '',
+            format: 'write',
+            prompt: dbQ.question_text,
+            correctAnswer: dbQ.correct_answer,
+          });
+        }
+      });
+    }
+
     const formats: QuestionFormat[] = ['write', 'select', 'eliminate'];
     
     // Distribute question types evenly
@@ -80,7 +109,6 @@ export default function FoodQuizPage() {
       
       // Simple identification or knowledge questions
       if (format === 'write') {
-        // Write question - identify dish by image or describe key ingredient
         if (image) {
           questions.push({
             id: `${item.id}-write`,
@@ -102,7 +130,6 @@ export default function FoodQuizPage() {
           });
         }
       } else if (format === 'select') {
-        // Multiple choice - select correct answer
         const wrongOptions = getWrongOptions(item.name, allDishNames, 3);
         if (image) {
           questions.push({
@@ -127,7 +154,6 @@ export default function FoodQuizPage() {
           });
         }
       } else {
-        // Eliminate - select wrong answers to eliminate
         const wrongOptions = getWrongOptions(item.name, allDishNames, 2);
         if (item.shortDescription || image) {
           questions.push({
@@ -148,7 +174,7 @@ export default function FoodQuizPage() {
     
     // Shuffle and limit to MAX_QUESTIONS
     return shuffle(questions).slice(0, MAX_QUESTIONS);
-  }, [foodItems, allDishNames]);
+  }, [foodItems, allDishNames, dbQuestions, dbIsEmpty]);
 
   const [shuffledQuestions, setShuffledQuestions] = useState<FoodQuizQuestion[]>([]);
 
