@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import {
   Utensils,
   GraduationCap,
   TrendingUp,
+  X,
 } from "lucide-react";
 import { categories, menuItems, getCategoryById } from "@/data/menuData";
 import { getCategoryIcon } from "@/data/categoryIcons";
@@ -76,7 +77,15 @@ const fadeUp = {
 
 export default function Index() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { foodItems, cocktailOfTheDay, dateString } = useDailyRotation(3, 1);
+  const [trainingModalOpen, setTrainingModalOpen] = useState(false);
+
+  const trainingOptions = [
+    { icon: CreditCard, title: "Flashcards", description: "Study with interactive flip cards", path: "/flashcards" },
+    { icon: Layers, title: "Explore Menu", description: "Browse all categories and items", path: "/categories" },
+    { icon: AlertTriangle, title: "Allergy Center", description: "Quick allergen reference", path: "/allergy" },
+  ];
 
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
@@ -196,12 +205,10 @@ export default function Index() {
               <Button
                 size="lg"
                 className="bg-copper text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300 group"
-                asChild
+                onClick={() => setTrainingModalOpen(true)}
               >
-                <Link to="/flashcards">
-                  <BookOpen className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  Start Training
-                </Link>
+                <BookOpen className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                Start Training
               </Button>
               <Button
                 size="lg"
@@ -564,6 +571,56 @@ export default function Index() {
           </motion.div>
         </div>
       </section>
+
+      {/* ═══════════════════ TRAINING MODAL ═══════════════════ */}
+      <AnimatePresence>
+        {trainingModalOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setTrainingModalOpen(false)}
+            />
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="bg-background rounded-2xl shadow-2xl w-full max-w-sm p-6 relative" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={() => setTrainingModalOpen(false)}
+                  className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <h3 className="font-serif text-xl font-semibold text-foreground mb-1">Start Training</h3>
+                <p className="text-sm text-muted-foreground mb-5">Choose your study mode</p>
+                <div className="flex flex-col gap-3">
+                  {trainingOptions.map((opt) => (
+                    <button
+                      key={opt.path}
+                      onClick={() => { setTrainingModalOpen(false); navigate(opt.path); }}
+                      className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-copper/30 transition-all duration-200 text-left group"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-copper/10 text-copper flex items-center justify-center group-hover:bg-copper group-hover:text-white transition-all">
+                        <opt.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground">{opt.title}</p>
+                        <p className="text-xs text-muted-foreground">{opt.description}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </Layout>
   );
 }
