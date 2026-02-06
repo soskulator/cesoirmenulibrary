@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Layout } from "@/components/Layout";
@@ -14,12 +15,16 @@ import {
   MapPin,
   BookOpen,
   Utensils,
+  GraduationCap,
+  TrendingUp,
 } from "lucide-react";
 import { categories, menuItems, getCategoryById } from "@/data/menuData";
 import { getCategoryIcon } from "@/data/categoryIcons";
 import { useDailyRotation } from "@/hooks/useDailyRotation";
 import { DailyCocktailCard } from "@/components/DailyCocktailCard";
 import { getDishImage } from "@/data/dishImages";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import bayfrontSketch from "@/assets/bayfront-fountain-sketch.jpg";
 import logoImage from "@/assets/cesoir-logo.png";
 
@@ -70,7 +75,7 @@ const fadeUp = {
 };
 
 export default function Index() {
-  // Daily rotation for food + cocktail spotlight
+  const { user } = useAuth();
   const { foodItems, cocktailOfTheDay, dateString } = useDailyRotation(3, 1);
 
   const { scrollY } = useScroll();
@@ -82,6 +87,45 @@ export default function Index() {
       behavior: "smooth",
     });
   };
+
+  // My Progress data
+  const [progressData, setProgressData] = useState<{
+    lastScore: number | null;
+    lastDate: string | null;
+    flashcardsStudied: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setProgressData(null);
+      return;
+    }
+
+    const fetchProgress = async () => {
+      const [attemptsRes, studyRes] = await Promise.all([
+        supabase
+          .from("foh_test_attempts")
+          .select("percentage, completed_at")
+          .eq("user_id", user.id)
+          .not("completed_at", "is", null)
+          .order("completed_at", { ascending: false })
+          .limit(1),
+        supabase
+          .from("study_progress")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id),
+      ]);
+
+      const lastAttempt = attemptsRes.data?.[0];
+      setProgressData({
+        lastScore: lastAttempt?.percentage ?? null,
+        lastDate: lastAttempt?.completed_at ?? null,
+        flashcardsStudied: studyRes.count ?? 0,
+      });
+    };
+
+    fetchProgress();
+  }, [user]);
 
   return (
     <Layout>
@@ -99,7 +143,6 @@ export default function Index() {
             width={1920}
             height={1280}
           />
-          {/* Stronger overlay for consistent text contrast */}
           <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
         </div>
 
@@ -142,57 +185,46 @@ export default function Index() {
             <span className="text-sm font-semibold tracking-widest uppercase">Naples, Florida</span>
           </motion.div>
 
-          {/* ── Hero CTAs — module navigation ── */}
+          {/* ── Hero CTAs ── */}
           <motion.div
-            className="flex flex-col items-center gap-6"
+            className="flex flex-col items-center gap-4"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <div className="flex items-center justify-center gap-3 sm:gap-4">
               <Button
                 size="lg"
-                className="bg-charcoal text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300 group"
+                className="bg-copper text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300 group"
                 asChild
               >
                 <Link to="/flashcards">
                   <BookOpen className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  Study Flashcards
+                  Start Training
                 </Link>
               </Button>
               <Button
                 size="lg"
-                className="bg-copper text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300"
-                asChild
-              >
-                <Link to="/categories">
-                  <Layers className="w-5 h-5 mr-2" />
-                  Explore Menu
-                </Link>
-              </Button>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Button
-                variant="outline"
-                className="border-charcoal/30 text-charcoal hover:bg-charcoal/10 font-medium px-5 py-2"
+                className="bg-charcoal text-white font-semibold px-8 py-5 text-base tracking-wide shadow-lg hover:bg-charcoal-light hover:shadow-xl transition-all duration-300"
                 asChild
               >
                 <Link to="/quiz">
-                  <HelpCircle className="w-4 h-4 mr-2" />
-                  Tests
-                </Link>
-              </Button>
-              <Button
-                variant="outline"
-                className="border-charcoal/30 text-charcoal hover:bg-charcoal/10 font-medium px-5 py-2"
-                asChild
-              >
-                <Link to="/allergy">
-                  <AlertTriangle className="w-4 h-4 mr-2" />
-                  Allergy Center
+                  <HelpCircle className="w-5 h-5 mr-2" />
+                  Take Test
                 </Link>
               </Button>
             </div>
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-charcoal/30 text-charcoal hover:bg-charcoal/10 font-medium px-6 py-4"
+              asChild
+            >
+              <Link to="/categories">
+                <Layers className="w-4 h-4 mr-2" />
+                Explore Menu
+              </Link>
+            </Button>
           </motion.div>
         </motion.div>
 
@@ -233,12 +265,12 @@ export default function Index() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-40px" }}
-            className="grid gap-5 grid-cols-2 lg:grid-cols-4"
+            className="grid gap-4 grid-cols-2 lg:grid-cols-4"
           >
             {features.map((feature) => (
               <motion.div key={feature.path} variants={fadeUp}>
                 <Link to={feature.path}>
-                  <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-500 hover:shadow-elevated">
+                  <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-500 hover:shadow-elevated min-h-[48px]">
                     <CardContent className="p-6 md:p-8 text-center">
                       <div className="w-14 h-14 rounded-2xl bg-copper/10 text-copper flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:bg-copper group-hover:text-charcoal transition-all duration-500">
                         <feature.icon className="w-6 h-6" />
@@ -255,6 +287,71 @@ export default function Index() {
           </motion.div>
         </div>
       </section>
+
+      {/* ═══════════════════ MY PROGRESS (logged-in only) ═══════════════════ */}
+      {user && progressData && (
+        <section className="py-14 md:py-20 bg-muted/20">
+          <div className="container max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6 }}
+            >
+              <Card className="border-0 shadow-elevated overflow-hidden">
+                <CardContent className="p-6 md:p-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-copper/10 flex items-center justify-center">
+                      <TrendingUp className="w-5 h-5 text-copper" />
+                    </div>
+                    <h3 className="font-serif text-xl font-semibold">My Progress</h3>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Last Test Score</p>
+                      {progressData.lastScore !== null ? (
+                        <>
+                          <p className="text-3xl font-serif font-bold text-copper">
+                            {Math.round(progressData.lastScore)}%
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {progressData.lastDate
+                              ? new Date(progressData.lastDate).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                })
+                              : ""}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic">No tests taken yet</p>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Flashcards Studied</p>
+                      <p className="text-3xl font-serif font-bold text-copper">
+                        {progressData.flashcardsStudied}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">items reviewed</p>
+                    </div>
+                  </div>
+
+                  <Button
+                    className="w-full bg-copper text-white hover:bg-copper-light font-semibold"
+                    asChild
+                  >
+                    <Link to="/flashcards">
+                      <GraduationCap className="w-4 h-4 mr-2" />
+                      Continue Studying
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ═══════════════════ FEATURED COCKTAIL ═══════════════════ */}
       {cocktailOfTheDay && (
