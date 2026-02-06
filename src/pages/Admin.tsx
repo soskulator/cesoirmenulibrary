@@ -273,6 +273,12 @@ export default function AdminPage() {
                   )}
                   Sync Menu
                 </Button>
+                <Button asChild variant="outline" size="sm" className="border-copper/30 hover:bg-copper/10 hover:text-copper text-xs sm:text-sm">
+                  <Link to="/admin/seed-questions">
+                    <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                    Seed Questions
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>

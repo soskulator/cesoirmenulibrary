@@ -35,6 +35,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const AdminAssets = lazy(() => import("./pages/AdminAssets"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const LeadAdminDashboard = lazy(() => import("./pages/LeadAdminDashboard"));
+const AdminSeedQuestions = lazy(() => import("./pages/AdminSeedQuestions"));
 
 // ─── Role constants (single source of truth) ───
 const ROLES = {
@@ -250,6 +251,14 @@ const App = () => (
                   element={
                     <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
                       <LeadAdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/seed-questions"
+                  element={
+                    <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
+                      <AdminSeedQuestions />
                     </ProtectedRoute>
                   }
                 />
