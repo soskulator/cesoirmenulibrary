@@ -394,6 +394,36 @@ export type Database = {
         }
         Relationships: []
       }
+      role_audit_log: {
+        Row: {
+          changed_by: string
+          created_at: string
+          id: string
+          new_role: string | null
+          old_role: string | null
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          changed_by: string
+          created_at?: string
+          id?: string
+          new_role?: string | null
+          old_role?: string | null
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          changed_by?: string
+          created_at?: string
+          id?: string
+          new_role?: string | null
+          old_role?: string | null
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       staff_activity_log: {
         Row: {
           activity_type: string
@@ -418,6 +448,45 @@ export type Database = {
           item_category?: string | null
           item_name?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      staff_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          full_name: string | null
+          id: string
+          invitation_code: string
+          invited_by: string
+          invited_role: string
+          status: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invitation_code?: string
+          invited_by: string
+          invited_role: string
+          status?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invitation_code?: string
+          invited_by?: string
+          invited_role?: string
+          status?: string
         }
         Relationships: []
       }
