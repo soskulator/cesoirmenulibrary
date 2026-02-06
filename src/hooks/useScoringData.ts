@@ -161,13 +161,21 @@ export function useScoringData() {
         catScores[a.test_type].count++;
       });
 
+      const testTypeLabels: Record<string, string> = {
+        service_staff: 'Service Staff',
+        server_assistant: 'Server Assistant',
+        bartender: 'Bartender',
+        server: 'Server',
+        general: 'General',
+      };
+
       let lowestCategory = 'N/A';
       let lowestCategoryScore = 100;
       Object.entries(catScores).forEach(([cat, { sum, count }]) => {
         const avg = Math.round(sum / count);
         if (avg < lowestCategoryScore) {
           lowestCategoryScore = avg;
-          lowestCategory = cat;
+          lowestCategory = testTypeLabels[cat] || cat.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         }
       });
 
