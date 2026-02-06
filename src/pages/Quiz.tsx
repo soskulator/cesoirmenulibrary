@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { menuItems, categories } from '@/data/menuData';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
+import { useAuth } from '@/contexts/AuthContext';
 
-import { 
+import {
   Check, 
   X, 
   Eye, 
@@ -36,6 +37,7 @@ interface QuizQuestion {
 }
 
 export default function QuizPage() {
+  const { hasPermission } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [quizStarted, setQuizStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -216,6 +218,7 @@ export default function QuizPage() {
           <div className="mb-6 sm:mb-8">
             <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Knowledge Tests</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {hasPermission('test:knowledge-server') && (
               <Link to="/foh-test?type=service_staff" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5">
                   <div className="flex items-center gap-3">
@@ -230,7 +233,9 @@ export default function QuizPage() {
                   </div>
                 </div>
               </Link>
+              )}
               
+              {hasPermission('test:knowledge-sa') && (
               <Link to="/foh-test?type=server_assistant" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5">
                   <div className="flex items-center gap-3">
@@ -245,6 +250,7 @@ export default function QuizPage() {
                   </div>
                 </div>
               </Link>
+              )}
             </div>
           </div>
 
@@ -252,6 +258,7 @@ export default function QuizPage() {
           <div className="pt-6 border-t border-border">
             <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Menu Tests (Optional)</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+              {hasPermission('quiz:wine') && (
               <Link to="/wine-quiz" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-burgundy/10 flex items-center justify-center group-hover:bg-burgundy/20 transition-colors mx-auto mb-2">
@@ -260,7 +267,9 @@ export default function QuizPage() {
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-burgundy transition-colors">Wine</h3>
                 </div>
               </Link>
+              )}
 
+              {hasPermission('quiz:food') && (
               <Link to="/food-quiz" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-sage/10 via-sage/5 to-transparent border border-sage/20 p-4 transition-all duration-300 hover:border-sage/40 hover:shadow-lg hover:shadow-sage/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-sage/10 flex items-center justify-center group-hover:bg-sage/20 transition-colors mx-auto mb-2">
@@ -269,7 +278,9 @@ export default function QuizPage() {
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-sage transition-colors">Food</h3>
                 </div>
               </Link>
+              )}
 
+              {hasPermission('page:cocktail-flashcards') && (
               <Link to="/cocktail-flashcards" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gold/10 via-gold/5 to-transparent border border-gold/20 p-4 transition-all duration-300 hover:border-gold/40 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors mx-auto mb-2">
@@ -278,7 +289,9 @@ export default function QuizPage() {
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-gold transition-colors">Cocktails</h3>
                 </div>
               </Link>
+              )}
 
+              {hasPermission('quiz:spirits') && (
               <Link to="/spirits-quiz" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
@@ -287,9 +300,11 @@ export default function QuizPage() {
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-copper transition-colors">Spirits</h3>
                 </div>
               </Link>
+              )}
             </div>
 
             {/* Allergy Test */}
+            {hasPermission('quiz:allergy') && (
             <Link to="/allergy-quiz" className="group block">
               <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5">
                 <div className="flex items-center gap-3">
@@ -304,6 +319,7 @@ export default function QuizPage() {
                 </div>
               </div>
             </Link>
+            )}
           </div>
         </div>
       </Layout>
