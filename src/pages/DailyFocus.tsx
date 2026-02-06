@@ -31,6 +31,7 @@ export default function DailyFocusPage() {
   const navigate = useNavigate();
   const [refreshKey, setRefreshKey] = useState(0);
   const [savedFocusItems, setSavedFocusItems] = useState<MenuItem[]>([]);
+  const [savedCocktail, setSavedCocktail] = useState<MenuItem | null>(null);
   const [isLoadingSaved, setIsLoadingSaved] = useState(true);
   const today = format(new Date(), 'yyyy-MM-dd');
   
@@ -41,7 +42,7 @@ export default function DailyFocusPage() {
         setIsLoadingSaved(true);
         const { data, error } = await supabase
           .from('daily_focus_settings')
-          .select('menu_item_ids')
+          .select('menu_item_ids, cocktail_id, notes')
           .eq('focus_date', today)
           .maybeSingle();
 
@@ -52,6 +53,11 @@ export default function DailyFocusPage() {
             .map(id => menuItems.find(item => item.id === id))
             .filter((item): item is MenuItem => item !== undefined);
           setSavedFocusItems(items);
+        }
+        // If a cocktail_id is set, find it and override the auto-rotation
+        if (data?.cocktail_id) {
+          const cocktail = menuItems.find(i => i.id === data.cocktail_id);
+          if (cocktail) setSavedCocktail(cocktail);
         }
       } catch (error) {
         console.error('Error fetching saved focus:', error);
@@ -257,13 +263,13 @@ export default function DailyFocusPage() {
         </motion.div>
 
         {/* Cocktail of the Day Section */}
-        {cocktailOfTheDay && (
+        {(savedCocktail || cocktailOfTheDay) && (
           <div className="mt-8 sm:mt-10 md:mt-12">
             <div className="flex items-center gap-3 mb-4 sm:mb-6">
               <Wine className="w-5 h-5 sm:w-6 sm:h-6 text-copper" />
               <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-bold">Cocktail of the Day</h2>
             </div>
-            <DailyCocktailCard cocktail={cocktailOfTheDay} dateString={dateString} />
+            <DailyCocktailCard cocktail={(savedCocktail || cocktailOfTheDay)!} dateString={dateString} />
           </div>
         )}
 
