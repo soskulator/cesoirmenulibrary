@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.send-design-update-email]
 verify_jwt = false
+
+[functions.send-staff-invitation]
+verify_jwt = false
+
+[functions.delete-user]
+verify_jwt = false
