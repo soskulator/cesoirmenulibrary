@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Settings, Pencil, ListChecks, Loader2 } from 'lucide-react';
+import { Settings, Pencil, ListChecks, Loader2, Plus } from 'lucide-react';
 import { useTestConfigs, DIFFICULTIES, type TestConfig } from '@/hooks/useQuizQuestions';
 import { useToast } from '@/hooks/use-toast';
 
@@ -15,18 +15,32 @@ interface Props {
   onManageQuestions: (config: TestConfig) => void;
 }
 
+const defaultForm = {
+  test_name: '',
+  test_type: '',
+  total_questions: 30,
+  passing_score: 70,
+  time_limit_minutes: '' as string,
+  is_active: true,
+  difficulty_filter: [] as string[],
+};
+
 export function TestConfigurationsTab({ onManageQuestions }: Props) {
-  const { configs, isLoading, fetchConfigs, updateConfig } = useTestConfigs();
+  const { configs, isLoading, fetchConfigs, createConfig, updateConfig } = useTestConfigs();
   const { toast } = useToast();
   const [editing, setEditing] = useState<TestConfig | null>(null);
-  const [form, setForm] = useState({ test_name: '', total_questions: 30, passing_score: 70, time_limit_minutes: '' as string, is_active: true, difficulty_filter: [] as string[] });
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState({ ...defaultForm });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => { fetchConfigs(); }, [fetchConfigs]);
 
   const openEdit = (config: TestConfig) => {
     setEditing(config);
+    setCreating(false);
     setForm({
       test_name: config.test_name,
+      test_type: config.test_type,
       total_questions: config.total_questions,
       passing_score: config.passing_score,
       time_limit_minutes: config.time_limit_minutes?.toString() ?? '',
@@ -35,20 +49,60 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
     });
   };
 
+  const openCreate = () => {
+    setEditing(null);
+    setCreating(true);
+    setForm({ ...defaultForm });
+  };
+
+  const closeModal = () => {
+    setEditing(null);
+    setCreating(false);
+  };
+
   const handleSave = async () => {
-    if (!editing) return;
-    const ok = await updateConfig(editing.id, {
-      test_name: form.test_name,
-      total_questions: form.total_questions,
-      passing_score: form.passing_score,
-      time_limit_minutes: form.time_limit_minutes ? Number(form.time_limit_minutes) : null,
-      is_active: form.is_active,
-      difficulty_filter: form.difficulty_filter.length > 0 ? form.difficulty_filter : null,
-    });
-    if (ok) {
-      toast({ title: 'Configuration updated' });
-      setEditing(null);
+    if (!form.test_name.trim()) {
+      toast({ title: 'Test name is required', variant: 'destructive' });
+      return;
     }
+
+    setIsSaving(true);
+    const diffFilter = form.difficulty_filter.length > 0 ? form.difficulty_filter : null;
+
+    if (editing) {
+      const ok = await updateConfig(editing.id, {
+        test_name: form.test_name,
+        total_questions: form.total_questions,
+        passing_score: form.passing_score,
+        time_limit_minutes: form.time_limit_minutes ? Number(form.time_limit_minutes) : null,
+        is_active: form.is_active,
+        difficulty_filter: diffFilter,
+      });
+      if (ok) {
+        toast({ title: 'Configuration updated' });
+        closeModal();
+      }
+    } else if (creating) {
+      if (!form.test_type.trim()) {
+        toast({ title: 'Test type identifier is required', variant: 'destructive' });
+        setIsSaving(false);
+        return;
+      }
+      const result = await createConfig({
+        test_name: form.test_name,
+        test_type: form.test_type.toLowerCase().replace(/\s+/g, '_'),
+        total_questions: form.total_questions,
+        passing_score: form.passing_score,
+        time_limit_minutes: form.time_limit_minutes ? Number(form.time_limit_minutes) : null,
+        is_active: form.is_active,
+        difficulty_filter: diffFilter,
+      });
+      if (result) {
+        toast({ title: 'Test configuration created' });
+        closeModal();
+      }
+    }
+    setIsSaving(false);
   };
 
   const testTypeLabels: Record<string, string> = {
@@ -69,9 +123,17 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
     );
   }
 
+  const isModalOpen = !!editing || creating;
+
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">{configs.length} test configuration{configs.length !== 1 ? 's' : ''}</p>
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">{configs.length} test configuration{configs.length !== 1 ? 's' : ''}</p>
+        <Button onClick={openCreate} className="bg-copper hover:bg-copper-light text-white">
+          <Plus className="w-4 h-4 mr-2" />
+          Create New Test
+        </Button>
+      </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
         {configs.map(config => (
@@ -129,17 +191,30 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
         ))}
       </div>
 
-      {/* Edit Modal */}
-      <Dialog open={!!editing} onOpenChange={v => { if (!v) setEditing(null); }}>
+      {/* Create / Edit Modal */}
+      <Dialog open={isModalOpen} onOpenChange={v => { if (!v) closeModal(); }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-serif text-xl">Edit Test Configuration</DialogTitle>
+            <DialogTitle className="font-serif text-xl">
+              {creating ? 'Create Test Configuration' : 'Edit Test Configuration'}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-2">
               <Label>Test Name</Label>
-              <Input value={form.test_name} onChange={e => setForm(f => ({ ...f, test_name: e.target.value }))} />
+              <Input value={form.test_name} onChange={e => setForm(f => ({ ...f, test_name: e.target.value }))} placeholder="e.g. Wine Knowledge Test" />
             </div>
+            {creating && (
+              <div className="space-y-2">
+                <Label>Test Type Identifier</Label>
+                <Input
+                  value={form.test_type}
+                  onChange={e => setForm(f => ({ ...f, test_type: e.target.value }))}
+                  placeholder="e.g. wine_advanced"
+                />
+                <p className="text-xs text-muted-foreground">Unique key used internally (lowercase, underscores). Cannot be changed later.</p>
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Total Questions</Label>
@@ -181,8 +256,11 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
               <Label>Active</Label>
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <Button variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
-              <Button onClick={handleSave} className="bg-copper hover:bg-copper-light text-white">Save Changes</Button>
+              <Button variant="outline" onClick={closeModal}>Cancel</Button>
+              <Button onClick={handleSave} disabled={isSaving} className="bg-copper hover:bg-copper-light text-white">
+                {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                {creating ? 'Create Test' : 'Save Changes'}
+              </Button>
             </div>
           </div>
         </DialogContent>
