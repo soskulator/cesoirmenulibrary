@@ -37,7 +37,7 @@ export default function ScoringDashboard() {
   const { isAdmin } = useAuth();
   const {
     leaderboard, overview, incompleteStaff, isLoading,
-    fetchAll, fetchStaffDetail, exportCSV,
+    fetchAll, fetchStaffDetail, exportCSV, sendReminder,
   } = useScoringData();
 
   const [sortBy, setSortBy] = useState<SortKey>('avg');
@@ -293,7 +293,7 @@ export default function ScoringDashboard() {
                         ))}
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" className="h-8 text-xs" disabled>
+                    <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => sendReminder(s)}>
                       <Bell className="w-3.5 h-3.5 mr-1" />
                       Send Reminder
                     </Button>

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export interface StaffScore {
   userId: string;
@@ -291,6 +292,23 @@ export function useScoringData() {
     URL.revokeObjectURL(url);
   }, [leaderboard]);
 
+  const sendReminder = useCallback(async (staff: IncompleteStaff) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-test-reminder', {
+        body: {
+          email: staff.email,
+          fullName: staff.fullName,
+          missingTests: staff.missingTests,
+        },
+      });
+      if (error) throw error;
+      toast.success(`Reminder sent to ${staff.fullName}`);
+    } catch (err: any) {
+      console.error('Error sending reminder:', err);
+      toast.error('Failed to send reminder');
+    }
+  }, []);
+
   return {
     leaderboard,
     overview,
@@ -299,5 +317,6 @@ export function useScoringData() {
     fetchAll,
     fetchStaffDetail,
     exportCSV,
+    sendReminder,
   };
 }
