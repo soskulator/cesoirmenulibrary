@@ -19,6 +19,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
+import { MenuItemsManager } from '@/components/admin/MenuItemsManager';
 import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
 import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
 import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
@@ -62,6 +63,7 @@ export default function LeadAdminDashboard() {
     addItem,
     updateItem,
     deleteItem,
+    bulkUpdate,
     fetchItems
   } = useMenuItems();
   
@@ -348,6 +350,19 @@ export default function LeadAdminDashboard() {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Full Menu Items Editor */}
+          <div className="mb-6 sm:mb-8">
+            <MenuItemsManager
+              items={menuItems}
+              categories={categories}
+              isLoading={menuLoading}
+              onUpdate={updateItem}
+              onAdd={addItem}
+              onBulkUpdate={bulkUpdate}
+              onRefresh={fetchItems}
+            />
           </div>
 
           {/* Management Cards Grid */}

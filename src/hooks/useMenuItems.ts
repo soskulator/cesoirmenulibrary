@@ -227,6 +227,40 @@ export function useMenuItems() {
     }
   }, [items, toast]);
 
+  // Bulk update multiple menu items
+  const bulkUpdate = useCallback(async (ids: string[], updates: Partial<MenuItem>) => {
+    try {
+      const dbUpdates: Record<string, any> = {};
+      if (updates.isPublished !== undefined) dbUpdates.is_published = updates.isPublished;
+      if (updates.categoryId !== undefined) dbUpdates.category_id = updates.categoryId;
+
+      const { error } = await supabase
+        .from('menu_items')
+        .update(dbUpdates)
+        .in('id', ids);
+
+      if (error) throw error;
+
+      setItems(prev => prev.map(item =>
+        ids.includes(item.id) ? { ...item, ...updates, updatedAt: new Date().toISOString() } : item
+      ));
+
+      toast({
+        title: 'Bulk Update Complete',
+        description: `${ids.length} items updated.`,
+      });
+      return true;
+    } catch (error: any) {
+      console.error('Error bulk updating items:', error);
+      toast({
+        title: 'Bulk Update Failed',
+        description: error.message || 'Could not update items.',
+        variant: 'destructive',
+      });
+      return false;
+    }
+  }, [toast]);
+
   // Initial fetch
   useEffect(() => {
     fetchItems();
@@ -241,5 +275,6 @@ export function useMenuItems() {
     addItem,
     updateItem,
     deleteItem,
+    bulkUpdate,
   };
 }
