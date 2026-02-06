@@ -448,6 +448,7 @@ export type Database = {
       test_configurations: {
         Row: {
           created_by: string | null
+          difficulty_filter: string[] | null
           id: string
           is_active: boolean
           passing_score: number
@@ -459,6 +460,7 @@ export type Database = {
         }
         Insert: {
           created_by?: string | null
+          difficulty_filter?: string[] | null
           id?: string
           is_active?: boolean
           passing_score?: number
@@ -470,6 +472,7 @@ export type Database = {
         }
         Update: {
           created_by?: string | null
+          difficulty_filter?: string[] | null
           id?: string
           is_active?: boolean
           passing_score?: number

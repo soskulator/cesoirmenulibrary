@@ -10,6 +10,7 @@ export interface TestConfig {
   time_limit_minutes: number | null;
   passing_score: number;
   is_active: boolean;
+  difficulty_filter: string[] | null;
 }
 
 export interface TestQuestion {
@@ -140,11 +141,17 @@ export function useTestQuestions(testType: TestType | null) {
       return [...staticQuestions].sort(() => Math.random() - 0.5);
     }
 
-    const totalNeeded = testConfig?.total_questions ?? questions.length;
+    // Apply difficulty filter if configured
+    const diffFilter = testConfig?.difficulty_filter;
+    const filtered = (diffFilter && diffFilter.length > 0)
+      ? questions.filter(q => diffFilter.includes(q.difficulty))
+      : questions;
+
+    const totalNeeded = testConfig?.total_questions ?? filtered.length;
 
     // Separate required and pool
-    const required = questions.filter(q => q.is_required);
-    const pool = questions.filter(q => !q.is_required);
+    const required = filtered.filter(q => q.is_required);
+    const pool = filtered.filter(q => !q.is_required);
 
     // Shuffle pool
     const shuffledPool = [...pool].sort(() => Math.random() - 0.5);
