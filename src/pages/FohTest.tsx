@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
-import { useFohTestQuestions } from '@/hooks/useFohTestQuestions';
+import { useTestQuestions } from '@/hooks/useTestQuestions';
 import { getCategoryLabel, getCategoryColor, FohTestQuestion, TestType, getTestTypeLabel } from '@/data/fohTestData';
 import { useQuizScores } from '@/hooks/useQuizScores';
 import { useAuth } from '@/contexts/AuthContext';
@@ -58,7 +58,7 @@ export default function FohTestPage() {
   const [attemptId, setAttemptId] = useState<string | null>(null);
   
   const { saveQuizScore } = useQuizScores();
-  const { getTestQuestions } = useFohTestQuestions();
+  const { testConfig, isLoading: isLoadingQuestions, usingFallback, buildTestQuestions } = useTestQuestions(selectedTestType);
   const { user, isServerAssistant, hasBeverageAccess } = useAuth();
 
   // Redirect Server Assistants trying to access the service_staff test
@@ -68,18 +68,13 @@ export default function FohTestPage() {
     }
   }, [isServerAssistant, urlTestType, navigate]);
 
-  // Get questions for the selected test type
-  const allQuestions = useMemo(() => {
-    return selectedTestType ? getTestQuestions(selectedTestType) : [];
-  }, [getTestQuestions, selectedTestType]);
-
   // Shuffle questions for the test
   const [shuffledQuestions, setShuffledQuestions] = useState<FohTestQuestion[]>([]);
 
   const startTest = async () => {
     if (!selectedTestType) return;
     
-    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+    const shuffled = buildTestQuestions();
     setShuffledQuestions(shuffled);
     setTestStarted(true);
     setCurrentIndex(0);
@@ -168,7 +163,7 @@ export default function FohTestPage() {
       try {
         const { error } = await supabase.from('foh_test_answers').insert({
           attempt_id: attemptId,
-          question_id: String(currentQuestion.id),
+          question_id: String((currentQuestion as any)._dbId || currentQuestion.id),
           question_text: currentQuestion.question,
           correct_answer: currentQuestion.correctAnswer,
           user_answer: userAnswerText,
@@ -240,7 +235,7 @@ export default function FohTestPage() {
       try {
         const { error } = await supabase.from('foh_test_answers').insert({
           attempt_id: attemptId,
-          question_id: String(currentQuestion.id),
+          question_id: String((currentQuestion as any)._dbId || currentQuestion.id),
           question_text: currentQuestion.question,
           correct_answer: currentQuestion.correctAnswer,
           user_answer: shortAnswer.trim(),
@@ -338,10 +333,11 @@ export default function FohTestPage() {
   };
 
   const getScoreGrade = (percentage: number) => {
-    if (percentage >= 90) return { grade: 'A', label: 'Excellent!', color: 'text-sage' };
-    if (percentage >= 80) return { grade: 'B', label: 'Great Job!', color: 'text-gold' };
-    if (percentage >= 70) return { grade: 'C', label: 'Good', color: 'text-copper' };
-    if (percentage >= 60) return { grade: 'D', label: 'Needs Improvement', color: 'text-orange-500' };
+    const passingScore = testConfig?.passing_score ?? 70;
+    if (percentage >= passingScore + 20) return { grade: 'A', label: 'Excellent!', color: 'text-sage' };
+    if (percentage >= passingScore + 10) return { grade: 'B', label: 'Great Job!', color: 'text-gold' };
+    if (percentage >= passingScore) return { grade: 'C', label: 'Passed', color: 'text-copper' };
+    if (percentage >= passingScore - 10) return { grade: 'D', label: 'Needs Improvement', color: 'text-orange-500' };
     return { grade: 'F', label: 'Study Required', color: 'text-destructive' };
   };
 
@@ -383,7 +379,7 @@ export default function FohTestPage() {
                 <Trophy className="w-10 h-10 sm:w-12 sm:h-12 text-gold" />
               </div>
               <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
-                {selectedTestType === 'server_assistant' ? 'Server Assistant Test' : 'Service Staff Test'} Complete!
+                {testConfig?.test_name ?? (selectedTestType === 'server_assistant' ? 'Server Assistant Test' : 'Service Staff Test')} Complete!
               </h1>
               <p className={cn("text-xl sm:text-2xl font-bold", gradeInfo.color)}>
                 {gradeInfo.label}
@@ -581,13 +577,22 @@ export default function FohTestPage() {
 
   // Test start screen
   if (!testStarted) {
-    const categoryCount = {
-      service: allQuestions.filter(q => q.category === 'service').length,
-      menu: allQuestions.filter(q => q.category === 'menu').length,
-      drinks: allQuestions.filter(q => q.category === 'drinks').length,
-      operations: allQuestions.filter(q => q.category === 'operations').length,
-      general: allQuestions.filter(q => q.category === 'general').length,
-    };
+    if (isLoadingQuestions) {
+      return (
+        <Layout>
+          <div className="container py-12 max-w-2xl px-4 flex flex-col items-center justify-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
+            <p className="text-muted-foreground">Loading test questions...</p>
+          </div>
+        </Layout>
+      );
+    }
+
+    // Use testConfig for display info, with sensible fallbacks
+    const totalQuestions = testConfig?.total_questions ?? (selectedTestType === 'server_assistant' ? 23 : 69);
+    const testName = testConfig?.test_name ?? getTestTypeLabel(selectedTestType);
+    const timeLimitMin = testConfig?.time_limit_minutes;
+    const estMinutes = timeLimitMin ?? (selectedTestType === 'server_assistant' ? 20 : 45);
 
     return (
       <Layout>
@@ -604,7 +609,7 @@ export default function FohTestPage() {
               )}
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
-              {getTestTypeLabel(selectedTestType)}
+              {testName}
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
               {selectedTestType === 'server_assistant' 
@@ -618,27 +623,23 @@ export default function FohTestPage() {
               <h2 className="font-semibold mb-4">Test Overview</h2>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="p-3 bg-muted rounded-lg text-center">
-                  <p className="text-2xl font-bold text-burgundy">{allQuestions.length}</p>
+                  <p className="text-2xl font-bold text-burgundy">{totalQuestions}</p>
                   <p className="text-xs text-muted-foreground">Total Questions</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg text-center">
                   <p className="text-2xl font-bold text-copper">
-                    ~{selectedTestType === 'server_assistant' ? '20' : '45'}
+                    ~{estMinutes}
                   </p>
                   <p className="text-xs text-muted-foreground">Minutes Est.</p>
                 </div>
               </div>
 
-              <h3 className="text-sm font-medium mb-3">Categories Covered:</h3>
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(categoryCount)
-                  .filter(([_, count]) => count > 0)
-                  .map(([cat, count]) => (
-                    <Badge key={cat} className={cn(getCategoryColor(cat as FohTestQuestion['category']), "text-xs")}>
-                      {getCategoryLabel(cat as FohTestQuestion['category'])} ({count})
-                    </Badge>
-                  ))}
-              </div>
+              {!usingFallback && (
+                <>
+                  <h3 className="text-sm font-medium mb-3">Passing Score:</h3>
+                  <Badge variant="outline" className="text-xs mb-3">{testConfig?.passing_score ?? 70}%</Badge>
+                </>
+              )}
 
               <div className="mt-4 p-3 bg-sage/10 rounded-lg border border-sage/20">
                 <p className="text-xs text-sage-foreground">
