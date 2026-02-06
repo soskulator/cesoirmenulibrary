@@ -10,11 +10,11 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SessionTracker } from "@/components/SessionTracker";
 
-// ─── Eager imports (needed on first load) ───
-import Auth from "./pages/Auth";
-import ResetPassword from "./pages/ResetPassword";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+// ─── All pages lazy-loaded ───
+const Auth = lazy(() => import("./pages/Auth"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 // ─── Lazy-loaded pages (split into separate chunks) ───
 const Categories = lazy(() => import("./pages/Categories"));
@@ -48,19 +48,11 @@ const ROLES = {
 
 // ─── Loading fallback for lazy routes ───
 const PageLoader = () => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "60vh",
-      fontFamily: "'Playfair Display', serif",
-      fontSize: "1.1rem",
-      color: "#8A8A8A",
-      letterSpacing: "0.05em",
-    }}
-  >
-    Loading…
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-8 h-8 border-4 border-copper border-t-transparent rounded-full animate-spin" />
+      <p className="text-muted-foreground text-sm">Loading...</p>
+    </div>
   </div>
 );
 
@@ -68,9 +60,10 @@ const PageLoader = () => (
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 10,
-      gcTime: 1000 * 60 * 30,
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 15 * 60 * 1000, // 15 minutes
       retry: 1,
+      refetchOnWindowFocus: false,
     },
   },
 });
