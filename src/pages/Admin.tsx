@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Settings, 
-  Database, 
+  Database,
+  Brain,
   Users, 
   Image,
   Lock,
@@ -36,6 +37,14 @@ const adminSections = [
     description: 'Menu items, categories, CSV import & daily focus',
     icon: Database,
     path: '/admin/dashboard',
+    badge: null,
+    disabled: false,
+  },
+  {
+    title: 'Quiz Builder',
+    description: 'Manage questions, tests & assignments',
+    icon: Brain,
+    path: '/admin/quiz-builder',
     badge: null,
     disabled: false,
   },
