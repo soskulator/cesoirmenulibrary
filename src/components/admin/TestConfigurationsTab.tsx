@@ -5,9 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Settings, Pencil, ListChecks, Loader2 } from 'lucide-react';
-import { useTestConfigs, type TestConfig } from '@/hooks/useQuizQuestions';
+import { useTestConfigs, DIFFICULTIES, type TestConfig } from '@/hooks/useQuizQuestions';
 import { useToast } from '@/hooks/use-toast';
 
 interface Props {
@@ -18,7 +19,7 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
   const { configs, isLoading, fetchConfigs, updateConfig } = useTestConfigs();
   const { toast } = useToast();
   const [editing, setEditing] = useState<TestConfig | null>(null);
-  const [form, setForm] = useState({ test_name: '', total_questions: 30, passing_score: 70, time_limit_minutes: '' as string, is_active: true });
+  const [form, setForm] = useState({ test_name: '', total_questions: 30, passing_score: 70, time_limit_minutes: '' as string, is_active: true, difficulty_filter: [] as string[] });
 
   useEffect(() => { fetchConfigs(); }, [fetchConfigs]);
 
@@ -30,6 +31,7 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
       passing_score: config.passing_score,
       time_limit_minutes: config.time_limit_minutes?.toString() ?? '',
       is_active: config.is_active,
+      difficulty_filter: config.difficulty_filter ?? [],
     });
   };
 
@@ -41,6 +43,7 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
       passing_score: form.passing_score,
       time_limit_minutes: form.time_limit_minutes ? Number(form.time_limit_minutes) : null,
       is_active: form.is_active,
+      difficulty_filter: form.difficulty_filter.length > 0 ? form.difficulty_filter : null,
     });
     if (ok) {
       toast({ title: 'Configuration updated' });
@@ -102,6 +105,14 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
                   <span className="text-muted-foreground">Time:</span>{' '}
                   <span className="font-medium">{config.time_limit_minutes ? `${config.time_limit_minutes} min` : 'None'}</span>
                 </div>
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Difficulty:</span>{' '}
+                  <span className="font-medium capitalize">
+                    {config.difficulty_filter && config.difficulty_filter.length > 0
+                      ? config.difficulty_filter.join(', ')
+                      : 'All'}
+                  </span>
+                </div>
               </div>
               <div className="flex gap-2 pt-1">
                 <Button variant="outline" size="sm" onClick={() => openEdit(config)}>
@@ -142,6 +153,28 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
             <div className="space-y-2">
               <Label>Time Limit (minutes, optional)</Label>
               <Input type="number" value={form.time_limit_minutes} onChange={e => setForm(f => ({ ...f, time_limit_minutes: e.target.value }))} placeholder="No limit" />
+            </div>
+            <div className="space-y-2">
+              <Label>Difficulty Filter</Label>
+              <p className="text-xs text-muted-foreground">Leave unchecked for all difficulties</p>
+              <div className="flex gap-4">
+                {DIFFICULTIES.map(d => (
+                  <label key={d} className="flex items-center gap-2 capitalize cursor-pointer">
+                    <Checkbox
+                      checked={form.difficulty_filter.includes(d)}
+                      onCheckedChange={(checked) => {
+                        setForm(f => ({
+                          ...f,
+                          difficulty_filter: checked
+                            ? [...f.difficulty_filter, d]
+                            : f.difficulty_filter.filter(x => x !== d),
+                        }));
+                      }}
+                    />
+                    {d}
+                  </label>
+                ))}
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <Switch checked={form.is_active} onCheckedChange={v => setForm(f => ({ ...f, is_active: v }))} />

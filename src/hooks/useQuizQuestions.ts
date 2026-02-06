@@ -41,6 +41,7 @@ export interface TestConfig {
   is_active: boolean;
   created_by: string | null;
   updated_at: string;
+  difficulty_filter: string[] | null;
 }
 
 export interface QuestionAssignment {
