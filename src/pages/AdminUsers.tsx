@@ -1,959 +1,136 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth, AppRole } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { menuItems } from '@/data/menuData';
-import { 
-  Users, 
-  UserPlus, 
-  Mail, 
-  Trash2, 
-  Shield, 
-  ShieldCheck,
-  ArrowLeft,
-  Clock,
-  CheckCircle,
-  XCircle,
-  BarChart3,
-  RefreshCw,
-  Search,
-  Loader2
-} from 'lucide-react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Users, UserPlus, History, ArrowLeft, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-interface UserWithRole {
-  id: string;
-  email: string;
-  full_name: string | null;
-  created_at: string;
-  role: AppRole | null;
-}
-
-interface Invitation {
-  id: string;
-  email: string;
-  role: AppRole;
-  token: string;
-  expires_at: string;
-  accepted_at: string | null;
-  created_at: string;
-}
-
-interface StudyProgress {
-  user_id: string;
-  known_count: number;
-  total_studied: number;
-}
+import { useAuth } from '@/contexts/AuthContext';
+import { useStaffManagement } from '@/hooks/useStaffManagement';
+import { ActiveStaffTab } from '@/components/admin/ActiveStaffTab';
+import { InviteStaffTab } from '@/components/admin/InviteStaffTab';
+import { RoleHistoryTab } from '@/components/admin/RoleHistoryTab';
 
 export default function AdminUsersPage() {
   const { user, isAdmin, isLeadAdmin, loading: authLoading } = useAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
-  
-  const [users, setUsers] = useState<UserWithRole[]>([]);
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [studyProgress, setStudyProgress] = useState<Record<string, StudyProgress>>({});
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Invite form
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState<AppRole>('server');
-  const [isSendingInvite, setIsSendingInvite] = useState(false);
-  const [resendingInviteId, setResendingInviteId] = useState<string | null>(null);
-  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
-  
-  // Search/filter and remove employee
-  const [searchQuery, setSearchQuery] = useState('');
-  const [employeeToRemove, setEmployeeToRemove] = useState<UserWithRole | null>(null);
-  const [isRemoving, setIsRemoving] = useState(false);
-  const [removeType, setRemoveType] = useState<'data' | 'complete'>('data');
+  const [activeTab, setActiveTab] = useState('staff');
 
-  const totalMenuItems = menuItems.filter(i => i.isPublished).length;
+  const {
+    staff, invitations, auditLog, isLoading,
+    fetchStaff, fetchInvitations, fetchAuditLog,
+    changeRole, sendInvitation, resendInvitation, revokeInvitation, removeEmployee,
+  } = useStaffManagement();
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    } else if (!authLoading && !isAdmin) {
-      navigate('/');
-      toast({
-        title: 'Access Denied',
-        description: 'You need admin permissions to access this page.',
-        variant: 'destructive',
-      });
+    if (!authLoading && (!user || !isAdmin)) {
+      navigate('/admin');
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [authLoading, user, isAdmin, navigate]);
 
   useEffect(() => {
     if (isAdmin) {
-      fetchData();
+      fetchStaff();
+      fetchInvitations();
+      if (isLeadAdmin) fetchAuditLog();
     }
-  }, [isAdmin]);
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    
-    try {
-      // Fetch profiles and roles
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (profilesError) throw profilesError;
-
-      const { data: roles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('*');
-      
-      if (rolesError) throw rolesError;
-
-      // Combine profiles with roles
-      const usersWithRoles: UserWithRole[] = (profiles || []).map(profile => ({
-        id: profile.id,
-        email: profile.email,
-        full_name: profile.full_name,
-        created_at: profile.created_at,
-        role: roles?.find(r => r.user_id === profile.id)?.role as AppRole | null || null,
-      }));
-
-      setUsers(usersWithRoles);
-
-      // Fetch invitations
-      const { data: invites, error: invitesError } = await supabase
-        .from('invitations')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (invitesError) throw invitesError;
-      setInvitations(invites || []);
-
-      // Fetch study progress for all users
-      const { data: progress, error: progressError } = await supabase
-        .from('study_progress')
-        .select('*');
-      
-      if (progressError) throw progressError;
-
-      // Aggregate progress by user
-      const progressMap: Record<string, StudyProgress> = {};
-      (progress || []).forEach(p => {
-        if (!progressMap[p.user_id]) {
-          progressMap[p.user_id] = { user_id: p.user_id, known_count: 0, total_studied: 0 };
-        }
-        progressMap[p.user_id].total_studied++;
-        if (p.is_known) {
-          progressMap[p.user_id].known_count++;
-        }
-      });
-      setStudyProgress(progressMap);
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load user data.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const sendInvitation = async () => {
-    if (!inviteEmail.trim()) return;
-    
-    setIsSendingInvite(true);
-    
-    try {
-      // First create the invitation
-      const { data: invitation, error } = await supabase
-        .from('invitations')
-        .insert({
-          email: inviteEmail.toLowerCase().trim(),
-          role: inviteRole as any,
-          invited_by: user!.id,
-        } as any)
-        .select()
-        .single();
-      
-      if (error) {
-        if (error.message.includes('duplicate')) {
-          toast({
-            title: 'Already Invited',
-            description: 'This email has already been invited.',
-            variant: 'destructive',
-          });
-        } else {
-          throw error;
-        }
-        return;
-      }
-
-      // Get the invite link - always use published URL to avoid preview domain issues
-      const publishedUrl = 'https://cesoirmenulibrary.lovable.app';
-      const inviteLink = `${publishedUrl}/auth?token=${invitation.token}`;
-      
-      // Get inviter's name for the email
-      const { data: inviterProfile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', user!.id)
-        .single();
-
-      // Send the invitation email
-      const { error: emailError } = await supabase.functions.invoke('send-invitation-email', {
-        body: {
-          email: inviteEmail.toLowerCase().trim(),
-          inviteLink,
-          role: inviteRole,
-          invitedByName: inviterProfile?.full_name || 'Ce Soir Admin',
-        },
-      });
-
-      if (emailError) {
-        console.error('Failed to send email:', emailError);
-        // Still show success but note email failed
-        toast({
-          title: 'Invitation Created',
-          description: `Invitation created for ${inviteEmail}. Email delivery failed - please share the link manually.`,
-          variant: 'default',
-        });
-      } else {
-        toast({
-          title: 'Invitation Sent!',
-          description: `An invitation email has been sent to ${inviteEmail} with their signup link.`,
-        });
-      }
-      
-      setInviteEmail('');
-      setInviteRole('employee');
-      setInviteDialogOpen(false);
-      fetchData();
-    } catch (error) {
-      console.error('Error sending invitation:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to create invitation.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSendingInvite(false);
-    }
-  };
-
-  const deleteInvitation = async (inviteId: string) => {
-    try {
-      const { error } = await supabase
-        .from('invitations')
-        .delete()
-        .eq('id', inviteId);
-      
-      if (error) throw error;
-      
-      toast({
-        title: 'Invitation Deleted',
-        description: 'The invitation has been removed.',
-      });
-      fetchData();
-    } catch (error) {
-      console.error('Error deleting invitation:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to delete invitation.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const resendInvitation = async (invite: Invitation) => {
-    setResendingInviteId(invite.id);
-    
-    try {
-      // Always use published URL for invite links
-      const publishedUrl = 'https://cesoirmenulibrary.lovable.app';
-      const inviteLink = `${publishedUrl}/auth?token=${invite.token}`;
-      
-      // Get inviter's name for the email
-      const { data: inviterProfile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', user!.id)
-        .single();
-
-      const { error: emailError } = await supabase.functions.invoke('send-invitation-email', {
-        body: {
-          email: invite.email,
-          inviteLink,
-          role: invite.role,
-          invitedByName: inviterProfile?.full_name || 'Ce Soir Admin',
-        },
-      });
-
-      if (emailError) {
-        throw emailError;
-      }
-
-      toast({
-        title: 'Invitation Resent!',
-        description: `A new invitation email has been sent to ${invite.email}.`,
-      });
-    } catch (error) {
-      console.error('Error resending invitation:', error);
-      toast({
-        title: 'Email Failed',
-        description: 'Failed to resend invitation email. You can still copy the link manually.',
-        variant: 'destructive',
-      });
-    } finally {
-      setResendingInviteId(null);
-    }
-  };
-
-  const updateUserRole = async (userId: string, newRole: AppRole | 'remove') => {
-    if (!isLeadAdmin) {
-      toast({
-        title: 'Permission Denied',
-        description: 'Only the lead admin can change roles.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    try {
-      // First, delete all existing roles for this user
-      const { error: deleteError } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId);
-      
-      if (deleteError) throw deleteError;
-
-      // If not removing, insert the new role
-      if (newRole !== 'remove') {
-        const { error: insertError } = await supabase
-          .from('user_roles')
-          .insert({ user_id: userId, role: newRole } as any);
-        
-        if (insertError) throw insertError;
-      }
-      
-      toast({
-        title: 'Role Updated',
-        description: newRole === 'remove' 
-          ? 'User role has been removed.' 
-          : `User role has been updated to ${newRole.replace('_', ' ')}.`,
-      });
-      fetchData();
-    } catch (error) {
-      console.error('Error updating role:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update role.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleRemoveEmployee = async () => {
-    if (!employeeToRemove) return;
-
-    setIsRemoving(true);
-    try {
-      if (removeType === 'complete') {
-        // Complete removal via edge function
-        const { data, error } = await supabase.functions.invoke('delete-user', {
-          body: { userId: employeeToRemove.id },
-        });
-
-        if (error) {
-          throw new Error(error.message || 'Failed to delete user');
-        }
-
-        if (data?.error) {
-          throw new Error(data.error);
-        }
-
-        toast({
-          title: 'Employee Completely Removed',
-          description: `${employeeToRemove.full_name || employeeToRemove.email} has been permanently removed from the system.`,
-        });
-      } else {
-        // Data-only removal
-        await supabase
-          .from('quiz_scores')
-          .delete()
-          .eq('user_id', employeeToRemove.id);
-
-        await supabase
-          .from('study_progress')
-          .delete()
-          .eq('user_id', employeeToRemove.id);
-
-        await supabase
-          .from('staff_activity_log')
-          .delete()
-          .eq('user_id', employeeToRemove.id);
-
-        toast({
-          title: 'Employee Data Removed',
-          description: `All training data for ${employeeToRemove.full_name || employeeToRemove.email} has been removed.`,
-        });
-      }
-
-      setEmployeeToRemove(null);
-      setRemoveType('data');
-      fetchData();
-    } catch (error: any) {
-      console.error('Error removing employee:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to remove employee.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsRemoving(false);
-    }
-  };
-
-  // Filter users based on search query
-  const filteredUsers = users.filter(u => {
-    const query = searchQuery.toLowerCase();
-    return (
-      u.email.toLowerCase().includes(query) ||
-      (u.full_name && u.full_name.toLowerCase().includes(query))
-    );
-  });
-
-  const getInviteLink = (token: string) => {
-    // Always use published URL for invite links
-    const publishedUrl = 'https://cesoirmenulibrary.lovable.app';
-    return `${publishedUrl}/auth?token=${token}`;
-  };
-
-  const copyInviteLink = (token: string) => {
-    navigator.clipboard.writeText(getInviteLink(token));
-    toast({
-      title: 'Link Copied',
-      description: 'Invitation link copied to clipboard.',
-    });
-  };
-
-  const getRoleBadge = (role: AppRole | null) => {
-    switch (role) {
-      case 'lead_admin':
-        return <Badge className="bg-burgundy text-cream"><ShieldCheck className="w-3 h-3 mr-1" />Lead Admin</Badge>;
-      case 'admin':
-        return <Badge className="bg-copper text-charcoal"><Shield className="w-3 h-3 mr-1" />Admin</Badge>;
-      case 'server':
-        return <Badge variant="secondary">Server</Badge>;
-      case 'bartender':
-        return <Badge variant="secondary">Bartender</Badge>;
-      case 'server_assistant':
-        return <Badge variant="outline">Server Assistant</Badge>;
-      case 'employee':
-        return <Badge variant="secondary">Staff</Badge>;
-      default:
-        return <Badge variant="outline">No Role</Badge>;
-    }
-  };
+  }, [isAdmin, isLeadAdmin, fetchStaff, fetchInvitations, fetchAuditLog]);
 
   if (authLoading || isLoading) {
     return (
       <Layout>
         <div className="container py-16 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-copper" />
+          <Loader2 className="w-8 h-8 animate-spin text-copper" />
         </div>
       </Layout>
     );
   }
 
+  if (!user || !isAdmin) return null;
+
+  const handleChangeRole = async (userId: string, oldRole: any, newRole: any) => {
+    const ok = await changeRole(userId, oldRole, newRole, user.id);
+    if (ok) fetchStaff();
+    return ok;
+  };
+
+  const handleRemove = async (userId: string, type: 'data' | 'complete') => {
+    const ok = await removeEmployee(userId, type);
+    if (ok) fetchStaff();
+    return ok;
+  };
+
   return (
     <Layout>
-      <div className="container py-4 sm:py-8 max-w-6xl px-3 sm:px-4">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/admin">
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back
-              </Link>
-            </Button>
-            <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-copper" />
-            </div>
-            <div>
-              <h1 className="font-serif text-xl sm:text-2xl font-bold">User Management</h1>
-              <p className="text-muted-foreground text-sm">
-                Manage team members and track progress
-              </p>
-            </div>
-          </div>
+      <div className="py-6 sm:py-8 px-4 max-w-6xl mx-auto w-full overflow-x-hidden">
+        {/* Back link */}
+        <Button variant="ghost" size="sm" asChild className="mb-4">
+          <Link to="/admin">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Admin
+          </Link>
+        </Button>
 
-          <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-copper text-charcoal hover:bg-copper-light">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Invite Member
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Invite Team Member</DialogTitle>
-                <DialogDescription>
-                  Send an invitation to join the staff training portal.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="invite-email">Email Address</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="invite-email"
-                      type="email"
-                      placeholder="employee@example.com"
-                      value={inviteEmail}
-                      onChange={(e) => setInviteEmail(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="invite-role">Role</Label>
-                  <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as AppRole)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="server">Server (Full Access)</SelectItem>
-                      <SelectItem value="bartender">Bartender (Full Access)</SelectItem>
-                      <SelectItem value="server_assistant">Server Assistant (Limited)</SelectItem>
-                      {isLeadAdmin && <SelectItem value="admin">Admin</SelectItem>}
-                      {isLeadAdmin && <SelectItem value="lead_admin">Lead Admin</SelectItem>}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    {inviteRole === 'server' && 'Full access to all training materials and tests'}
-                    {inviteRole === 'bartender' && 'Full access to all training materials and tests'}
-                    {inviteRole === 'server_assistant' && 'Food training only - no wine/spirits/cocktails access'}
-                    {inviteRole === 'admin' && 'Can manage menu and review tests, no user management'}
-                    {inviteRole === 'lead_admin' && 'Full access including user management and analytics'}
-                    {inviteRole === 'employee' && 'Full access to all training materials'}
-                  </p>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={sendInvitation} disabled={isSendingInvite || !inviteEmail.trim()}>
-                  {isSendingInvite ? 'Creating...' : 'Create Invitation'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-copper to-copper-light flex items-center justify-center shadow-lg">
+            <Users className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl sm:text-3xl font-bold">User Management</h1>
+            <p className="text-sm text-muted-foreground">Manage team members, invitations, and roles</p>
+          </div>
         </div>
 
-        {/* Pending Invitations */}
-        {invitations.filter(i => !i.accepted_at).length > 0 && (
-          <Card className="mb-6">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Clock className="w-5 h-5 text-copper" />
-                Pending Invitations
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-3 sm:px-6">
-              <div className="space-y-3">
-                {invitations.filter(i => !i.accepted_at).map((invite) => (
-                  <div key={invite.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-muted rounded-lg">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium text-sm truncate">{invite.email}</p>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-xs text-muted-foreground">
-                            Exp: {new Date(invite.expires_at).toLocaleDateString()}
-                          </p>
-                          {getRoleBadge(invite.role)}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 justify-end">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="h-8 px-2 text-xs"
-                        onClick={() => resendInvitation(invite)}
-                        disabled={resendingInviteId === invite.id}
-                      >
-                        {resendingInviteId === invite.id ? (
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                        ) : (
-                          <RefreshCw className="w-3.5 h-3.5" />
-                        )}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="h-8 px-2 text-xs"
-                        onClick={() => copyInviteLink(invite.token)}
-                      >
-                        Copy
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="h-8 px-2"
-                        onClick={() => deleteInvitation(invite.id)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="bg-muted/60 mb-6">
+            <TabsTrigger value="staff" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Users className="w-4 h-4 mr-1.5 sm:mr-2" />
+              <span className="hidden sm:inline">Active Staff</span>
+              <span className="sm:hidden">Staff</span>
+            </TabsTrigger>
+            <TabsTrigger value="invite" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <UserPlus className="w-4 h-4 mr-1.5 sm:mr-2" />
+              <span className="hidden sm:inline">Invite Staff</span>
+              <span className="sm:hidden">Invite</span>
+            </TabsTrigger>
+            {isLeadAdmin && (
+              <TabsTrigger value="history" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <History className="w-4 h-4 mr-1.5 sm:mr-2" />
+                <span className="hidden sm:inline">Role History</span>
+                <span className="sm:hidden">History</span>
+              </TabsTrigger>
+            )}
+          </TabsList>
 
-        {/* Team Members */}
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-copper" />
-                  Team Progress
-                </CardTitle>
-                <CardDescription>
-                  Track study progress for each team member
-                </CardDescription>
-              </div>
-              {/* Search input */}
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search employees..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="px-3 sm:px-6">
-            {/* Mobile Card Layout */}
-            <div className="sm:hidden space-y-3">
-              {filteredUsers.map((u) => {
-                const progress = studyProgress[u.id];
-                const progressPercent = progress 
-                  ? Math.round((progress.known_count / totalMenuItems) * 100)
-                  : 0;
-                
-                return (
-                  <div key={u.id} className="bg-muted rounded-lg p-3 space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium text-sm truncate">
-                          {u.full_name || 'Unknown'}
-                          {u.id === user?.id && (
-                            <Badge variant="outline" className="ml-2 text-[10px]">You</Badge>
-                          )}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">{u.email}</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {isLeadAdmin && u.id !== user?.id ? (
-                          <>
-                            <Select 
-                              value={u.role || 'none'} 
-                              onValueChange={(v) => updateUserRole(u.id, v === 'none' ? 'remove' : v as AppRole)}
-                            >
-                              <SelectTrigger className="w-[100px] h-7 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="none">No Role</SelectItem>
-                                <SelectItem value="server">Server</SelectItem>
-                                <SelectItem value="bartender">Bartender</SelectItem>
-                                <SelectItem value="server_assistant">Server Assistant</SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
-                                <SelectItem value="lead_admin">Lead Admin</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                              onClick={() => setEmployeeToRemove(u)}
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </>
-                        ) : (
-                          getRoleBadge(u.role)
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Progress value={progressPercent} className="flex-1 h-2" />
-                      <span className="text-xs text-muted-foreground w-16 text-right">
-                        {progress?.known_count || 0}/{totalMenuItems}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-              {filteredUsers.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  {searchQuery ? 'No employees match your search.' : 'No employees found.'}
-                </p>
-              )}
-            </div>
+          <TabsContent value="staff">
+            <ActiveStaffTab
+              staff={staff}
+              isLoading={isLoading}
+              onChangeRole={handleChangeRole}
+              onRemove={handleRemove}
+              onRefresh={fetchStaff}
+            />
+          </TabsContent>
 
-            {/* Desktop Table Layout */}
-            <div className="hidden sm:block overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Study Progress</TableHead>
-                    <TableHead className="text-right">Mastered</TableHead>
-                    {isLeadAdmin && <TableHead className="w-[60px]"></TableHead>}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((u) => {
-                    const progress = studyProgress[u.id];
-                    const progressPercent = progress 
-                      ? Math.round((progress.known_count / totalMenuItems) * 100)
-                      : 0;
-                    
-                    return (
-                      <TableRow key={u.id}>
-                        <TableCell className="font-medium">
-                          {u.full_name || 'Unknown'}
-                          {u.id === user?.id && (
-                            <Badge variant="outline" className="ml-2 text-xs">You</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground text-sm">
-                          {u.email}
-                        </TableCell>
-                        <TableCell>
-                          {isLeadAdmin && u.id !== user?.id ? (
-                            <Select 
-                              value={u.role || 'none'} 
-                              onValueChange={(v) => updateUserRole(u.id, v === 'none' ? 'remove' : v as AppRole)}
-                            >
-                              <SelectTrigger className="w-[140px]">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="none">No Role</SelectItem>
-                                <SelectItem value="server">Server</SelectItem>
-                                <SelectItem value="bartender">Bartender</SelectItem>
-                                <SelectItem value="server_assistant">Server Assistant</SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
-                                <SelectItem value="lead_admin">Lead Admin</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          ) : (
-                            getRoleBadge(u.role)
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-3 min-w-[200px]">
-                            <Progress value={progressPercent} className="flex-1 h-2" />
-                            <span className="text-sm text-muted-foreground w-12 text-right">
-                              {progressPercent}%
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span className="font-medium">
-                            {progress?.known_count || 0}
-                          </span>
-                          <span className="text-muted-foreground">
-                            /{totalMenuItems}
-                          </span>
-                        </TableCell>
-                        {isLeadAdmin && (
-                          <TableCell>
-                            {u.id !== user?.id && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                onClick={() => setEmployeeToRemove(u)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    );
-                  })}
-                  {filteredUsers.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={isLeadAdmin ? 6 : 5} className="text-center py-8 text-muted-foreground">
-                        {searchQuery ? 'No employees match your search.' : 'No employees found.'}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+          <TabsContent value="invite">
+            <InviteStaffTab
+              invitations={invitations}
+              onSendInvitation={sendInvitation}
+              onResend={resendInvitation}
+              onRevoke={revokeInvitation}
+              onRefresh={fetchInvitations}
+            />
+          </TabsContent>
+
+          {isLeadAdmin && (
+            <TabsContent value="history">
+              <RoleHistoryTab log={auditLog} isLoading={false} />
+            </TabsContent>
+          )}
+        </Tabs>
       </div>
-
-      {/* Remove Employee Confirmation Dialog */}
-      <AlertDialog open={!!employeeToRemove} onOpenChange={(open) => {
-        if (!open) {
-          setEmployeeToRemove(null);
-          setRemoveType('data');
-        }
-      }}>
-        <AlertDialogContent className="max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove Employee</AlertDialogTitle>
-            <AlertDialogDescription asChild>
-              <div className="space-y-4">
-                <p>
-                  Choose how to remove <strong>{employeeToRemove?.full_name || employeeToRemove?.email}</strong>:
-                </p>
-                
-                <div className="space-y-3">
-                  <label 
-                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                      removeType === 'data' 
-                        ? 'border-copper bg-copper/5' 
-                        : 'border-border hover:border-muted-foreground/50'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="removeType"
-                      value="data"
-                      checked={removeType === 'data'}
-                      onChange={() => setRemoveType('data')}
-                      className="mt-1"
-                    />
-                    <div>
-                      <p className="font-medium text-foreground">Remove Training Data Only</p>
-                      <p className="text-sm text-muted-foreground">
-                        Deletes quiz scores, study progress, and activity logs. User can still log in.
-                      </p>
-                    </div>
-                  </label>
-                  
-                  <label 
-                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                      removeType === 'complete' 
-                        ? 'border-destructive bg-destructive/5' 
-                        : 'border-border hover:border-muted-foreground/50'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="removeType"
-                      value="complete"
-                      checked={removeType === 'complete'}
-                      onChange={() => setRemoveType('complete')}
-                      className="mt-1"
-                    />
-                    <div>
-                      <p className="font-medium text-foreground">Completely Remove from System</p>
-                      <p className="text-sm text-muted-foreground">
-                        Permanently deletes the user account, profile, roles, and all associated data.
-                      </p>
-                    </div>
-                  </label>
-                </div>
-
-                {removeType === 'complete' && (
-                  <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                    <p className="text-sm text-destructive font-medium">
-                      ⚠️ This action is permanent and cannot be undone. The employee will need a new invitation to regain access.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isRemoving}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleRemoveEmployee}
-              disabled={isRemoving}
-              className={removeType === 'complete' 
-                ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
-                : 'bg-copper text-charcoal hover:bg-copper-light'
-              }
-            >
-              {isRemoving ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Removing...
-                </>
-              ) : removeType === 'complete' ? (
-                'Permanently Delete'
-              ) : (
-                'Remove Data Only'
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </Layout>
   );
 }
