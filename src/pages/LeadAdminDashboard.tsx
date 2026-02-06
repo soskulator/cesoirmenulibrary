@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMenuItems } from '@/hooks/useMenuItems';
-import { useDailyFocusSettings } from '@/hooks/useDailyFocusSettings';
+// WeeklyFocusManager now handles daily focus directly
 import { useCategories, DbCategory } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
 import { Layout } from '@/components/Layout';
@@ -25,6 +25,7 @@ import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManage
 import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
 import { Leaderboard } from '@/components/admin/Leaderboard';
 import { PhotoGallery } from '@/components/admin/PhotoGallery';
+import { WeeklyFocusManager } from '@/components/admin/WeeklyFocusManager';
 import { 
   Crown,
   FileText,
@@ -67,13 +68,7 @@ export default function LeadAdminDashboard() {
     fetchItems
   } = useMenuItems();
   
-  // Daily Focus settings from database
-  const { 
-    selectedItemIds: savedFocusItems, 
-    isSaving: isSavingFocus, 
-    saveDailyFocus,
-    isLoading: focusLoading 
-  } = useDailyFocusSettings();
+  // Daily Focus now managed by WeeklyFocusManager component
   
   // Categories from database
   const {
@@ -93,9 +88,6 @@ export default function LeadAdminDashboard() {
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [isAddingItem, setIsAddingItem] = useState(false);
   
-  // Daily Focus state
-  const [focusSearchQuery, setFocusSearchQuery] = useState('');
-  const [selectedFocusItems, setSelectedFocusItems] = useState<string[]>([]);
   
   // Category editing state
   const [editingCategory, setEditingCategory] = useState<DbCategory | null>(null);
@@ -108,13 +100,7 @@ export default function LeadAdminDashboard() {
   });
   const [deletingCategoryId, setDeletingCategoryId] = useState<string | null>(null);
 
-  // Initialize selected focus items from saved data
-  useEffect(() => {
-    if (savedFocusItems.length > 0) {
-      setSelectedFocusItems(savedFocusItems);
-    }
-  }, [savedFocusItems]);
-
+  
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth');
@@ -171,27 +157,7 @@ export default function LeadAdminDashboard() {
     }
     return success;
   };
-
-  // Filter for daily focus searchable list
-  const focusFilteredItems = useMemo(() => {
-    if (!focusSearchQuery) return menuItems.slice(0, 20);
-    return menuItems.filter(item =>
-      item.name.toLowerCase().includes(focusSearchQuery.toLowerCase())
-    ).slice(0, 20);
-  }, [focusSearchQuery]);
-
-  const toggleFocusItem = (itemId: string) => {
-    setSelectedFocusItems(prev => 
-      prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
-    );
-  };
-
-  const handleSaveDailyFocus = async () => {
-    await saveDailyFocus(selectedFocusItems);
-  };
-
+  
   // Category dialog handlers
   const openAddCategoryDialog = () => {
     setEditingCategory(null);
@@ -362,6 +328,14 @@ export default function LeadAdminDashboard() {
               onAdd={addItem}
               onBulkUpdate={bulkUpdate}
               onRefresh={fetchItems}
+            />
+          </div>
+
+          {/* Weekly Focus Manager */}
+          <div className="mb-6 sm:mb-8">
+            <WeeklyFocusManager
+              menuItems={menuItems}
+              categories={categories}
             />
           </div>
 
@@ -635,81 +609,7 @@ export default function LeadAdminDashboard() {
               </Card>
             </motion.div>
 
-            {/* 3. Daily Focus Editor */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card className="bg-card shadow-card h-full">
-                <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-jade/10 flex items-center justify-center flex-shrink-0">
-                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-jade" />
-                    </div>
-                    <Badge variant="outline" className="border-jade/30 text-jade text-[10px] sm:text-xs">
-                      {selectedFocusItems.length} Selected
-                    </Badge>
-                  </div>
-                  <CardTitle className="font-serif text-lg sm:text-xl">Daily Focus Editor</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Select items for daily focus page</CardDescription>
-                </CardHeader>
-                <CardContent className="px-3 sm:px-6">
-                  <div className="relative mb-3 sm:mb-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search menu items..."
-                      value={focusSearchQuery}
-                      onChange={(e) => setFocusSearchQuery(e.target.value)}
-                      className="pl-10 h-10 text-sm"
-                    />
-                  </div>
-                  
-                  <ScrollArea className="h-[160px] sm:h-[180px] mb-3 sm:mb-4">
-                    <div className="space-y-1">
-                      {focusFilteredItems.map((item) => {
-                        const isSelected = selectedFocusItems.includes(item.id);
-                        return (
-                          <div
-                            key={item.id}
-                            onClick={() => toggleFocusItem(item.id)}
-                            className={`flex items-center gap-2 sm:gap-3 p-2.5 rounded-lg cursor-pointer transition-colors active:scale-[0.98] ${
-                              isSelected 
-                                ? 'bg-jade/10 border border-jade/30' 
-                                : 'bg-muted/50 hover:bg-muted active:bg-muted'
-                            }`}
-                          >
-                            <Checkbox 
-                              checked={isSelected}
-                              className="border-jade data-[state=checked]:bg-jade data-[state=checked]:border-jade w-4 h-4 sm:w-5 sm:h-5"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-xs sm:text-sm truncate">{item.name}</p>
-                            </div>
-                            {isSelected && <Check className="w-4 h-4 text-jade flex-shrink-0" />}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </ScrollArea>
-                  
-                  <Button 
-                    onClick={handleSaveDailyFocus}
-                    disabled={isSavingFocus}
-                    className="w-full bg-jade hover:bg-jade/90 text-white h-10 sm:h-11 text-sm"
-                  >
-                    {isSavingFocus ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        Saving...
-                      </>
-                    ) : (
-                      'Save Daily Focus'
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
+            {/* 3. Daily Focus - now handled by WeeklyFocusManager above the grid */}
 
             {/* 4. Bulk Operations (CSV Import) */}
             <motion.div

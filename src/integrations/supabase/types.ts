@@ -16,27 +16,33 @@ export type Database = {
     Tables: {
       daily_focus_settings: {
         Row: {
+          cocktail_id: string | null
           created_at: string
           created_by: string
           focus_date: string
           id: string
           menu_item_ids: string[]
+          notes: string | null
           updated_at: string
         }
         Insert: {
+          cocktail_id?: string | null
           created_at?: string
           created_by: string
           focus_date: string
           id?: string
           menu_item_ids?: string[]
+          notes?: string | null
           updated_at?: string
         }
         Update: {
+          cocktail_id?: string | null
           created_at?: string
           created_by?: string
           focus_date?: string
           id?: string
           menu_item_ids?: string[]
+          notes?: string | null
           updated_at?: string
         }
         Relationships: []
