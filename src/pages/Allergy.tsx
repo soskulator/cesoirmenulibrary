@@ -19,6 +19,7 @@ import {
   MenuItem
 } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
+import { useAllergenModifications } from '@/hooks/useAllergenModifications';
 import { getDishImage } from '@/data/dishImages';
 import { 
   AlertTriangle, 
@@ -501,6 +502,7 @@ function AllergyCheckContent() {
 
 function AllergyTrainingContent() {
   const { items: menuItems, isLoading } = useMenuItems();
+  const { modifications, isLoading: modsLoading } = useAllergenModifications();
   const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['appetizers']);
@@ -856,6 +858,43 @@ function AllergyTrainingContent() {
                 })}
               </CardContent>
             </Card>
+
+            {/* Admin-Defined Modification Notes */}
+            {selectedDish && (() => {
+              const dishMods = modifications.filter(m => m.menu_item_id === selectedDish.id);
+              if (dishMods.length === 0) return null;
+              return (
+                <Card className="border-copper/30">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-sm">
+                      <Sparkles className="w-4 h-4 text-copper" />
+                      Kitchen Modification Guide
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {dishMods.map(mod => {
+                      const allergen = getAllergenById(mod.allergen_type as AllergenType);
+                      return (
+                        <div key={mod.id || `${mod.menu_item_id}-${mod.allergen_type}`} className="flex items-start gap-3 p-2 rounded-md bg-muted/30">
+                          <span>{allergen?.icon || '⚠️'}</span>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-sm">{allergen?.name || mod.allergen_type}</span>
+                              <Badge variant={mod.can_remove ? 'sage' : 'destructive'} className="text-[10px]">
+                                {mod.can_remove ? 'Can Remove' : 'Cannot Remove'}
+                              </Badge>
+                            </div>
+                            {mod.substitution_notes && (
+                              <p className="text-xs text-muted-foreground mt-1">{mod.substitution_notes}</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+              );
+            })()}
           </motion.div>
         ) : (
           <Card className="h-full flex items-center justify-center min-h-[400px]">

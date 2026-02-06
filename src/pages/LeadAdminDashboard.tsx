@@ -26,6 +26,7 @@ import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
 import { Leaderboard } from '@/components/admin/Leaderboard';
 import { PhotoGallery } from '@/components/admin/PhotoGallery';
 import { WeeklyFocusManager } from '@/components/admin/WeeklyFocusManager';
+import { AllergyManagement } from '@/components/admin/AllergyManagement';
 import { 
   Crown,
   FileText,
@@ -337,6 +338,11 @@ export default function LeadAdminDashboard() {
               menuItems={menuItems}
               categories={categories}
             />
+          </div>
+
+          {/* Allergy Management */}
+          <div className="mb-6 sm:mb-8">
+            <AllergyManagement categories={categories} />
           </div>
 
           {/* Management Cards Grid */}
