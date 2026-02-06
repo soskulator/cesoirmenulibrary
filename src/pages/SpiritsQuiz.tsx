@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { menuItems } from '@/data/menuData';
 import { getDishImage } from '@/data/dishImages';
+import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 
 import { 
   Check, 
@@ -85,6 +86,8 @@ export default function SpiritsQuizPage() {
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
   const [quizType, setQuizType] = useState<'all' | 'identify' | 'knowledge' | 'cocktails'>('all');
 
+  const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('spirits');
+
   // Get spirit and cocktail items
   const spirits = useMemo(() => 
     menuItems.filter(i => i.categoryId === 'spirits' && i.isPublished),
@@ -104,6 +107,21 @@ export default function SpiritsQuizPage() {
   const allQuestions: SpiritsQuizQuestion[] = useMemo(() => {
     const questions: SpiritsQuizQuestion[] = [];
     
+    // Add DB questions as knowledge questions
+    if (!dbIsEmpty) {
+      dbQuestions.forEach(dbQ => {
+        questions.push({
+          id: `db-${dbQ.id}`,
+          itemId: '',
+          itemName: '',
+          questionType: 'knowledge',
+          prompt: dbQ.question_text,
+          answer: dbQ.correct_answer,
+          category: 'spirit',
+        });
+      });
+    }
+
     // Spirit questions
     spirits.forEach(spirit => {
       const image = getDishImage(spirit.id);
@@ -212,7 +230,7 @@ export default function SpiritsQuizPage() {
     }
     
     return questions;
-  }, [spirits, signatureCocktails, quizType]);
+  }, [spirits, signatureCocktails, quizType, dbQuestions, dbIsEmpty]);
 
   // Shuffle questions
   const [shuffledQuestions, setShuffledQuestions] = useState<SpiritsQuizQuestion[]>([]);
