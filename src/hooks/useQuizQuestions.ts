@@ -172,6 +172,20 @@ export function useTestConfigs() {
     setIsLoading(false);
   }, [toast]);
 
+  const createConfig = useCallback(async (config: Omit<TestConfig, 'id' | 'created_by' | 'updated_at'>) => {
+    const { data, error } = await supabase
+      .from('test_configurations')
+      .insert(config)
+      .select()
+      .single();
+    if (error) {
+      toast({ title: 'Create failed', description: error.message, variant: 'destructive' });
+      return null;
+    }
+    setConfigs(prev => [...prev, data as TestConfig]);
+    return data as TestConfig;
+  }, [toast]);
+
   const updateConfig = useCallback(async (id: string, updates: Partial<TestConfig>) => {
     const { error } = await supabase
       .from('test_configurations')
@@ -185,7 +199,7 @@ export function useTestConfigs() {
     return true;
   }, [toast]);
 
-  return { configs, isLoading, fetchConfigs, updateConfig };
+  return { configs, isLoading, fetchConfigs, createConfig, updateConfig };
 }
 
 export function useQuestionAssignments() {
