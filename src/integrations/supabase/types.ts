@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      allergen_modifications: {
+        Row: {
+          allergen_type: string
+          can_remove: boolean
+          created_at: string
+          id: string
+          menu_item_id: string
+          substitution_notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          allergen_type: string
+          can_remove?: boolean
+          created_at?: string
+          id?: string
+          menu_item_id: string
+          substitution_notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allergen_type?: string
+          can_remove?: boolean
+          created_at?: string
+          id?: string
+          menu_item_id?: string
+          substitution_notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       daily_focus_settings: {
         Row: {
           cocktail_id: string | null
