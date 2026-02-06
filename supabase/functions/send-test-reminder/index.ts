@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
 const PUBLISHED_URL = "https://cesoirmenulibrary.lovable.app";
@@ -21,6 +22,33 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    const callerId = claimsData.claims.sub;
+
+    // Admin role check - only admins can send reminders
+    const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+    const { data: roleData } = await supabaseAdmin.from('user_roles').select('role').eq('user_id', callerId).single();
+    if (!roleData || (roleData.role !== 'admin' && roleData.role !== 'lead_admin')) {
+      return new Response(JSON.stringify({ error: 'Forbidden - Admin access required' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     const { email, fullName, missingTests }: ReminderRequest = await req.json();
 
     if (!email || !missingTests || missingTests.length === 0) {
@@ -30,7 +58,7 @@ const handler = async (req: Request): Promise<Response> => {
     const greeting = fullName ? `Hi ${fullName},` : "Hello,";
     const testList = missingTests.map(t => `<li style="margin-bottom: 8px; color: #4a4a4a;">${t}</li>`).join("");
 
-    console.log(`Sending test reminder to ${email} for tests: ${missingTests.join(", ")}`);
+    console.log(`Sending test reminder to ${email} for tests: ${missingTests.join(", ")} (requested by admin ${callerId})`);
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
