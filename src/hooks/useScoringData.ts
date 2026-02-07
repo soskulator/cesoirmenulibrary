@@ -317,6 +317,48 @@ export function useScoringData() {
     }
   }, []);
 
+  const deleteUserScores = useCallback(async (userId: string, userName: string) => {
+    try {
+      // Delete foh_test_answers for this user's attempts
+      const { data: userAttempts } = await supabase
+        .from('foh_test_attempts')
+        .select('id')
+        .eq('user_id', userId);
+
+      const attemptIds = (userAttempts || []).map(a => a.id);
+      if (attemptIds.length > 0) {
+        await supabase
+          .from('foh_test_answers')
+          .delete()
+          .in('attempt_id', attemptIds);
+      }
+
+      // Delete foh_test_attempts
+      const { error: attError } = await supabase
+        .from('foh_test_attempts')
+        .delete()
+        .eq('user_id', userId);
+      if (attError) throw attError;
+
+      // Delete quiz_scores
+      await supabase
+        .from('quiz_scores')
+        .delete()
+        .eq('user_id', userId);
+
+      toast.success(`All test scores removed for ${userName}`);
+
+      // Remove from local state
+      setLeaderboard(prev => prev.filter(s => s.userId !== userId));
+
+      return true;
+    } catch (err: any) {
+      console.error('Error deleting scores:', err);
+      toast.error('Failed to remove scores');
+      return false;
+    }
+  }, []);
+
   return {
     leaderboard,
     overview,
@@ -326,5 +368,6 @@ export function useScoringData() {
     fetchStaffDetail,
     exportCSV,
     sendReminder,
+    deleteUserScores,
   };
 }

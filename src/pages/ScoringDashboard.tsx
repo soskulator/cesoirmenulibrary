@@ -9,9 +9,13 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
   Trophy, ArrowLeft, ArrowUpDown, TrendingUp, Users, AlertTriangle,
   BarChart3, Download, ChevronDown, ChevronRight, Loader2, Bell,
-  Target, Calendar, XCircle,
+  Target, Calendar, XCircle, Trash2,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useScoringData, type StaffScore, type StaffDetail } from '@/hooks/useScoringData';
@@ -34,10 +38,10 @@ function getScoreTier(score: number): string {
 }
 
 export default function ScoringDashboard() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isLeadAdmin } = useAuth();
   const {
     leaderboard, overview, incompleteStaff, isLoading,
-    fetchAll, fetchStaffDetail, exportCSV, sendReminder,
+    fetchAll, fetchStaffDetail, exportCSV, sendReminder, deleteUserScores,
   } = useScoringData();
 
   const [sortBy, setSortBy] = useState<SortKey>('avg');
@@ -45,6 +49,8 @@ export default function ScoringDashboard() {
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
   const [staffDetails, setStaffDetails] = useState<Record<string, StaffDetail>>({});
   const [detailLoading, setDetailLoading] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<StaffScore | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (isAdmin) fetchAll();
@@ -180,7 +186,7 @@ export default function ScoringDashboard() {
                         </div>
                       </div>
                     </div>
-                    {isExpanded && <StaffDetailPanel userId={s.userId} detail={staffDetails[s.userId]} loading={detailLoading === s.userId} />}
+                    {isExpanded && <StaffDetailPanel userId={s.userId} detail={staffDetails[s.userId]} loading={detailLoading === s.userId} isLeadAdmin={isLeadAdmin} onDelete={() => setDeleteTarget(s)} />}
                   </div>
                 );
               })}
@@ -237,7 +243,7 @@ export default function ScoringDashboard() {
                         {isExpanded && (
                           <TableRow key={`${s.userId}-detail`}>
                             <TableCell colSpan={8} className="p-0">
-                              <StaffDetailPanel userId={s.userId} detail={staffDetails[s.userId]} loading={detailLoading === s.userId} />
+                              <StaffDetailPanel userId={s.userId} detail={staffDetails[s.userId]} loading={detailLoading === s.userId} isLeadAdmin={isLeadAdmin} onDelete={() => setDeleteTarget(s)} />
                             </TableCell>
                           </TableRow>
                         )}
@@ -317,6 +323,45 @@ export default function ScoringDashboard() {
             </Button>
           </CardContent>
         </Card>
+
+        {/* Delete Scores Confirmation Dialog */}
+        <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove All Test Scores?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete all completed test attempts, answers, and quiz scores for{' '}
+                <strong>{deleteTarget?.fullName}</strong> ({deleteTarget?.email}).
+                <br /><br />
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={isDeleting}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={async () => {
+                  if (!deleteTarget) return;
+                  setIsDeleting(true);
+                  await deleteUserScores(deleteTarget.userId, deleteTarget.fullName);
+                  setIsDeleting(false);
+                  setDeleteTarget(null);
+                  setExpandedUser(null);
+                }}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Removing...
+                  </>
+                ) : (
+                  'Remove All Scores'
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Layout>
   );
@@ -363,7 +408,7 @@ function SortableHead({ label, sortKey, current, asc, onSort, className }: {
   );
 }
 
-function StaffDetailPanel({ userId, detail, loading }: { userId: string; detail?: StaffDetail; loading: boolean }) {
+function StaffDetailPanel({ userId, detail, loading, isLeadAdmin, onDelete }: { userId: string; detail?: StaffDetail; loading: boolean; isLeadAdmin: boolean; onDelete: () => void }) {
   if (loading) {
     return (
       <div className="p-4 flex justify-center">
@@ -431,6 +476,21 @@ function StaffDetailPanel({ userId, detail, loading }: { userId: string; detail?
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Lead Admin: Remove Scores */}
+      {isLeadAdmin && (
+        <div className="border-t pt-3 mt-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+            onClick={onDelete}
+          >
+            <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+            Remove All Test Scores
+          </Button>
         </div>
       )}
     </div>
