@@ -26,6 +26,7 @@ import {
   RefreshCw,
   Loader2,
   Trophy,
+  MessageSquare,
 } from 'lucide-react';
 import { menuItems, categories } from '@/data/menuData';
 import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
@@ -295,6 +296,12 @@ export default function AdminPage() {
                   <Link to="/admin/seed-questions">
                     <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                     Seed Questions
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm" className="border-burgundy/30 hover:bg-burgundy/10 hover:text-burgundy text-xs sm:text-sm">
+                  <Link to="/admin/dashboard#test-review">
+                    <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                    Test Review
                   </Link>
                 </Button>
               </div>
