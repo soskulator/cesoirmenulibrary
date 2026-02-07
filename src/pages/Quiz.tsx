@@ -17,7 +17,7 @@ import {
   Target,
   Users,
   UserCheck,
-  Loader2,
+  Pencil,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -32,10 +32,46 @@ interface TestConfiguration {
   is_active: boolean;
 }
 
-// Map test_type to icon + color
+// Hardcoded fallback tests that always appear
+const FALLBACK_TESTS: Array<{
+  test_type: string;
+  test_name: string;
+  total_questions: number;
+  passing_score: number;
+  time_limit_minutes: number | null;
+  icon: typeof ClipboardList;
+  color: string;
+  bgColor: string;
+  description: string;
+}> = [
+  {
+    test_type: 'service_staff',
+    test_name: 'Server & Bartender Test',
+    total_questions: 69,
+    passing_score: 70,
+    time_limit_minutes: null,
+    icon: Users,
+    color: 'text-burgundy',
+    bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20',
+    description: 'Complete service knowledge',
+  },
+  {
+    test_type: 'server_assistant',
+    test_name: 'Server Assistant Test',
+    total_questions: 23,
+    passing_score: 70,
+    time_limit_minutes: null,
+    icon: UserCheck,
+    color: 'text-jade',
+    bgColor: 'from-jade/10 via-jade/5 to-transparent border-jade/20',
+    description: 'Essential service skills',
+  },
+];
+
+// Map test_type to icon + color for DB tests
 const TEST_TYPE_VISUALS: Record<string, { icon: typeof ClipboardList; color: string; bgColor: string }> = {
   service_staff: { icon: Users, color: 'text-burgundy', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20' },
-  server_assistant: { icon: UserCheck, color: 'text-copper', bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20' },
+  server_assistant: { icon: UserCheck, color: 'text-jade', bgColor: 'from-jade/10 via-jade/5 to-transparent border-jade/20' },
   wine_test: { icon: Wine, color: 'text-burgundy', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20' },
   wine: { icon: Wine, color: 'text-burgundy', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20' },
   food_test: { icon: UtensilsCrossed, color: 'text-sage', bgColor: 'from-sage/10 via-sage/5 to-transparent border-sage/20' },
@@ -54,35 +90,125 @@ function getVisual(testType: string) {
   return TEST_TYPE_VISUALS[testType] ?? DEFAULT_VISUAL;
 }
 
+// Unified display type for rendering
+interface DisplayTest {
+  id: string | null; // null for pure fallbacks
+  test_name: string;
+  test_type: string;
+  total_questions: number;
+  passing_score: number;
+  time_limit_minutes: number | null;
+  is_active: boolean;
+  icon: typeof ClipboardList;
+  color: string;
+  bgColor: string;
+  isFromDb: boolean;
+}
+
 export default function QuizPage() {
-  const { hasPermission, isServerAssistant } = useAuth();
-  const [tests, setTests] = useState<TestConfiguration[]>([]);
+  const { hasPermission, isServerAssistant, isLeadAdmin } = useAuth();
+  const [dbTests, setDbTests] = useState<TestConfiguration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTests = async () => {
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('test_configurations')
           .select('*')
-          .eq('is_active', true)
-          .order('created_at');
-        if (error) throw error;
-        setTests((data as TestConfiguration[]) ?? []);
+          .order('updated_at');
+
+        // Non-lead-admins only see active tests
+        if (!isLeadAdmin) {
+          query = query.eq('is_active', true);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+          console.error('Error fetching test configurations:', error);
+          setDbTests([]);
+          return;
+        }
+
+        console.log('Fetched test configurations:', data);
+        setDbTests((data as TestConfiguration[]) ?? []);
       } catch (err) {
-        console.error('Error fetching test configurations:', err);
+        console.error('Unexpected error fetching test configurations:', err);
+        setDbTests([]);
       } finally {
         setIsLoading(false);
       }
     };
     fetchTests();
-  }, []);
+  }, [isLeadAdmin]);
 
-  // Filter tests for server assistants — only show tests whose type contains 'server_assistant' or generic ones
+  // Build merged display list: fallbacks + DB tests
+  const displayTests: DisplayTest[] = (() => {
+    const dbMap = new Map(dbTests.map(t => [t.test_type, t]));
+    const result: DisplayTest[] = [];
+
+    // 1. Always show fallback tests (merged with DB data if available)
+    for (const fb of FALLBACK_TESTS) {
+      const dbMatch = dbMap.get(fb.test_type);
+      if (dbMatch) {
+        result.push({
+          id: dbMatch.id,
+          test_name: dbMatch.test_name || fb.test_name,
+          test_type: fb.test_type,
+          total_questions: dbMatch.total_questions ?? fb.total_questions,
+          passing_score: dbMatch.passing_score ?? fb.passing_score,
+          time_limit_minutes: dbMatch.time_limit_minutes ?? fb.time_limit_minutes,
+          is_active: dbMatch.is_active,
+          icon: fb.icon,
+          color: fb.color,
+          bgColor: fb.bgColor,
+          isFromDb: true,
+        });
+        dbMap.delete(fb.test_type);
+      } else {
+        result.push({
+          id: null,
+          test_name: fb.test_name,
+          test_type: fb.test_type,
+          total_questions: fb.total_questions,
+          passing_score: fb.passing_score,
+          time_limit_minutes: fb.time_limit_minutes,
+          is_active: true,
+          icon: fb.icon,
+          color: fb.color,
+          bgColor: fb.bgColor,
+          isFromDb: false,
+        });
+      }
+    }
+
+    // 2. Add remaining DB tests not covered by fallbacks
+    for (const [, dbTest] of dbMap) {
+      const visual = getVisual(dbTest.test_type);
+      result.push({
+        id: dbTest.id,
+        test_name: dbTest.test_name,
+        test_type: dbTest.test_type,
+        total_questions: dbTest.total_questions,
+        passing_score: dbTest.passing_score,
+        time_limit_minutes: dbTest.time_limit_minutes,
+        is_active: dbTest.is_active,
+        icon: visual.icon,
+        color: visual.color,
+        bgColor: visual.bgColor,
+        isFromDb: true,
+      });
+    }
+
+    return result;
+  })();
+
+  // Filter for server assistants
   const visibleTests = isServerAssistant
-    ? tests.filter(t => t.test_type === 'server_assistant' || !['service_staff'].includes(t.test_type))
-    : tests;
+    ? displayTests.filter(t => t.test_type !== 'service_staff')
+    : displayTests;
 
   return (
     <Layout>
@@ -97,7 +223,7 @@ export default function QuizPage() {
           </p>
         </div>
 
-        {/* SECTION 1: Required Tests from DB */}
+        {/* SECTION 1: Required Tests */}
         <div className="mb-6 sm:mb-8">
           <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Required Tests</h2>
 
@@ -107,56 +233,73 @@ export default function QuizPage() {
                 <Skeleton key={i} className="h-[88px] w-full rounded-xl" />
               ))}
             </div>
-          ) : visibleTests.length === 0 ? (
-            <div className="p-6 text-center text-muted-foreground border border-dashed rounded-xl">
-              <ClipboardList className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No active tests configured yet.</p>
-              <p className="text-xs mt-1">An admin can create tests in the Quiz Builder.</p>
-            </div>
           ) : (
             <div className="grid grid-cols-1 gap-3">
               {visibleTests.map((test) => {
-                const visual = getVisual(test.test_type);
-                const Icon = visual.icon;
+                const Icon = test.icon;
+                const isInactive = !test.is_active;
 
                 return (
-                  <Link key={test.id} to={`/foh-test?type=${test.test_type}`} className="group">
-                    <div className={cn(
-                      "relative overflow-hidden rounded-xl bg-gradient-to-br border p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5",
-                      visual.bgColor
-                    )}>
-                      <div className="flex items-center gap-3">
-                        <div className={cn(
-                          "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
-                          visual.color.replace('text-', 'bg-') + '/10',
-                          `group-hover:${visual.color.replace('text-', 'bg-')}/20`
-                        )}>
-                          <Icon className={cn("w-5 h-5", visual.color)} />
-                        </div>
-                        <div className="text-left flex-1 min-w-0">
-                          <h3 className={cn("font-semibold text-foreground transition-colors truncate", `group-hover:${visual.color}`)}>
-                            {test.test_name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Target className="w-3 h-3" />
-                              {test.total_questions} questions
-                            </span>
-                            <span className="text-xs text-muted-foreground">•</span>
-                            <span className="text-xs text-muted-foreground">
-                              Pass: {test.passing_score}%
-                            </span>
-                            <span className="text-xs text-muted-foreground">•</span>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {test.time_limit_minutes ? `${test.time_limit_minutes} min` : 'No limit'}
-                            </span>
+                  <div key={test.test_type} className="relative">
+                    <Link to={`/foh-test?type=${test.test_type}`} className={cn("group block", isInactive && "pointer-events-none")}>
+                      <div className={cn(
+                        "relative overflow-hidden rounded-xl bg-gradient-to-br border p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5",
+                        test.bgColor,
+                        isInactive && "opacity-50 grayscale"
+                      )}>
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+                            test.color.replace('text-', 'bg-') + '/10'
+                          )}>
+                            <Icon className={cn("w-5 h-5", test.color)} />
                           </div>
+                          <div className="text-left flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold text-foreground transition-colors truncate">
+                                {test.test_name}
+                              </h3>
+                              {isInactive && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-muted-foreground/30 text-muted-foreground">
+                                  Inactive
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Target className="w-3 h-3" />
+                                {test.total_questions} questions
+                              </span>
+                              <span className="text-xs text-muted-foreground">•</span>
+                              <span className="text-xs text-muted-foreground">
+                                Pass: {test.passing_score}%
+                              </span>
+                              <span className="text-xs text-muted-foreground">•</span>
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {test.time_limit_minutes ? `${test.time_limit_minutes} min` : 'No limit'}
+                              </span>
+                            </div>
+                          </div>
+                          {!isInactive && (
+                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-all flex-shrink-0" />
+                          )}
                         </div>
-                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-all flex-shrink-0" />
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+
+                    {/* Lead admin edit link for DB tests */}
+                    {isLeadAdmin && test.isFromDb && test.id && (
+                      <Link
+                        to="/admin/quiz-builder"
+                        className="absolute top-2 right-2 z-10 p-1.5 rounded-md bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-background transition-colors"
+                        title="Edit test"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
+                  </div>
                 );
               })}
             </div>
@@ -215,7 +358,6 @@ export default function QuizPage() {
             )}
           </div>
 
-          {/* Allergy Test */}
           {hasPermission('quiz:allergy') && (
             <Link to="/allergy-quiz" className="group block">
               <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5">
