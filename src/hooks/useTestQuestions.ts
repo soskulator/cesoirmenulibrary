@@ -130,15 +130,21 @@ export function useTestQuestions(testType: TestType | null) {
   }, [fetchTestData]);
 
   // Build the final test question set with required + pool logic
+  // Whether this test type supports static fallback data
+  const isLegacyType = testType === 'service_staff' || testType === 'server_assistant';
+  const hasNoQuestions = (usingFallback || questions.length === 0) && !isLegacyType;
+
   const buildTestQuestions = useCallback((): FohTestQuestion[] => {
-    // Fallback to static data
+    // Fallback to static data only for legacy types
     if (usingFallback || questions.length === 0) {
-      const staticQuestions = testType === 'server_assistant'
-        ? serverAssistantQuestions
-        : testType === 'service_staff'
-          ? serviceStaffQuestions
-          : [];
-      return [...staticQuestions].sort(() => Math.random() - 0.5);
+      if (testType === 'server_assistant') {
+        return [...serverAssistantQuestions].sort(() => Math.random() - 0.5);
+      }
+      if (testType === 'service_staff') {
+        return [...serviceStaffQuestions].sort(() => Math.random() - 0.5);
+      }
+      // Non-legacy types with no DB questions — return empty
+      return [];
     }
 
     // Apply difficulty filter if configured
@@ -184,6 +190,8 @@ export function useTestQuestions(testType: TestType | null) {
     isLoading,
     error,
     usingFallback,
+    hasNoQuestions,
+    isLegacyType,
     buildTestQuestions,
     refetch: fetchTestData,
   };

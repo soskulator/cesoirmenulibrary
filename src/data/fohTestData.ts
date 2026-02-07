@@ -1,7 +1,7 @@
 // FoH Test - Front of House Test Questions
 // Two test types: Service Staff (Full Test) and Server Assistant
 
-export type TestType = 'service_staff' | 'server_assistant';
+export type TestType = string;
 
 export interface FohTestQuestion {
   id: number;
