@@ -12,7 +12,17 @@ import {
   SheetTitle,
   SheetFooter
 } from '@/components/ui/sheet';
-import { CheckCircle2, XCircle, Clock, User, ChevronRight, MessageSquare, Loader2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { CheckCircle2, XCircle, Clock, User, ChevronRight, MessageSquare, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -47,7 +57,7 @@ interface TestAnswer {
 }
 
 export function FohTestReviewManager() {
-  const { user } = useAuth();
+  const { user, isLeadAdmin } = useAuth();
   const isMobile = useIsMobile();
   const [attempts, setAttempts] = useState<TestAttempt[]>([]);
   const [selectedAttempt, setSelectedAttempt] = useState<TestAttempt | null>(null);
@@ -57,6 +67,8 @@ export function FohTestReviewManager() {
   const [reviewSheetOpen, setReviewSheetOpen] = useState(false);
   const [adminNotes, setAdminNotes] = useState<Record<string, string>>({});
   const [savingOverride, setSavingOverride] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<TestAttempt | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchAttempts();
@@ -200,6 +212,23 @@ export function FohTestReviewManager() {
     }
   };
 
+  const deleteAttempt = async (attempt: TestAttempt) => {
+    setDeleting(true);
+    try {
+      await supabase.from('foh_test_answers').delete().eq('attempt_id', attempt.id);
+      const { error } = await supabase.from('foh_test_attempts').delete().eq('id', attempt.id);
+      if (error) throw error;
+      setAttempts(prev => prev.filter(a => a.id !== attempt.id));
+      toast.success(`Test removed for ${attempt.user_name || attempt.user_email}`);
+    } catch (error) {
+      console.error('Error deleting attempt:', error);
+      toast.error('Failed to remove test');
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
+    }
+  };
+
   const getEffectiveResult = (answer: TestAnswer) => {
     if (answer.admin_override !== null) {
       return answer.admin_override;
@@ -281,6 +310,19 @@ export function FohTestReviewManager() {
                         <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30 text-[10px] sm:text-xs px-1.5 sm:px-2">
                           Pending
                         </Badge>
+                      )}
+                      {isLeadAdmin && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-muted-foreground hover:text-destructive flex-shrink-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleteTarget(attempt);
+                          }}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                       )}
                       <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
                     </div>
@@ -444,6 +486,30 @@ export function FohTestReviewManager() {
           </SheetFooter>
         </SheetContent>
       </Sheet>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove This Test?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the test attempt by{' '}
+              <span className="font-semibold">{deleteTarget?.user_name || deleteTarget?.user_email}</span>{' '}
+              ({deleteTarget && new Date(deleteTarget.completed_at!).toLocaleDateString()}) and all its answers. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={deleting}
+              onClick={() => deleteTarget && deleteAttempt(deleteTarget)}
+            >
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+              Remove Test
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
