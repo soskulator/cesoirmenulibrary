@@ -366,7 +366,7 @@ export default function CategoriesPage() {
                             .filter(Boolean)
                             .map((menuItem, idx) => {
                               if (!menuItem) return null;
-                              const dishImage = getDishImage(menuItem.id);
+                              const dishImage = getDishImage(menuItem.id, menuItem.imageUrl);
                               return (
                                 <motion.div 
                                   key={menuItem.id}
@@ -437,7 +437,7 @@ export default function CategoriesPage() {
             <motion.div variants={container} initial="hidden" animate="show" className="px-6 pb-24">
               <div className="max-w-4xl mx-auto space-y-3">
                 {items.map((menuItem, idx) => {
-                  const dishImage = getDishImage(menuItem.id);
+                  const dishImage = getDishImage(menuItem.id, menuItem.imageUrl);
                   return (
                     <motion.div 
                       key={menuItem.id} 

@@ -14,7 +14,7 @@ interface DailyCocktailCardProps {
 }
 
 export function DailyCocktailCard({ cocktail, dateString }: DailyCocktailCardProps) {
-  const image = getDishImage(cocktail.id);
+  const image = getDishImage(cocktail.id, cocktail.imageUrl);
   const glassware = extractGlassware(cocktail.prepNotes);
   
   return (
