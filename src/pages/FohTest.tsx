@@ -43,8 +43,8 @@ interface AnsweredQuestion {
 export default function FohTestPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const urlTestType = searchParams.get('type') as TestType | null;
-  const [selectedTestType, setSelectedTestType] = useState<TestType | null>(urlTestType);
+  const urlTestType = searchParams.get('type') || null;
+  const [selectedTestType, setSelectedTestType] = useState<string | null>(urlTestType);
   const [testStarted, setTestStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -58,7 +58,7 @@ export default function FohTestPage() {
   const [attemptId, setAttemptId] = useState<string | null>(null);
   
   const { saveQuizScore } = useQuizScores();
-  const { testConfig, isLoading: isLoadingQuestions, usingFallback, buildTestQuestions } = useTestQuestions(selectedTestType);
+  const { testConfig, isLoading: isLoadingQuestions, usingFallback, hasNoQuestions, buildTestQuestions } = useTestQuestions(selectedTestType);
   const { user, isServerAssistant, hasBeverageAccess } = useAuth();
 
   // Redirect Server Assistants trying to access the service_staff test
@@ -276,7 +276,7 @@ export default function FohTestPage() {
   // Save score when test is complete and notify lead admins
   useEffect(() => {
     if (showResult && answeredQuestions.length === shuffledQuestions.length && shuffledQuestions.length > 0) {
-      const quizType = selectedTestType === 'server_assistant' ? 'foh-sa' : 'foh-service';
+      const quizType = selectedTestType ?? 'foh-service';
       saveQuizScore(quizType, score.correct, score.total);
 
       // Update the test attempt with final score and notify lead admins
@@ -474,9 +474,11 @@ export default function FohTestPage() {
                 <RotateCcw className="w-5 h-5 mr-2" />
                 Retake Test
               </Button>
-              <Button variant="outline" onClick={() => setSelectedTestType(null)} className="h-11">
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                Choose Different Test
+              <Button variant="outline" asChild className="h-11">
+                <Link to="/quiz">
+                  <ArrowLeft className="w-5 h-5 mr-2" />
+                  Back to Tests
+                </Link>
               </Button>
             </div>
           </motion.div>
@@ -485,94 +487,10 @@ export default function FohTestPage() {
     );
   }
 
-  // Test type selection screen
+  // No test type selected — redirect to quiz hub
   if (!selectedTestType) {
-    return (
-      <Layout>
-        <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
-          <div className="text-center mb-6 sm:mb-8">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-4">
-              <ClipboardList className="w-8 h-8 sm:w-10 sm:h-10 text-burgundy" />
-            </div>
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">FoH Knowledge Tests</h1>
-            <p className="text-muted-foreground text-sm sm:text-base">
-              Select your position to take the appropriate test
-            </p>
-          </div>
-
-          <div className="grid gap-4">
-            {/* Service Staff Test - Only show if user has beverage access */}
-            {hasBeverageAccess && (
-              <Card 
-                className="cursor-pointer hover:border-burgundy transition-colors"
-                onClick={() => setSelectedTestType('service_staff')}
-              >
-                <CardContent className="p-4 sm:p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-burgundy/10 flex items-center justify-center flex-shrink-0">
-                      <Users className="w-6 h-6 text-burgundy" />
-                    </div>
-                    <div className="flex-1">
-                      <h2 className="font-semibold text-lg mb-1">Service Staff Test</h2>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Complete Service & Food Knowledge Test including beverage knowledge for servers and bartenders
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="text-xs">69 Questions</Badge>
-                        <Badge variant="outline" className="text-xs">~45 min</Badge>
-                        <Badge className="bg-burgundy/10 text-burgundy text-xs">Full Menu & Beverage</Badge>
-                      </div>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Server Assistant Test */}
-            <Card 
-              className="cursor-pointer hover:border-burgundy transition-colors"
-              onClick={() => setSelectedTestType('server_assistant')}
-            >
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-jade/10 flex items-center justify-center flex-shrink-0">
-                    <UserCheck className="w-6 h-6 text-jade" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="font-semibold text-lg mb-1">Server Assistant Test</h2>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Focused test for server assistants covering service standards, operations, and basic knowledge
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="text-xs">33 Questions</Badge>
-                      <Badge variant="outline" className="text-xs">~20 min</Badge>
-                      <Badge className="bg-jade/10 text-jade text-xs">SA Focused</Badge>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-            <p className="text-xs text-muted-foreground text-center">
-              <strong>AI-Powered Grading:</strong> Short answers are automatically evaluated - you don't need verbatim answers, just demonstrate understanding of the key concepts.
-            </p>
-          </div>
-
-          <div className="mt-6 text-center">
-            <Button variant="outline" asChild>
-              <Link to="/quiz">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Tests
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </Layout>
-    );
+    navigate('/quiz', { replace: true });
+    return null;
   }
 
   // Test start screen
@@ -588,58 +506,72 @@ export default function FohTestPage() {
       );
     }
 
+    // No questions available for non-legacy test types
+    if (hasNoQuestions) {
+      return (
+        <Layout>
+          <div className="container py-12 max-w-2xl px-4 text-center">
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <ClipboardList className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h1 className="font-serif text-2xl font-bold mb-3">No Questions Assigned</h1>
+            <p className="text-muted-foreground text-sm mb-6">
+              No questions have been assigned to this test yet. Please contact your admin.
+            </p>
+            <Button variant="outline" asChild>
+              <Link to="/quiz">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Tests
+              </Link>
+            </Button>
+          </div>
+        </Layout>
+      );
+    }
+
     // Use testConfig for display info, with sensible fallbacks
     const totalQuestions = testConfig?.total_questions ?? (selectedTestType === 'server_assistant' ? 23 : 69);
     const testName = testConfig?.test_name ?? getTestTypeLabel(selectedTestType);
     const timeLimitMin = testConfig?.time_limit_minutes;
     const estMinutes = timeLimitMin ?? (selectedTestType === 'server_assistant' ? 20 : 45);
+    const passingScore = testConfig?.passing_score ?? 70;
 
     return (
       <Layout>
         <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
           <div className="text-center mb-6 sm:mb-8">
-            <div className={cn(
-              "w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-4",
-              selectedTestType === 'server_assistant' ? "bg-jade/10" : "bg-burgundy/10"
-            )}>
-              {selectedTestType === 'server_assistant' ? (
-                <UserCheck className="w-8 h-8 sm:w-10 sm:h-10 text-jade" />
-              ) : (
-                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-burgundy" />
-              )}
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-4">
+              <ClipboardList className="w-8 h-8 sm:w-10 sm:h-10 text-burgundy" />
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
               {testName}
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
-              {selectedTestType === 'server_assistant' 
+              {testConfig?.test_name ? `${selectedTestType} test` : (selectedTestType === 'server_assistant' 
                 ? 'Server Assistant Knowledge Test' 
-                : 'Full Service & Beverage Knowledge Test'}
+                : 'Full Service & Beverage Knowledge Test')}
             </p>
           </div>
 
           <Card className="mb-6">
             <CardContent className="p-4 sm:p-6">
               <h2 className="font-semibold mb-4">Test Overview</h2>
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="p-3 bg-muted rounded-lg text-center">
                   <p className="text-2xl font-bold text-burgundy">{totalQuestions}</p>
-                  <p className="text-xs text-muted-foreground">Total Questions</p>
+                  <p className="text-xs text-muted-foreground">Questions</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg text-center">
                   <p className="text-2xl font-bold text-copper">
-                    ~{estMinutes}
+                    {timeLimitMin ? `${timeLimitMin}` : `~${estMinutes}`}
                   </p>
-                  <p className="text-xs text-muted-foreground">Minutes Est.</p>
+                  <p className="text-xs text-muted-foreground">{timeLimitMin ? 'Min Limit' : 'Min Est.'}</p>
+                </div>
+                <div className="p-3 bg-muted rounded-lg text-center">
+                  <p className="text-2xl font-bold text-sage">{passingScore}%</p>
+                  <p className="text-xs text-muted-foreground">To Pass</p>
                 </div>
               </div>
-
-              {!usingFallback && (
-                <>
-                  <h3 className="text-sm font-medium mb-3">Passing Score:</h3>
-                  <Badge variant="outline" className="text-xs mb-3">{testConfig?.passing_score ?? 70}%</Badge>
-                </>
-              )}
 
               <div className="mt-4 p-3 bg-sage/10 rounded-lg border border-sage/20">
                 <p className="text-xs text-sage-foreground">
@@ -654,9 +586,11 @@ export default function FohTestPage() {
               Start Test
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button variant="outline" size="lg" onClick={() => setSelectedTestType(null)} className="h-12">
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Choose Different Test
+            <Button variant="outline" size="lg" asChild className="h-12">
+              <Link to="/quiz">
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Back to Tests
+              </Link>
             </Button>
           </div>
         </div>
