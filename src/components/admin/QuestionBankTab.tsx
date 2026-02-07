@@ -6,10 +6,11 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Plus, Search, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Loader2, Upload } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuizQuestions, CATEGORIES, type QuizQuestion, type QuizQuestionInsert } from '@/hooks/useQuizQuestions';
 import { QuestionFormModal } from './QuestionFormModal';
+import { BulkImportModal } from './BulkImportModal';
 
 const categoryColors: Record<string, string> = {
   service: 'bg-burgundy/15 text-burgundy border-burgundy/30',
@@ -36,6 +37,7 @@ export function QuestionBankTab() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<QuizQuestion | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
   const perPage = 20;
 
   const loadQuestions = useCallback(() => {
@@ -117,10 +119,16 @@ export function QuestionBankTab() {
             </SelectContent>
           </Select>
         </div>
-        <Button onClick={() => { setEditingQuestion(null); setModalOpen(true); }} className="bg-copper hover:bg-copper-light text-white shrink-0">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Question
-        </Button>
+        <div className="flex gap-2 shrink-0">
+          <Button variant="outline" onClick={() => setImportOpen(true)}>
+            <Upload className="w-4 h-4 mr-2" />
+            Import Questions
+          </Button>
+          <Button onClick={() => { setEditingQuestion(null); setModalOpen(true); }} className="bg-copper hover:bg-copper-light text-white">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Question
+          </Button>
+        </div>
       </div>
 
       {/* Count */}
@@ -255,6 +263,12 @@ export function QuestionBankTab() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <BulkImportModal
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImported={loadQuestions}
+      />
     </div>
   );
 }
