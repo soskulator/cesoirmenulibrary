@@ -1,8 +1,9 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -26,7 +27,9 @@ import {
   Clock,
   Loader2,
   Users,
-  UserCheck
+  UserCheck,
+  AlertTriangle,
+  Send
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -56,6 +59,7 @@ export default function FohTestPage() {
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
   const [attemptId, setAttemptId] = useState<string | null>(null);
+  const [showConfirmEnd, setShowConfirmEnd] = useState(false);
   
   const { saveQuizScore } = useQuizScores();
   const { testConfig, isLoading: isLoadingQuestions, usingFallback, hasNoQuestions, buildTestQuestions } = useTestQuestions(selectedTestType);
@@ -273,9 +277,9 @@ export default function FohTestPage() {
     };
   }, [answeredQuestions, shuffledQuestions.length]);
 
-  // Save score when test is complete and notify lead admins
+  // Save score when test is complete (full or early submission) and notify lead admins
   useEffect(() => {
-    if (showResult && answeredQuestions.length === shuffledQuestions.length && shuffledQuestions.length > 0) {
+    if (showResult && shuffledQuestions.length > 0) {
       const quizType = selectedTestType ?? 'foh-service';
       saveQuizScore(quizType, score.correct, score.total);
 
@@ -289,6 +293,7 @@ export default function FohTestPage() {
               .update({
                 completed_at: new Date().toISOString(),
                 score: score.correct,
+                total_questions: score.total,
                 percentage: score.percentage
               })
               .eq('id', attemptId);
@@ -322,7 +327,7 @@ export default function FohTestPage() {
         updateAndNotify();
       }
     }
-  }, [showResult, answeredQuestions.length, shuffledQuestions.length, score.correct, score.total, score.percentage, saveQuizScore, attemptId, user, selectedTestType]);
+  }, [showResult, shuffledQuestions.length, score.correct, score.total, score.percentage, saveQuizScore, attemptId, user, selectedTestType]);
 
   const getTimeSpent = () => {
     if (!startTime || !endTime) return '0 min';
@@ -352,7 +357,15 @@ export default function FohTestPage() {
     setStartTime(null);
     setEndTime(null);
     setAttemptId(null);
+    setShowConfirmEnd(false);
   };
+
+  // Submit test early — unanswered questions count as incorrect
+  const submitTestEarly = useCallback(() => {
+    setEndTime(new Date());
+    setShowResult(true);
+    setShowConfirmEnd(false);
+  }, []);
 
   const goBack = () => {
     if (testStarted) {
@@ -365,6 +378,8 @@ export default function FohTestPage() {
   // Results screen with scoreboard
   if (showResult) {
     const gradeInfo = getScoreGrade(score.percentage);
+    const unansweredCount = shuffledQuestions.length - answeredQuestions.length;
+    const isPartialSubmission = unansweredCount > 0;
 
     return (
       <Layout>
@@ -384,6 +399,11 @@ export default function FohTestPage() {
               <p className={cn("text-xl sm:text-2xl font-bold", gradeInfo.color)}>
                 {gradeInfo.label}
               </p>
+              {isPartialSubmission && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  {answeredQuestions.length} of {shuffledQuestions.length} questions answered · {unansweredCount} unanswered counted as incorrect
+                </p>
+              )}
             </div>
 
             {/* Scoreboard Card */}
@@ -811,13 +831,50 @@ export default function FohTestPage() {
           </AnimatePresence>
         )}
 
-        {/* End Test Button */}
+        {/* Submit Test Early Button */}
         <div className="mt-6 text-center">
-          <Button variant="ghost" onClick={resetTest} size="sm" className="text-xs">
-            <X className="w-4 h-4 mr-1" />
-            End Test
+          <Button 
+            variant="ghost" 
+            onClick={() => setShowConfirmEnd(true)} 
+            size="sm" 
+            className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
+            <Send className="w-4 h-4 mr-1" />
+            Submit Test
           </Button>
         </div>
+
+        {/* Confirm Early Submission Dialog */}
+        <AlertDialog open={showConfirmEnd} onOpenChange={setShowConfirmEnd}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-gold" />
+                Submit Test Early?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="space-y-2">
+                <p>
+                  You have answered <strong>{answeredQuestions.length}</strong> of <strong>{shuffledQuestions.length}</strong> questions.
+                </p>
+                {answeredQuestions.length < shuffledQuestions.length && (
+                  <p className="text-destructive">
+                    The remaining {shuffledQuestions.length - answeredQuestions.length} unanswered questions will be marked as incorrect.
+                  </p>
+                )}
+                <p>This action cannot be undone.</p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Continue Test</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={submitTestEarly}
+                className="bg-burgundy hover:bg-burgundy/90"
+              >
+                Submit Now
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Layout>
   );
