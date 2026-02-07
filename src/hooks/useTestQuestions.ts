@@ -147,11 +147,18 @@ export function useTestQuestions(testType: TestType | null) {
       return [];
     }
 
-    // Apply difficulty filter if configured
+    // Apply difficulty filter if configured, but fall back to all questions if filter yields nothing
     const diffFilter = testConfig?.difficulty_filter;
-    const filtered = (diffFilter && diffFilter.length > 0)
-      ? questions.filter(q => diffFilter.includes(q.difficulty))
-      : questions;
+    let filtered = questions;
+    if (diffFilter && diffFilter.length > 0) {
+      const diffFiltered = questions.filter(q => diffFilter.includes(q.difficulty));
+      // Only apply the filter if it doesn't eliminate all questions
+      if (diffFiltered.length > 0) {
+        filtered = diffFiltered;
+      } else {
+        console.warn(`Difficulty filter ${JSON.stringify(diffFilter)} matched 0 questions — ignoring filter`);
+      }
+    }
 
     const totalNeeded = testConfig?.total_questions ?? filtered.length;
 
