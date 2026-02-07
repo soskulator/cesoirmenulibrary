@@ -104,7 +104,7 @@ export default function FoodQuizPage() {
     
     // Distribute question types evenly
     foodItems.forEach((item, idx) => {
-      const image = getDishImage(item.id);
+      const image = getDishImage(item.id, item.imageUrl);
       const format = formats[idx % 3];
       
       // Simple identification or knowledge questions
@@ -365,7 +365,7 @@ export default function FoodQuizPage() {
             <CardContent className="p-0">
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-1 p-2">
                 {foodItems.slice(0, 12).map(item => {
-                  const image = getDishImage(item.id);
+                  const image = getDishImage(item.id, item.imageUrl);
                   return (
                     <div key={item.id} className="aspect-square bg-gradient-to-br from-cream to-jade/10 rounded-lg overflow-hidden flex items-center justify-center p-1">
                       {image ? (

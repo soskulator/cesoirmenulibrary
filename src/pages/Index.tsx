@@ -408,7 +408,7 @@ export default function Index() {
           >
             {foodItems.map((menuItem) => {
               const category = getCategoryById(menuItem.categoryId);
-              const image = getDishImage(menuItem.id);
+              const image = getDishImage(menuItem.id, menuItem.imageUrl);
               return (
                 <motion.div key={menuItem.id} variants={fadeUp}>
                   <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden">

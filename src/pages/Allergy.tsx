@@ -106,7 +106,7 @@ const createTrainingDishes = (menuItems: MenuItem[]): TrainingDish[] => {
     .map(item => ({
       id: item.id,
       name: item.name,
-      image: getDishImage(item.id) || '/placeholder.svg',
+      image: getDishImage(item.id, item.imageUrl) || '/placeholder.svg',
       description: item.shortDescription,
       categoryId: item.categoryId,
       ingredients: parseIngredients(item.ingredientsText, item.allergens)
