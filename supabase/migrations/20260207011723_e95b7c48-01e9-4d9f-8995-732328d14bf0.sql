@@ -1,0 +1,1 @@
+ALTER TABLE public.test_configurations DROP CONSTRAINT IF EXISTS test_configurations_test_type_check;

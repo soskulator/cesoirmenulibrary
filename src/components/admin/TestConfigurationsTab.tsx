@@ -7,9 +7,26 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Settings, Pencil, ListChecks, Loader2, Plus } from 'lucide-react';
 import { useTestConfigs, DIFFICULTIES, type TestConfig } from '@/hooks/useQuizQuestions';
 import { useToast } from '@/hooks/use-toast';
+
+const SUGGESTED_TEST_TYPES = [
+  { value: 'service_staff', label: 'Server & Bartender' },
+  { value: 'server_assistant', label: 'Server Assistant' },
+  { value: 'wine', label: 'Wine' },
+  { value: 'wine_test', label: 'Wine Test' },
+  { value: 'food', label: 'Food' },
+  { value: 'food_test', label: 'Food Test' },
+  { value: 'spirits', label: 'Spirits' },
+  { value: 'spirits_test', label: 'Spirits Test' },
+  { value: 'cocktails', label: 'Cocktails' },
+  { value: 'cocktails_test', label: 'Cocktails Test' },
+  { value: 'allergy', label: 'Allergy' },
+  { value: 'allergy_test', label: 'Allergy Test' },
+  { value: '__custom__', label: 'Custom…' },
+] as const;
 
 interface Props {
   onManageQuestions: (config: TestConfig) => void;
@@ -105,15 +122,9 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
     setIsSaving(false);
   };
 
-  const testTypeLabels: Record<string, string> = {
-    service_staff: 'Server & Bartender',
-    server_assistant: 'Server Assistant',
-    wine: 'Wine',
-    food: 'Food',
-    spirits: 'Spirits',
-    cocktails: 'Cocktails',
-    allergy: 'Allergy',
-  };
+  const testTypeLabels: Record<string, string> = Object.fromEntries(
+    SUGGESTED_TEST_TYPES.filter(t => t.value !== '__custom__').map(t => [t.value, t.label])
+  );
 
   if (isLoading) {
     return (
@@ -206,12 +217,34 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
             </div>
             {creating && (
               <div className="space-y-2">
-                <Label>Test Type Identifier</Label>
-                <Input
-                  value={form.test_type}
-                  onChange={e => setForm(f => ({ ...f, test_type: e.target.value }))}
-                  placeholder="e.g. wine_advanced"
-                />
+                <Label>Test Type</Label>
+                <Select
+                  value={SUGGESTED_TEST_TYPES.some(t => t.value === form.test_type) ? form.test_type : (form.test_type ? '__custom__' : '')}
+                  onValueChange={v => {
+                    if (v === '__custom__') {
+                      setForm(f => ({ ...f, test_type: '' }));
+                    } else {
+                      setForm(f => ({ ...f, test_type: v }));
+                    }
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a test type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUGGESTED_TEST_TYPES.map(t => (
+                      <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {(!SUGGESTED_TEST_TYPES.some(t => t.value === form.test_type) || form.test_type === '') && (
+                  <Input
+                    value={form.test_type}
+                    onChange={e => setForm(f => ({ ...f, test_type: e.target.value }))}
+                    placeholder="e.g. sommelier_advanced"
+                    className="mt-2"
+                  />
+                )}
                 <p className="text-xs text-muted-foreground">Unique key used internally (lowercase, underscores). Cannot be changed later.</p>
               </div>
             )}
