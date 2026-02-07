@@ -38,7 +38,6 @@ const LeadAdminDashboard = lazy(() => import("./pages/LeadAdminDashboard"));
 const AdminSeedQuestions = lazy(() => import("./pages/AdminSeedQuestions"));
 const QuizBuilder = lazy(() => import("./pages/QuizBuilder"));
 const ScoringDashboard = lazy(() => import("./pages/ScoringDashboard"));
-const Install = lazy(() => import("./pages/Install"));
 
 // ─── Role constants (single source of truth) ───
 const ROLES = {
@@ -84,7 +83,6 @@ const App = () => (
                 {/* ── Public routes ── */}
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/install" element={<Install />} />
 
                 {/* ── Protected routes — any authenticated user ── */}
                 <Route
