@@ -439,7 +439,8 @@ export default function FohTestPage() {
                   Performance by Category
                 </h3>
                 <div className="space-y-3">
-                  {(['service', 'menu', 'drinks', 'operations', 'general'] as const).map(cat => {
+                  {/* Dynamically collect all categories from the questions */}
+                  {Array.from(new Set(shuffledQuestions.map(q => q.category))).map(cat => {
                     const catQuestions = shuffledQuestions.filter(q => q.category === cat);
                     const catAnswered = answeredQuestions.filter(a => {
                       const q = shuffledQuestions.find(sq => sq.id === a.questionId);
@@ -448,11 +449,9 @@ export default function FohTestPage() {
                     const catCorrect = catAnswered.filter(a => a.isCorrect).length;
                     const catPercentage = catQuestions.length > 0 ? Math.round((catCorrect / catQuestions.length) * 100) : 0;
 
-                    if (catQuestions.length === 0) return null;
-
                     return (
                       <div key={cat} className="flex items-center gap-3">
-                        <Badge className={cn(getCategoryColor(cat), "w-24 sm:w-32 justify-center text-xs")}>
+                        <Badge className={cn(getCategoryColor(cat), "w-24 sm:w-32 justify-center text-xs capitalize")}>
                           {getCategoryLabel(cat).split(' ')[0]}
                         </Badge>
                         <div className="flex-1">
@@ -464,6 +463,57 @@ export default function FohTestPage() {
                       </div>
                     );
                   })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Question Review */}
+            <Card className="mb-6">
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <ClipboardList className="w-5 h-5 text-burgundy" />
+                  Question Review
+                </h3>
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                  {answeredQuestions.map((aq, idx) => (
+                    <div
+                      key={idx}
+                      className={cn(
+                        "p-3 rounded-lg border-l-4 text-sm",
+                        aq.isCorrect
+                          ? "bg-sage/5 border-sage"
+                          : "bg-destructive/5 border-destructive"
+                      )}
+                    >
+                      <div className="flex items-start gap-2 mb-1">
+                        {aq.isCorrect ? (
+                          <Check className="w-4 h-4 text-sage mt-0.5 flex-shrink-0" />
+                        ) : (
+                          <X className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
+                        )}
+                        <p className="font-medium text-foreground">{aq.questionText}</p>
+                      </div>
+                      <div className="ml-6 space-y-1">
+                        <p className="text-xs">
+                          <span className="text-muted-foreground">Your answer: </span>
+                          <span className={aq.isCorrect ? "text-sage" : "text-destructive"}>
+                            {typeof aq.userAnswer === 'number'
+                              ? shuffledQuestions.find(q => q.id === aq.questionId)?.options?.[aq.userAnswer] ?? String(aq.userAnswer)
+                              : aq.userAnswer}
+                          </span>
+                        </p>
+                        {!aq.isCorrect && (
+                          <p className="text-xs">
+                            <span className="text-muted-foreground">Correct answer: </span>
+                            <span className="text-foreground">{aq.correctAnswer}</span>
+                          </p>
+                        )}
+                        {aq.aiFeedback && !aq.isCorrect && (
+                          <p className="text-xs text-muted-foreground italic">{aq.aiFeedback}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -732,7 +782,7 @@ export default function FohTestPage() {
                     variant="burgundy"
                     className="flex-1 h-11"
                     onClick={submitShortAnswer}
-                    disabled={!shortAnswer.trim() || isEvaluating}
+                    disabled={shortAnswer.trim().length < 2 || isEvaluating}
                   >
                     {isEvaluating ? (
                       <>
