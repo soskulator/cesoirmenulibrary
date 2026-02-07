@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { useTestQuestions } from '@/hooks/useTestQuestions';
-import { getCategoryLabel, getCategoryColor, FohTestQuestion, TestType, getTestTypeLabel } from '@/data/fohTestData';
+import { getCategoryLabel, getCategoryColor, FohTestQuestion, TestType } from '@/data/fohTestData';
+import { getTestDisplayName, getTestSubtitle } from '@/utils/testDisplayNames';
 import { useQuizScores } from '@/hooks/useQuizScores';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -394,7 +395,7 @@ export default function FohTestPage() {
                 <Trophy className="w-10 h-10 sm:w-12 sm:h-12 text-gold" />
               </div>
               <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
-                {testConfig?.test_name ?? (selectedTestType === 'server_assistant' ? 'Server Assistant Test' : 'Service Staff Test')} Complete!
+                {getTestDisplayName(selectedTestType!, testConfig?.test_name)} Complete!
               </h1>
               <p className={cn("text-xl sm:text-2xl font-bold", gradeInfo.color)}>
                 {gradeInfo.label}
@@ -601,7 +602,7 @@ export default function FohTestPage() {
 
     // Use testConfig for display info, with sensible fallbacks
     const totalQuestions = testConfig?.total_questions ?? (selectedTestType === 'server_assistant' ? 23 : 69);
-    const testName = testConfig?.test_name ?? getTestTypeLabel(selectedTestType);
+    const testName = getTestDisplayName(selectedTestType!, testConfig?.test_name);
     const timeLimitMin = testConfig?.time_limit_minutes;
     const estMinutes = timeLimitMin ?? (selectedTestType === 'server_assistant' ? 20 : 45);
     const passingScore = testConfig?.passing_score ?? 70;
@@ -617,9 +618,7 @@ export default function FohTestPage() {
               {testName}
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
-              {testConfig?.test_name ? `${selectedTestType} test` : (selectedTestType === 'server_assistant' 
-                ? 'Server Assistant Knowledge Test' 
-                : 'Full Service & Beverage Knowledge Test')}
+              {getTestSubtitle(selectedTestType!, testConfig?.test_name)}
             </p>
           </div>
 

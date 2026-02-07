@@ -55,7 +55,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields: email and missingTests");
     }
 
-    const greeting = fullName ? `Hi ${fullName},` : "Hello,";
+    // Use full_name if provided, fall back to "there" if not set or "Unknown"
+    const displayName = (fullName && fullName !== 'Unknown') ? fullName : null;
+    const greeting = displayName ? `Hi ${displayName},` : "Hi there,";
     const testList = missingTests.map(t => `<li style="margin-bottom: 8px; color: #4a4a4a;">${t}</li>`).join("");
 
     console.log(`Sending test reminder to ${email} for tests: ${missingTests.join(", ")} (requested by admin ${callerId})`);
