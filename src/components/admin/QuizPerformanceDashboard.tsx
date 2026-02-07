@@ -77,10 +77,10 @@ const testTypeLabels: Record<string, string> = {
   spirits: 'Spirits Test',
   cocktails: 'Cocktails Test',
   allergy: 'Allergy Test',
-  foh: 'FoH Test_beta',
-  'foh-service': 'Service Staff',
+  foh: 'FoH Test',
+  'foh-service': 'Server & Bartender',
   'foh-sa': 'Server Assistant',
-  'service_staff': 'Service Staff',
+  'service_staff': 'Server & Bartender',
   'server_assistant': 'Server Assistant',
 };
 

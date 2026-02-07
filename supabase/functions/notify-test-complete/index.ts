@@ -111,8 +111,23 @@ serve(async (req) => {
 
     console.log(`Sending notification to ${adminEmails.length} lead admin(s)`);
 
-    const testTypeName = testType === 'service_staff' ? 'Service Staff' : 'Server Assistant';
-    const displayName = employeeName || employeeEmail;
+    // Look up test_name from test_configurations
+    const FALLBACK_NAMES: Record<string, string> = {
+      service_staff: 'Server & Bartender Test',
+      server_assistant: 'Server Assistant Test',
+    };
+    let testTypeName = FALLBACK_NAMES[testType] ?? testType.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+    
+    const { data: configRow } = await supabaseAdmin
+      .from('test_configurations')
+      .select('test_name')
+      .eq('test_type', testType)
+      .eq('is_active', true)
+      .maybeSingle();
+    if (configRow?.test_name) {
+      testTypeName = configRow.test_name;
+    }
+    const displayName = (employeeName && employeeName !== 'Unknown') ? employeeName : employeeEmail;
     const passStatus = percentage >= 70 ? '✅ PASSED' : '⚠️ Needs Review';
 
     const { error: emailError } = await resend.emails.send({

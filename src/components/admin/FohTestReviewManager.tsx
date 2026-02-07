@@ -237,7 +237,11 @@ export function FohTestReviewManager() {
   };
 
   const getTestTypeLabel = (type: string) => {
-    return type === 'server_assistant' ? 'Server Assistant' : 'Service Staff';
+    const names: Record<string, string> = {
+      service_staff: 'Server & Bartender',
+      server_assistant: 'Server Assistant',
+    };
+    return names[type] ?? type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   };
 
   if (loading) {

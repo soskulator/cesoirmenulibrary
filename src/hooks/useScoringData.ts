@@ -161,13 +161,14 @@ export function useScoringData() {
         catScores[a.test_type].count++;
       });
 
-      const testTypeLabels: Record<string, string> = {
-        service_staff: 'Service Staff',
+      // Build a test_type -> display name map from DB configs
+      const testNameMap: Record<string, string> = {
+        service_staff: 'Server & Bartender',
         server_assistant: 'Server Assistant',
-        bartender: 'Bartender',
-        server: 'Server',
-        general: 'General',
       };
+      (testConfigs || []).forEach(tc => {
+        if (tc.test_name) testNameMap[tc.test_type] = tc.test_name;
+      });
 
       let lowestCategory = 'N/A';
       let lowestCategoryScore = 100;
@@ -175,7 +176,7 @@ export function useScoringData() {
         const avg = Math.round(sum / count);
         if (avg < lowestCategoryScore) {
           lowestCategoryScore = avg;
-          lowestCategory = testTypeLabels[cat] || cat.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          lowestCategory = testNameMap[cat] || cat.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         }
       });
 
@@ -183,6 +184,15 @@ export function useScoringData() {
 
       // Completion tracker
       const requiredTestTypes = (testConfigs || []).map(t => t.test_type);
+      // Build display name map for missing test labels
+      const testDisplayMap: Record<string, string> = {
+        service_staff: 'Server & Bartender Test',
+        server_assistant: 'Server Assistant Test',
+      };
+      (testConfigs || []).forEach(tc => {
+        if (tc.test_name) testDisplayMap[tc.test_type] = tc.test_name;
+      });
+
       const incomplete: IncompleteStaff[] = [];
       (profiles || []).forEach(p => {
         const userAttempts = staffMap[p.id]?.attempts || [];
@@ -194,7 +204,7 @@ export function useScoringData() {
             fullName: p.full_name || 'Unknown',
             email: p.email,
             role: roleMap[p.id] || null,
-            missingTests: missing,
+            missingTests: missing.map(t => testDisplayMap[t] || t.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())),
           });
         }
       });

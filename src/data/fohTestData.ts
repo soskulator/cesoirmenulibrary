@@ -812,7 +812,7 @@ export const getQuestionsByTestType = (testType: TestType): FohTestQuestion[] =>
 };
 
 export const getTestTypeLabel = (testType: TestType): string => {
-  return testType === 'service_staff' ? 'Service Staff Test' : 'Server Assistant Test';
+  return testType === 'service_staff' ? 'Server & Bartender Test' : 'Server Assistant Test';
 };
 
 export const getCategoryLabel = (category: string): string => {
