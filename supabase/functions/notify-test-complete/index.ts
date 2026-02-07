@@ -151,8 +151,12 @@ serve(async (req) => {
     });
 
     if (emailError) {
-      console.error('Error sending email:', emailError);
-      throw emailError;
+      console.error('Error sending email (non-fatal):', emailError);
+      // Don't throw - email failure shouldn't block test completion
+      return new Response(
+        JSON.stringify({ success: true, notifiedCount: 0, emailWarning: 'Email delivery failed but test recorded' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log('Notification email sent successfully');
