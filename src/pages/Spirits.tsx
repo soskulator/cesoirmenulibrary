@@ -12,6 +12,29 @@ import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
+// Spirit category icons
+import vodkaIcon from '@/assets/categories/spirits-vodka-icon.png';
+import ginIcon from '@/assets/categories/spirits-gin-icon.png';
+import rumIcon from '@/assets/categories/spirits-rum-icon.png';
+import tequilaIcon from '@/assets/categories/spirits-tequila-icon.png';
+import mezcalIcon from '@/assets/categories/spirits-mezcal-icon.png';
+import scotchIcon from '@/assets/categories/spirits-scotch-icon.png';
+import bourbonIcon from '@/assets/categories/spirits-bourbon-icon.png';
+import ryeIcon from '@/assets/categories/spirits-rye-icon.png';
+import cordialsIcon from '@/assets/categories/spirits-cordials-icon.png';
+
+const spiritCategoryIcons: Record<string, string> = {
+  vodka: vodkaIcon,
+  gin: ginIcon,
+  rum: rumIcon,
+  tequila: tequilaIcon,
+  mezcal: mezcalIcon,
+  scotch: scotchIcon,
+  bourbon: bourbonIcon,
+  rye: ryeIcon,
+  cordials: cordialsIcon,
+};
+
 // Spirit categories with French names
 const spiritCategories = {
   vodka: {
@@ -209,8 +232,8 @@ export default function SpiritsPage() {
                       }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`p-3 rounded-xl transition-all duration-300 ${open ? 'bg-copper/20 scale-110' : 'bg-copper/5 group-hover:bg-copper/10 group-hover:scale-105'}`}>
-                        <GlassWater className={`w-6 h-6 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} />
+                      <div className={`p-2 rounded-xl transition-all duration-300 overflow-hidden ${open ? 'bg-copper/10 scale-110' : 'bg-copper/5 group-hover:bg-copper/10 group-hover:scale-105'}`}>
+                        <img src={spiritCategoryIcons[categoryKey]} alt={category.title} className="w-8 h-8 object-contain" />
                       </div>
                       <div className="text-left">
                         <h2 className={`font-serif text-xl md:text-2xl font-bold transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal group-hover:text-copper'}`}>
