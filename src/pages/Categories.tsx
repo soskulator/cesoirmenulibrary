@@ -501,7 +501,7 @@ export default function CategoriesPage() {
 
       <div className="min-h-screen">
         {/* Minimal Header */}
-        <motion.header className="pt-12 md:pt-20 pb-12 px-6 text-center" initial={{
+        <motion.header className="pt-12 md:pt-14 pb-12 md:pb-6 px-6 text-center" initial={{
         opacity: 0,
         y: 20
       }} animate={{
@@ -518,7 +518,7 @@ export default function CategoriesPage() {
 
         {/* Categories Grid - Elegant Button Style */}
         <motion.div variants={container} initial="hidden" animate="show" className="px-4 sm:px-6 pb-24">
-          <div className="max-w-2xl mx-auto grid grid-cols-2 gap-3 sm:gap-4">
+          <div className="max-w-2xl lg:max-w-4xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-3">
             {categories.map((category) => {
               const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
               const categoryData = categoryIcons[category.id];
@@ -530,9 +530,9 @@ export default function CategoriesPage() {
                   <Link to={`/categories/${category.id}`} className="group block h-full">
                     {/* Food categories with minimalistic icons - Opaque button style */}
                     {hasMinimalistIcon ? (
-                      <div className="relative overflow-hidden rounded-2xl h-36 sm:h-44 bg-cream border border-charcoal/8 transition-all duration-500 hover:shadow-lg hover:border-copper/30 hover:bg-cream-dark/30">
+                      <div className="relative overflow-hidden rounded-2xl h-36 sm:h-44 lg:h-32 bg-cream border border-charcoal/8 transition-all duration-500 hover:shadow-lg hover:border-copper/30 hover:bg-cream-dark/30">
                         {/* Minimalistic Icon - Semi-transparent in corner */}
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 h-28 sm:h-36 opacity-40 group-hover:opacity-60 transition-opacity duration-500">
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 lg:w-28 h-28 sm:h-36 lg:h-28 opacity-40 group-hover:opacity-60 transition-opacity duration-500">
                           <img 
                             src={categoryData.icon} 
                             alt="" 
@@ -544,11 +544,11 @@ export default function CategoriesPage() {
                         <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/90 to-transparent" />
 
                         {/* Text Content - Left Aligned */}
-                        <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5">
-                          <h2 className="font-serif text-lg sm:text-2xl font-bold text-charcoal group-hover:text-copper transition-colors duration-300">
+                        <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5 lg:p-4">
+                          <h2 className="font-serif text-lg sm:text-2xl lg:text-xl font-bold text-charcoal group-hover:text-copper transition-colors duration-300">
                             {category.name}
                           </h2>
-                          <p className="font-serif italic text-xs sm:text-sm mt-0.5 text-copper/80">
+                          <p className="font-serif italic text-xs sm:text-sm lg:text-xs mt-0.5 text-copper/80">
                             {category.nameFrench}
                           </p>
 
@@ -563,7 +563,7 @@ export default function CategoriesPage() {
                       </div>
                     ) : (
                       /* Drinks and other categories with illustrated backgrounds */
-                      <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 border transition-all duration-500 hover:shadow-xl ${
+                      <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 lg:h-32 border transition-all duration-500 hover:shadow-xl ${
                         isDarkCategory 
                           ? 'border-charcoal/20 hover:border-charcoal/40' 
                           : 'border-charcoal/10 hover:border-copper/30'
@@ -585,15 +585,15 @@ export default function CategoriesPage() {
                         }`} />
 
                         {/* Text Content - Left Aligned */}
-                        <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5">
-                          <h2 className={`font-serif text-lg sm:text-2xl font-bold drop-shadow-sm transition-colors duration-300 ${
+                        <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5 lg:p-4">
+                          <h2 className={`font-serif text-lg sm:text-2xl lg:text-xl font-bold drop-shadow-sm transition-colors duration-300 ${
                             isDarkCategory
                               ? 'text-white group-hover:text-copper-light'
                               : 'text-charcoal group-hover:text-copper'
                           }`}>
                             {category.name}
                           </h2>
-                          <p className={`font-serif italic text-xs sm:text-sm mt-0.5 ${
+                          <p className={`font-serif italic text-xs sm:text-sm lg:text-xs mt-0.5 ${
                             isDarkCategory ? 'text-white/70' : 'text-copper'
                           }`}>
                             {category.nameFrench}
