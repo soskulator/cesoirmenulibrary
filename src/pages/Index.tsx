@@ -139,7 +139,7 @@ export default function Index() {
           <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
         </div>
 
-        <motion.div className="relative z-10 text-center px-6" style={{
+        <motion.div className="relative z-10 flex flex-col items-center text-center px-6 py-16" style={{
         opacity: heroOpacity
       }}>
           {/* Logo */}
@@ -152,12 +152,12 @@ export default function Index() {
         }} transition={{
           duration: 0.9,
           delay: 0.2
-        }} className="mb-6">
+        }} className="mb-2">
             <img src={logoImage} alt="Ce Soir" className="h-32 md:h-36 lg:h-44 w-auto mx-auto drop-shadow-lg" width={530} height={176} decoding="async" />
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-semibold tracking-wide mb-8" initial={{
+          <motion.p className="text-charcoal text-xl md:text-2xl lg:text-3xl font-serif font-medium tracking-[0.08em] mb-6" initial={{
           opacity: 0,
           y: 16
         }} animate={{
@@ -170,23 +170,28 @@ export default function Index() {
             Menu Library
           </motion.p>
 
+          {/* Decorative divider */}
+          <motion.div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent mb-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }} />
+
           {/* Location */}
-          <motion.div className="flex items-center justify-center gap-2 text-charcoal mb-12" initial={{
-          opacity: 0
+          <motion.div className="flex items-center justify-center gap-2 text-copper-dark mb-10" initial={{
+          opacity: 0,
+          y: 10
         }} animate={{
-          opacity: 1
+          opacity: 1,
+          y: 0
         }} transition={{
           delay: 0.7,
           duration: 0.5
         }}>
-            <MapPin className="w-4 h-4" />
-            <span className="text-sm font-semibold tracking-widest uppercase">Naples, Florida</span>
+            <MapPin className="w-3.5 h-3.5 text-copper" />
+            <span className="text-xs font-medium tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif" }}>Naples, Florida</span>
           </motion.div>
 
           {/* ── Hero CTAs ── */}
-          <motion.div className="flex flex-col items-center gap-4" initial={{
+          <motion.div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs sm:max-w-md" initial={{
           opacity: 0,
-          y: 16
+          y: 10
         }} animate={{
           opacity: 1,
           y: 0
@@ -194,43 +199,41 @@ export default function Index() {
           delay: 0.9,
           duration: 0.6
         }}>
-            <div className="flex items-center justify-center gap-3 sm:gap-4">
-              {user ? <>
-                  <Button size="lg" className="bg-copper text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300" asChild>
-                    <Link to="/quiz">
-                      <Brain className="w-5 h-5 mr-2" />
-                      Go to Training
-                    </Link>
-                  </Button>
-                  <Button size="lg" variant="outline" className="border-charcoal/30 text-charcoal font-semibold px-10 py-6 text-base tracking-wide hover:bg-charcoal/5 transition-all duration-300" asChild>
-                    <Link to="/categories">
-                      <BookOpen className="w-5 h-5 mr-2" />
-                      Explore Menu
-                    </Link>
-                  </Button>
-                </> : <>
-                  <Button size="lg" className="bg-copper text-white font-semibold px-10 py-6 text-base tracking-wide shadow-lg hover:bg-copper-light hover:shadow-xl transition-all duration-300" asChild>
-                    <Link to="/categories">
-                      <BookOpen className="w-5 h-5 mr-2" />
-                      Explore Menu
-                    </Link>
-                  </Button>
-                  <Button size="lg" variant="outline" className="border-charcoal/30 text-charcoal font-semibold px-10 py-6 text-base tracking-wide hover:bg-charcoal/5 transition-all duration-300" asChild>
-                    <Link to="/auth">
-                      <LogIn className="w-5 h-5 mr-2" />
-                      Staff Login
-                    </Link>
-                  </Button>
-                </>}
-            </div>
+            {user ? <>
+                <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-300" asChild>
+                  <Link to="/quiz">
+                    <Brain className="w-4 h-4 mr-2" />
+                    Go to Training
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="w-full border-copper text-copper-dark font-semibold py-3.5 px-6 text-sm tracking-wide bg-white shadow-sm hover:bg-copper hover:text-white transition-all duration-300" asChild>
+                  <Link to="/categories">
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    Explore Menu
+                  </Link>
+                </Button>
+              </> : <>
+                <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-300" asChild>
+                  <Link to="/categories">
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    Explore Menu
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="w-full border-copper text-copper-dark font-semibold py-3.5 px-6 text-sm tracking-wide bg-white shadow-sm hover:bg-copper hover:text-white transition-all duration-300" asChild>
+                  <Link to="/auth">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Staff Login
+                  </Link>
+                </Button>
+              </>}
           </motion.div>
         </motion.div>
 
         {/* Scroll indicator */}
-        <motion.button onClick={scrollToContent} className="absolute bottom-10 left-1/2 -translate-x-1/2 text-charcoal/40 hover:text-charcoal/80 transition-colors cursor-pointer" initial={{
+        <motion.button onClick={scrollToContent} className="absolute bottom-6 left-1/2 -translate-x-1/2 text-charcoal/40 hover:text-charcoal/80 transition-colors cursor-pointer" initial={{
         opacity: 0
       }} animate={{
-        opacity: 1,
+        opacity: 0.4,
         y: [0, 8, 0]
       }} transition={{
         opacity: {
@@ -242,7 +245,7 @@ export default function Index() {
           ease: "easeInOut"
         }
       }} aria-label="Scroll to content">
-          <ArrowDown className="w-6 h-6" />
+          <ArrowDown className="w-5 h-5" />
         </motion.button>
       </section>
 
