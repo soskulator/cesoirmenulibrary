@@ -177,6 +177,10 @@ export default {
   			'2xl': 'var(--shadow-2xl)'
   		},
   		keyframes: {
+  			'pulse-logo': {
+  				'0%, 100%': { opacity: '0.4' },
+  				'50%': { opacity: '1' },
+  			},
   			'accordion-down': {
   				from: {
   					height: '0'
