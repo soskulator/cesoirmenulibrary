@@ -210,7 +210,7 @@ export function Header() {
         <nav className="hidden lg:flex items-center gap-0.5">
           {filteredNavItems.map(item => {
           const isActive = location.pathname === item.path;
-          return <Link key={item.path} to={item.path} className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+          return <Link key={item.path} to={item.path} className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5">
                   <item.icon className="w-4 h-4" />
                   {item.label}
@@ -224,7 +224,7 @@ export function Header() {
         })}
 
           {/* Test Link - Direct */}
-          <Link to="/quiz" className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors flex items-center gap-1.5",
+          <Link to="/quiz" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5",
             location.pathname === '/quiz' || location.pathname === '/foh-test' || location.pathname === '/wine-quiz' || location.pathname === '/spirits-quiz' || location.pathname === '/food-quiz' || location.pathname === '/allergy-quiz'
               ? "text-burgundy"
               : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
@@ -235,7 +235,7 @@ export function Header() {
           
           {isAdmin && <>
               <div className="w-px h-5 bg-border mx-1.5" />
-              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("relative px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                   <span className="flex items-center gap-1.5">
                     <item.icon className="w-4 h-4" />
                     {item.label}
