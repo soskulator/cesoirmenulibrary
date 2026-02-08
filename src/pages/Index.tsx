@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layers, CreditCard, HelpCircle, AlertTriangle, ArrowRight, ArrowDown, MapPin, BookOpen, Utensils, GraduationCap, TrendingUp, Brain, LogIn } from "lucide-react";
 import { categories, menuItems, getCategoryById } from "@/data/menuData";
-import { getCategoryIcon } from "@/data/categoryIcons";
 import { useDailyRotation } from "@/hooks/useDailyRotation";
 import { DailyCocktailCard } from "@/components/DailyCocktailCard";
 import { getDishImage } from "@/data/dishImages";
@@ -435,69 +434,6 @@ export default function Index() {
                       <p className="text-xs text-muted-foreground/70 line-clamp-2">{menuItem.ingredientsText}</p>
                     </CardContent>
                   </Card>
-                </motion.div>;
-          })}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════════════ MENU CATEGORIES ═══════════════════ */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container">
-          <motion.div initial={{
-          opacity: 0,
-          y: 32
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} viewport={{
-          once: true,
-          margin: "-80px"
-        }} transition={{
-          duration: 0.7
-        }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
-            <div>
-              <h2 className="font-serif text-3xl font-semibold">Menu Categories</h2>
-              <p className="text-muted-foreground text-sm mt-1">Showing 3 of {categories.length} categories</p>
-            </div>
-            <Button variant="ghost" className="text-copper hover:text-copper-light self-start sm:self-center" asChild>
-              <Link to="/categories">
-                View all
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
-          </motion.div>
-
-          <motion.div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="show" viewport={{
-          once: true,
-          margin: "-40px"
-        }}>
-            {categories.slice(0, 3).map(category => {
-            const itemCount = menuItems.filter(i => i.categoryId === category.id && i.isPublished).length;
-            const categoryIcon = getCategoryIcon(category.id);
-            return <motion.div key={category.id} variants={fadeUp}>
-                  <Link to={`/categories/${category.id}`}>
-                    <Card className="group border-0 bg-card/50 hover:bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden relative">
-                      {categoryIcon && <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <img src={categoryIcon} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-10 group-hover:opacity-[0.15] group-hover:scale-110 transition-all duration-500" loading="lazy" decoding="async" />
-                          <div className="absolute inset-0 bg-gradient-to-br from-card/80 via-card/60 to-card/80" />
-                        </div>}
-                      <CardContent className="p-6 md:p-8 relative z-10">
-                        <div className="flex items-center gap-5">
-                          {categoryIcon ? <img src={categoryIcon} alt={category.name} className="w-14 h-14 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300" loading="lazy" decoding="async" width={56} height={56} /> : <span className="text-5xl">{category.icon}</span>}
-                          <div>
-                            <h3 className="font-serif text-xl md:text-2xl font-semibold group-hover:text-copper transition-colors">
-                              {category.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground italic mb-2">{category.nameFrench}</p>
-                            <Badge variant="secondary" className="bg-muted">
-                              {itemCount} items
-                            </Badge>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
                 </motion.div>;
           })}
           </motion.div>
