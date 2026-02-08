@@ -19,12 +19,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
 import { MenuItemsManager } from '@/components/admin/MenuItemsManager';
 import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
-import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
-import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
-import { Leaderboard } from '@/components/admin/Leaderboard';
 import { PhotoGallery } from '@/components/admin/PhotoGallery';
 import { WeeklyFocusManager } from '@/components/admin/WeeklyFocusManager';
 import { AllergyManagement } from '@/components/admin/AllergyManagement';
@@ -693,47 +689,8 @@ export default function LeadAdminDashboard() {
               />
             </motion.div>
 
-            {/* 6. FoH Test Question Manager */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <FohTestQuestionManager />
-            </motion.div>
-
-            {/* 6. FoH Test Review Center */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <FohTestReviewManager />
-            </motion.div>
-
-            {/* 7. Leaderboard */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Leaderboard />
-            </motion.div>
           </div>
 
-          {/* Analytics Section - Full Width */}
-          <Separator className="my-6 sm:my-8" />
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <h2 className="font-serif text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">
-              Analytics: Team Study Progress
-            </h2>
-            <TeamStudyProgressChart />
-          </motion.div>
 
           {/* Edit Dialog */}
           <MenuItemEditDialog
