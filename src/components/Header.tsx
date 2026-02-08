@@ -25,11 +25,11 @@ const navItems = [{
 }, {
   path: '/spirits',
   label: 'Spirits',
-  icon: Martini
+  icon: GlassWater
 }, {
   path: '/cocktails',
   label: 'Cocktails',
-  icon: GlassWater
+  icon: Martini
 }, {
   path: '/flashcards',
   label: 'Flashcards',
