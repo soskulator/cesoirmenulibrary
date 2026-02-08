@@ -213,9 +213,9 @@ export function TeamStudyProgressChart() {
 
   if (loading) {
     return (
-      <Card className="bg-card shadow-card overflow-hidden">
+      <Card>
         <CardHeader className="px-3 sm:px-6">
-          <CardTitle className="font-serif text-lg sm:text-xl flex items-center gap-2">
+          <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
             <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-terra-cotta" />
             Team Study Progress
           </CardTitle>
@@ -231,9 +231,9 @@ export function TeamStudyProgressChart() {
 
   if (!tableExists) {
     return (
-      <Card className="bg-card shadow-card overflow-hidden">
+      <Card>
         <CardHeader className="px-3 sm:px-6">
-          <CardTitle className="font-serif text-lg sm:text-xl flex items-center gap-2">
+          <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
             <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-terra-cotta" />
             Team Study Progress
           </CardTitle>
@@ -252,9 +252,9 @@ export function TeamStudyProgressChart() {
 
   return (
     <>
-      <Card className="bg-card shadow-card overflow-hidden">
+      <Card>
         <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
-          <CardTitle className="font-serif text-lg sm:text-xl flex items-center gap-2">
+          <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
             <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-terra-cotta flex-shrink-0" />
             Employee Study Scores
           </CardTitle>

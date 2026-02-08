@@ -279,8 +279,8 @@ export function StaffActivityLog() {
     return (
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-copper" />
+          <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
             Staff Activity Log
           </CardTitle>
         </CardHeader>
@@ -297,8 +297,8 @@ export function StaffActivityLog() {
     return (
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-copper" />
+          <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
             Staff Activity Log
           </CardTitle>
         </CardHeader>
@@ -317,8 +317,8 @@ export function StaffActivityLog() {
       <CardHeader className="pb-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="text-base flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-copper" />
+            <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
               Staff Activity Log
             </CardTitle>
             <p className="text-xs text-muted-foreground mt-1">
