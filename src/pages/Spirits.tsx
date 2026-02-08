@@ -8,7 +8,6 @@ import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
 import { ArrowLeft, Wine, Loader2 } from 'lucide-react';
-import spiritsIcon from '@/assets/icons/spirits-whiskey-icon.png';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
@@ -154,7 +153,7 @@ export default function SpiritsPage() {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-copper/10 mb-6"
               >
-                <img src={spiritsIcon} alt="Spirits" className="w-9 h-9 object-contain" />
+                <Wine className="w-8 h-8 text-copper" />
               </motion.div>
 
               <h1 className="font-serif text-4xl md:text-6xl font-bold text-charcoal tracking-tight">
