@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Lock, Mail, User, AlertCircle, ArrowLeft, CheckCircle, UserPlus, Clock, XCircle } from 'lucide-react';
 import logoImage from '@/assets/cesoir-logo.png';
+import bayfrontBg from '@/assets/bayfront-fountain-sketch.jpg';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -260,8 +261,11 @@ export default function AuthPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="container py-16 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-copper" />
+        <div className="relative min-h-[80vh] flex items-center justify-center">
+          <div className="absolute inset-0 z-0" style={{ backgroundImage: `url(${bayfrontBg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <div className="relative z-10 py-16">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-copper mx-auto" />
+          </div>
         </div>
       </Layout>
     );
@@ -271,44 +275,50 @@ export default function AuthPage() {
   if (resetEmailSent) {
     return (
       <Layout>
-        <div className="container py-8 sm:py-16 max-w-md px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="text-center mb-8">
-              <img src={logoImage} alt="Ce Soir" className="h-16 mx-auto mb-4" />
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold">Staff Portal</h1>
-            </div>
+        <div className="relative min-h-[80vh] flex items-center justify-center">
+          <div className="absolute inset-0 z-0" style={{ backgroundImage: `url(${bayfrontBg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <div className="relative z-10 w-full max-w-md px-4 py-8 sm:py-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="text-center mb-8">
+                <img src={logoImage} alt="Ce Soir" className="h-20 mx-auto mb-3" />
+                <h1 className="font-serif text-2xl font-semibold text-charcoal">Staff Training Portal</h1>
+                <p className="text-sm text-muted-foreground mt-1">Log in to access tests, flashcards, and menu reference</p>
+              </div>
 
-            <Card className="border-0 shadow-elevated">
-              <CardContent className="pt-6">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
-                    <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+              <Card className="border-0 shadow-elevated rounded-xl bg-background/95 backdrop-blur-sm">
+                <CardContent className="pt-6">
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 bg-jade/10 rounded-full flex items-center justify-center mx-auto">
+                      <CheckCircle className="w-8 h-8 text-jade" />
+                    </div>
+                    <h2 className="font-semibold text-lg">Check your email</h2>
+                    <p className="text-muted-foreground text-sm">
+                      If an account exists for <strong>{email}</strong>, we've sent a password reset link.
+                    </p>
+                    <p className="text-muted-foreground text-xs">The link will expire in 1 hour.</p>
+                    <Button
+                      variant="outline"
+                      className="mt-4"
+                      onClick={() => {
+                        setResetEmailSent(false);
+                        setMode('signin');
+                        setEmail('');
+                      }}
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Back to Sign In
+                    </Button>
                   </div>
-                  <h2 className="font-semibold text-lg">Check your email</h2>
-                  <p className="text-muted-foreground text-sm">
-                    If an account exists for <strong>{email}</strong>, we've sent a password reset link.
-                  </p>
-                  <p className="text-muted-foreground text-xs">The link will expire in 1 hour.</p>
-                  <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => {
-                      setResetEmailSent(false);
-                      setMode('signin');
-                      setEmail('');
-                    }}
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Sign In
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                </CardContent>
+              </Card>
+
+              <p className="text-xs text-muted-foreground text-center mt-6">Need help logging in? Contact your manager</p>
+            </motion.div>
+          </div>
         </div>
       </Layout>
     );
@@ -318,69 +328,74 @@ export default function AuthPage() {
   if (mode === 'forgot') {
     return (
       <Layout>
-        <div className="container py-8 sm:py-16 max-w-md px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="text-center mb-8">
-              <img src={logoImage} alt="Ce Soir" className="h-16 mx-auto mb-4" />
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold">Staff Portal</h1>
-              <p className="text-muted-foreground text-sm mt-2">Reset your password</p>
-            </div>
+        <div className="relative min-h-[80vh] flex items-center justify-center">
+          <div className="absolute inset-0 z-0" style={{ backgroundImage: `url(${bayfrontBg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <div className="relative z-10 w-full max-w-md px-4 py-8 sm:py-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="text-center mb-8">
+                <img src={logoImage} alt="Ce Soir" className="h-20 mx-auto mb-3" />
+                <h1 className="font-serif text-2xl font-semibold text-charcoal">Staff Training Portal</h1>
+                <p className="text-sm text-muted-foreground mt-1">Reset your password</p>
+              </div>
 
-            <Card className="border-0 shadow-elevated">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-copper" />
-                  Forgot Password
-                </CardTitle>
-                <CardDescription>Enter your email and we'll send you a reset link</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleForgotPassword} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
+              <Card className="border-0 shadow-elevated rounded-xl bg-background/95 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Mail className="w-5 h-5 text-copper" />
+                    Forgot Password
+                  </CardTitle>
+                  <CardDescription>Enter your email and we'll send you a reset link</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleForgotPassword} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="pl-10 focus:ring-copper focus:border-copper"
+                          required
+                        />
+                      </div>
                     </div>
+
+                    {error && (
+                      <div className="flex items-center gap-2 text-destructive text-sm bg-destructive/10 p-3 rounded-md">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        {error}
+                      </div>
+                    )}
+
+                    <Button type="submit" className="w-full bg-copper text-white hover:bg-copper-light" disabled={isLoading}>
+                      {isLoading ? 'Sending...' : 'Send Reset Link'}
+                    </Button>
+                  </form>
+
+                  <div className="mt-6 text-center">
+                    <button
+                      type="button"
+                      onClick={() => { setMode('signin'); setError(''); }}
+                      className="text-sm text-copper hover:text-copper-light transition-colors flex items-center gap-1 mx-auto"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      Back to Sign In
+                    </button>
                   </div>
+                </CardContent>
+              </Card>
 
-                  {error && (
-                    <div className="flex items-center gap-2 text-destructive text-sm bg-destructive/10 p-3 rounded-md">
-                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                      {error}
-                    </div>
-                  )}
-
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Sending...' : 'Send Reset Link'}
-                  </Button>
-                </form>
-
-                <div className="mt-6 text-center">
-                  <button
-                    type="button"
-                    onClick={() => { setMode('signin'); setError(''); }}
-                    className="text-sm text-copper hover:text-copper-light transition-colors flex items-center gap-1 mx-auto"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Sign In
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+              <p className="text-xs text-muted-foreground text-center mt-6">Need help logging in? Contact your manager</p>
+            </motion.div>
+          </div>
         </div>
       </Layout>
     );
@@ -390,9 +405,12 @@ export default function AuthPage() {
   if (hasInvite && inviteChecking) {
     return (
       <Layout>
-        <div className="container py-16 flex flex-col items-center justify-center gap-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-copper" />
-          <p className="text-muted-foreground text-sm">Validating your invitation…</p>
+        <div className="relative min-h-[80vh] flex items-center justify-center">
+          <div className="absolute inset-0 z-0" style={{ backgroundImage: `url(${bayfrontBg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <div className="relative z-10 py-16 flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-copper" />
+            <p className="text-muted-foreground text-sm">Validating your invitation…</p>
+          </div>
         </div>
       </Layout>
     );
@@ -405,51 +423,56 @@ export default function AuthPage() {
 
     return (
       <Layout>
-        <div className="container py-8 sm:py-16 max-w-md px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="text-center mb-8">
-              <img src={logoImage} alt="Ce Soir" className="h-16 mx-auto mb-4" />
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold">Staff Portal</h1>
-            </div>
+        <div className="relative min-h-[80vh] flex items-center justify-center">
+          <div className="absolute inset-0 z-0" style={{ backgroundImage: `url(${bayfrontBg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+          <div className="relative z-10 w-full max-w-md px-4 py-8 sm:py-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="text-center mb-8">
+                <img src={logoImage} alt="Ce Soir" className="h-20 mx-auto mb-3" />
+                <h1 className="font-serif text-2xl font-semibold text-charcoal">Staff Training Portal</h1>
+              </div>
 
-            <Card className="border-0 shadow-elevated">
-              <CardContent className="pt-6">
-                <div className="text-center space-y-4">
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto ${
-                    isExpired ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-destructive/10'
-                  }`}>
-                    {isExpired ? (
-                      <Clock className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-                    ) : (
-                      <XCircle className="w-8 h-8 text-destructive" />
-                    )}
+              <Card className="border-0 shadow-elevated rounded-xl bg-background/95 backdrop-blur-sm">
+                <CardContent className="pt-6">
+                  <div className="text-center space-y-4">
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto ${
+                      isExpired ? 'bg-amber-100' : 'bg-destructive/10'
+                    }`}>
+                      {isExpired ? (
+                        <Clock className="w-8 h-8 text-amber-600" />
+                      ) : (
+                        <XCircle className="w-8 h-8 text-destructive" />
+                      )}
+                    </div>
+                    <h2 className="font-semibold text-lg">
+                      {isExpired ? 'Invitation Expired' : 'Invalid Invitation'}
+                    </h2>
+                    <p className="text-muted-foreground text-sm">
+                      {isExpired
+                        ? 'This invitation has expired. Please contact your manager for a new invitation.'
+                        : isRevoked
+                          ? 'This invitation has been revoked. Please contact your manager.'
+                          : invitation.error || 'Invalid invitation link.'}
+                    </p>
+                    <Button
+                      variant="outline"
+                      className="mt-4"
+                      onClick={() => navigate('/auth')}
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Go to Sign In
+                    </Button>
                   </div>
-                  <h2 className="font-semibold text-lg">
-                    {isExpired ? 'Invitation Expired' : 'Invalid Invitation'}
-                  </h2>
-                  <p className="text-muted-foreground text-sm">
-                    {isExpired
-                      ? 'This invitation has expired. Please contact your manager for a new invitation.'
-                      : isRevoked
-                        ? 'This invitation has been revoked. Please contact your manager.'
-                        : invitation.error || 'Invalid invitation link.'}
-                  </p>
-                  <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => navigate('/auth')}
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Go to Sign In
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                </CardContent>
+              </Card>
+
+              <p className="text-xs text-muted-foreground text-center mt-6">Need help logging in? Contact your manager</p>
+            </motion.div>
+          </div>
         </div>
       </Layout>
     );
@@ -461,182 +484,187 @@ export default function AuthPage() {
 
   return (
     <Layout>
-      <div className="container py-8 sm:py-16 max-w-md px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="text-center mb-8">
-            <img src={logoImage} alt="Ce Soir" className="h-16 mx-auto mb-4" />
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold">Staff Portal</h1>
-            <p className="text-muted-foreground text-sm mt-2">
-              {isInviteSignup
-                ? 'Create your account'
-                : mode === 'signup'
-                  ? 'Create your account'
-                  : 'Sign in to continue'}
-            </p>
-          </div>
-
-          {/* Invitation banner */}
-          {isInviteSignup && (
-            <div className="mb-4 p-4 bg-copper/10 border border-copper/20 rounded-lg text-center">
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <UserPlus className="w-4 h-4 text-copper" />
-                <span className="font-medium text-sm">You've been invited!</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                You've been invited to join as{' '}
-                <Badge variant="secondary" className="text-xs ml-1">
-                  {invitation?.roleName || ROLE_LABELS[invitation?.role || ''] || invitation?.role}
-                </Badge>
+      <div className="relative min-h-[80vh] flex items-center justify-center">
+        <div className="absolute inset-0 z-0" style={{ backgroundImage: `url(${bayfrontBg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
+        <div className="relative z-10 w-full max-w-md px-4 py-8 sm:py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="text-center mb-8">
+              <img src={logoImage} alt="Ce Soir" className="h-20 mx-auto mb-3" />
+              <h1 className="font-serif text-2xl font-semibold text-charcoal">Staff Training Portal</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {isInviteSignup
+                  ? 'Create your account to get started'
+                  : mode === 'signup'
+                    ? 'Create your account'
+                    : 'Log in to access tests, flashcards, and menu reference'}
               </p>
             </div>
-          )}
 
-          <Card className="border-0 shadow-elevated">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Lock className="w-5 h-5 text-copper" />
-                {isInviteSignup ? 'Create Account' : mode === 'signup' ? 'Sign Up' : 'Sign In'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* Tab toggle — hidden when invite signup */}
-              {!isInviteSignup && (
-                <div className="flex gap-1 mb-6 p-1 bg-muted rounded-lg">
-                  <button
-                    type="button"
-                    onClick={() => { setMode('signin'); setError(''); }}
-                    className={`flex-1 text-sm font-medium py-2 rounded-md transition-colors ${
-                      mode === 'signin'
-                        ? 'bg-background shadow-sm text-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setMode('signup'); setError(''); }}
-                    className={`flex-1 text-sm font-medium py-2 rounded-md transition-colors ${
-                      mode === 'signup'
-                        ? 'bg-background shadow-sm text-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    Create Account
-                  </button>
+            {/* Invitation banner */}
+            {isInviteSignup && (
+              <div className="mb-4 p-4 bg-copper/10 border border-copper/20 rounded-lg text-center">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <UserPlus className="w-4 h-4 text-copper" />
+                  <span className="font-medium text-sm">You've been invited!</span>
                 </div>
-              )}
+                <p className="text-sm text-muted-foreground">
+                  You've been invited to join as{' '}
+                  <Badge variant="secondary" className="text-xs ml-1">
+                    {invitation?.roleName || ROLE_LABELS[invitation?.role || ''] || invitation?.role}
+                  </Badge>
+                </p>
+              </div>
+            )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {(mode === 'signup' || isInviteSignup) && (
+            <Card className="border-0 shadow-elevated rounded-xl bg-background/95 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Lock className="w-5 h-5 text-copper" />
+                  {isInviteSignup ? 'Create Account' : mode === 'signup' ? 'Sign Up' : 'Sign In'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Tab toggle — hidden when invite signup */}
+                {!isInviteSignup && (
+                  <div className="flex gap-1 mb-6 p-1 bg-muted rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => { setMode('signin'); setError(''); }}
+                      className={`flex-1 text-sm font-medium py-2 rounded-md transition-colors ${
+                        mode === 'signin'
+                          ? 'bg-copper text-white shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setMode('signup'); setError(''); }}
+                      className={`flex-1 text-sm font-medium py-2 rounded-md transition-colors ${
+                        mode === 'signup'
+                          ? 'bg-copper text-white shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Create Account
+                    </button>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {(mode === 'signup' || isInviteSignup) && (
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">Full Name</Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="fullName"
+                          type="text"
+                          placeholder="John Doe"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          className="pl-10 focus:ring-copper focus:border-copper"
+                          required
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">Full Name</Label>
+                    <Label htmlFor="email">Email</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        id="fullName"
-                        type="text"
-                        placeholder="John Doe"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="pl-10"
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`pl-10 focus:ring-copper focus:border-copper ${emailLocked ? 'bg-muted cursor-not-allowed' : ''}`}
+                        required
+                        disabled={emailLocked}
+                      />
+                    </div>
+                    {emailLocked && (
+                      <p className="text-xs text-muted-foreground">
+                        Email is pre-filled from your invitation
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Password</Label>
+                      {mode === 'signin' && !isInviteSignup && (
+                        <button
+                          type="button"
+                          onClick={() => { setMode('forgot'); setError(''); }}
+                          className="text-xs text-copper hover:text-copper-light transition-colors"
+                        >
+                          Forgot password?
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-10 focus:ring-copper focus:border-copper"
                         required
                       />
                     </div>
                   </div>
-                )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={`pl-10 ${emailLocked ? 'bg-muted cursor-not-allowed' : ''}`}
-                      required
-                      disabled={emailLocked}
-                    />
-                  </div>
-                  {emailLocked && (
-                    <p className="text-xs text-muted-foreground">
-                      Email is pre-filled from your invitation
+                  {error && (
+                    <div className="flex items-center gap-2 text-destructive text-sm bg-destructive/10 p-3 rounded-md">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-copper text-white hover:bg-copper-light"
+                    disabled={isLoading || (mode === 'signup' && !hasInvite && !invitation?.valid)}
+                  >
+                    {isLoading
+                      ? 'Please wait...'
+                      : isInviteSignup || mode === 'signup'
+                        ? 'Create Account'
+                        : 'Sign In'}
+                  </Button>
+                </form>
+
+                <div className="mt-6 text-center">
+                  {isInviteSignup ? (
+                    <button
+                      type="button"
+                      onClick={() => navigate('/auth')}
+                      className="text-sm text-copper hover:text-copper-light transition-colors"
+                    >
+                      Already have an account? Sign in
+                    </button>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Need an account? Contact your manager for an invitation.
                     </p>
                   )}
                 </div>
+              </CardContent>
+            </Card>
 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
-                    {mode === 'signin' && !isInviteSignup && (
-                      <button
-                        type="button"
-                        onClick={() => { setMode('forgot'); setError(''); }}
-                        className="text-xs text-copper hover:text-copper-light transition-colors"
-                      >
-                        Forgot password?
-                      </button>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {error && (
-                  <div className="flex items-center gap-2 text-destructive text-sm bg-destructive/10 p-3 rounded-md">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    {error}
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading || (mode === 'signup' && !hasInvite && !invitation?.valid)}
-                >
-                  {isLoading
-                    ? 'Please wait...'
-                    : isInviteSignup || mode === 'signup'
-                      ? 'Create Account'
-                      : 'Sign In'}
-                </Button>
-              </form>
-
-              <div className="mt-6 text-center">
-                {isInviteSignup ? (
-                  <button
-                    type="button"
-                    onClick={() => navigate('/auth')}
-                    className="text-sm text-copper hover:text-copper-light transition-colors"
-                  >
-                    Already have an account? Sign in
-                  </button>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Need an account? Contact your manager for an invitation.
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+            <p className="text-xs text-muted-foreground text-center mt-6">Need help logging in? Contact your manager</p>
+          </motion.div>
+        </div>
       </div>
     </Layout>
   );
