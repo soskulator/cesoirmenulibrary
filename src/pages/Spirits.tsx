@@ -7,21 +7,26 @@ import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, ChevronDown, Loader2, Wheat, Grape, Vegan, Flame, Hop, Citrus, Sprout, Martini, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, GlassWater, ChevronDown, Loader2, Wheat, Grape, Flame, Hop, Citrus, Sprout, Martini, type LucideIcon } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
+import bourbonCornIcon from '@/assets/icons/bourbon-corn-icon.png';
+import tequilaAgaveIcon from '@/assets/icons/tequila-agave-icon.png';
 
 const spiritCategoryIcons: Record<string, LucideIcon> = {
   vodka: Wheat,
   gin: Grape,
   rum: Citrus,
-  tequila: Vegan,
   mezcal: Flame,
   scotch: Hop,
-  bourbon: Wheat,
   rye: Sprout,
   cordials: Martini,
+};
+
+const spiritCategoryImages: Record<string, string> = {
+  bourbon: bourbonCornIcon,
+  tequila: tequilaAgaveIcon,
 };
 
 // Spirit categories with French names
@@ -222,7 +227,9 @@ export default function SpiritsPage() {
                   >
                     <div className="flex items-center gap-4">
                       <div className={`p-3 rounded-full transition-all duration-300 ${open ? 'bg-copper/15 scale-110' : 'bg-copper/8 group-hover:bg-copper/12 group-hover:scale-105'}`}>
-                        {(() => { const Icon = spiritCategoryIcons[categoryKey] || GlassWater; return <Icon className={`w-5 h-5 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} strokeWidth={1.5} />; })()}
+                        {spiritCategoryImages[categoryKey] ? (
+                          <img src={spiritCategoryImages[categoryKey]} alt={category.title} className="w-5 h-5 object-contain" />
+                        ) : (() => { const Icon = spiritCategoryIcons[categoryKey] || GlassWater; return <Icon className={`w-5 h-5 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} strokeWidth={1.5} />; })()}
                       </div>
                       <div className="text-left">
                         <h2 className={`font-serif text-xl md:text-2xl font-bold transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal group-hover:text-copper'}`}>
