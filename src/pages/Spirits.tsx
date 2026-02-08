@@ -153,7 +153,7 @@ export default function SpiritsPage() {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-copper/10 mb-6"
               >
-                <span className="text-3xl">🥃</span>
+                <Wine className="w-8 h-8 text-copper" />
               </motion.div>
 
               <h1 className="font-serif text-4xl md:text-6xl font-bold text-charcoal tracking-tight">
