@@ -26,7 +26,7 @@ import { QuizPerformanceDashboard } from '@/components/admin/QuizPerformanceDash
 import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
 import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
 import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
-import { Separator } from '@/components/ui/separator';
+
 
 const ROLE_LABELS: Record<string, string> = {
   lead_admin: 'Lead Admin',
@@ -157,10 +157,10 @@ export default function ScoringDashboard() {
         )}
 
         {/* SECTION 2: Leaderboard */}
-        <Card className="mb-8">
+        <Card className="mb-4">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-copper" />
+            <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
               Staff Leaderboard
             </CardTitle>
             <CardDescription>Click a name to view detailed breakdown</CardDescription>
@@ -273,13 +273,13 @@ export default function ScoringDashboard() {
         </Card>
 
         {/* SECTION 3: Completion Tracker (Collapsible) */}
-        <Collapsible className="mb-8">
+        <Collapsible className="mb-4">
           <Card>
             <CollapsibleTrigger className="w-full">
               <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Target className="w-5 h-5 text-copper" />
+                  <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+                    <Target className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
                     Completion Tracker
                     {incompleteStaff.length > 0 && (
                       <Badge variant="secondary" className="text-xs">{incompleteStaff.length}</Badge>
@@ -326,44 +326,32 @@ export default function ScoringDashboard() {
 
         {/* SECTION 4: Test Management — Lead Admin Only */}
         {isLeadAdmin && (
-          <>
-            <Separator className="my-6" />
-            <h2 className="font-serif text-lg font-semibold mb-3">Test Management</h2>
-            <div className="grid lg:grid-cols-2 gap-4 mb-8">
-              <FohTestQuestionManager />
-              <FohTestReviewManager />
-            </div>
-          </>
+          <div className="grid lg:grid-cols-2 gap-4 mb-4">
+            <FohTestQuestionManager />
+            <FohTestReviewManager />
+          </div>
         )}
 
         {/* SECTION 5: Analytics — Lead Admin Only */}
         {isLeadAdmin && (
-          <>
-            <Separator className="my-6" />
-            <h2 className="font-serif text-lg font-semibold mb-3">Analytics: Team Study Progress</h2>
-            <div className="mb-8">
-              <TeamStudyProgressChart />
-            </div>
-          </>
+          <div className="mb-4">
+            <TeamStudyProgressChart />
+          </div>
         )}
 
         {/* SECTION 6: Staff Insights — Lead Admin Only */}
         {isLeadAdmin && (
-          <>
-            <Separator className="my-6" />
-            <h2 className="font-serif text-lg font-semibold mb-3">Staff Insights</h2>
-            <div className="grid lg:grid-cols-2 gap-4 mb-8">
-              <StaffActivityLog />
-              <QuizPerformanceDashboard />
-            </div>
-          </>
+          <div className="grid lg:grid-cols-2 gap-4 mb-4">
+            <StaffActivityLog />
+            <QuizPerformanceDashboard />
+          </div>
         )}
 
-        {/* SECTION 5: Export */}
+        {/* Export */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Download className="w-5 h-5 text-copper" />
+            <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+              <Download className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
               Export Data
             </CardTitle>
             <CardDescription>Download staff performance data</CardDescription>

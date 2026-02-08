@@ -177,7 +177,7 @@ export function FohTestQuestionManager() {
   };
 
   return (
-    <Card className="bg-card shadow-card h-full overflow-hidden">
+    <Card>
       <CardHeader className="pb-4 px-3 sm:px-6">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3">
@@ -185,7 +185,7 @@ export function FohTestQuestionManager() {
               <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5 text-burgundy" />
             </div>
             <div className="min-w-0">
-              <CardTitle className="font-serif text-lg sm:text-xl mb-0.5">FoH Test Questions</CardTitle>
+              <CardTitle className="text-base sm:text-lg font-medium mb-0.5">FoH Test Questions</CardTitle>
               <CardDescription className="text-xs sm:text-sm">
                 {isInitialized ? (
                   <span className="text-jade">✓ {questions.length} questions in database</span>
