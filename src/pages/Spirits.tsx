@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, ChevronDown, Loader2, Wheat, Cherry, Flower2, Flame, Wine, Beer, Martini, Citrus, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, GlassWater, ChevronDown, Loader2, Wheat, Cherry, Flower2, Flame, Hop, TreePalm, Sprout, CakeSlice, Popcorn, type LucideIcon } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
@@ -15,13 +15,13 @@ import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 const spiritCategoryIcons: Record<string, LucideIcon> = {
   vodka: Wheat,
   gin: Cherry,
-  rum: Citrus,
+  rum: TreePalm,
   tequila: Flower2,
   mezcal: Flame,
-  scotch: Wine,
-  bourbon: Beer,
-  rye: Wheat,
-  cordials: Martini,
+  scotch: Hop,
+  bourbon: Popcorn,
+  rye: Sprout,
+  cordials: CakeSlice,
 };
 
 // Spirit categories with French names
