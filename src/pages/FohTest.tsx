@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
@@ -569,9 +570,8 @@ export default function FohTestPage() {
     if (isLoadingQuestions) {
       return (
         <Layout>
-          <div className="container py-12 max-w-2xl px-4 flex flex-col items-center justify-center gap-4">
-            <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
-            <p className="text-muted-foreground">Loading test questions...</p>
+          <div className="container py-12 max-w-2xl px-4">
+            <LoadingSpinner message="Loading test questions..." />
           </div>
         </Layout>
       );

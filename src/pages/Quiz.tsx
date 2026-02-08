@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -109,6 +110,8 @@ export default function QuizPage() {
   const { hasPermission, isServerAssistant, isLeadAdmin } = useAuth();
   const [dbTests, setDbTests] = useState<TestConfiguration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setMinTimeElapsed(true), 300); return () => clearTimeout(t); }, []);
 
   useEffect(() => {
     const fetchTests = async () => {
@@ -227,12 +230,8 @@ export default function QuizPage() {
         <div className="mb-6 sm:mb-8">
           <h2 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Required Tests</h2>
 
-          {isLoading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map(i => (
-                <Skeleton key={i} className="h-[88px] w-full rounded-xl" />
-              ))}
-            </div>
+          {(isLoading || !minTimeElapsed) ? (
+            <LoadingSpinner message="Loading tests..." />
           ) : (
             <div className="grid grid-cols-1 gap-3">
               {visibleTests.map((test) => {

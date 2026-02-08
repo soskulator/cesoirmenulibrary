@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,6 +34,8 @@ export default function DailyFocusPage() {
   const [savedFocusItems, setSavedFocusItems] = useState<MenuItem[]>([]);
   const [savedCocktail, setSavedCocktail] = useState<MenuItem | null>(null);
   const [isLoadingSaved, setIsLoadingSaved] = useState(true);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setMinTimeElapsed(true), 300); return () => clearTimeout(t); }, []);
   const today = format(new Date(), 'yyyy-MM-dd');
   
   // Fetch saved focus items from database
@@ -95,6 +98,17 @@ export default function DailyFocusPage() {
     setCustomFocusItems(getRandomFocusItems());
     setRefreshKey(prev => prev + 1);
   };
+
+  if (isLoadingSaved || !minTimeElapsed) {
+    return (
+      <Layout>
+        <div className="container py-8 max-w-4xl px-4">
+          <LoadingSpinner message="Loading today's focus..." />
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="container py-4 sm:py-6 md:py-8 max-w-4xl px-3 sm:px-4">

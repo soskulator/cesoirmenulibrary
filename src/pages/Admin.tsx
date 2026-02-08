@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -119,11 +120,14 @@ export default function AdminPage() {
     }
   }, [authLoading, user, isAdmin, navigate, toast]);
 
-  if (authLoading) {
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setMinTimeElapsed(true), 300); return () => clearTimeout(t); }, []);
+
+  if (authLoading || !minTimeElapsed) {
     return (
       <Layout>
         <div className="container py-8 px-4 max-w-5xl">
-          <p className="text-muted-foreground">Checking permissions…</p>
+          <LoadingSpinner message="Checking permissions…" />
         </div>
       </Layout>
     );
