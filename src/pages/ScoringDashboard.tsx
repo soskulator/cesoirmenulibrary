@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -267,45 +268,57 @@ export default function ScoringDashboard() {
           </CardContent>
         </Card>
 
-        {/* SECTION 3: Completion Tracker */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Target className="w-5 h-5 text-copper" />
-              Completion Tracker
-            </CardTitle>
-            <CardDescription>Staff who haven't completed required tests</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {incompleteStaff.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-6">All staff have completed required tests! 🎉</p>
-            ) : (
-              <div className="space-y-3">
-                {incompleteStaff.map(s => (
-                  <div key={s.userId} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-muted rounded-lg">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-medium text-sm">{s.fullName}</p>
-                        <Badge variant="outline" className="text-[10px]">{ROLE_LABELS[s.role || ''] || 'No Role'}</Badge>
+        {/* SECTION 3: Completion Tracker (Collapsible) */}
+        <Collapsible className="mb-8">
+          <Card>
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Target className="w-5 h-5 text-copper" />
+                    Completion Tracker
+                    {incompleteStaff.length > 0 && (
+                      <Badge variant="secondary" className="text-xs">{incompleteStaff.length}</Badge>
+                    )}
+                  </CardTitle>
+                  <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform [[data-state=open]_&]:rotate-180" />
+                </div>
+                <CardDescription className="text-left">Staff who haven't completed required tests</CardDescription>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent>
+                {incompleteStaff.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-6">All staff have completed required tests! 🎉</p>
+                ) : (
+                  <div className="space-y-3">
+                    {incompleteStaff.map(s => (
+                      <div key={s.userId} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-muted rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-medium text-sm">{s.fullName}</p>
+                            <Badge variant="outline" className="text-[10px]">{ROLE_LABELS[s.role || ''] || 'No Role'}</Badge>
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                            <XCircle className="w-3 h-3 text-destructive flex-shrink-0" />
+                            <span className="text-xs text-muted-foreground">Missing:</span>
+                            {s.missingTests.map(t => (
+                              <Badge key={t} variant="destructive" className="text-[10px]">{t}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => sendReminder(s)}>
+                          <Bell className="w-3.5 h-3.5 mr-1" />
+                          Send Reminder
+                        </Button>
                       </div>
-                      <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                        <XCircle className="w-3 h-3 text-destructive flex-shrink-0" />
-                        <span className="text-xs text-muted-foreground">Missing:</span>
-                        {s.missingTests.map(t => (
-                          <Badge key={t} variant="destructive" className="text-[10px]">{t}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => sendReminder(s)}>
-                      <Bell className="w-3.5 h-3.5 mr-1" />
-                      Send Reminder
-                    </Button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                )}
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* SECTION 4: Staff Insights — Lead Admin Only */}
         {isLeadAdmin && (

@@ -396,7 +396,7 @@ export function QuizPerformanceDashboard() {
             <CardHeader className="px-4 sm:px-6 pb-3">
               <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                 <Target className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
-                FoH Tests - Tap to Review
+                Submitted Tests - Tap to Review
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 sm:px-6">
@@ -452,57 +452,6 @@ export function QuizPerformanceDashboard() {
           </Card>
         )}
 
-        {/* Removed: In-Progress Tests section - abandoned tests no longer shown */}
-        {/* Staff Leaderboard */}
-        <Card>
-          <CardHeader className="px-4 sm:px-6 pb-3">
-            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-              <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
-              Staff Leaderboard
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 sm:px-6">
-            {staffPerformance.length === 0 ? (
-              <p className="text-muted-foreground text-xs sm:text-sm text-center py-8">
-                No test scores recorded yet.
-              </p>
-            ) : (
-              <div className="space-y-2 sm:space-y-3">
-                {staffPerformance.slice(0, 5).map((staff, index) => (
-                  <div
-                    key={staff.user_id}
-                    className="flex items-center gap-2 sm:gap-4 p-2.5 sm:p-3 rounded-lg bg-muted/50"
-                  >
-                    <div className="w-6 sm:w-8 flex justify-center flex-shrink-0">
-                      {getMedalIcon(index) || (
-                        <span className="text-xs sm:text-sm font-medium text-muted-foreground">
-                          #{index + 1}
-                        </span>
-                      )}
-                    </div>
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-copper/10 flex items-center justify-center flex-shrink-0">
-                      <User className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-xs sm:text-sm truncate">
-                        {staff.user_name || staff.user_email}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">
-                        {staff.totalQuizzes} tests
-                      </p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className={`font-bold text-base sm:text-lg ${getScoreColor(staff.avgScore)}`}>
-                        {staff.avgScore}%
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">avg</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
         {/* Recent Quiz Attempts */}
         {scores.length > 0 && (
