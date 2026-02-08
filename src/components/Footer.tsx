@@ -69,9 +69,24 @@ Naples, FL 34102<br />Naples, FL 34102</span>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-cream/10 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-cream/50">
-          <p>© {new Date().getFullYear()} Ce Soir Restaurant. All rights reserved.</p>
-          <p className="text-xs">Staff Training Portal</p>
+        <div className="border-t border-cream/10 mt-10 pt-6 flex flex-col items-center text-center space-y-1">
+          <p className="text-xs text-cream/50">492 Bayfront Pl, Naples FL 34102</p>
+          <a
+            href="https://www.cesoirnaples.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-cream/50 hover:text-cream hover:underline transition-colors"
+          >
+            cesoirnaples.com
+          </a>
+          <p className="text-xs text-cream/50">Part of the Aidan Hospitality family</p>
+          <p className="text-xs text-cream/50">© 2026 Ce Soir Naples · Staff Training Portal</p>
+          <p className="text-[11px] text-cream/30 pt-3">
+            Need help? Email{" "}
+            <a href="mailto:training@cesoirnaples.com" className="hover:text-cream/50 hover:underline transition-colors">
+              training@cesoirnaples.com
+            </a>
+          </p>
         </div>
       </div>
     </footer>;
