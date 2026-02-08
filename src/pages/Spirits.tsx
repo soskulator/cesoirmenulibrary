@@ -7,32 +7,21 @@ import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, ChevronDown, Loader2 } from 'lucide-react';
+import { ArrowLeft, GlassWater, ChevronDown, Loader2, Wheat, Cherry, Flower2, Flame, Wine, Beer, Martini, Citrus, type LucideIcon } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
-// Spirit category icons
-import vodkaIcon from '@/assets/categories/spirits-vodka-icon.png';
-import ginIcon from '@/assets/categories/spirits-gin-icon.png';
-import rumIcon from '@/assets/categories/spirits-rum-icon.png';
-import tequilaIcon from '@/assets/categories/spirits-tequila-icon.png';
-import mezcalIcon from '@/assets/categories/spirits-mezcal-icon.png';
-import scotchIcon from '@/assets/categories/spirits-scotch-icon.png';
-import bourbonIcon from '@/assets/categories/spirits-bourbon-icon.png';
-import ryeIcon from '@/assets/categories/spirits-rye-icon.png';
-import cordialsIcon from '@/assets/categories/spirits-cordials-icon.png';
-
-const spiritCategoryIcons: Record<string, string> = {
-  vodka: vodkaIcon,
-  gin: ginIcon,
-  rum: rumIcon,
-  tequila: tequilaIcon,
-  mezcal: mezcalIcon,
-  scotch: scotchIcon,
-  bourbon: bourbonIcon,
-  rye: ryeIcon,
-  cordials: cordialsIcon,
+const spiritCategoryIcons: Record<string, LucideIcon> = {
+  vodka: Wheat,
+  gin: Cherry,
+  rum: Citrus,
+  tequila: Flower2,
+  mezcal: Flame,
+  scotch: Wine,
+  bourbon: Beer,
+  rye: Wheat,
+  cordials: Martini,
 };
 
 // Spirit categories with French names
@@ -232,8 +221,8 @@ export default function SpiritsPage() {
                       }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-xl transition-all duration-300 overflow-hidden ${open ? 'bg-copper/10 scale-110' : 'bg-copper/5 group-hover:bg-copper/10 group-hover:scale-105'}`}>
-                        <img src={spiritCategoryIcons[categoryKey]} alt={category.title} className="w-8 h-8 object-contain" />
+                      <div className={`p-3 rounded-full transition-all duration-300 ${open ? 'bg-copper/15 scale-110' : 'bg-copper/8 group-hover:bg-copper/12 group-hover:scale-105'}`}>
+                        {(() => { const Icon = spiritCategoryIcons[categoryKey] || GlassWater; return <Icon className={`w-5 h-5 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} strokeWidth={1.5} />; })()}
                       </div>
                       <div className="text-left">
                         <h2 className={`font-serif text-xl md:text-2xl font-bold transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal group-hover:text-copper'}`}>
