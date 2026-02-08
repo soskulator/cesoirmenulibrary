@@ -7,21 +7,21 @@ import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, ChevronDown, Loader2, Wheat, Cherry, Flower2, Flame, Hop, TreePalm, Sprout, CakeSlice, Popcorn, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, GlassWater, ChevronDown, Loader2, Wheat, Grape, Vegan, Flame, Hop, Citrus, Sprout, Martini, type LucideIcon } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 
 const spiritCategoryIcons: Record<string, LucideIcon> = {
   vodka: Wheat,
-  gin: Cherry,
-  rum: TreePalm,
-  tequila: Flower2,
+  gin: Grape,
+  rum: Citrus,
+  tequila: Vegan,
   mezcal: Flame,
   scotch: Hop,
-  bourbon: Popcorn,
+  bourbon: Wheat,
   rye: Sprout,
-  cordials: CakeSlice,
+  cordials: Martini,
 };
 
 // Spirit categories with French names
