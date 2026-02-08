@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Layout } from '@/components/Layout';
@@ -12,6 +13,7 @@ import { AssignQuestionsTab } from '@/components/admin/AssignQuestionsTab';
 import { type TestConfig } from '@/hooks/useQuizQuestions';
 
 export default function QuizBuilder() {
+  usePageTitle("Quiz Builder");
   const { user, isLeadAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('questions');

@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -183,6 +184,7 @@ const item = {
   }
 };
 export default function CategoriesPage() {
+  usePageTitle("Menu Categories");
   const { categoryId } = useParams();
   const [expandedSubcategory, setExpandedSubcategory] = useState<string | null>(null);
   

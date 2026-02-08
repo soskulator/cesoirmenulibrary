@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -76,6 +77,7 @@ const requiredAssets = [
 ];
 
 export default function AdminAssetsPage() {
+  usePageTitle("Assets & Design");
   const { user, isAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();

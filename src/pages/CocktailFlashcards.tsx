@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -53,6 +54,7 @@ const styleInfo = {
 };
 
 export default function CocktailFlashcardsPage() {
+  usePageTitle("Cocktail Flashcards");
   const { user } = useAuth();
   const { markAsKnown: saveKnown, markForReview: saveReview, isKnown, isStudied, getStats } = useStudyProgress();
   

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,6 +21,7 @@ import {
 import { Link } from 'react-router-dom';
 
 export default function AdminSeedQuestions() {
+  usePageTitle("Seed Questions");
   const { user, isLeadAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();

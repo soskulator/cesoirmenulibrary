@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -29,6 +30,7 @@ const item = {
 };
 
 export default function DailyFocusPage() {
+  usePageTitle("Daily Focus");
   const navigate = useNavigate();
   const [refreshKey, setRefreshKey] = useState(0);
   const [savedFocusItems, setSavedFocusItems] = useState<MenuItem[]>([]);

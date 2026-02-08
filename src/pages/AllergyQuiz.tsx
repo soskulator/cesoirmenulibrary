@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
@@ -103,6 +104,7 @@ const generateQuestions = (): AllergyQuizQuestion[] => {
 };
 
 export default function AllergyQuizPage() {
+  usePageTitle("Allergy Quiz");
   const [quizStarted, setQuizStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
