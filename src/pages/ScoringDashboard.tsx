@@ -23,6 +23,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useScoringData, type StaffScore, type StaffDetail } from '@/hooks/useScoringData';
 import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
 import { QuizPerformanceDashboard } from '@/components/admin/QuizPerformanceDashboard';
+import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
+import { FohTestReviewManager } from '@/components/admin/FohTestReviewManager';
+import { TeamStudyProgressChart } from '@/components/admin/TeamStudyProgressChart';
+import { Separator } from '@/components/ui/separator';
 
 const ROLE_LABELS: Record<string, string> = {
   lead_admin: 'Lead Admin',
@@ -320,9 +324,33 @@ export default function ScoringDashboard() {
           </Card>
         </Collapsible>
 
-        {/* SECTION 4: Staff Insights — Lead Admin Only */}
+        {/* SECTION 4: Test Management — Lead Admin Only */}
         {isLeadAdmin && (
           <>
+            <Separator className="my-6" />
+            <h2 className="font-serif text-lg font-semibold mb-3">Test Management</h2>
+            <div className="grid lg:grid-cols-2 gap-4 mb-8">
+              <FohTestQuestionManager />
+              <FohTestReviewManager />
+            </div>
+          </>
+        )}
+
+        {/* SECTION 5: Analytics — Lead Admin Only */}
+        {isLeadAdmin && (
+          <>
+            <Separator className="my-6" />
+            <h2 className="font-serif text-lg font-semibold mb-3">Analytics: Team Study Progress</h2>
+            <div className="mb-8">
+              <TeamStudyProgressChart />
+            </div>
+          </>
+        )}
+
+        {/* SECTION 6: Staff Insights — Lead Admin Only */}
+        {isLeadAdmin && (
+          <>
+            <Separator className="my-6" />
             <h2 className="font-serif text-lg font-semibold mb-3">Staff Insights</h2>
             <div className="grid lg:grid-cols-2 gap-4 mb-8">
               <StaffActivityLog />
