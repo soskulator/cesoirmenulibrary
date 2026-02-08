@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useScoringData, type StaffScore, type StaffDetail } from '@/hooks/useScoringData';
+import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
+import { QuizPerformanceDashboard } from '@/components/admin/QuizPerformanceDashboard';
 
 const ROLE_LABELS: Record<string, string> = {
   lead_admin: 'Lead Admin',
@@ -305,7 +307,18 @@ export default function ScoringDashboard() {
           </CardContent>
         </Card>
 
-        {/* SECTION 4: Export */}
+        {/* SECTION 4: Staff Insights — Lead Admin Only */}
+        {isLeadAdmin && (
+          <>
+            <h2 className="font-serif text-lg font-semibold mb-3">Staff Insights</h2>
+            <div className="grid lg:grid-cols-2 gap-4 mb-8">
+              <StaffActivityLog />
+              <QuizPerformanceDashboard />
+            </div>
+          </>
+        )}
+
+        {/* SECTION 5: Export */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
