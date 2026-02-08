@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -107,6 +108,7 @@ const item = {
 };
 
 export default function SpiritsPage() {
+  usePageTitle("Spirits");
   const [selectedSpirit, setSelectedSpirit] = useState<MenuItem | null>(null);
   
   // Get menu items from database

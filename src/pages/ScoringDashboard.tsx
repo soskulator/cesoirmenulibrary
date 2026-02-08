@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -38,6 +39,7 @@ function getScoreTier(score: number): string {
 }
 
 export default function ScoringDashboard() {
+  usePageTitle("Staff Scoring");
   const { isAdmin, isLeadAdmin } = useAuth();
   const {
     leaderboard, overview, incompleteStaff, isLoading,

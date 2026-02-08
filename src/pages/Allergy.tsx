@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -143,6 +144,7 @@ const AllergenIcon = ({ allergenId, size = 'md' }: { allergenId: AllergenType; s
 };
 
 export default function AllergyPage() {
+  usePageTitle("Allergy Reference");
   const [activeTab, setActiveTab] = useState('check');
   
   return (

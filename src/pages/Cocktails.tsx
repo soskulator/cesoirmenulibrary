@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -61,6 +62,7 @@ const item = {
 };
 
 export default function CocktailsPage() {
+  usePageTitle("Cocktails");
   const [selectedCocktail, setSelectedCocktail] = useState<MenuItem | null>(null);
   const [openStyles, setOpenStyles] = useState<string[]>(['classic']);
   

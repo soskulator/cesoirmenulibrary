@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -52,6 +53,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 export default function AuthPage() {
+  usePageTitle("Staff Login");
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get('token');
   const invitationCode = searchParams.get('invitation');

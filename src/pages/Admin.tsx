@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -81,6 +82,7 @@ const getMenuStats = () => {
 };
 
 export default function AdminPage() {
+  usePageTitle("Admin Panel");
   const { user, isAdmin, isLeadAdmin, fullName, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();

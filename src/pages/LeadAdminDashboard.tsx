@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'; 
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -52,6 +53,7 @@ import {
 import { MenuItem } from '@/data/menuData';
 
 export default function LeadAdminDashboard() {
+  usePageTitle("Dashboard");
   const { user, isLeadAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();

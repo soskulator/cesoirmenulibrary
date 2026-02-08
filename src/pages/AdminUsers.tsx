@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import { RoleHistoryTab } from '@/components/admin/RoleHistoryTab';
 import { RolePermissionsTab } from '@/components/admin/RolePermissionsTab';
 
 export default function AdminUsersPage() {
+  usePageTitle("User Management");
   const { user, isAdmin, isLeadAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('staff');

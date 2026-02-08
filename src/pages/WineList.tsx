@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -84,6 +85,7 @@ const item = {
 };
 
 export default function WineListPage() {
+  usePageTitle("Wine List");
   const [selectedWine, setSelectedWine] = useState<MenuItem | null>(null);
   const [openCategories, setOpenCategories] = useState<string[]>(['sparkling']);
   

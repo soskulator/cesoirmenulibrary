@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Layout } from "@/components/Layout";
@@ -77,6 +78,7 @@ const fadeUp = {
 };
 
 export default function Index() {
+  usePageTitle("");
   const { user } = useAuth();
   const { foodItems, cocktailOfTheDay, dateString } = useDailyRotation(3, 1);
 

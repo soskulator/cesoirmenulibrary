@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
@@ -107,6 +108,7 @@ interface DisplayTest {
 }
 
 export default function QuizPage() {
+  usePageTitle("Training Tests");
   const { hasPermission, isServerAssistant, isLeadAdmin } = useAuth();
   const [dbTests, setDbTests] = useState<TestConfiguration[]>([]);
   const [isLoading, setIsLoading] = useState(true);

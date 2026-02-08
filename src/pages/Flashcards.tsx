@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -31,6 +32,7 @@ import { useStudyProgress } from '@/hooks/useStudyProgress';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function FlashcardsPage() {
+  usePageTitle("Flashcards");
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || '';
   const initialItem = searchParams.get('item') || '';

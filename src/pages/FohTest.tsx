@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
@@ -46,6 +47,7 @@ interface AnsweredQuestion {
 }
 
 export default function FohTestPage() {
+  usePageTitle("Test");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const urlTestType = searchParams.get('type') || null;
