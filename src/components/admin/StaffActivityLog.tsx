@@ -279,8 +279,8 @@ export function StaffActivityLog() {
     return (
       <Card className="h-full">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-copper" />
+          <CardTitle className="text-base flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-copper" />
             Staff Activity Log
           </CardTitle>
         </CardHeader>
@@ -297,8 +297,8 @@ export function StaffActivityLog() {
     return (
       <Card className="h-full">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-copper" />
+          <CardTitle className="text-base flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-copper" />
             Staff Activity Log
           </CardTitle>
         </CardHeader>
@@ -317,26 +317,26 @@ export function StaffActivityLog() {
       <CardHeader className="pb-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-copper" />
+            <CardTitle className="text-base flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-copper" />
               Staff Activity Log
             </CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {employees.length} employee{employees.length !== 1 ? 's' : ''} with activity
             </p>
           </div>
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <div className="relative w-full sm:w-56">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <Input
               placeholder="Search employees..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-8 h-8 text-sm"
             />
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 overflow-hidden px-3 sm:px-6">
+      <CardContent className="flex-1 min-h-0 px-3 sm:px-6 pb-3">
         {filteredEmployees.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <User className="w-12 h-12 text-muted-foreground/50 mb-3" />
@@ -347,7 +347,7 @@ export function StaffActivityLog() {
             </p>
           </div>
         ) : (
-          <ScrollArea className="h-[400px] pr-2">
+          <ScrollArea className="h-[320px] pr-2">
             <div className="space-y-2">
               {filteredEmployees.map((emp) => (
                 <Collapsible
