@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, Loader2 } from 'lucide-react';
+import { ArrowLeft, GlassWater, ChevronDown, Loader2 } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
@@ -92,30 +92,39 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
+      staggerChildren: 0.05,
+      delayChildren: 0.05,
     },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 15, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: 'easeOut' as const },
+    scale: 1,
+    transition: { duration: 0.3, ease: 'easeOut' as const },
   },
 };
 
 export default function SpiritsPage() {
   usePageTitle("Spirits");
   const [selectedSpirit, setSelectedSpirit] = useState<MenuItem | null>(null);
+  const [openCategories, setOpenCategories] = useState<string[]>(['vodka']);
   
-  // Get menu items from database
   const { items: menuItems, isLoading } = useMenuItems();
-  
-  // Get all spirits
   const spirits = menuItems.filter((item) => item.categoryId === 'spirits' && item.isPublished);
+
+  const toggleCategory = (categoryKey: string) => {
+    setOpenCategories(prev => 
+      prev.includes(categoryKey) 
+        ? prev.filter(c => c !== categoryKey)
+        : [...prev, categoryKey]
+    );
+  };
+
+  const isOpen = (categoryKey: string) => openCategories.includes(categoryKey);
 
   return (
     <Layout>
@@ -169,10 +178,10 @@ export default function SpiritsPage() {
           </div>
         </motion.header>
 
-        {/* Spirit Sections by Category */}
+        {/* Spirit Categories Accordion */}
         <div className="px-6 pb-24">
-          <div className="max-w-5xl mx-auto space-y-16">
-            {categoryOrder.map((categoryKey) => {
+          <div className="max-w-4xl mx-auto space-y-4">
+            {categoryOrder.map((categoryKey, categoryIndex) => {
               const category = spiritCategories[categoryKey];
               const categorySpirits = category.ids
                 .map((id) => spirits.find((s) => s.id === id))
@@ -180,81 +189,125 @@ export default function SpiritsPage() {
 
               if (categorySpirits.length === 0) return null;
 
+              const open = isOpen(categoryKey);
+
               return (
-                <motion.section
+                <motion.div
                   key={categoryKey}
                   initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
-                  transition={{ duration: 0.6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
+                  className="overflow-hidden"
                 >
-                  {/* Category Header */}
-                  <div className="mb-8 pb-4 border-b border-charcoal/10">
-                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
-                      {category.title}
-                    </h2>
-                    <p className="text-copper font-serif italic text-lg mt-1">
-                      {category.subtitle}
-                    </p>
-                    <p className="text-charcoal/60 mt-2">
-                      {category.description}
-                    </p>
-                  </div>
-
-                  {/* Spirit Cards */}
-                  <motion.div
-                    variants={container}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true }}
-                    className="grid gap-3"
+                  {/* Category Header Button */}
+                  <button
+                    onClick={() => toggleCategory(categoryKey)}
+                    className={`w-full flex items-center justify-between p-5 md:p-6 rounded-2xl transition-all duration-300 group border
+                      ${open 
+                        ? 'bg-copper/10 border-copper/30 shadow-lg' 
+                        : 'bg-background/60 backdrop-blur-sm border-border/50 hover:bg-background/80 hover:border-copper/20 hover:shadow-md'
+                      }`}
                   >
-                    {categorySpirits.map((spirit) => {
-                      if (!spirit) return null;
-                      const image = getUniqueImage(spirit.id, spirit.imageUrl);
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-xl transition-all duration-300 ${open ? 'bg-copper/20 scale-110' : 'bg-copper/5 group-hover:bg-copper/10 group-hover:scale-105'}`}>
+                        <GlassWater className={`w-6 h-6 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} />
+                      </div>
+                      <div className="text-left">
+                        <h2 className={`font-serif text-xl md:text-2xl font-bold transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal group-hover:text-copper'}`}>
+                          {category.title}
+                        </h2>
+                        <p className="text-charcoal/50 text-sm mt-0.5 font-serif italic">
+                          {category.subtitle} • {categorySpirits.length} selections
+                        </p>
+                      </div>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: open ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className={`p-2 rounded-full transition-colors duration-300 ${open ? 'bg-copper/20' : 'group-hover:bg-copper/10'}`}
+                    >
+                      <ChevronDown className={`w-5 h-5 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/40 group-hover:text-copper'}`} />
+                    </motion.div>
+                  </button>
 
-                      return (
-                        <motion.div
-                          key={spirit.id}
-                          variants={item}
-                          onClick={() => setSelectedSpirit(spirit)}
-                          className="group relative bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
-                        >
-                          <div className="flex items-stretch gap-4 p-4 min-h-[96px]">
-                            {/* Spirit Image - Only render if unique image exists */}
-                            {image ? (
-                              <div className="relative w-16 h-20 md:w-20 md:h-24 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 rounded-xl flex items-center justify-center">
-                                <LazyImage
-                                  src={image}
-                                  alt={spirit.name}
-                                  className="w-auto h-full max-h-20 md:max-h-22 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-md"
-                                  containerClassName="w-full h-full flex items-center justify-center"
-                                />
-                              </div>
-                            ) : (
-                              <div className="w-16 md:w-20 flex-shrink-0" />
-                            )}
+                  {/* Category Content - Animated Dropdown */}
+                  <AnimatePresence initial={false}>
+                    {open && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 pb-2">
+                          <p className="text-charcoal/60 text-center mb-6 font-serif italic px-4">
+                            {category.description}
+                          </p>
+                          
+                          {/* Spirit Cards Grid with Cascade Animation */}
+                          <motion.div
+                            variants={container}
+                            initial="hidden"
+                            animate="show"
+                            className="grid gap-3"
+                          >
+                            {categorySpirits.map((spirit, index) => {
+                              if (!spirit) return null;
+                              const image = getUniqueImage(spirit.id, spirit.imageUrl);
 
-                            {/* Spirit Details - Flex to fill available space */}
-                            <div className="flex-1 min-w-0 flex flex-col justify-center">
-                              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
-                                <h3 className="font-serif text-lg font-semibold text-charcoal group-hover:text-copper transition-colors">
-                                  {spirit.name}
-                                </h3>
-                              </div>
-                              <p className="text-sm text-copper font-medium mt-0.5">
-                                {spirit.shortDescription}
-                              </p>
-                              <p className="text-charcoal/60 text-xs md:text-sm leading-relaxed mt-2 line-clamp-2">
-                                {spirit.longDescription}
-                              </p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </motion.div>
-                </motion.section>
+                              return (
+                                <motion.div
+                                  key={spirit.id}
+                                  variants={item}
+                                  custom={index}
+                                  onClick={() => setSelectedSpirit(spirit)}
+                                  className="group relative bg-background/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                                >
+                                  <div className="flex items-stretch gap-4 p-4 min-h-[88px]">
+                                    {/* Spirit Image - Only render if unique image exists */}
+                                    {image ? (
+                                      <div className="relative w-14 h-18 md:w-16 md:h-20 flex-shrink-0 overflow-hidden bg-gradient-to-br from-copper/5 to-cream/50 rounded-xl flex items-center justify-center">
+                                        <LazyImage
+                                          src={image}
+                                          alt={spirit.name}
+                                          className="w-auto h-full max-h-16 md:max-h-18 object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-md"
+                                          containerClassName="w-full h-full flex items-center justify-center"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div className="w-14 md:w-16 flex-shrink-0" />
+                                    )}
+
+                                    {/* Spirit Details */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                      <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors line-clamp-1">
+                                        {spirit.name}
+                                      </h3>
+                                      <p className="text-sm text-copper/80 font-medium mt-0.5 line-clamp-1">
+                                        {spirit.shortDescription}
+                                      </p>
+                                      <p className="text-charcoal/50 text-xs md:text-sm leading-relaxed mt-1 line-clamp-2">
+                                        {spirit.longDescription}
+                                      </p>
+                                    </div>
+
+                                    {/* Hover Indicator */}
+                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 self-center">
+                                      <div className="w-8 h-8 rounded-full bg-copper/10 flex items-center justify-center">
+                                        <ChevronDown className="w-4 h-4 text-copper -rotate-90" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              );
+                            })}
+                          </motion.div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               );
             })}
           </div>
