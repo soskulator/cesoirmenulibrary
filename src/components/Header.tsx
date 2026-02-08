@@ -360,47 +360,70 @@ export function Header() {
         initial={false} 
         animate={{ height: mobileMenuOpen ? 'auto' : 0 }}
         className="md:hidden overflow-hidden border-t border-border bg-background relative z-50">
-        <nav className="container py-4 flex flex-col gap-1">
-          {filteredNavItems.map(item => {
-          const isActive = location.pathname === item.path;
-          return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-3 rounded-lg transition-colors", isActive ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </Link>;
-        })}
+        <nav className="container py-4 flex flex-col gap-0.5">
+          {/* Browse Section */}
+          <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Browse</p>
+          {filteredNavItems.filter(i => ['/', '/categories', '/wine-list', '/spirits', '/cocktails'].includes(i.path)).map(item => {
+            const isActive = location.pathname === item.path;
+            return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </Link>;
+          })}
 
-          {/* Test Link - Mobile Direct */}
+          {/* Training Section */}
           <div className="h-px bg-border my-2" />
-          <Link to="/quiz" onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-            location.pathname === '/quiz' ? "bg-burgundy/10 text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-            <HelpCircle className="w-5 h-5" />
-            <span className="font-medium">Test</span>
-          </Link>
-          
+          <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Training</p>
+          {[
+            { path: '/quiz', label: 'Tests', icon: HelpCircle },
+            ...filteredNavItems.filter(i => ['/flashcards', '/daily-focus'].includes(i.path)),
+          ].map(item => {
+            const isActive = location.pathname === item.path;
+            return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </Link>;
+          })}
+
+          {/* Reference Section */}
+          <div className="h-px bg-border my-2" />
+          <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Reference</p>
+          {filteredNavItems.filter(i => ['/allergy'].includes(i.path)).map(item => {
+            const isActive = location.pathname === item.path;
+            return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </Link>;
+          })}
+
+          {/* Admin Section */}
           {isAdmin && <>
               <div className="h-px bg-border my-2" />
-              {adminItems.map(item => <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center justify-between px-4 py-3 rounded-lg transition-colors", location.pathname.startsWith(item.path) ? "bg-gold/10 text-gold" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-                  <span className="flex items-center gap-3">
-                    <item.icon className="w-5 h-5" />
-                    <span className="font-medium">{item.label}</span>
-                  </span>
-                  {pendingReviewCount > 0 && (
-                    <Badge className="h-5 min-w-5 flex items-center justify-center text-[10px] bg-destructive text-destructive-foreground">
-                      {pendingReviewCount}
-                    </Badge>
-                  )}
-                </Link>)}
+              <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Admin</p>
+              {adminItems.map(item => {
+                const isActive = location.pathname.startsWith(item.path);
+                return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center justify-between px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
+                    <span className="flex items-center gap-3">
+                      <item.icon className="w-5 h-5" />
+                      <span className="font-medium text-sm">{item.label}</span>
+                    </span>
+                    {pendingReviewCount > 0 && (
+                      <Badge className="h-5 min-w-5 flex items-center justify-center text-[10px] bg-destructive text-destructive-foreground">
+                        {pendingReviewCount}
+                      </Badge>
+                    )}
+                  </Link>;
+              })}
             </>}
 
           {/* Auth Link - Mobile */}
           {!user && <>
               <div className="h-px bg-border my-2" />
-              <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-copper hover:bg-copper/10">
+              <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors text-copper hover:bg-copper/10">
                 <LogIn className="w-5 h-5" />
-                <span className="font-medium">Sign In</span>
+                <span className="font-medium text-sm">Sign In</span>
               </Link>
             </>}
-          
         </nav>
       </motion.div>
     </header>
