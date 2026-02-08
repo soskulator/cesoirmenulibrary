@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
-import { ArrowLeft, GlassWater, Sparkles, Star, Clock, ChevronDown, Wine as WineGlass, Loader2 } from 'lucide-react';
+import { ArrowLeft, Martini, Sparkles, Star, Clock, ChevronDown, Wine as WineGlass, Loader2 } from 'lucide-react';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
@@ -118,7 +118,7 @@ export default function CocktailsPage() {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-copper/10 mb-6"
               >
-                <GlassWater className="w-8 h-8 text-copper" />
+                <Martini className="w-8 h-8 text-copper" />
               </motion.div>
               
               <h1 className="font-serif text-4xl md:text-6xl font-bold text-charcoal tracking-tight">
@@ -234,7 +234,7 @@ export default function CocktailsPage() {
                                       </div>
                                     ) : (
                                       <div className="w-16 md:w-20 flex-shrink-0 flex items-center justify-center">
-                                        <GlassWater className="w-8 h-8 text-copper/30" />
+                                        <Martini className="w-8 h-8 text-copper/30" />
                                       </div>
                                     )}
 
@@ -294,7 +294,7 @@ export default function CocktailsPage() {
             </p>
             <Button variant="outline" asChild className="border-copper text-copper hover:bg-copper hover:text-background">
               <Link to="/cocktail-flashcards">
-                <GlassWater className="w-4 h-4 mr-2" />
+                <Martini className="w-4 h-4 mr-2" />
                 Study Cocktail Flashcards
               </Link>
             </Button>

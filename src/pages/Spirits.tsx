@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getUniqueImage } from '@/data/dishImages';
-import { ArrowLeft, Wine, Loader2 } from 'lucide-react';
+import { ArrowLeft, GlassWater, Loader2 } from 'lucide-react';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
@@ -153,7 +153,7 @@ export default function SpiritsPage() {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-copper/10 mb-6"
               >
-                <Wine className="w-8 h-8 text-copper" />
+                <GlassWater className="w-8 h-8 text-copper" />
               </motion.div>
 
               <h1 className="font-serif text-4xl md:text-6xl font-bold text-charcoal tracking-tight">
@@ -273,7 +273,7 @@ export default function SpiritsPage() {
             </p>
             <Button variant="outline" asChild className="border-copper text-copper hover:bg-copper hover:text-background">
               <Link to="/categories/spirits">
-                <Wine className="w-4 h-4 mr-2" />
+                <GlassWater className="w-4 h-4 mr-2" />
                 Study Spirits Flashcards
               </Link>
             </Button>
