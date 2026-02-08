@@ -347,7 +347,7 @@ export function StaffActivityLog() {
             </p>
           </div>
         ) : (
-          <ScrollArea className="h-[320px] pr-2">
+          <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
             <div className="space-y-2">
               {filteredEmployees.map((emp) => (
                 <Collapsible
@@ -519,7 +519,7 @@ export function StaffActivityLog() {
                 </Collapsible>
               ))}
             </div>
-          </ScrollArea>
+          </div>
         )}
       </CardContent>
     </Card>
