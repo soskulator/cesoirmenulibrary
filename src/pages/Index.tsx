@@ -80,6 +80,20 @@ export default function Index() {
   const { user } = useAuth();
   const { foodItems, cocktailOfTheDay, dateString } = useDailyRotation(3, 1);
 
+  // Unique allergen count
+  const uniqueAllergenCount = new Set(menuItems.flatMap((item) => item.allergens)).size;
+
+  // Active tests count
+  const [activeTestCount, setActiveTestCount] = useState(3);
+  useEffect(() => {
+    supabase
+      .from("test_configurations")
+      .select("id", { count: "exact", head: true })
+      .eq("is_active", true)
+      .then(({ count }) => {
+        if (count != null) setActiveTestCount(count);
+      });
+  }, []);
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
 
@@ -571,12 +585,12 @@ export default function Index() {
                     <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Categories</p>
                   </div>
                   <div>
-                    <p className="text-4xl md:text-5xl font-serif font-bold text-copper">10+</p>
+                    <p className="text-4xl md:text-5xl font-serif font-bold text-copper">{uniqueAllergenCount}</p>
                     <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Allergens Tracked</p>
                   </div>
                   <div>
-                    <p className="text-4xl md:text-5xl font-serif font-bold text-copper">3</p>
-                    <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Study Modes</p>
+                    <p className="text-4xl md:text-5xl font-serif font-bold text-copper">{activeTestCount}</p>
+                    <p className="text-sm text-cream/60 mt-2 tracking-wide uppercase">Active Tests</p>
                   </div>
                 </div>
               </CardContent>
