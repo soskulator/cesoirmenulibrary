@@ -246,7 +246,7 @@ export function FohTestReviewManager() {
 
   if (loading) {
     return (
-      <Card>
+      <Card className="bg-card/50 border-border/50">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-center py-8">
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
@@ -258,10 +258,10 @@ export function FohTestReviewManager() {
 
   return (
     <>
-      <Card>
+      <Card className="bg-card/50 border-border/50">
         <CardHeader className="pb-3 px-3 sm:px-6">
           <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
-            <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-copper" />
+            <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             Test Review Center
           </CardTitle>
         </CardHeader>
