@@ -277,7 +277,7 @@ export function StaffActivityLog() {
 
   if (loading) {
     return (
-      <Card className="h-full">
+      <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-copper" />
@@ -295,7 +295,7 @@ export function StaffActivityLog() {
 
   if (error) {
     return (
-      <Card className="h-full">
+      <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-copper" />
@@ -313,7 +313,7 @@ export function StaffActivityLog() {
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -336,7 +336,7 @@ export function StaffActivityLog() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 min-h-0 px-3 sm:px-6 pb-3">
+      <CardContent className="px-3 sm:px-6 pb-4">
         {filteredEmployees.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <User className="w-12 h-12 text-muted-foreground/50 mb-3" />
