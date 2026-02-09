@@ -157,7 +157,7 @@ export default function Index() {
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p className="text-charcoal text-3xl md:text-4xl lg:text-5xl font-serif font-bold tracking-normal mb-6" initial={{
+          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-3" initial={{
           opacity: 0,
           y: 16
         }} animate={{
@@ -171,10 +171,10 @@ export default function Index() {
           </motion.p>
 
           {/* Decorative divider */}
-          <motion.div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent mb-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }} />
+          <motion.div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }} />
 
           {/* Location */}
-          <motion.div className="flex items-center justify-center gap-2 text-copper-dark mb-10" initial={{
+          <motion.div className="flex items-center justify-center gap-2 text-copper-dark mb-8" initial={{
           opacity: 0,
           y: 10
         }} animate={{
