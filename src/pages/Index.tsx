@@ -157,7 +157,7 @@ export default function Index() {
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-3" initial={{
+          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-2" initial={{
           opacity: 0,
           y: 16
         }} animate={{
