@@ -139,7 +139,7 @@ export default function Index() {
           <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
         </div>
 
-        <motion.div className="relative z-10 flex flex-col items-center text-center px-6 py-16" style={{
+        <motion.div className="relative z-10 flex flex-col items-center text-center px-6 py-10 md:py-16 -mt-6 md:mt-0" style={{
         opacity: heroOpacity
       }}>
           {/* Logo */}
@@ -152,12 +152,12 @@ export default function Index() {
         }} transition={{
           duration: 0.9,
           delay: 0.2
-        }} className="mb-2">
+        }} className="mb-1">
             <img src={logoImage} alt="Ce Soir" className="h-32 md:h-36 lg:h-44 w-auto mx-auto drop-shadow-lg" width={530} height={176} decoding="async" />
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-2" initial={{
+          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-1.5" initial={{
           opacity: 0,
           y: 16
         }} animate={{
@@ -171,10 +171,10 @@ export default function Index() {
           </motion.p>
 
           {/* Decorative divider */}
-          <motion.div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent mb-1.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }} />
+          <motion.div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent mb-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }} />
 
           {/* Location */}
-          <motion.div className="flex items-center justify-center gap-2 text-copper-dark mb-8" initial={{
+          <motion.div className="flex items-center justify-center gap-2 text-copper-dark mb-6" initial={{
           opacity: 0,
           y: 10
         }} animate={{
