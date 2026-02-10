@@ -282,24 +282,24 @@ export default function QuizPage() {
                               </span>
                             </div>
                           </div>
-                          {!isInactive && (
-                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-all flex-shrink-0" />
-                          )}
+                          <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
+                            {isLeadAdmin && test.isFromDb && test.id && (
+                              <Link
+                                to="/admin/quiz-builder"
+                                className="p-1.5 rounded-md bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-background transition-colors"
+                                title="Edit test"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Pencil className="w-3.5 h-3.5" />
+                              </Link>
+                            )}
+                            {!isInactive && (
+                              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-all" />
+                            )}
+                          </div>
                         </div>
                       </div>
                     </Link>
-
-                    {/* Lead admin edit link for DB tests */}
-                    {isLeadAdmin && test.isFromDb && test.id && (
-                      <Link
-                        to="/admin/quiz-builder"
-                        className="absolute top-2 right-2 z-10 p-1.5 rounded-md bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-background transition-colors"
-                        title="Edit test"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Link>
-                    )}
                   </div>
                 );
               })}
