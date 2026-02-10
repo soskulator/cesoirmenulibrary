@@ -266,7 +266,7 @@ const App = () => (
                 <Route
                   path="/admin/scoring"
                   element={
-                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
+                    <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
                       <ScoringDashboard />
                     </ProtectedRoute>
                   }
