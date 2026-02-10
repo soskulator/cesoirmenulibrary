@@ -159,7 +159,7 @@ export default function Index() {
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p className="text-charcoal text-2xl md:text-3xl font-serif font-bold tracking-normal mb-1.5 mx-px my-[2px] lg:text-3xl" initial={{
+          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-1.5" initial={{
           opacity: 0,
           y: 16
         }} animate={{
@@ -194,7 +194,7 @@ export default function Index() {
           duration: 0.5
         }}>
             <MapPin className="w-3.5 h-3.5 text-copper" />
-            <span className="tracking-[0.2em] uppercase font-semibold text-sm" style={{
+            <span className="text-xs font-medium tracking-[0.2em] uppercase" style={{
             fontFamily: "'DM Sans', sans-serif"
           }}>Naples, Florida</span>
           </motion.div>
