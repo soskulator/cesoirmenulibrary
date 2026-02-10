@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { PermissionGateModal } from '@/components/PermissionGateModal';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,6 +27,7 @@ import {
   RefreshCw,
   Loader2,
   Trophy,
+  Lock,
 } from 'lucide-react';
 import { menuItems, categories } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
@@ -38,6 +40,7 @@ const adminSections = [
     path: '/admin/quiz-builder',
     badge: null as string | null,
     disabled: false,
+    requiredAccess: 'lead_admin' as const,
   },
   {
     title: 'User Management',
@@ -46,6 +49,7 @@ const adminSections = [
     path: '/admin/users',
     badge: null as string | null,
     disabled: false,
+    requiredAccess: 'admin' as const,
   },
   {
     title: 'Staff Scoring',
@@ -54,6 +58,7 @@ const adminSections = [
     path: '/admin/scoring',
     badge: null as string | null,
     disabled: false,
+    requiredAccess: 'lead_admin' as const,
   },
   {
     title: 'Dashboard',
@@ -62,6 +67,7 @@ const adminSections = [
     path: '/admin/dashboard',
     badge: null as string | null,
     disabled: false,
+    requiredAccess: 'admin' as const,
   },
   {
     title: 'Assets & Design',
@@ -70,6 +76,7 @@ const adminSections = [
     path: '/admin/assets',
     badge: null as string | null,
     disabled: false,
+    requiredAccess: 'admin' as const,
   },
 ];
 
@@ -97,6 +104,29 @@ export default function AdminPage() {
   const stats = getMenuStats();
   const { fetchItems, isLoading: isMenuLoading } = useMenuItems();
   const [isSyncing, setIsSyncing] = useState(false);
+  const [permissionModal, setPermissionModal] = useState<{
+    isOpen: boolean;
+    requiredAccess: 'lead_admin' | 'admin';
+    moduleName: string;
+  }>({ isOpen: false, requiredAccess: 'lead_admin', moduleName: '' });
+
+  const canAccess = (section: typeof adminSections[number]) => {
+    if (section.requiredAccess === 'lead_admin') return isLeadAdmin;
+    if (section.requiredAccess === 'admin') return isAdmin || isLeadAdmin;
+    return true;
+  };
+
+  const handleSectionClick = (section: typeof adminSections[number]) => {
+    if (canAccess(section)) {
+      navigate(section.path);
+    } else {
+      setPermissionModal({
+        isOpen: true,
+        requiredAccess: section.requiredAccess,
+        moduleName: section.title,
+      });
+    }
+  };
 
   const handleSyncMenuData = async () => {
     setIsSyncing(true);
@@ -220,38 +250,48 @@ export default function AdminPage() {
         {/* Management Sections */}
         <h2 className="font-serif text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Management Sections</h2>
         <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          {adminSections.map((section, index) => (
-            <motion.div
-              key={section.path}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + index * 0.05 }}
-            >
-              <Link to={section.path}>
-                <Card className="h-full hover:shadow-card-hover transition-all hover:-translate-y-1 group active:scale-[0.98]">
-                  <CardHeader className="p-4 sm:p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors">
-                        <section.icon className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
+          {adminSections.map((section, index) => {
+            const accessible = canAccess(section);
+            return (
+              <motion.div
+                key={section.path}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + index * 0.05 }}
+              >
+                <div onClick={() => handleSectionClick(section)} className={accessible ? 'cursor-pointer' : 'cursor-not-allowed'}>
+                  <Card className={`h-full transition-all group active:scale-[0.98] ${accessible ? 'hover:shadow-card-hover hover:-translate-y-1' : 'opacity-50'}`}>
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors">
+                          <section.icon className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
+                        </div>
+                        {!accessible && <Lock className="w-3.5 h-3.5 text-copper/60" />}
                       </div>
-                    </div>
-                    <CardTitle className="text-base sm:text-lg group-hover:text-burgundy transition-colors">
-                      {section.title}
-                    </CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">{section.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
-                    <Button variant="link" className="p-0 h-auto text-burgundy text-sm">
-                      Open
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
+                      <CardTitle className={`text-base sm:text-lg ${accessible ? 'group-hover:text-burgundy' : ''} transition-colors`}>
+                        {section.title}
+                      </CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">{section.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
+                      <Button variant="link" className="p-0 h-auto text-burgundy text-sm">
+                        {accessible ? 'Open' : 'Locked'}
+                        {accessible ? <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" /> : <Lock className="w-3 h-3 ml-1" />}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
+        <PermissionGateModal
+          isOpen={permissionModal.isOpen}
+          onClose={() => setPermissionModal(prev => ({ ...prev, isOpen: false }))}
+          requiredAccess={permissionModal.requiredAccess}
+          moduleName={permissionModal.moduleName}
+        />
       </div>
     </Layout>
   );
