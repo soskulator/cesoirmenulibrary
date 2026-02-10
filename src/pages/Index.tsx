@@ -132,7 +132,9 @@ export default function Index() {
   }, [user]);
   return <Layout>
       {/* ═══════════════════════ HERO ═══════════════════════ */}
-      <section className="relative flex items-center justify-center overflow-hidden bg-cream" style={{ minHeight: 'max(85vh, 85svh)' }}>
+      <section className="relative flex items-center justify-center overflow-hidden bg-cream" style={{
+      minHeight: 'max(85vh, 85svh)'
+    }}>
         {/* Background sketch */}
         <div className="absolute inset-0">
           <img src={bayfrontSketch} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" fetchPriority="high" decoding="async" width={1920} height={1280} />
@@ -140,7 +142,7 @@ export default function Index() {
         </div>
 
         <motion.div className="relative z-10 flex flex-col items-center text-center px-6 py-10 md:py-16 -mt-6 md:mt-0" style={{
-        opacity: heroOpacity,
+        opacity: heroOpacity
       }}>
           {/* Logo */}
           <motion.div initial={{
@@ -157,7 +159,7 @@ export default function Index() {
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-1.5" initial={{
+          <motion.p className="text-charcoal text-2xl md:text-3xl font-serif font-bold tracking-normal mb-1.5 mx-px my-[2px] lg:text-3xl" initial={{
           opacity: 0,
           y: 16
         }} animate={{
@@ -171,7 +173,14 @@ export default function Index() {
           </motion.p>
 
           {/* Decorative divider */}
-          <motion.div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent mb-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }} />
+          <motion.div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-copper to-transparent mb-1" initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} transition={{
+          delay: 0.6,
+          duration: 0.5
+        }} />
 
           {/* Location */}
           <motion.div className="flex items-center justify-center gap-2 text-copper-dark mb-6" initial={{
@@ -185,7 +194,9 @@ export default function Index() {
           duration: 0.5
         }}>
             <MapPin className="w-3.5 h-3.5 text-copper" />
-            <span className="text-xs font-medium tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif" }}>Naples, Florida</span>
+            <span className="tracking-[0.2em] uppercase font-semibold text-sm" style={{
+            fontFamily: "'DM Sans', sans-serif"
+          }}>Naples, Florida</span>
           </motion.div>
 
           {/* ── Hero CTAs ── */}
