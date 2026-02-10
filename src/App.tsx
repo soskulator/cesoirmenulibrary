@@ -234,7 +234,7 @@ const App = () => (
                 <Route
                   path="/admin/users"
                   element={
-                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
+                    <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
                       <AdminUsers />
                     </ProtectedRoute>
                   }
@@ -258,7 +258,7 @@ const App = () => (
                 <Route
                   path="/admin/quiz-builder"
                   element={
-                    <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
+                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
                       <QuizBuilder />
                     </ProtectedRoute>
                   }
@@ -266,7 +266,7 @@ const App = () => (
                 <Route
                   path="/admin/scoring"
                   element={
-                    <ProtectedRoute requiredRole={ROLES.LEAD_ONLY}>
+                    <ProtectedRoute requiredRole={[...ROLES.ADMIN]}>
                       <ScoringDashboard />
                     </ProtectedRoute>
                   }

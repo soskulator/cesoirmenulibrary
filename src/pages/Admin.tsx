@@ -40,7 +40,7 @@ const adminSections = [
     path: '/admin/quiz-builder',
     badge: null as string | null,
     disabled: false,
-    requiredAccess: 'lead_admin' as const,
+    requiredAccess: 'admin' as const,
   },
   {
     title: 'User Management',
@@ -49,7 +49,7 @@ const adminSections = [
     path: '/admin/users',
     badge: null as string | null,
     disabled: false,
-    requiredAccess: 'admin' as const,
+    requiredAccess: 'lead_admin' as const,
   },
   {
     title: 'Staff Scoring',
@@ -58,7 +58,7 @@ const adminSections = [
     path: '/admin/scoring',
     badge: null as string | null,
     disabled: false,
-    requiredAccess: 'lead_admin' as const,
+    requiredAccess: 'admin' as const,
   },
   {
     title: 'Dashboard',
@@ -67,7 +67,7 @@ const adminSections = [
     path: '/admin/dashboard',
     badge: null as string | null,
     disabled: false,
-    requiredAccess: 'admin' as const,
+    requiredAccess: 'lead_admin' as const,
   },
   {
     title: 'Assets & Design',
