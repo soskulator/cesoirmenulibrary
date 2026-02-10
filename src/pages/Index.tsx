@@ -132,7 +132,7 @@ export default function Index() {
   }, [user]);
   return <Layout>
       {/* ═══════════════════════ HERO ═══════════════════════ */}
-      <section className="relative min-h-[85svh] flex items-center justify-center overflow-hidden bg-cream">
+      <section className="relative flex items-center justify-center overflow-hidden bg-cream" style={{ minHeight: 'max(85vh, 85svh)' }}>
         {/* Background sketch */}
         <div className="absolute inset-0">
           <img src={bayfrontSketch} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" fetchPriority="high" decoding="async" width={1920} height={1280} />
@@ -140,7 +140,7 @@ export default function Index() {
         </div>
 
         <motion.div className="relative z-10 flex flex-col items-center text-center px-6 py-10 md:py-16 -mt-6 md:mt-0" style={{
-        opacity: heroOpacity
+        opacity: heroOpacity,
       }}>
           {/* Logo */}
           <motion.div initial={{
