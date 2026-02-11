@@ -324,8 +324,8 @@ export default function ScoringDashboard() {
           </Card>
         </Collapsible>
 
-        {/* SECTION 4: Test Management — Lead Admin Only */}
-        {isLeadAdmin && (
+        {/* SECTION 4: Test Management */}
+        {isAdmin && (
           <>
             <Separator className="my-6" />
             <h2 className="font-serif text-lg font-semibold mb-3">Test Management</h2>
@@ -336,8 +336,8 @@ export default function ScoringDashboard() {
           </>
         )}
 
-        {/* SECTION 5: Analytics — Lead Admin Only */}
-        {isLeadAdmin && (
+        {/* SECTION 5: Analytics */}
+        {isAdmin && (
           <>
             <Separator className="my-6" />
             <h2 className="font-serif text-lg font-semibold mb-3">Analytics: Team Study Progress</h2>
@@ -347,8 +347,8 @@ export default function ScoringDashboard() {
           </>
         )}
 
-        {/* SECTION 6: Staff Insights — Lead Admin Only */}
-        {isLeadAdmin && (
+        {/* SECTION 6: Staff Insights */}
+        {isAdmin && (
           <>
             <Separator className="my-6" />
             <h2 className="font-serif text-lg font-semibold mb-3">Staff Insights</h2>
