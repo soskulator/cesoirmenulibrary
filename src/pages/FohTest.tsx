@@ -66,7 +66,7 @@ export default function FohTestPage() {
   const [showConfirmEnd, setShowConfirmEnd] = useState(false);
   
   const { saveQuizScore } = useQuizScores();
-  const { testConfig, isLoading: isLoadingQuestions, usingFallback, hasNoQuestions, buildTestQuestions } = useTestQuestions(selectedTestType);
+  const { testConfig, isLoading: isLoadingQuestions, usingFallback, hasNoQuestions, buildTestQuestions, fetchAndBuildFresh } = useTestQuestions(selectedTestType);
   const { user, isServerAssistant, hasBeverageAccess } = useAuth();
 
   // Redirect Server Assistants trying to access the service_staff test
@@ -82,8 +82,13 @@ export default function FohTestPage() {
   const startTest = async () => {
     if (!selectedTestType) return;
     
-    const shuffled = buildTestQuestions();
-    setShuffledQuestions(shuffled);
+    // Always fetch fresh from DB to ensure edited questions are synced
+    let finalQuestions = await fetchAndBuildFresh();
+    if (finalQuestions.length === 0 && !hasNoQuestions) {
+      // Fallback to cached data if fresh fetch fails
+      finalQuestions = buildTestQuestions();
+    }
+    setShuffledQuestions(finalQuestions);
     setTestStarted(true);
     setCurrentIndex(0);
     setAnsweredQuestions([]);
@@ -100,7 +105,7 @@ export default function FohTestPage() {
           .from('foh_test_attempts')
           .insert({
             user_id: user.id,
-            total_questions: shuffled.length,
+            total_questions: finalQuestions.length,
             test_type: selectedTestType
           })
           .select('id')
