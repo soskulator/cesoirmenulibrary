@@ -78,7 +78,7 @@ export default function Index() {
   } = useDailyRotation(3, 1);
 
   // Unique allergen count
-  const uniqueAllergenCount = new Set(menuItems.flatMap(item => item.allergens)).size;
+  const uniqueAllergenCount = new Set(menuItems.flatMap((item) => item.allergens)).size;
 
   // Active tests count
   const [activeTestCount, setActiveTestCount] = useState(3);
@@ -194,7 +194,7 @@ export default function Index() {
           duration: 0.5
         }}>
             <MapPin className="w-3.5 h-3.5 text-copper" />
-            <span className="text-xs font-medium tracking-[0.2em] uppercase" style={{
+            <span className="text-xs tracking-[0.2em] uppercase font-semibold" style={{
             fontFamily: "'DM Sans', sans-serif"
           }}>Naples, Florida</span>
           </motion.div>
@@ -285,7 +285,7 @@ export default function Index() {
           once: true,
           margin: "-40px"
         }} className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-            {features.map(feature => <motion.div key={feature.path} variants={fadeUp}>
+            {features.map((feature) => <motion.div key={feature.path} variants={fadeUp}>
                 <Link to={feature.path}>
                   <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-500 hover:shadow-elevated min-h-[48px]">
                     <CardContent className="p-6 md:p-8 text-center">
@@ -428,7 +428,7 @@ export default function Index() {
           once: true,
           margin: "-40px"
         }}>
-            {foodItems.map(menuItem => {
+            {foodItems.map((menuItem) => {
             const category = getCategoryById(menuItem.categoryId);
             const image = getDishImage(menuItem.id, menuItem.imageUrl);
             return <motion.div key={menuItem.id} variants={fadeUp}>
