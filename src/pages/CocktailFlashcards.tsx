@@ -63,7 +63,7 @@ export default function CocktailFlashcardsPage() {
   const menuItems: MenuItem[] = dbMenuItems.length > 0 ? dbMenuItems : staticMenuItems;
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isRandomMode, setIsRandomMode] = useState(true);
+  const [isRandomMode, setIsRandomMode] = useState(false);
   const [localKnown, setLocalKnown] = useState<Set<string>>(new Set());
   const [localReview, setLocalReview] = useState<Set<string>>(new Set());
   const [selectedStyle, setSelectedStyle] = useState<string>('');

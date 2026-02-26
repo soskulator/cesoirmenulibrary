@@ -49,7 +49,7 @@ export default function FlashcardsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isRandomMode, setIsRandomMode] = useState(true); // Default to random ON
+  const [isRandomMode, setIsRandomMode] = useState(false);
   const [localKnown, setLocalKnown] = useState<Set<string>>(new Set());
   const [localReview, setLocalReview] = useState<Set<string>>(new Set());
 
