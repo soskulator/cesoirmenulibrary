@@ -130,8 +130,11 @@ serve(async (req) => {
     const displayName = (employeeName && employeeName !== 'Unknown') ? employeeName : employeeEmail;
     const passStatus = percentage >= 70 ? '✅ PASSED' : '⚠️ Needs Review';
 
+    const senderDomain = Deno.env.get('RESEND_SENDER_DOMAIN') || 'cesoirnaples.com';
+    const fromAddress = `Ce Soir Tests <no-reply@${senderDomain}>`;
+
     const { error: emailError } = await resend.emails.send({
-      from: 'Ce Soir Tests <onboarding@resend.dev>',
+      from: fromAddress,
       to: adminEmails,
       subject: `[Action Required] ${displayName} completed ${testTypeName} Test`,
       html: `
