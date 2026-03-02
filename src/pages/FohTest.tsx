@@ -32,7 +32,8 @@ import {
   Users,
   UserCheck,
   AlertTriangle,
-  Send
+  Send,
+  SkipForward
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -64,10 +65,11 @@ export default function FohTestPage() {
   const [endTime, setEndTime] = useState<Date | null>(null);
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [showConfirmEnd, setShowConfirmEnd] = useState(false);
+  const [skippedQuestions, setSkippedQuestions] = useState<Set<number>>(new Set());
   
   const { saveQuizScore } = useQuizScores();
   const { testConfig, isLoading: isLoadingQuestions, usingFallback, hasNoQuestions, buildTestQuestions, fetchAndBuildFresh } = useTestQuestions(selectedTestType);
-  const { user, isServerAssistant, hasBeverageAccess } = useAuth();
+  const { user, isServerAssistant, hasBeverageAccess, isAdmin, isLeadAdmin } = useAuth();
 
   // Redirect Server Assistants trying to access the service_staff test
   useEffect(() => {
@@ -97,6 +99,7 @@ export default function FohTestPage() {
     setStartTime(new Date());
     setEndTime(null);
     setAttemptId(null);
+    setSkippedQuestions(new Set());
 
     // Create a new test attempt in the database
     if (user) {
@@ -367,6 +370,25 @@ export default function FohTestPage() {
     setEndTime(null);
     setAttemptId(null);
     setShowConfirmEnd(false);
+    setSkippedQuestions(new Set());
+  };
+
+  // Skip question — append to the end of the queue
+  const skipQuestion = () => {
+    if (!currentQuestion) return;
+    const currentQIndex = currentIndex;
+    // Move this question to the end
+    setShuffledQuestions(prev => {
+      const updated = [...prev];
+      const [skipped] = updated.splice(currentQIndex, 1);
+      updated.push(skipped);
+      return updated;
+    });
+    setSkippedQuestions(prev => new Set(prev).add(currentQuestion.id));
+    // Reset input state for next question (index stays the same since array shifted)
+    setSelectedAnswer(null);
+    setShortAnswer('');
+    setEvaluationResult(null);
   };
 
   // Submit test early — unanswered questions count as incorrect
@@ -389,6 +411,7 @@ export default function FohTestPage() {
     const gradeInfo = getScoreGrade(score.percentage);
     const unansweredCount = shuffledQuestions.length - answeredQuestions.length;
     const isPartialSubmission = unansweredCount > 0;
+    const showScoreDetails = isAdmin || isLeadAdmin;
 
     return (
       <Layout>
@@ -397,7 +420,7 @@ export default function FohTestPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            {/* Trophy Header */}
+            {/* Header */}
             <div className="text-center mb-6 sm:mb-8">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
                 <Trophy className="w-10 h-10 sm:w-12 sm:h-12 text-gold" />
@@ -405,9 +428,15 @@ export default function FohTestPage() {
               <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                 {getTestDisplayName(selectedTestType!, testConfig?.test_name)} Complete!
               </h1>
-              <p className={cn("text-xl sm:text-2xl font-bold", gradeInfo.color)}>
-                {gradeInfo.label}
-              </p>
+              {showScoreDetails ? (
+                <p className={cn("text-xl sm:text-2xl font-bold", gradeInfo.color)}>
+                  {gradeInfo.label}
+                </p>
+              ) : (
+                <p className="text-base sm:text-lg text-muted-foreground">
+                  Your test has been submitted for review
+                </p>
+              )}
               {isPartialSubmission && (
                 <p className="text-xs text-muted-foreground mt-2">
                   {answeredQuestions.length} of {shuffledQuestions.length} questions answered · {unansweredCount} unanswered counted as incorrect
@@ -415,137 +444,153 @@ export default function FohTestPage() {
               )}
             </div>
 
-            {/* Scoreboard Card */}
-            <Card className="mb-6 overflow-hidden">
-              <div className="bg-gradient-to-r from-burgundy to-burgundy/80 p-4 sm:p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-burgundy-foreground/80 text-sm">Your Score</p>
-                    <p className="text-4xl sm:text-5xl font-bold">{score.percentage}%</p>
+            {/* Employee view: Pending review message */}
+            {!showScoreDetails && (
+              <Card className="mb-6">
+                <CardContent className="p-6 sm:p-8 text-center">
+                  <div className="w-12 h-12 rounded-full bg-copper/10 flex items-center justify-center mx-auto mb-4">
+                    <Clock className="w-6 h-6 text-copper" />
                   </div>
-                  <div className="text-right">
-                    <div className={cn("text-6xl sm:text-7xl font-bold", gradeInfo.color)}>
-                      {gradeInfo.grade}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <CardContent className="p-4 sm:p-6">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="text-center p-3 bg-sage/10 rounded-lg">
-                    <Check className="w-6 h-6 text-sage mx-auto mb-1" />
-                    <p className="text-2xl font-bold text-sage">{score.correct}</p>
-                    <p className="text-xs text-muted-foreground">Correct</p>
-                  </div>
-                  <div className="text-center p-3 bg-destructive/10 rounded-lg">
-                    <X className="w-6 h-6 text-destructive mx-auto mb-1" />
-                    <p className="text-2xl font-bold text-destructive">{score.incorrect}</p>
-                    <p className="text-xs text-muted-foreground">Incorrect</p>
-                  </div>
-                  <div className="text-center p-3 bg-muted rounded-lg">
-                    <Target className="w-6 h-6 text-muted-foreground mx-auto mb-1" />
-                    <p className="text-2xl font-bold">{score.total}</p>
-                    <p className="text-xs text-muted-foreground">Total</p>
-                  </div>
-                  <div className="text-center p-3 bg-muted rounded-lg">
-                    <Clock className="w-6 h-6 text-muted-foreground mx-auto mb-1" />
-                    <p className="text-2xl font-bold">{getTimeSpent()}</p>
-                    <p className="text-xs text-muted-foreground">Time</p>
-                  </div>
-                </div>
+                  <h3 className="font-semibold text-lg mb-2">Pending Manager Review</h3>
+                  <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                    Your answers have been submitted. A manager will review your test and you'll receive your results via email once the review is complete.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
 
-                <div className="mt-4">
-                  <Progress value={score.percentage} className="h-3" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Category Breakdown */}
-            <Card className="mb-6">
-              <CardContent className="p-4 sm:p-6">
-                <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <Medal className="w-5 h-5 text-copper" />
-                  Performance by Category
-                </h3>
-                <div className="space-y-3">
-                  {/* Dynamically collect all categories from the questions */}
-                  {Array.from(new Set(shuffledQuestions.map(q => q.category))).map(cat => {
-                    const catQuestions = shuffledQuestions.filter(q => q.category === cat);
-                    const catAnswered = answeredQuestions.filter(a => {
-                      const q = shuffledQuestions.find(sq => sq.id === a.questionId);
-                      return q?.category === cat;
-                    });
-                    const catCorrect = catAnswered.filter(a => a.isCorrect).length;
-                    const catPercentage = catQuestions.length > 0 ? Math.round((catCorrect / catQuestions.length) * 100) : 0;
-
-                    return (
-                      <div key={cat} className="flex items-center gap-3">
-                        <Badge className={cn(getCategoryColor(cat), "w-24 sm:w-32 justify-center text-xs capitalize")}>
-                          {getCategoryLabel(cat).split(' ')[0]}
-                        </Badge>
-                        <div className="flex-1">
-                          <Progress value={catPercentage} className="h-2" />
+            {/* Admin view: Full scoreboard */}
+            {showScoreDetails && (
+              <>
+                <Card className="mb-6 overflow-hidden">
+                  <div className="bg-gradient-to-r from-burgundy to-burgundy/80 p-4 sm:p-6 text-white">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-burgundy-foreground/80 text-sm">Your Score</p>
+                        <p className="text-4xl sm:text-5xl font-bold">{score.percentage}%</p>
+                      </div>
+                      <div className="text-right">
+                        <div className={cn("text-6xl sm:text-7xl font-bold", gradeInfo.color)}>
+                          {gradeInfo.grade}
                         </div>
-                        <span className="text-sm font-medium w-12 text-right">
-                          {catCorrect}/{catQuestions.length}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Question Review */}
-            <Card className="mb-6">
-              <CardContent className="p-4 sm:p-6">
-                <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <ClipboardList className="w-5 h-5 text-burgundy" />
-                  Question Review
-                </h3>
-                <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-                  {answeredQuestions.map((aq, idx) => (
-                    <div
-                      key={idx}
-                      className={cn(
-                        "p-3 rounded-lg border-l-4 text-sm",
-                        aq.isCorrect
-                          ? "bg-sage/5 border-sage"
-                          : "bg-destructive/5 border-destructive"
-                      )}
-                    >
-                      <div className="flex items-start gap-2 mb-1">
-                        {aq.isCorrect ? (
-                          <Check className="w-4 h-4 text-sage mt-0.5 flex-shrink-0" />
-                        ) : (
-                          <X className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
-                        )}
-                        <p className="font-medium text-foreground">{aq.questionText}</p>
-                      </div>
-                      <div className="ml-6 space-y-1">
-                        <p className="text-xs">
-                          <span className="text-muted-foreground">Your answer: </span>
-                          <span className={aq.isCorrect ? "text-sage" : "text-destructive"}>
-                            {typeof aq.userAnswer === 'number'
-                              ? shuffledQuestions.find(q => q.id === aq.questionId)?.options?.[aq.userAnswer] ?? String(aq.userAnswer)
-                              : aq.userAnswer}
-                          </span>
-                        </p>
-                        {!aq.isCorrect && (
-                          <p className="text-xs">
-                            <span className="text-muted-foreground">Correct answer: </span>
-                            <span className="text-foreground">{aq.correctAnswer}</span>
-                          </p>
-                        )}
-                        {aq.aiFeedback && !aq.isCorrect && (
-                          <p className="text-xs text-muted-foreground italic">{aq.aiFeedback}</p>
-                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </div>
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      <div className="text-center p-3 bg-sage/10 rounded-lg">
+                        <Check className="w-6 h-6 text-sage mx-auto mb-1" />
+                        <p className="text-2xl font-bold text-sage">{score.correct}</p>
+                        <p className="text-xs text-muted-foreground">Correct</p>
+                      </div>
+                      <div className="text-center p-3 bg-destructive/10 rounded-lg">
+                        <X className="w-6 h-6 text-destructive mx-auto mb-1" />
+                        <p className="text-2xl font-bold text-destructive">{score.incorrect}</p>
+                        <p className="text-xs text-muted-foreground">Incorrect</p>
+                      </div>
+                      <div className="text-center p-3 bg-muted rounded-lg">
+                        <Target className="w-6 h-6 text-muted-foreground mx-auto mb-1" />
+                        <p className="text-2xl font-bold">{score.total}</p>
+                        <p className="text-xs text-muted-foreground">Total</p>
+                      </div>
+                      <div className="text-center p-3 bg-muted rounded-lg">
+                        <Clock className="w-6 h-6 text-muted-foreground mx-auto mb-1" />
+                        <p className="text-2xl font-bold">{getTimeSpent()}</p>
+                        <p className="text-xs text-muted-foreground">Time</p>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <Progress value={score.percentage} className="h-3" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Category Breakdown */}
+                <Card className="mb-6">
+                  <CardContent className="p-4 sm:p-6">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <Medal className="w-5 h-5 text-copper" />
+                      Performance by Category
+                    </h3>
+                    <div className="space-y-3">
+                      {Array.from(new Set(shuffledQuestions.map(q => q.category))).map(cat => {
+                        const catQuestions = shuffledQuestions.filter(q => q.category === cat);
+                        const catAnswered = answeredQuestions.filter(a => {
+                          const q = shuffledQuestions.find(sq => sq.id === a.questionId);
+                          return q?.category === cat;
+                        });
+                        const catCorrect = catAnswered.filter(a => a.isCorrect).length;
+                        const catPercentage = catQuestions.length > 0 ? Math.round((catCorrect / catQuestions.length) * 100) : 0;
+                        return (
+                          <div key={cat} className="flex items-center gap-3">
+                            <Badge className={cn(getCategoryColor(cat), "w-24 sm:w-32 justify-center text-xs capitalize")}>
+                              {getCategoryLabel(cat).split(' ')[0]}
+                            </Badge>
+                            <div className="flex-1">
+                              <Progress value={catPercentage} className="h-2" />
+                            </div>
+                            <span className="text-sm font-medium w-12 text-right">
+                              {catCorrect}/{catQuestions.length}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Question Review */}
+                <Card className="mb-6">
+                  <CardContent className="p-4 sm:p-6">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <ClipboardList className="w-5 h-5 text-burgundy" />
+                      Question Review
+                    </h3>
+                    <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                      {answeredQuestions.map((aq, idx) => (
+                        <div
+                          key={idx}
+                          className={cn(
+                            "p-3 rounded-lg border-l-4 text-sm",
+                            aq.isCorrect
+                              ? "bg-sage/5 border-sage"
+                              : "bg-destructive/5 border-destructive"
+                          )}
+                        >
+                          <div className="flex items-start gap-2 mb-1">
+                            {aq.isCorrect ? (
+                              <Check className="w-4 h-4 text-sage mt-0.5 flex-shrink-0" />
+                            ) : (
+                              <X className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
+                            )}
+                            <p className="font-medium text-foreground">{aq.questionText}</p>
+                          </div>
+                          <div className="ml-6 space-y-1">
+                            <p className="text-xs">
+                              <span className="text-muted-foreground">Your answer: </span>
+                              <span className={aq.isCorrect ? "text-sage" : "text-destructive"}>
+                                {typeof aq.userAnswer === 'number'
+                                  ? shuffledQuestions.find(q => q.id === aq.questionId)?.options?.[aq.userAnswer] ?? String(aq.userAnswer)
+                                  : aq.userAnswer}
+                              </span>
+                            </p>
+                            {!aq.isCorrect && (
+                              <p className="text-xs">
+                                <span className="text-muted-foreground">Correct answer: </span>
+                                <span className="text-foreground">{aq.correctAnswer}</span>
+                              </p>
+                            )}
+                            {aq.aiFeedback && !aq.isCorrect && (
+                              <p className="text-xs text-muted-foreground italic">{aq.aiFeedback}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -704,9 +749,16 @@ export default function FohTestPage() {
               <Card className="mb-4 sm:mb-6">
                 <CardContent className="p-4 sm:p-6">
                   {/* Category Badge */}
-                  <Badge className={cn(getCategoryColor(currentQuestion.category), "mb-3 text-xs")}>
-                    {getCategoryLabel(currentQuestion.category)}
-                  </Badge>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge className={cn(getCategoryColor(currentQuestion.category), "text-xs")}>
+                      {getCategoryLabel(currentQuestion.category)}
+                    </Badge>
+                    {skippedQuestions.has(currentQuestion.id) && (
+                      <Badge variant="outline" className="text-xs text-amber-600 border-amber-500/30 bg-amber-500/10">
+                        Previously Skipped
+                      </Badge>
+                    )}
+                  </div>
 
                   {/* Question */}
                   <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold mb-6">
@@ -793,6 +845,19 @@ export default function FohTestPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-3">
+                {/* Skip button - only show if question hasn't been answered yet */}
+                {evaluationResult === null && (
+                  <Button
+                    variant="outline"
+                    className="h-11"
+                    onClick={skipQuestion}
+                    disabled={isEvaluating}
+                    title="Skip and come back later"
+                  >
+                    <SkipForward className="w-4 h-4 mr-1" />
+                    Skip
+                  </Button>
+                )}
                 {currentQuestion.type === 'multiple_choice' ? (
                   <Button
                     variant="burgundy"

@@ -204,7 +204,35 @@ export function FohTestReviewManager() {
           : a
       ));
 
-      toast.success('Review completed and score updated');
+      // Send results email to the employee
+      const employeeEmail = selectedAttempt.user_email;
+      if (employeeEmail && employeeEmail !== 'Unknown') {
+        try {
+          const { error: emailError } = await supabase.functions.invoke('send-test-results', {
+            body: {
+              attemptId: selectedAttempt.id,
+              employeeEmail,
+              employeeName: selectedAttempt.user_name || 'Team Member',
+              testName: getTestTypeLabel(selectedAttempt.test_type),
+              score: newScore,
+              totalQuestions: answers.length,
+              percentage: newPercentage,
+            }
+          });
+          if (emailError) {
+            console.error('Error sending results email:', emailError);
+            toast.warning('Review saved but results email failed to send');
+          } else {
+            toast.success('Review completed — results sent to employee');
+          }
+        } catch (emailErr) {
+          console.error('Error invoking send-test-results:', emailErr);
+          toast.warning('Review saved but results email failed to send');
+        }
+      } else {
+        toast.success('Review completed and score updated');
+      }
+
       setReviewSheetOpen(false);
     } catch (error) {
       console.error('Error finalizing review:', error);
