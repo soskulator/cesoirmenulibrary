@@ -73,16 +73,20 @@ serve(async (req) => {
       percentage,
     }: SendResultsRequest = await req.json();
 
+    // Determine sender - use verified domain if available
+    const senderDomain = Deno.env.get('RESEND_SENDER_DOMAIN') || 'cesoirnaples.com';
+    const fromAddress = `Ce Soir Tests <no-reply@${senderDomain}>`;
+
+    console.log(`Sending test results to ${employeeEmail} for attempt ${attemptId} from ${fromAddress}`);
+
     const passingScore = 70;
     const passed = percentage >= passingScore;
     const passStatus = passed ? 'PASSED ✅' : 'DID NOT PASS ⚠️';
     const passColor = passed ? '#22c55e' : '#ef4444';
     const displayName = (employeeName && employeeName !== 'Unknown') ? employeeName : 'Team Member';
 
-    console.log(`Sending test results to ${employeeEmail} for attempt ${attemptId}`);
-
     const { error: emailError } = await resend.emails.send({
-      from: 'Ce Soir Tests <onboarding@resend.dev>',
+      from: fromAddress,
       to: [employeeEmail],
       subject: `Your ${testName} Results — ${passStatus}`,
       html: `
