@@ -127,11 +127,16 @@ serve(async (req) => {
                   </tr>
                 </table>
               </div>
-              <p style="color: #4a4a4a; line-height: 1.7; margin: 24px 0 0; font-size: 15px; text-align: center;">
+              <p style="color: #4a4a4a; line-height: 1.7; margin: 24px 0 32px; font-size: 15px; text-align: center;">
                 ${passed 
                   ? 'Congratulations on passing! Keep up the great work.' 
                   : 'Please review the study materials and speak with your manager about next steps.'}
               </p>
+              <div style="text-align: center;">
+                <a href="https://cesoirmenulibrary.lovable.app" style="display: inline-block; background-color: #C06C46; color: #ffffff; text-decoration: none; padding: 16px 48px; border-radius: 4px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                  Go to Training Portal
+                </a>
+              </div>
             </div>
             <div style="background-color: #2C241E; padding: 24px 30px; text-align: center;">
               <p style="color: #D99572; font-size: 12px; margin: 0 0 4px; letter-spacing: 0.5px;">
