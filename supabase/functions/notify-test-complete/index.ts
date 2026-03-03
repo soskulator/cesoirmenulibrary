@@ -138,33 +138,68 @@ serve(async (req) => {
       to: adminEmails,
       subject: `[Action Required] ${displayName} completed ${testTypeName} Test`,
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">FoH Test Completed</h1>
-          </div>
-          <div style="background: #f9f9f9; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
-            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
-              A team member has completed their knowledge test and requires your review.
-            </p>
-            <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0;">
-              <table style="width: 100%; border-collapse: collapse;">
-                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Employee:</td><td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${displayName}</td></tr>
-                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Test Type:</td><td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${testTypeName}</td></tr>
-                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Score:</td><td style="padding: 8px 0; color: #333; font-weight: 600; text-align: right;">${score}/${totalQuestions}</td></tr>
-                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Percentage:</td><td style="padding: 8px 0; color: ${percentage >= 70 ? '#22c55e' : '#f59e0b'}; font-weight: 600; text-align: right;">${percentage}%</td></tr>
-                <tr><td style="padding: 8px 0; color: #666; font-size: 14px;">Status:</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">${passStatus}</td></tr>
-              </table>
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: 'Georgia', serif; background-color: #2C241E; margin: 0; padding: 40px 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #F9F7F5; border-radius: 8px; overflow: hidden;">
+            <div style="background-color: #2C241E; padding: 40px 30px; text-align: center;">
+              <img src="https://cchhvuotfdxswpxwnxgv.supabase.co/storage/v1/object/public/email-assets/cesoir-logo.png?v=1" alt="Ce Soir" width="180" style="display: block; margin: 0 auto;" />
             </div>
-            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
-              Please review this test in the Lead Admin Dashboard to verify the AI-graded answers and finalize the score.
-            </p>
-            <div style="text-align: center;">
-              <p style="font-size: 12px; color: #999; margin-top: 30px;">
-                This is an automated notification from Ce Soir Staff Training.
+            <div style="padding: 40px 30px;">
+              <h2 style="color: #2C241E; margin: 0 0 24px; font-size: 26px; font-weight: 500; font-family: 'Playfair Display', Georgia, serif; text-align: center;">
+                FoH Test Completed
+              </h2>
+              <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">
+                A team member has completed their knowledge test and requires your review.
+              </p>
+              <div style="background: #ffffff; border-radius: 8px; padding: 24px; margin: 24px 0; border: 1px solid #e8e0d8;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Employee</td>
+                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${displayName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Test Type</td>
+                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${testTypeName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Score</td>
+                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${score}/${totalQuestions}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Percentage</td>
+                    <td style="padding: 12px 0; color: ${percentage >= 70 ? '#22c55e' : '#C06C46'}; font-weight: 700; font-size: 20px; text-align: right; border-bottom: 1px solid #f0ebe6;">${percentage}%</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px;">Status</td>
+                    <td style="padding: 12px 0; font-weight: 700; text-align: right; font-size: 16px;">${passStatus}</td>
+                  </tr>
+                </table>
+              </div>
+              <p style="color: #4a4a4a; line-height: 1.7; margin: 24px 0 32px; font-size: 15px; text-align: center;">
+                Please review this test in the Scoring Dashboard to verify the AI-graded answers and finalize the score.
+              </p>
+              <div style="text-align: center;">
+                <a href="https://cesoirmenulibrary.lovable.app/admin/scoring" style="display: inline-block; background-color: #C06C46; color: #ffffff; text-decoration: none; padding: 16px 48px; border-radius: 4px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                  Review Test
+                </a>
+              </div>
+            </div>
+            <div style="background-color: #2C241E; padding: 24px 30px; text-align: center;">
+              <p style="color: #D99572; font-size: 12px; margin: 0 0 4px; letter-spacing: 0.5px;">
+                Ce Soir Naples · Staff Training Portal
+              </p>
+              <p style="color: #D99572; font-size: 11px; margin: 0; opacity: 0.7;">
+                492 Bayfront Pl, Naples FL 34102 · cesoirnaples.com
               </p>
             </div>
           </div>
-        </div>
+        </body>
+        </html>
       `,
     });
 
