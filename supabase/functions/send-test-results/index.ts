@@ -73,7 +73,7 @@ serve(async (req) => {
     }: SendResultsRequest = await req.json();
 
     // Determine sender - use verified domain if available
-    const senderDomain = Deno.env.get('RESEND_SENDER_DOMAIN') || 'cesoirnaples.com';
+    const senderDomain = Deno.env.get('RESEND_SENDER_DOMAIN') || 'cesoirmenusnaples.com';
     const fromAddress = `Ce Soir Tests <no-reply@${senderDomain}>`;
 
     console.log(`Sending test results to ${employeeEmail} for attempt ${attemptId} from ${fromAddress}`);
