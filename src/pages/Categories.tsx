@@ -36,6 +36,7 @@ const categoryIcons: Record<string, { icon?: string; illustrated?: string; isFoo
   'entrees': { icon: entreesIcon, isFood: true },
   'desserts': { icon: dessertsIcon, isFood: true },
   'sides': { icon: sidesIcon, isFood: true },
+  'sauces': { icon: saucesIcon, isFood: true },
   'wine': { illustrated: wineIllustrated, isFood: false },
   'spirits': { illustrated: spiritsIllustrated, isFood: false },
   'cocktails': { illustrated: cocktailsIllustrated, isFood: false },

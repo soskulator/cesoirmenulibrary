@@ -75,9 +75,10 @@ export const categories: Category[] = [
   { id: 'entrees', name: 'From the Grill', nameFrench: 'Prime Cuts & Roasts', sortOrder: 5, icon: '🔥' },
   { id: 'sides', name: 'Accompaniments', nameFrench: 'Seasonal Sides', sortOrder: 6, icon: '🥔' },
   { id: 'desserts', name: 'Desserts', nameFrench: 'Pastry Selections', sortOrder: 7, icon: '🍰' },
-  { id: 'wine', name: 'Wine', nameFrench: 'Curated Wine Selection', sortOrder: 8, icon: '🍷' },
-  { id: 'spirits', name: 'Spirits', nameFrench: 'Premium Spirits', sortOrder: 9, icon: '🥃' },
-  { id: 'cocktails', name: 'Cocktails', nameFrench: 'Craft Cocktails', sortOrder: 10, icon: '🍸' },
+  { id: 'sauces', name: 'Les Sauces', nameFrench: 'House Sauces & Condiments', sortOrder: 8, icon: '🫗' },
+  { id: 'wine', name: 'Wine', nameFrench: 'Curated Wine Selection', sortOrder: 9, icon: '🍷' },
+  { id: 'spirits', name: 'Spirits', nameFrench: 'Premium Spirits', sortOrder: 10, icon: '🥃' },
+  { id: 'cocktails', name: 'Cocktails', nameFrench: 'Craft Cocktails', sortOrder: 11, icon: '🍸' },
 ];
 
 export const menuItems: MenuItem[] = [
