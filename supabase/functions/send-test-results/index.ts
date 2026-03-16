@@ -91,7 +91,8 @@ serve(async (req) => {
     const passed = percentage >= passingScore;
     const passStatus = passed ? 'PASSED ✅' : 'DID NOT PASS ⚠️';
     const passColor = passed ? '#22c55e' : '#ef4444';
-    const displayName = (employeeName && employeeName !== 'Unknown') ? employeeName : 'Team Member';
+    const displayName = escapeHtml((employeeName && employeeName !== 'Unknown') ? employeeName : 'Team Member');
+    const safeTestName = escapeHtml(testName);
 
     const { error: emailError } = await resend.emails.send({
       from: fromAddress,
