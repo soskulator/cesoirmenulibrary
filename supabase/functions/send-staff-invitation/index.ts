@@ -75,9 +75,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields: email and invitationCode");
     }
 
-    const roleName = ROLE_LABELS[invitedRole] || invitedRole;
-    const inviteLink = `${PUBLISHED_URL}/auth?invitation=${invitationCode}`;
-    const greeting = fullName ? `Hi ${fullName},` : "Hello,";
+    const roleName = ROLE_LABELS[invitedRole] || escapeHtml(invitedRole);
+    const inviteLink = `${PUBLISHED_URL}/auth?invitation=${encodeURIComponent(invitationCode)}`;
+    const greeting = fullName ? `Hi ${escapeHtml(fullName)},` : "Hello,";
 
     console.log(`Sending staff invitation to ${email} for role ${invitedRole} (requested by admin ${callerId})`);
 
