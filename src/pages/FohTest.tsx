@@ -290,7 +290,7 @@ export default function FohTestPage() {
   }, [answeredQuestions, shuffledQuestions.length]);
 
   // Save score when test is complete (full or early submission) and notify lead admins
-  const hasNotifiedRef = React.useRef(false);
+  const hasNotifiedRef = useRef(false);
   useEffect(() => {
     if (showResult && shuffledQuestions.length > 0 && !hasNotifiedRef.current) {
       hasNotifiedRef.current = true;
