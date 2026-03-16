@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { motion, AnimatePresence } from 'framer-motion';
