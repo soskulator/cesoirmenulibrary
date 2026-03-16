@@ -5,6 +5,7 @@ import pastaIcon from '@/assets/categories/pasta-icon.png';
 import entreesIcon from '@/assets/categories/entrees-icon.png';
 import sidesIcon from '@/assets/categories/sides-icon.png';
 import dessertsIcon from '@/assets/categories/desserts-icon.png';
+import saucesIcon from '@/assets/categories/sauces-icon.png';
 
 export const categoryIcons: Record<string, string> = {
   crudo: crudoIcon,
@@ -14,6 +15,7 @@ export const categoryIcons: Record<string, string> = {
   entrees: entreesIcon,
   sides: sidesIcon,
   desserts: dessertsIcon,
+  sauces: saucesIcon,
 };
 
 export const getCategoryIcon = (categoryId: string): string | undefined => {

@@ -20,6 +20,7 @@ import pastaIcon from '@/assets/categories/pasta-icon.png';
 import entreesIcon from '@/assets/categories/entrees-icon.png';
 import sidesIcon from '@/assets/categories/sides-icon.png';
 import dessertsIcon from '@/assets/categories/desserts-icon.png';
+import saucesIcon from '@/assets/categories/sauces-icon.png';
 
 // Illustrated category images for drinks (keep existing)
 import wineIllustrated from '@/assets/categories/wine-illustrated.jpg';
@@ -35,6 +36,7 @@ const categoryIcons: Record<string, { icon?: string; illustrated?: string; isFoo
   'entrees': { icon: entreesIcon, isFood: true },
   'desserts': { icon: dessertsIcon, isFood: true },
   'sides': { icon: sidesIcon, isFood: true },
+  'sauces': { icon: saucesIcon, isFood: true },
   'wine': { illustrated: wineIllustrated, isFood: false },
   'spirits': { illustrated: spiritsIllustrated, isFood: false },
   'cocktails': { illustrated: cocktailsIllustrated, isFood: false },
@@ -251,7 +253,7 @@ export default function CategoriesPage() {
                 </p>
                 <div className="flex flex-wrap items-center gap-3 mt-4">
                   <span className="text-sm text-charcoal/60 tracking-wide">
-                    {items.length} {isSpirits ? 'spirits' : categoryId === 'wine' ? 'wines' : categoryId === 'cocktails' ? 'cocktails' : 'dishes'}
+                    {items.length} {isSpirits ? 'spirits' : categoryId === 'wine' ? 'wines' : categoryId === 'cocktails' ? 'cocktails' : categoryId === 'sauces' ? 'sauces' : 'dishes'}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-charcoal/30" />
                   <Button variant="ghost" size="sm" asChild className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2 transition-all duration-300">
@@ -604,7 +606,7 @@ export default function CategoriesPage() {
                             <span className={`text-[10px] sm:text-xs tracking-wide uppercase ${
                               isDarkCategory ? 'text-white/60' : 'text-charcoal/50'
                             }`}>
-                              {itemCount} {category.id === 'wine' ? 'wines' : category.id === 'cocktails' ? 'cocktails' : category.id === 'spirits' ? 'spirits' : 'items'}
+                              {itemCount} {category.id === 'wine' ? 'wines' : category.id === 'cocktails' ? 'cocktails' : category.id === 'spirits' ? 'spirits' : category.id === 'sauces' ? 'sauces' : 'items'}
                             </span>
                             <ChevronRight className={`w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-all ${
                               isDarkCategory 

@@ -21,6 +21,7 @@ const categoryBackgrounds: Record<string, string> = {
   desserts: 'bg-gradient-to-br from-rose-gold/25 via-copper-light/10 to-cream',
   sides: 'bg-gradient-to-br from-wood/15 via-wood-light/10 to-cream',
   specials: 'bg-gradient-to-br from-gold/20 via-copper/10 to-cream',
+  sauces: 'bg-gradient-to-br from-copper/15 via-gold/10 to-cream',
 };
 
 const categoryAccents: Record<string, string> = {
@@ -29,6 +30,7 @@ const categoryAccents: Record<string, string> = {
   desserts: 'border-rose-gold/30',
   sides: 'border-wood/30',
   specials: 'border-gold/30',
+  sauces: 'border-copper/25',
 };
 
 const SWIPE_THRESHOLD = 50;
