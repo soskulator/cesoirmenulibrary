@@ -142,6 +142,16 @@ export function FlashCard({
               <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-foreground leading-tight">{item.name}</h2>
               <p className="text-copper font-medium text-sm sm:text-base mt-1">{item.shortDescription}</p>
             </div>
+
+            {/* Paired With — Sauces only */}
+            {item.categoryId === 'sauces' && item.shortDescription.includes('—') && (
+              <div className="flex items-center gap-2 bg-copper/10 border border-copper/20 rounded-lg px-3 py-2">
+                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-copper whitespace-nowrap">Paired With</span>
+                <span className="text-sm sm:text-base font-medium text-foreground">
+                  {item.shortDescription.split('—').pop()?.trim()}
+                </span>
+              </div>
+            )}
             
             <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{item.longDescription}</p>
 
