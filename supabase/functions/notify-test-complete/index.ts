@@ -136,7 +136,7 @@ serve(async (req) => {
     const { error: emailError } = await resend.emails.send({
       from: fromAddress,
       to: adminEmails,
-      subject: `[Action Required] ${displayName} completed ${testTypeName} Test`,
+      subject: `[Action Required] ${displayName} completed ${testTypeName}`,
       html: `
         <!DOCTYPE html>
         <html>
