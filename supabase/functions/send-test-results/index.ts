@@ -116,6 +116,7 @@ serve(async (req) => {
               </h2>
               <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">
                 Hi ${displayName}, your manager has reviewed your test. Here are your results:
+
               </p>
               <div style="background: #ffffff; border-radius: 8px; padding: 24px; margin: 24px 0; border: 1px solid #e8e0d8;">
                 <table style="width: 100%; border-collapse: collapse;">
