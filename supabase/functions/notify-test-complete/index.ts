@@ -142,7 +142,9 @@ serve(async (req) => {
     if (configRow?.test_name) {
       testTypeName = configRow.test_name;
     }
-    const displayName = (employeeName && employeeName !== 'Unknown') ? employeeName : employeeEmail;
+    const rawDisplayName = (employeeName && employeeName !== 'Unknown') ? employeeName : employeeEmail;
+    const displayName = escapeHtml(rawDisplayName);
+    const safeTestTypeName = escapeHtml(testTypeName);
     const passStatus = percentage >= 70 ? '✅ PASSED' : '⚠️ Needs Review';
 
     const senderDomain = Deno.env.get('RESEND_SENDER_DOMAIN') || 'cesoirmenusnaples.com';
@@ -151,7 +153,7 @@ serve(async (req) => {
     const { error: emailError } = await resend.emails.send({
       from: fromAddress,
       to: adminEmails,
-      subject: `[Action Required] ${displayName} completed ${testTypeName}`,
+      subject: `[Action Required] ${rawDisplayName} completed ${testTypeName}`,
       html: `
         <!DOCTYPE html>
         <html>
