@@ -179,7 +179,7 @@ serve(async (req) => {
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Test Type</td>
-                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${testTypeName}</td>
+                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${safeTestTypeName}</td>
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Score</td>

@@ -122,7 +122,7 @@ serve(async (req) => {
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Test</td>
-                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${testName}</td>
+                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${safeTestName}</td>
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Score</td>

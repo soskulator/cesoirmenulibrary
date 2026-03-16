@@ -144,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
                   If the button doesn't work, copy and paste this link into your browser:
                 </p>
                 <p style="margin: 8px 0 0; text-align: center;">
-                  <a href="${ctaLink}" style="color: #C06C46; font-size: 13px; word-break: break-all;">${ctaLink}</a>
+                  <a href="${escapeHtml(ctaLink)}" style="color: #C06C46; font-size: 13px; word-break: break-all;">${escapeHtml(ctaLink)}</a>
                 </p>
               </div>
               

@@ -65,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const roleName = role === 'lead_admin' ? 'Lead Admin' : role === 'admin' ? 'Admin' : 'Employee';
-    const inviterText = invitedByName ? ` by ${invitedByName}` : '';
+    const inviterText = invitedByName ? ` by ${escapeHtml(invitedByName)}` : '';
 
     console.log(`Sending invitation email to ${email} for role ${role} (requested by admin ${userId})`);
 

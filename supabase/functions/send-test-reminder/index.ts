@@ -65,9 +65,9 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Use full_name if provided, fall back to "there" if not set or "Unknown"
-    const displayName = (fullName && fullName !== 'Unknown') ? fullName : null;
+    const displayName = (fullName && fullName !== 'Unknown') ? escapeHtml(fullName) : null;
     const greeting = displayName ? `Hi ${displayName},` : "Hi there,";
-    const testList = missingTests.map(t => `<li style="margin-bottom: 8px; color: #4a4a4a;">${t}</li>`).join("");
+    const testList = missingTests.map(t => `<li style="margin-bottom: 8px; color: #4a4a4a;">${escapeHtml(t)}</li>`).join("");
 
     console.log(`Sending test reminder to ${email} for tests: ${missingTests.join(", ")} (requested by admin ${callerId})`);
 

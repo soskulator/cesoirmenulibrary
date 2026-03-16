@@ -109,9 +109,9 @@ const handler = async (req: Request): Promise<Response> => {
                 </h2>
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">${greeting}</p>
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">
-                  You have been invited by <strong style="color: #C06C46;">${inviterName}</strong> to join the 
-                  <strong style="color: #C06C46;">Ce Soir</strong> staff training portal as 
-                  <strong style="color: #C06C46;">${roleName}</strong>.
+                  You have been invited by <strong style="color: #C06C46;">${escapeHtml(inviterName)}</strong> to join the 
+                   <strong style="color: #C06C46;">Ce Soir</strong> staff training portal as 
+                   <strong style="color: #C06C46;">${roleName}</strong>.
                 </p>
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 32px; font-size: 16px;">
                   Access our comprehensive menu library, training materials, and quizzes to master the Ce Soir dining experience.
