@@ -66,15 +66,21 @@ serve(async (req) => {
 
     const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
-    const { 
-      attemptId, 
-      employeeName, 
-      employeeEmail, 
-      testType, 
-      score, 
-      totalQuestions, 
-      percentage 
-    }: NotifyRequest = await req.json();
+    const body: NotifyRequest = await req.json();
+    const { attemptId, testType } = body;
+
+    // Validate numeric fields
+    const score = Number(body.score);
+    const totalQuestions = Number(body.totalQuestions);
+    const percentage = Number(body.percentage);
+    if (!attemptId || !testType || isNaN(score) || isNaN(totalQuestions) || isNaN(percentage)) {
+      return new Response(JSON.stringify({ error: 'Invalid input' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // Fetch the caller's actual profile name from DB instead of trusting request body
+    const { data: callerProfile } = await supabaseAdmin.from('profiles').select('full_name, email').eq('id', userId).maybeSingle();
+    const employeeName = callerProfile?.full_name || body.employeeName || null;
+    const employeeEmail = callerProfile?.email || body.employeeEmail || '';
 
     console.log(`Notifying lead admins about test completion: ${employeeName} (${testType})`);
 
