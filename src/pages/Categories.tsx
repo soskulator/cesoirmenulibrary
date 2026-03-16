@@ -20,6 +20,7 @@ import pastaIcon from '@/assets/categories/pasta-icon.png';
 import entreesIcon from '@/assets/categories/entrees-icon.png';
 import sidesIcon from '@/assets/categories/sides-icon.png';
 import dessertsIcon from '@/assets/categories/desserts-icon.png';
+import saucesIcon from '@/assets/categories/sauces-icon.png';
 
 // Illustrated category images for drinks (keep existing)
 import wineIllustrated from '@/assets/categories/wine-illustrated.jpg';
