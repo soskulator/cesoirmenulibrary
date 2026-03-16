@@ -802,6 +802,12 @@ export default function FohTestPage() {
                         placeholder="Type your answer..."
                         value={shortAnswer}
                         onChange={(e) => setShortAnswer(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && shortAnswer.trim().length >= 2 && !isEvaluating && !evaluationResult) {
+                            e.preventDefault();
+                            submitShortAnswer();
+                          }
+                        }}
                         className="h-12"
                         disabled={isEvaluating || evaluationResult !== null}
                       />
