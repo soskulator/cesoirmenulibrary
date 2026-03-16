@@ -290,8 +290,10 @@ export default function FohTestPage() {
   }, [answeredQuestions, shuffledQuestions.length]);
 
   // Save score when test is complete (full or early submission) and notify lead admins
+  const hasNotifiedRef = React.useRef(false);
   useEffect(() => {
-    if (showResult && shuffledQuestions.length > 0) {
+    if (showResult && shuffledQuestions.length > 0 && !hasNotifiedRef.current) {
+      hasNotifiedRef.current = true;
       const quizType = selectedTestType ?? 'foh-service';
       saveQuizScore(quizType, score.correct, score.total);
 
@@ -339,7 +341,7 @@ export default function FohTestPage() {
         updateAndNotify();
       }
     }
-  }, [showResult, shuffledQuestions.length, score.correct, score.total, score.percentage, saveQuizScore, attemptId, user, selectedTestType]);
+  }, [showResult]);
 
   const getTimeSpent = () => {
     if (!startTime || !endTime) return '0 min';
