@@ -7,6 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
+function escapeHtml(unsafe: string): string {
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface SendResultsRequest {
   attemptId: string;
   employeeEmail: string;
@@ -82,12 +91,13 @@ serve(async (req) => {
     const passed = percentage >= passingScore;
     const passStatus = passed ? 'PASSED ✅' : 'DID NOT PASS ⚠️';
     const passColor = passed ? '#22c55e' : '#ef4444';
-    const displayName = (employeeName && employeeName !== 'Unknown') ? employeeName : 'Team Member';
+    const displayName = escapeHtml((employeeName && employeeName !== 'Unknown') ? employeeName : 'Team Member');
+    const safeTestName = escapeHtml(testName);
 
     const { error: emailError } = await resend.emails.send({
       from: fromAddress,
       to: [employeeEmail],
-      subject: `Your ${testName} Results — ${passStatus}`,
+      subject: `Your ${testName} Results — ${passStatus}`,  // subject is plain text, no HTML escaping needed
       html: `
         <!DOCTYPE html>
         <html>
@@ -106,12 +116,13 @@ serve(async (req) => {
               </h2>
               <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">
                 Hi ${displayName}, your manager has reviewed your test. Here are your results:
+
               </p>
               <div style="background: #ffffff; border-radius: 8px; padding: 24px; margin: 24px 0; border: 1px solid #e8e0d8;">
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Test</td>
-                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${testName}</td>
+                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${safeTestName}</td>
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Score</td>

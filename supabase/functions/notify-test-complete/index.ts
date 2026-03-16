@@ -7,6 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
+function escapeHtml(unsafe: string): string {
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface NotifyRequest {
   attemptId: string;
   employeeName: string;
@@ -57,15 +66,21 @@ serve(async (req) => {
 
     const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
-    const { 
-      attemptId, 
-      employeeName, 
-      employeeEmail, 
-      testType, 
-      score, 
-      totalQuestions, 
-      percentage 
-    }: NotifyRequest = await req.json();
+    const body: NotifyRequest = await req.json();
+    const { attemptId, testType } = body;
+
+    // Validate numeric fields
+    const score = Number(body.score);
+    const totalQuestions = Number(body.totalQuestions);
+    const percentage = Number(body.percentage);
+    if (!attemptId || !testType || isNaN(score) || isNaN(totalQuestions) || isNaN(percentage)) {
+      return new Response(JSON.stringify({ error: 'Invalid input' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // Fetch the caller's actual profile name from DB instead of trusting request body
+    const { data: callerProfile } = await supabaseAdmin.from('profiles').select('full_name, email').eq('id', userId).maybeSingle();
+    const employeeName = callerProfile?.full_name || body.employeeName || null;
+    const employeeEmail = callerProfile?.email || body.employeeEmail || '';
 
     console.log(`Notifying lead admins about test completion: ${employeeName} (${testType})`);
 
@@ -127,7 +142,9 @@ serve(async (req) => {
     if (configRow?.test_name) {
       testTypeName = configRow.test_name;
     }
-    const displayName = (employeeName && employeeName !== 'Unknown') ? employeeName : employeeEmail;
+    const rawDisplayName = (employeeName && employeeName !== 'Unknown') ? employeeName : employeeEmail;
+    const displayName = escapeHtml(rawDisplayName);
+    const safeTestTypeName = escapeHtml(testTypeName);
     const passStatus = percentage >= 70 ? '✅ PASSED' : '⚠️ Needs Review';
 
     const senderDomain = Deno.env.get('RESEND_SENDER_DOMAIN') || 'cesoirmenusnaples.com';
@@ -136,7 +153,7 @@ serve(async (req) => {
     const { error: emailError } = await resend.emails.send({
       from: fromAddress,
       to: adminEmails,
-      subject: `[Action Required] ${displayName} completed ${testTypeName}`,
+      subject: `[Action Required] ${rawDisplayName} completed ${testTypeName}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -164,7 +181,7 @@ serve(async (req) => {
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Test Type</td>
-                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${testTypeName}</td>
+                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${safeTestTypeName}</td>
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Score</td>

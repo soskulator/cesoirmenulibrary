@@ -9,6 +9,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function escapeHtml(unsafe: string): string {
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface DesignUpdateEmailRequest {
   email: string;
   recipientName: string;
@@ -111,21 +120,21 @@ const handler = async (req: Request): Promise<Response> => {
                 </p>
                 
                 <h2 style="color: #2C241E; margin: 0 0 24px; font-size: 26px; font-weight: 500; font-family: 'Playfair Display', Georgia, serif; text-align: center;">
-                  ${updateTitle}
+                  ${escapeHtml(updateTitle)}
                 </h2>
                 
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px; text-align: center;">
-                  Hi <strong style="color: #C06C46;">${recipientName}</strong>,
+                  Hi <strong style="color: #C06C46;">${escapeHtml(recipientName)}</strong>,
                 </p>
                 
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 32px; font-size: 16px; text-align: center;">
-                  ${updateDescription}
+                  ${escapeHtml(updateDescription)}
                 </p>
                 
                 <!-- CTA Button -->
                 <div style="text-align: center; margin: 32px 0;">
-                  <a href="${ctaLink}" style="display: inline-block; background-color: #C06C46; color: #ffffff; text-decoration: none; padding: 16px 48px; border-radius: 4px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                    ${ctaText}
+                  <a href="${escapeHtml(ctaLink)}" style="display: inline-block; background-color: #C06C46; color: #ffffff; text-decoration: none; padding: 16px 48px; border-radius: 4px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                    ${escapeHtml(ctaText)}
                   </a>
                 </div>
                 
@@ -135,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
                   If the button doesn't work, copy and paste this link into your browser:
                 </p>
                 <p style="margin: 8px 0 0; text-align: center;">
-                  <a href="${ctaLink}" style="color: #C06C46; font-size: 13px; word-break: break-all;">${ctaLink}</a>
+                  <a href="${escapeHtml(ctaLink)}" style="color: #C06C46; font-size: 13px; word-break: break-all;">${escapeHtml(ctaLink)}</a>
                 </p>
               </div>
               

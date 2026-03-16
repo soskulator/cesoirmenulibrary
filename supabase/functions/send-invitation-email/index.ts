@@ -9,6 +9,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function escapeHtml(unsafe: string): string {
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface InvitationEmailRequest {
   email: string;
   inviteLink: string;
@@ -56,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const roleName = role === 'lead_admin' ? 'Lead Admin' : role === 'admin' ? 'Admin' : 'Employee';
-    const inviterText = invitedByName ? ` by ${invitedByName}` : '';
+    const inviterText = invitedByName ? ` by ${escapeHtml(invitedByName)}` : '';
 
     console.log(`Sending invitation email to ${email} for role ${role} (requested by admin ${userId})`);
 

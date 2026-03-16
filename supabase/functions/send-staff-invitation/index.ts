@@ -10,6 +10,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function escapeHtml(unsafe: string): string {
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface InvitationRequest {
   email: string;
   fullName: string | null;
@@ -66,9 +75,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields: email and invitationCode");
     }
 
-    const roleName = ROLE_LABELS[invitedRole] || invitedRole;
-    const inviteLink = `${PUBLISHED_URL}/auth?invitation=${invitationCode}`;
-    const greeting = fullName ? `Hi ${fullName},` : "Hello,";
+    const roleName = ROLE_LABELS[invitedRole] || escapeHtml(invitedRole);
+    const inviteLink = `${PUBLISHED_URL}/auth?invitation=${encodeURIComponent(invitationCode)}`;
+    const greeting = fullName ? `Hi ${escapeHtml(fullName)},` : "Hello,";
 
     console.log(`Sending staff invitation to ${email} for role ${invitedRole} (requested by admin ${callerId})`);
 
@@ -100,9 +109,9 @@ const handler = async (req: Request): Promise<Response> => {
                 </h2>
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">${greeting}</p>
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">
-                  You have been invited by <strong style="color: #C06C46;">${inviterName}</strong> to join the 
-                  <strong style="color: #C06C46;">Ce Soir</strong> staff training portal as 
-                  <strong style="color: #C06C46;">${roleName}</strong>.
+                  You have been invited by <strong style="color: #C06C46;">${escapeHtml(inviterName)}</strong> to join the 
+                   <strong style="color: #C06C46;">Ce Soir</strong> staff training portal as 
+                   <strong style="color: #C06C46;">${roleName}</strong>.
                 </p>
                 <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 32px; font-size: 16px;">
                   Access our comprehensive menu library, training materials, and quizzes to master the Ce Soir dining experience.
