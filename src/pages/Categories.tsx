@@ -606,7 +606,7 @@ export default function CategoriesPage() {
                             <span className={`text-[10px] sm:text-xs tracking-wide uppercase ${
                               isDarkCategory ? 'text-white/60' : 'text-charcoal/50'
                             }`}>
-                              {itemCount} {category.id === 'wine' ? 'wines' : category.id === 'cocktails' ? 'cocktails' : category.id === 'spirits' ? 'spirits' : 'items'}
+                              {itemCount} {category.id === 'wine' ? 'wines' : category.id === 'cocktails' ? 'cocktails' : category.id === 'spirits' ? 'spirits' : category.id === 'sauces' ? 'sauces' : 'items'}
                             </span>
                             <ChevronRight className={`w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-all ${
                               isDarkCategory 
