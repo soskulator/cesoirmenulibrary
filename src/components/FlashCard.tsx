@@ -150,7 +150,7 @@ export function FlashCard({
             {/* Paired With — Sauces only */}
             {item.categoryId === 'sauces' && item.shortDescription.includes('—') && (
               <div className="flex items-center gap-2 bg-copper/10 border border-copper/20 rounded-lg px-3 py-2">
-                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-copper whitespace-nowrap">Paired With</span>
+                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-copper whitespace-nowrap">Served With</span>
                 <span className="text-sm sm:text-base font-medium text-foreground">
                   {item.shortDescription.split('—').pop()?.trim()}
                 </span>
