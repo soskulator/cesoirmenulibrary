@@ -4900,7 +4900,7 @@ export const menuItems: MenuItem[] = [
     id: 'sauce-6',
     categoryId: 'sauces',
     name: 'Pangrattato',
-    shortDescription: 'Italian seasoned breadcrumb with anchovy, capers, herbs',
+    shortDescription: 'Italian seasoned breadcrumb with anchovy, capers, herbs — Pasta, Braised Plates',
     longDescription: 'A savory, crunchy Italian-style seasoned breadcrumb made from toasted baguette, garlic, shallots, capers, anchovy, fresh herbs, lemon peel, and chili flake. Dried and pulsed to a coarse crumb that adds texture, saltiness, and aromatic depth to dishes — especially pasta and braised plates.',
     ingredientsText: 'Baguette, garlic, shallots, capers, anchovy, fresh herbs, lemon peel, chili flake',
     prepNotes: 'Used as a finishing garnish — not served on its own. Anchovy and caper bring savory depth, not fishiness.',
