@@ -140,7 +140,11 @@ export function FlashCard({
             {/* Title */}
             <div>
               <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-foreground leading-tight">{item.name}</h2>
-              <p className="text-copper font-medium text-sm sm:text-base mt-1">{item.shortDescription}</p>
+              <p className="text-copper font-medium text-sm sm:text-base mt-1">
+                {item.categoryId === 'sauces' && item.shortDescription.includes('—')
+                  ? item.shortDescription.split('—')[0].trim()
+                  : item.shortDescription}
+              </p>
             </div>
 
             {/* Paired With — Sauces only */}
