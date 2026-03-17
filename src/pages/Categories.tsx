@@ -230,8 +230,9 @@ export default function CategoriesPage() {
         </Layout>;
     }
 
-    // Special handling for spirits category with subcategories
+    // Special handling for spirits and sauces categories with subcategories
     const isSpirits = categoryId === 'spirits';
+    const isSauces = categoryId === 'sauces';
 
     const toggleSubcategory = (key: string) => {
       setExpandedSubcategory(expandedSubcategory === key ? null : key);
