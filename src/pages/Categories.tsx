@@ -458,6 +458,169 @@ export default function CategoriesPage() {
                 </AnimatePresence>
               </div>
             </div>
+          ) : isSauces ? (
+            <div className="px-6 pb-24">
+              <div className="max-w-5xl mx-auto">
+                {/* Sauce Subcategory Buttons */}
+                <motion.div 
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8"
+                  initial="hidden"
+                  animate="show"
+                  variants={pageTransition}
+                >
+                  {sauceSubcategoryOrder.map((subcatKey, index) => {
+                    const subcat = sauceSubcategories[subcatKey];
+                    const subcatItems = subcat.ids
+                      .map((id) => items.find((i) => i.id === id))
+                      .filter(Boolean);
+                    
+                    if (subcatItems.length === 0) return null;
+                    
+                    const isExpanded = expandedSubcategory === subcatKey;
+                    
+                    return (
+                      <motion.button
+                        key={subcatKey}
+                        custom={index}
+                        variants={cascadeButton}
+                        onClick={() => toggleSubcategory(subcatKey)}
+                        className={`
+                          relative overflow-hidden rounded-2xl p-4 text-left
+                          border transition-all duration-500 ease-out
+                          ${isExpanded 
+                            ? 'bg-copper text-white border-copper shadow-lg shadow-copper/20 scale-[1.02]' 
+                            : 'bg-white/80 backdrop-blur-sm text-charcoal border-charcoal/10 hover:border-copper/30 hover:bg-white hover:shadow-md'
+                          }
+                        `}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <h3 className={`font-serif font-semibold text-base md:text-lg truncate transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal'}`}>
+                              {subcat.title}
+                            </h3>
+                            <p className={`text-xs md:text-sm font-serif italic mt-0.5 truncate transition-colors duration-300 ${isExpanded ? 'text-white/80' : 'text-copper'}`}>
+                              {subcat.subtitle} • {subcatItems.length} sauces
+                            </p>
+                          </div>
+                          <motion.div
+                            animate={{ rotate: isExpanded ? 180 : 0 }}
+                            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                          >
+                            <ChevronDown className={`w-5 h-5 shrink-0 ml-2 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal/40'}`} />
+                          </motion.div>
+                        </div>
+                        
+                        {isExpanded && (
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-copper-light/20 to-transparent pointer-events-none"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </motion.div>
+
+                {/* Expanded Sauce Subcategory Items */}
+                <AnimatePresence mode="wait">
+                  {expandedSubcategory && (
+                    <motion.section
+                      key={expandedSubcategory}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      className="overflow-hidden"
+                    >
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -10, opacity: 0 }}
+                        transition={{ duration: 0.35, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        className="pb-8"
+                      >
+                        <div className="mb-6 pb-3 border-b border-charcoal/10">
+                          <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
+                            {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].title}
+                          </h2>
+                          <p className="text-copper font-serif italic text-base mt-1">
+                            {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].subtitle}
+                          </p>
+                        </div>
+
+                        <div className="space-y-2 md:space-y-3">
+                          {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].ids
+                            .map((id) => items.find((i) => i.id === id))
+                            .filter(Boolean)
+                            .map((menuItem, idx) => {
+                              if (!menuItem) return null;
+                              const dishImage = getDishImage(menuItem.id, menuItem.imageUrl);
+                              const pairedDish = menuItem.shortDescription.includes('—') 
+                                ? menuItem.shortDescription.split('—').pop()?.trim() 
+                                : null;
+                              return (
+                                <motion.div 
+                                  key={menuItem.id}
+                                  custom={idx}
+                                  variants={itemReveal}
+                                  initial="hidden"
+                                  animate="show"
+                                  exit="exit"
+                                >
+                                  <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
+                                    <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-300 ease-out active:scale-[0.99]">
+                                      <div className="w-12 h-14 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
+                                        {dishImage ? (
+                                          <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        ) : (
+                                          <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl">🫗</div>
+                                        )}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-300 truncate">
+                                          {menuItem.name}
+                                        </h3>
+                                        {pairedDish && (
+                                          <p className="text-xs md:text-sm text-copper font-medium mt-0.5 line-clamp-1">
+                                            Served with: {pairedDish}
+                                          </p>
+                                        )}
+                                        {menuItem.allergens.length > 0 && (
+                                          <div className="mt-1">
+                                            <AllergenList allergens={menuItem.allergens} size="sm" showIcons={false} />
+                                          </div>
+                                        )}
+                                      </div>
+                                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                                    </div>
+                                  </Link>
+                                </motion.div>
+                              );
+                            })}
+                        </div>
+                      </motion.div>
+                    </motion.section>
+                  )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                  {!expandedSubcategory && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3, delay: 0.3 }}
+                      className="text-center text-charcoal/40 font-serif italic mt-4"
+                    >
+                      Tap a category to explore sauces
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
           ) : (
             /* Regular Menu Items - Clean List */
             <motion.div variants={container} initial="hidden" animate="show" className="px-6 pb-24">
