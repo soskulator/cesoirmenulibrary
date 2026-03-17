@@ -5147,7 +5147,7 @@ export const menuItems: MenuItem[] = [
     id: 'sauce-19',
     categoryId: 'sauces',
     name: 'Steak Seasoning',
-    shortDescription: 'House blend — smoked paprika, Espelette, porcini, sumac',
+    shortDescription: 'House blend — smoked paprika, Espelette, porcini, sumac — Steak',
     longDescription: 'A house-made steak seasoning blend featuring flaky salt, brown sugar, smoked paprika, Espelette pepper, black peppercorn, coriander seed, fennel seed, garlic powder, onion powder, dried thyme, rosemary, oregano, dried porcini powder, ground mustard seed, and sumac — a tangy Middle Eastern spice with a lemon-like flavor.',
     ingredientsText: 'Flaky salt, brown sugar, smoked paprika, Espelette pepper, black peppercorn, coriander seed, fennel seed, garlic powder, onion powder, thyme, rosemary, oregano, porcini powder, mustard seed, sumac',
     prepNotes: 'Sumac is a deep red spice from dried berries of the Rhus coriaria shrub, prized for its tangy, lemon-like flavor.',
