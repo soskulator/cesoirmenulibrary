@@ -5128,7 +5128,7 @@ export const menuItems: MenuItem[] = [
     id: 'sauce-18',
     categoryId: 'sauces',
     name: 'Sauce Bordelaise',
-    shortDescription: 'Bordeaux wine reduction with bone marrow — Steaks',
+    shortDescription: 'Bordeaux wine reduction with bone marrow — Steak',
     longDescription: 'A deep, wine-forward classic from Bordeaux. Shallots sweated in butter, then reduced with Bordeaux wine, thyme, bay leaf, parsley stems, and cracked peppercorn until concentrated and aromatic. Blended with rich oxtail demi-glace and simmered to a silky, glossy consistency. Just before serving, blanched bone marrow is folded in for buttery, luxurious texture, finished with cold butter for shine.',
     ingredientsText: 'Shallots, butter, Bordeaux wine, thyme, bay leaf, parsley, peppercorn, oxtail demi-glace, bone marrow',
     prepNotes: 'Bone marrow adds silkiness without heaviness. A refined, traditional French sauce.',
