@@ -5109,7 +5109,7 @@ export const menuItems: MenuItem[] = [
     id: 'sauce-17',
     categoryId: 'sauces',
     name: 'Béarnaise',
-    shortDescription: 'Classic tarragon–chervil hollandaise — Steaks, Lobster',
+    shortDescription: 'Classic tarragon–chervil hollandaise — Steak',
     longDescription: 'A classic French tarragon–chervil hollandaise derivative, airy and silky in texture. Egg yolks whipped over a bain-marie with a white wine and vinegar reduction aromatized with shallot, tarragon stems, thyme, bay leaf, and peppercorn, then emulsified with warm clarified butter. Finished with fresh tarragon and chervil — herbaceous, buttery, and gently bright.',
     ingredientsText: 'Egg yolks, clarified butter, white wine, white wine vinegar, shallot, tarragon, chervil, thyme, bay leaf, peppercorn',
     prepNotes: 'Not heavy — light, warm, and mousse-like. A luxury tableside classic done to fine-dining standard.',
