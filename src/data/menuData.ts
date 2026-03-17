@@ -5090,7 +5090,7 @@ export const menuItems: MenuItem[] = [
     id: 'sauce-16',
     categoryId: 'sauces',
     name: 'Au Poivre Sauce',
-    shortDescription: 'Green peppercorn and cognac cream sauce — Steaks',
+    shortDescription: 'Green peppercorn and cognac cream sauce — Steak',
     longDescription: 'A classic French green peppercorn and cognac cream sauce. Shallots sweated in butter, deglazed with Cognac and white wine, reduced and enriched with veal demi-glace and cream. Finished with lightly crushed green peppercorns for aromatic warmth and Dijon to brighten the finish. Silky, savory, and pepper-fragrant — rich but beautifully balanced.',
     ingredientsText: 'Shallots, butter, Cognac, white wine, veal demi-glace, cream, green peppercorns, Dijon mustard',
     prepNotes: 'Classic steak sauce — silky texture, aromatic warmth from peppercorns.',
