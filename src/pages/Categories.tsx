@@ -106,6 +106,27 @@ const spiritSubcategories = {
   },
 };
 
+// Sauce subcategories with their IDs
+const sauceSubcategories = {
+  oyster: {
+    title: 'Oyster Accompaniments',
+    subtitle: 'Les Huîtres',
+    ids: ['sauce-9', 'sauce-10', 'sauce-11'],
+  },
+  steak: {
+    title: 'Steak Sauces',
+    subtitle: 'Pour les Viandes',
+    ids: ['sauce-16', 'sauce-17', 'sauce-18', 'sauce-19'],
+  },
+  house: {
+    title: 'House Sauces & Condiments',
+    subtitle: 'Condiments de la Maison',
+    ids: ['sauce-1', 'sauce-2', 'sauce-3', 'sauce-4', 'sauce-5', 'sauce-6', 'sauce-7', 'sauce-8', 'sauce-12', 'sauce-13', 'sauce-14', 'sauce-15'],
+  },
+};
+
+const sauceSubcategoryOrder = ['oyster', 'steak', 'house'] as const;
+
 const subcategoryOrder = ['vodka', 'gin', 'rum', 'tequila', 'mezcal', 'scotch', 'bourbon', 'rye', 'cordials'] as const;
 
 // Smoother animation variants for mobile
