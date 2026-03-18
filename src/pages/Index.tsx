@@ -155,11 +155,11 @@ export default function Index() {
           duration: 0.9,
           delay: 0.2
         }} className="mb-0 mt-4">
-            <img src={logoImage} alt="Ce Soir" className="h-64 md:h-80 lg:h-96 w-auto mx-auto drop-shadow-lg" width={530} height={466} decoding="async" />
+            <img src={logoImage} alt="Ce Soir" className="h-72 md:h-[22rem] lg:h-[26rem] w-auto mx-auto drop-shadow-lg" width={530} height={466} decoding="async" />
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-1.5 my-[9px]" initial={{
+          <motion.p className="text-charcoal text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-normal mb-1.5 -mt-8 md:-mt-12 lg:-mt-16" initial={{
           opacity: 0,
           y: 16
         }} animate={{
