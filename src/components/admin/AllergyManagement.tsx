@@ -220,7 +220,7 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
         </Select>
       </div>
 
-      <ScrollArea className="max-h-[600px]">
+      <ScrollArea className="h-[600px]">
         <div className="space-y-4 pr-2">
           {itemsWithAllergens.map(item => (
             <ModificationCard
