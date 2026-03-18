@@ -74,7 +74,7 @@ function AllergenMatrix({ categories }: { categories: DbCategory[] }) {
   const [search, setSearch] = useState('');
 
   const foodItems = useMemo(() => {
-    let filtered = items.filter(i => FOOD_CATEGORIES.includes(i.categoryId) && i.isPublished);
+    let filtered = items.filter(i => !BEVERAGE_CATEGORIES.includes(i.categoryId) && i.isPublished);
     if (categoryFilter !== 'all') filtered = filtered.filter(i => i.categoryId === categoryFilter);
     if (search) {
       const q = search.toLowerCase();
