@@ -190,7 +190,7 @@ export default function DailyFocusPage() {
         >
           {focusItems.map((menuItem, index) => {
             const category = getCategoryById(menuItem!.categoryId);
-            const dishImage = getDishImage(menuItem!.id);
+            const dishImage = getDishImage(menuItem!.id, dbImageUrls[menuItem!.id]);
             return (
               <motion.div key={menuItem!.id} variants={item}>
                 <Card variant="elevated" className="overflow-hidden">
