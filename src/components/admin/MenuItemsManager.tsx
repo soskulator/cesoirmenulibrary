@@ -318,6 +318,7 @@ export function MenuItemsManager({
                   Showing {filtered.length} of {items.length} items
                 </p>
               </ScrollArea>
+              </div>
             )}
           </CardContent>
         </Card>
