@@ -222,24 +222,25 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
         </Select>
       </div>
 
-      <ScrollArea className="h-[600px]">
-        <div className="space-y-4 pr-2">
-          {itemsWithAllergens.map(item => (
-            <ModificationCard
-              key={item.id}
-              itemId={item.id}
-              itemName={item.name}
-              itemAllergens={item.allergens}
-              getModification={getModification}
-              upsertModification={upsertModification}
-            />
-          ))}
-          {itemsWithAllergens.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">No items with allergens found</div>
-          )}
-        </div>
-      </ScrollArea>
-    </div>
+      <div className="h-[600px]">
+        <ScrollArea className="h-full">
+          <div className="space-y-4 pr-2">
+            {itemsWithAllergens.map(item => (
+              <ModificationCard
+                key={item.id}
+                itemId={item.id}
+                itemName={item.name}
+                itemAllergens={item.allergens}
+                getModification={getModification}
+                upsertModification={upsertModification}
+              />
+            ))}
+            {itemsWithAllergens.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">No items with allergens found</div>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
   );
 }
 
