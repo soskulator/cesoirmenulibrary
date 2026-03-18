@@ -123,7 +123,8 @@ function AllergenMatrix({ categories }: { categories: DbCategory[] }) {
         </Select>
       </div>
 
-      <ScrollArea className="h-[500px]">
+      <div className="max-h-[500px]">
+      <ScrollArea className="h-full max-h-[500px]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
