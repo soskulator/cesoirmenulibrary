@@ -306,13 +306,13 @@ export default function DailyFocusPage() {
         </motion.div>
 
         {/* Cocktail of the Day Section */}
-        {(savedCocktail || cocktailOfTheDay) && (
+        {activeCocktail && (
           <div className="mt-8 sm:mt-10 md:mt-12">
             <div className="flex items-center gap-3 mb-4 sm:mb-6">
               <Wine className="w-5 h-5 sm:w-6 sm:h-6 text-copper" />
               <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-bold">Cocktail of the Day</h2>
             </div>
-            <DailyCocktailCard cocktail={(savedCocktail || cocktailOfTheDay)!} dateString={dateString} />
+            <DailyCocktailCard cocktail={activeCocktail} dateString={dateString} dbImageUrl={dbImageUrls[activeCocktail.id]} />
           </div>
         )}
 
