@@ -560,7 +560,7 @@ export default function LeadAdminDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <ScrollArea className="h-[260px] sm:h-[280px]">
+                  <ScrollArea className="h-[400px] sm:h-[440px]">
                     {categoriesLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
