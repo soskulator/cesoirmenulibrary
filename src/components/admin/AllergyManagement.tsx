@@ -17,7 +17,7 @@ import { AlertTriangle, Search, Grid3x3, BookOpen, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const FOOD_CATEGORIES = ['appetizers', 'entrees', 'desserts', 'sides', 'specials', 'crudo', 'fruits-de-mer', 'pasta'];
+const BEVERAGE_CATEGORIES = ['wine', 'spirits', 'cocktails'];
 
 interface AllergyManagementProps {
   categories: DbCategory[];
