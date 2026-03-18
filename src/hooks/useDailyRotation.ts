@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { menuItems, MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 
 /**
  * Generates a deterministic "random" selection based on a seed.
