@@ -17,7 +17,7 @@ import { AlertTriangle, Search, Grid3x3, BookOpen, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const FOOD_CATEGORIES = ['appetizers', 'entrees', 'desserts', 'sides', 'specials', 'crudo', 'fruits-de-mer', 'pasta'];
+const BEVERAGE_CATEGORIES = ['wine', 'spirits', 'cocktails'];
 
 interface AllergyManagementProps {
   categories: DbCategory[];
@@ -74,7 +74,7 @@ function AllergenMatrix({ categories }: { categories: DbCategory[] }) {
   const [search, setSearch] = useState('');
 
   const foodItems = useMemo(() => {
-    let filtered = items.filter(i => FOOD_CATEGORIES.includes(i.categoryId) && i.isPublished);
+    let filtered = items.filter(i => !BEVERAGE_CATEGORIES.includes(i.categoryId) && i.isPublished);
     if (categoryFilter !== 'all') filtered = filtered.filter(i => i.categoryId === categoryFilter);
     if (search) {
       const q = search.toLowerCase();
@@ -84,7 +84,7 @@ function AllergenMatrix({ categories }: { categories: DbCategory[] }) {
   }, [items, categoryFilter, search]);
 
   const foodCats = useMemo(
-    () => categories.filter(c => FOOD_CATEGORIES.includes(c.id)),
+    () => categories.filter(c => !BEVERAGE_CATEGORIES.includes(c.id)),
     [categories]
   );
 
@@ -179,7 +179,7 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
 
   const itemsWithAllergens = useMemo(() => {
     let filtered = items.filter(
-      i => FOOD_CATEGORIES.includes(i.categoryId) && i.isPublished && i.allergens.length > 0
+      i => !BEVERAGE_CATEGORIES.includes(i.categoryId) && i.isPublished && i.allergens.length > 0
     );
     if (categoryFilter !== 'all') filtered = filtered.filter(i => i.categoryId === categoryFilter);
     if (search) {
@@ -190,7 +190,7 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
   }, [items, categoryFilter, search]);
 
   const foodCats = useMemo(
-    () => categories.filter(c => FOOD_CATEGORIES.includes(c.id)),
+    () => categories.filter(c => !BEVERAGE_CATEGORIES.includes(c.id)),
     [categories]
   );
 

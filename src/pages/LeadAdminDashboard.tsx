@@ -430,7 +430,7 @@ export default function LeadAdminDashboard() {
                     />
                   </div>
                   
-                  <ScrollArea className="h-[320px]">
+                  <ScrollArea className="h-[440px]">
                     {menuLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
@@ -516,7 +516,7 @@ export default function LeadAdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <Card className="bg-card shadow-card h-full overflow-hidden">
+              <Card className="bg-card shadow-card h-full">
                 <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
                   <div className="flex items-center justify-between gap-2">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-soft-clay/20 flex items-center justify-center flex-shrink-0">
@@ -560,7 +560,7 @@ export default function LeadAdminDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <ScrollArea className="h-[260px] sm:h-[280px]">
+                  <ScrollArea className="h-[400px] sm:h-[440px]">
                     {categoriesLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
