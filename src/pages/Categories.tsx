@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { AllergenList } from '@/components/AllergenBadge';
-import { categories, getMenuItemsByCategory, getCategoryById } from '@/data/menuData';
+import { categories, getMenuItemsByCategory, getCategoryById, MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { getCategoryIcon } from '@/data/categoryIcons';
@@ -107,7 +107,7 @@ const spiritSubcategories = {
 };
 
 // Sauce subcategories with their IDs
-const sauceSubcategories = {
+const baseSauceSubcategories = {
   oyster: {
     title: 'Oyster Accompaniments',
     subtitle: 'Les Huîtres',
@@ -123,6 +123,27 @@ const sauceSubcategories = {
     subtitle: 'Condiments de la Maison',
     ids: ['sauce-1', 'sauce-2', 'sauce-3', 'sauce-4', 'sauce-5', 'sauce-6', 'sauce-7', 'sauce-8', 'sauce-12', 'sauce-13', 'sauce-14', 'sauce-15'],
   },
+};
+
+// Build dynamic subcategories that include any DB-added sauce items not in the hardcoded lists
+const buildSauceSubcategories = (allSauceItems: MenuItem[]) => {
+  const assignedIds = new Set([
+    ...baseSauceSubcategories.oyster.ids,
+    ...baseSauceSubcategories.steak.ids,
+    ...baseSauceSubcategories.house.ids,
+  ]);
+  const unassignedIds = allSauceItems
+    .filter(item => !assignedIds.has(item.id))
+    .map(item => item.id);
+
+  return {
+    oyster: baseSauceSubcategories.oyster,
+    steak: {
+      ...baseSauceSubcategories.steak,
+      ids: [...baseSauceSubcategories.steak.ids, ...unassignedIds],
+    },
+    house: baseSauceSubcategories.house,
+  };
 };
 
 const sauceSubcategoryOrder = ['oyster', 'steak', 'house'] as const;
@@ -233,6 +254,7 @@ export default function CategoriesPage() {
     // Special handling for spirits and sauces categories with subcategories
     const isSpirits = categoryId === 'spirits';
     const isSauces = categoryId === 'sauces';
+    const sauceSubcategories = isSauces ? buildSauceSubcategories(items) : baseSauceSubcategories;
 
     const toggleSubcategory = (key: string) => {
       setExpandedSubcategory(expandedSubcategory === key ? null : key);
