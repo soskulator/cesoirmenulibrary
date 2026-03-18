@@ -97,6 +97,32 @@ export default function DailyFocusPage() {
     ? savedFocusItems 
     : customFocusItems || dailyFoodItems;
 
+  const activeCocktail = savedCocktail || cocktailOfTheDay;
+
+  // Fetch image URLs from database for displayed items
+  useEffect(() => {
+    const allIds = [...focusItems.map(i => i.id)];
+    if (activeCocktail) allIds.push(activeCocktail.id);
+    if (allIds.length === 0) return;
+
+    const fetchImages = async () => {
+      const { data } = await supabase
+        .from('menu_items')
+        .select('id, image_url')
+        .in('id', allIds);
+      if (data) {
+        const map: Record<string, string> = {};
+        data.forEach(row => {
+          if (row.image_url && row.image_url !== '/placeholder.svg') {
+            map[row.id] = row.image_url;
+          }
+        });
+        setDbImageUrls(prev => ({ ...prev, ...map }));
+      }
+    };
+    fetchImages();
+  }, [focusItems, activeCocktail]);
+
   const handleRefresh = () => {
     setCustomFocusItems(getRandomFocusItems());
     setRefreshKey(prev => prev + 1);
