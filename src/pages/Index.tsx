@@ -79,6 +79,9 @@ export default function Index() {
     dateString
   } = useDailyRotation(3, 1);
 
+  const { items: menuItems } = useMenuItems();
+  const { categories } = useCategories();
+
   // Unique allergen count
   const uniqueAllergenCount = new Set(menuItems.flatMap((item) => item.allergens)).size;
 
