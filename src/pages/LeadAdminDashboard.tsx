@@ -430,7 +430,7 @@ export default function LeadAdminDashboard() {
                     />
                   </div>
                   
-                  <ScrollArea className="h-[320px]">
+                  <ScrollArea className="h-[440px]">
                     {menuLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
