@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
-import { menuItems } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { useQuizScores } from '@/hooks/useQuizScores';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
@@ -61,13 +61,14 @@ export default function FoodQuizPage() {
 
   const { saveQuizScore } = useQuizScores();
   const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('food');
+  const { items: allMenuItems } = useMenuItems();
 
   // Get food items only
   const foodItems = useMemo(() => 
-    menuItems.filter(i => 
+    allMenuItems.filter(i => 
       !BEVERAGE_CATEGORIES.includes(i.categoryId) && i.isPublished
     ),
-    []
+    [allMenuItems]
   );
 
   const allDishNames = useMemo(() => foodItems.map(i => i.name), [foodItems]);

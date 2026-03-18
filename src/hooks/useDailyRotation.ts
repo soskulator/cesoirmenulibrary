@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { menuItems, MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 
 /**
  * Generates a deterministic "random" selection based on a seed.
@@ -52,12 +53,14 @@ export interface DailyRotationResult {
  * The same items will be shown to all users on the same day.
  */
 export function useDailyRotation(foodCount: number = 3, cocktailCount: number = 1): DailyRotationResult {
+  const { items } = useMenuItems();
+  
   return useMemo(() => {
     const today = new Date();
     const seed = dateToSeed(today);
     
     // Get published items only
-    const publishedItems = menuItems.filter(item => item.isPublished);
+    const publishedItems = items.filter(item => item.isPublished);
     
     // Separate food and cocktail items
     const foodItems = publishedItems.filter(item => 
@@ -83,7 +86,7 @@ export function useDailyRotation(foodCount: number = 3, cocktailCount: number = 
         day: 'numeric',
       }),
     };
-  }, [foodCount, cocktailCount]);
+  }, [items, foodCount, cocktailCount]);
 }
 
 /**

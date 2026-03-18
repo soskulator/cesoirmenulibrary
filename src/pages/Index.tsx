@@ -7,7 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layers, CreditCard, HelpCircle, AlertTriangle, ArrowRight, ArrowDown, MapPin, BookOpen, Utensils, GraduationCap, TrendingUp, Brain, LogIn } from "lucide-react";
-import { categories, menuItems, getCategoryById } from "@/data/menuData";
+import { getCategoryById } from "@/data/menuData";
+import { useMenuItems } from "@/hooks/useMenuItems";
+import { useCategories } from "@/hooks/useCategories";
 import { useDailyRotation } from "@/hooks/useDailyRotation";
 import { DailyCocktailCard } from "@/components/DailyCocktailCard";
 import { getDishImage } from "@/data/dishImages";
@@ -76,6 +78,9 @@ export default function Index() {
     cocktailOfTheDay,
     dateString
   } = useDailyRotation(3, 1);
+
+  const { items: menuItems } = useMenuItems();
+  const { categories } = useCategories();
 
   // Unique allergen count
   const uniqueAllergenCount = new Set(menuItems.flatMap((item) => item.allergens)).size;

@@ -6,7 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { menuItems } from '@/data/menuData';
+import { MenuItem } from '@/data/menuData';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 
@@ -38,7 +39,7 @@ interface SpiritsQuizQuestion {
 }
 
 // Spirit origin classification helper
-const getSpiritOrigin = (spirit: typeof menuItems[0]) => {
+const getSpiritOrigin = (spirit: MenuItem) => {
   const desc = spirit.longDescription.toLowerCase();
   const name = spirit.name.toLowerCase();
   
@@ -56,11 +57,10 @@ const getSpiritOrigin = (spirit: typeof menuItems[0]) => {
 };
 
 // Get tasting notes from description
-const getTastingNotes = (item: typeof menuItems[0]) => {
+const getTastingNotes = (item: MenuItem) => {
   const desc = item.longDescription.toLowerCase();
   const notes: string[] = [];
   
-  // Flavor profiles
   if (desc.includes('smoky') || desc.includes('peat')) notes.push('smoky');
   if (desc.includes('vanilla')) notes.push('vanilla');
   if (desc.includes('caramel')) notes.push('caramel');
@@ -89,20 +89,21 @@ export default function SpiritsQuizPage() {
   const [quizType, setQuizType] = useState<'all' | 'identify' | 'knowledge' | 'cocktails'>('all');
 
   const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('spirits');
+  const { items: allMenuItems } = useMenuItems();
 
   // Get spirit and cocktail items
   const spirits = useMemo(() => 
-    menuItems.filter(i => i.categoryId === 'spirits' && i.isPublished),
-    []
+    allMenuItems.filter(i => i.categoryId === 'spirits' && i.isPublished),
+    [allMenuItems]
   );
   
   const signatureCocktails = useMemo(() => 
-    menuItems.filter(i => 
+    allMenuItems.filter(i => 
       i.categoryId === 'cocktails' && 
       i.isPublished && 
       i.id.startsWith('signature-cocktail')
     ),
-    []
+    [allMenuItems]
   );
 
   // Build quiz questions
