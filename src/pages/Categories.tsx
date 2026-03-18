@@ -107,7 +107,7 @@ const spiritSubcategories = {
 };
 
 // Sauce subcategories with their IDs
-const sauceSubcategories = {
+const baseSauceSubcategories = {
   oyster: {
     title: 'Oyster Accompaniments',
     subtitle: 'Les Huîtres',
@@ -123,6 +123,27 @@ const sauceSubcategories = {
     subtitle: 'Condiments de la Maison',
     ids: ['sauce-1', 'sauce-2', 'sauce-3', 'sauce-4', 'sauce-5', 'sauce-6', 'sauce-7', 'sauce-8', 'sauce-12', 'sauce-13', 'sauce-14', 'sauce-15'],
   },
+};
+
+// Build dynamic subcategories that include any DB-added sauce items not in the hardcoded lists
+const buildSauceSubcategories = (allSauceItems: MenuItem[]) => {
+  const assignedIds = new Set([
+    ...baseSauceSubcategories.oyster.ids,
+    ...baseSauceSubcategories.steak.ids,
+    ...baseSauceSubcategories.house.ids,
+  ]);
+  const unassignedIds = allSauceItems
+    .filter(item => !assignedIds.has(item.id))
+    .map(item => item.id);
+
+  return {
+    oyster: baseSauceSubcategories.oyster,
+    steak: {
+      ...baseSauceSubcategories.steak,
+      ids: [...baseSauceSubcategories.steak.ids, ...unassignedIds],
+    },
+    house: baseSauceSubcategories.house,
+  };
 };
 
 const sauceSubcategoryOrder = ['oyster', 'steak', 'house'] as const;
