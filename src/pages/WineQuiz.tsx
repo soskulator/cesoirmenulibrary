@@ -35,7 +35,7 @@ interface WineQuizQuestion {
 }
 
 // Wine region classification helper
-const getWineRegion = (wine: typeof menuItems[0]) => {
+const getWineRegion = (wine: MenuItem) => {
   const ingredients = wine.ingredientsText.toLowerCase();
   if (ingredients.includes('champagne')) return 'Champagne';
   if (ingredients.includes('burgundy')) return 'Burgundy';
@@ -57,11 +57,12 @@ export default function WineQuizPage() {
   const [quizType, setQuizType] = useState<'all' | 'identify' | 'knowledge'>('all');
 
   const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('wine');
+  const { items: allMenuItems } = useMenuItems();
 
   // Get wine items
   const wines = useMemo(() => 
-    menuItems.filter(i => i.categoryId === 'wine' && i.isPublished),
-    []
+    allMenuItems.filter(i => i.categoryId === 'wine' && i.isPublished),
+    [allMenuItems]
   );
 
   // Build wine-specific questions

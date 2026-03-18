@@ -61,13 +61,14 @@ export default function FoodQuizPage() {
 
   const { saveQuizScore } = useQuizScores();
   const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('food');
+  const { items: allMenuItems } = useMenuItems();
 
   // Get food items only
   const foodItems = useMemo(() => 
-    menuItems.filter(i => 
+    allMenuItems.filter(i => 
       !BEVERAGE_CATEGORIES.includes(i.categoryId) && i.isPublished
     ),
-    []
+    [allMenuItems]
   );
 
   const allDishNames = useMemo(() => foodItems.map(i => i.name), [foodItems]);
