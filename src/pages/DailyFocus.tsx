@@ -37,6 +37,7 @@ export default function DailyFocusPage() {
   const [savedCocktail, setSavedCocktail] = useState<MenuItem | null>(null);
   const [isLoadingSaved, setIsLoadingSaved] = useState(true);
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  const [dbImageUrls, setDbImageUrls] = useState<Record<string, string>>({});
   useEffect(() => { const t = setTimeout(() => setMinTimeElapsed(true), 300); return () => clearTimeout(t); }, []);
   const today = format(new Date(), 'yyyy-MM-dd');
   
