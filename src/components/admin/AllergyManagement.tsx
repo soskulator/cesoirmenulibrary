@@ -190,7 +190,7 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
   }, [items, categoryFilter, search]);
 
   const foodCats = useMemo(
-    () => categories.filter(c => FOOD_CATEGORIES.includes(c.id)),
+    () => categories.filter(c => !BEVERAGE_CATEGORIES.includes(c.id)),
     [categories]
   );
 
