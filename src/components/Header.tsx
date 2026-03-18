@@ -199,11 +199,11 @@ export function Header() {
       {/* Status bar background - extends behind notch/dynamic island */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top)] bg-background z-[60]" />
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/90 pt-[env(safe-area-inset-top)]" style={{ WebkitBackdropFilter: 'blur(12px)' } as React.CSSProperties}>
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-18 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex flex-col items-center gap-0.5">
-          <img src={cesoirLogo} alt="Ce Soir" className="h-8 w-auto" />
-          <p className="text-[10px] tracking-widest uppercase text-muted-foreground font-medium">Naples</p>
+        <Link to="/" className="flex flex-col items-center gap-0 -my-1">
+          <img src={cesoirLogo} alt="Ce Soir" className="h-12 lg:h-14 w-auto drop-shadow-sm" />
+          <p className="text-[9px] tracking-[0.2em] uppercase text-copper/70 font-semibold -mt-0.5">Naples</p>
         </Link>
 
         {/* Desktop Nav */}
