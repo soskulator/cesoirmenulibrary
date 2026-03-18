@@ -202,8 +202,8 @@ export function Header() {
       <div className="container flex h-18 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex flex-col items-center gap-0 -my-1">
-          <img src={cesoirLogo} alt="Ce Soir" className="h-12 lg:h-14 w-auto drop-shadow-sm" />
-          <p className="text-[9px] tracking-[0.2em] uppercase text-copper/70 font-semibold -mt-0.5">Naples</p>
+          <img src={cesoirLogo} alt="Ce Soir" className="h-12 lg:h-14 w-auto drop-shadow-sm" style={{ imageRendering: 'auto' }} />
+          <p className="text-[9px] tracking-[0.2em] uppercase text-copper/70 font-semibold -mt-3 lg:-mt-3.5">Naples</p>
         </Link>
 
         {/* Desktop Nav */}
