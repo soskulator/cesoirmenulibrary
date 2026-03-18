@@ -155,7 +155,7 @@ export default function Index() {
           duration: 0.9,
           delay: 0.2
         }} className="mb-1">
-            <img src={logoImage} alt="Ce Soir" className="h-32 md:h-36 lg:h-44 w-auto mx-auto drop-shadow-lg" width={530} height={176} decoding="async" />
+            <img src={logoImage} alt="Ce Soir" className="h-52 md:h-60 lg:h-72 w-auto mx-auto drop-shadow-lg" width={530} height={466} decoding="async" />
           </motion.div>
 
           {/* Subtitle */}
