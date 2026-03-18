@@ -11,10 +11,11 @@ import { extractGlassware } from '@/hooks/useDailyRotation';
 interface DailyCocktailCardProps {
   cocktail: MenuItem;
   dateString: string;
+  dbImageUrl?: string;
 }
 
-export function DailyCocktailCard({ cocktail, dateString }: DailyCocktailCardProps) {
-  const image = getDishImage(cocktail.id, cocktail.imageUrl);
+export function DailyCocktailCard({ cocktail, dateString, dbImageUrl }: DailyCocktailCardProps) {
+  const image = getDishImage(cocktail.id, dbImageUrl || cocktail.imageUrl);
   const glassware = extractGlassware(cocktail.prepNotes);
   
   return (
