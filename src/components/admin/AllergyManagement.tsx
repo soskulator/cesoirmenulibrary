@@ -241,6 +241,7 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
           </div>
         </ScrollArea>
       </div>
+    </div>
   );
 }
 
