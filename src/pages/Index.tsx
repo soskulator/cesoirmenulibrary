@@ -154,8 +154,8 @@ export default function Index() {
         }} transition={{
           duration: 0.9,
           delay: 0.2
-        }} className="mb-1">
-            <img src={logoImage} alt="Ce Soir" className="h-52 md:h-60 lg:h-72 w-auto mx-auto drop-shadow-lg" width={530} height={466} decoding="async" />
+        }} className="mb-0 mt-4">
+            <img src={logoImage} alt="Ce Soir" className="h-64 md:h-80 lg:h-96 w-auto mx-auto drop-shadow-lg" width={530} height={466} decoding="async" />
           </motion.div>
 
           {/* Subtitle */}
