@@ -201,7 +201,8 @@ export function MenuItemsManager({
                 <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
               </div>
             ) : (
-              <ScrollArea className="h-[600px]">
+              <div className="h-[600px]">
+              <ScrollArea className="h-full">
                 {/* Mobile cards */}
                 <div className="sm:hidden space-y-2">
                   {filtered.map(item => (
