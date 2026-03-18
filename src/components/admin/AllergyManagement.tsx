@@ -179,7 +179,7 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
 
   const itemsWithAllergens = useMemo(() => {
     let filtered = items.filter(
-      i => FOOD_CATEGORIES.includes(i.categoryId) && i.isPublished && i.allergens.length > 0
+      i => !BEVERAGE_CATEGORIES.includes(i.categoryId) && i.isPublished && i.allergens.length > 0
     );
     if (categoryFilter !== 'all') filtered = filtered.filter(i => i.categoryId === categoryFilter);
     if (search) {
