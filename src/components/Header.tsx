@@ -203,7 +203,7 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="flex flex-col items-center gap-0 -my-1">
           <img src={cesoirLogo} alt="Ce Soir" className="h-12 lg:h-14 w-auto drop-shadow-sm" style={{ imageRendering: 'auto' }} />
-          <p className="text-[9px] tracking-[0.2em] uppercase text-copper/70 font-semibold -mt-3.5 lg:-mt-4">Naples</p>
+          <p className="text-[9px] tracking-[0.2em] uppercase text-copper/70 font-semibold -mt-5 lg:-mt-[22px]">Naples</p>
         </Link>
 
         {/* Desktop Nav */}
