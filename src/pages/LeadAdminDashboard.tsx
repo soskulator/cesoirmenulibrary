@@ -559,56 +559,54 @@ export default function LeadAdminDashboard() {
                     )}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="px-3 sm:px-6">
-                  <ScrollArea className="max-h-[400px]">
+                <CardContent className="px-3 sm:px-6 pb-4">
+                  <div className="space-y-1.5 sm:space-y-2">
                     {categoriesLoading ? (
-                      <div className="flex items-center justify-center h-full">
+                      <div className="flex items-center justify-center py-8">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                       </div>
                     ) : (
-                      <div className="space-y-1.5 sm:space-y-2">
-                        {categories.map((category) => (
-                          <div
-                            key={category.id}
-                            className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                          >
-                            <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0 cursor-move" />
-                            <span className="text-lg sm:text-xl">{category.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-xs sm:text-sm truncate">{category.name}</p>
-                              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{category.name_french}</p>
-                            </div>
-                            <Badge variant="secondary" className="text-[10px] sm:text-xs flex-shrink-0">
-                              {menuItems.filter(m => m.categoryId === category.id).length}
-                            </Badge>
-                            <div className="flex items-center gap-1">
-                              <Button 
-                                size="icon" 
-                                variant="ghost" 
-                                className="h-7 w-7"
-                                onClick={() => openEditCategoryDialog(category)}
-                              >
-                                <Edit className="w-3 h-3 text-muted-foreground" />
-                              </Button>
-                              <Button 
-                                size="icon" 
-                                variant="ghost" 
-                                className="h-7 w-7 text-destructive"
-                                disabled={deletingCategoryId === category.id}
-                                onClick={() => handleDeleteCategory(category.id)}
-                              >
-                                {deletingCategoryId === category.id ? (
-                                  <Loader2 className="w-3 h-3 animate-spin" />
-                                ) : (
-                                  <Trash2 className="w-3 h-3" />
-                                )}
-                              </Button>
-                            </div>
+                      categories.map((category) => (
+                        <div
+                          key={category.id}
+                          className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                        >
+                          <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0 cursor-move" />
+                          <span className="text-lg sm:text-xl">{category.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-xs sm:text-sm truncate">{category.name}</p>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{category.name_french}</p>
                           </div>
-                        ))}
-                      </div>
+                          <Badge variant="secondary" className="text-[10px] sm:text-xs flex-shrink-0">
+                            {menuItems.filter(m => m.categoryId === category.id).length}
+                          </Badge>
+                          <div className="flex items-center gap-1">
+                            <Button 
+                              size="icon" 
+                              variant="ghost" 
+                              className="h-7 w-7"
+                              onClick={() => openEditCategoryDialog(category)}
+                            >
+                              <Edit className="w-3 h-3 text-muted-foreground" />
+                            </Button>
+                            <Button 
+                              size="icon" 
+                              variant="ghost" 
+                              className="h-7 w-7 text-destructive"
+                              disabled={deletingCategoryId === category.id}
+                              onClick={() => handleDeleteCategory(category.id)}
+                            >
+                              {deletingCategoryId === category.id ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                <Trash2 className="w-3 h-3" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      ))
                     )}
-                  </ScrollArea>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
