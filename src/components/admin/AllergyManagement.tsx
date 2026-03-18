@@ -123,48 +123,50 @@ function AllergenMatrix({ categories }: { categories: DbCategory[] }) {
         </Select>
       </div>
 
-      <ScrollArea className="max-h-[500px]">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2 font-semibold sticky left-0 bg-card min-w-[180px]">Menu Item</th>
-                {allergens.map(a => (
-                  <th key={a.id} className="p-2 text-center min-w-[50px]" title={a.name}>
-                    <span className="text-base">{a.icon}</span>
-                  </th>
+      <div className="h-[500px]">
+        <ScrollArea className="h-full">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-2 font-semibold sticky left-0 bg-card min-w-[180px]">Menu Item</th>
+                  {allergens.map(a => (
+                    <th key={a.id} className="p-2 text-center min-w-[50px]" title={a.name}>
+                      <span className="text-base">{a.icon}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {foodItems.map(item => (
+                  <tr key={item.id} className="border-b hover:bg-muted/30 transition-colors">
+                    <td className="p-2 font-medium sticky left-0 bg-card">{item.name}</td>
+                    {allergens.map(a => {
+                      const has = item.allergens.includes(a.id);
+                      return (
+                        <td key={a.id} className="p-2 text-center">
+                          <Checkbox
+                            checked={has}
+                            onCheckedChange={() => handleToggle(item.id, a.id, item.allergens)}
+                            className={cn(has && 'border-destructive data-[state=checked]:bg-destructive')}
+                          />
+                        </td>
+                      );
+                    })}
+                  </tr>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
-              {foodItems.map(item => (
-                <tr key={item.id} className="border-b hover:bg-muted/30 transition-colors">
-                  <td className="p-2 font-medium sticky left-0 bg-card">{item.name}</td>
-                  {allergens.map(a => {
-                    const has = item.allergens.includes(a.id);
-                    return (
-                      <td key={a.id} className="p-2 text-center">
-                        <Checkbox
-                          checked={has}
-                          onCheckedChange={() => handleToggle(item.id, a.id, item.allergens)}
-                          className={cn(has && 'border-destructive data-[state=checked]:bg-destructive')}
-                        />
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-              {foodItems.length === 0 && (
-                <tr>
-                  <td colSpan={allergens.length + 1} className="p-8 text-center text-muted-foreground">
-                    No items found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </ScrollArea>
+                {foodItems.length === 0 && (
+                  <tr>
+                    <td colSpan={allergens.length + 1} className="p-8 text-center text-muted-foreground">
+                      No items found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </ScrollArea>
+      </div>
     </div>
   );
 }
@@ -220,23 +222,25 @@ function ModificationGuide({ categories }: { categories: DbCategory[] }) {
         </Select>
       </div>
 
-      <ScrollArea className="max-h-[600px]">
-        <div className="space-y-4 pr-2">
-          {itemsWithAllergens.map(item => (
-            <ModificationCard
-              key={item.id}
-              itemId={item.id}
-              itemName={item.name}
-              itemAllergens={item.allergens}
-              getModification={getModification}
-              upsertModification={upsertModification}
-            />
-          ))}
-          {itemsWithAllergens.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">No items with allergens found</div>
-          )}
-        </div>
-      </ScrollArea>
+      <div className="h-[600px]">
+        <ScrollArea className="h-full">
+          <div className="space-y-4 pr-2">
+            {itemsWithAllergens.map(item => (
+              <ModificationCard
+                key={item.id}
+                itemId={item.id}
+                itemName={item.name}
+                itemAllergens={item.allergens}
+                getModification={getModification}
+                upsertModification={upsertModification}
+              />
+            ))}
+            {itemsWithAllergens.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">No items with allergens found</div>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
     </div>
   );
 }
