@@ -166,7 +166,7 @@ function AllergenMatrix({ categories }: { categories: DbCategory[] }) {
           </table>
         </div>
       </ScrollArea>
-    </div>
+      </div>
   );
 }
 
