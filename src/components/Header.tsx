@@ -201,9 +201,10 @@ export function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/90 pt-[env(safe-area-inset-top)]" style={{ WebkitBackdropFilter: 'blur(12px)' } as React.CSSProperties}>
       <div className="container flex h-[4.5rem] items-center justify-between pb-1">
         {/* Logo */}
-        <Link to="/" className="flex flex-col items-center gap-0 -my-1">
-          <img src={cesoirLogo} alt="Ce Soir" className="h-12 lg:h-14 w-auto drop-shadow-sm" style={{ imageRendering: 'auto' }} />
-          <p className="text-[9px] tracking-[0.2em] uppercase text-copper/70 font-semibold -mt-4 lg:-mt-5">Naples</p>
+        <Link to="/" className="flex items-center gap-2.5 -my-1">
+          <img src={cesoirLogo} alt="Ce Soir" className="h-10 lg:h-12 w-auto drop-shadow-sm" style={{ imageRendering: 'auto' }} />
+          <div className="w-px h-6 bg-copper/30" />
+          <p className="text-[10px] tracking-[0.25em] uppercase text-copper/70 font-semibold">Naples</p>
         </Link>
 
         {/* Desktop Nav */}
