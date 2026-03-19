@@ -202,7 +202,7 @@ export function Header() {
       <div className="container flex h-[4.5rem] items-center justify-between pb-1">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 -my-1">
-          <img src={cesoirLogo} alt="Ce Soir" className="h-11 lg:h-[3.25rem] w-auto drop-shadow-sm" style={{ imageRendering: 'auto' }} />
+          <img src={cesoirLogo} alt="Ce Soir" className="h-12 lg:h-14 w-auto drop-shadow-sm" style={{ imageRendering: 'auto' }} />
           <div className="w-px h-6 bg-copper/30" />
           <p className="text-[10px] tracking-[0.25em] uppercase text-copper/70 font-semibold">Naples</p>
         </Link>
