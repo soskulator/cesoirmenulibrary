@@ -199,7 +199,7 @@ export function Header() {
       {/* Status bar background - extends behind notch/dynamic island */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top)] bg-background z-[60]" />
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/90 pt-[env(safe-area-inset-top)]" style={{ WebkitBackdropFilter: 'blur(12px)' } as React.CSSProperties}>
-      <div className="container flex h-[4.5rem] items-center justify-between pb-1">
+      <div className="container flex h-[3.75rem] lg:h-[4.5rem] items-center justify-between pb-1">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 -my-1">
           <img src={cesoirLogo} alt="Ce Soir" className="h-12 lg:h-14 w-auto drop-shadow-sm" style={{ imageRendering: 'auto' }} />
