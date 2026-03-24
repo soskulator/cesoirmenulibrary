@@ -127,7 +127,7 @@ const App = () => (
                 <Route
                   path="/allergy-quiz"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}>
                       <AllergyQuiz />
                     </ProtectedRoute>
                   }
