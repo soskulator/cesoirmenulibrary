@@ -45,6 +45,7 @@ const ROLES = {
   ALL_STAFF: ["lead_admin", "admin", "server", "bartender", "employee"] as const,
   ADMIN: ["admin", "lead_admin"] as const,
   LEAD_ONLY: "lead_admin" as const,
+  FOH_STAFF: ["lead_admin", "admin", "server", "bartender"] as const,
 };
 
 // ─── Loading fallback for lazy routes ───
@@ -126,7 +127,7 @@ const App = () => (
                 <Route
                   path="/allergy-quiz"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}>
                       <AllergyQuiz />
                     </ProtectedRoute>
                   }
@@ -134,7 +135,7 @@ const App = () => (
                 <Route
                   path="/food-quiz"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}>
                       <FoodQuiz />
                     </ProtectedRoute>
                   }
@@ -142,7 +143,7 @@ const App = () => (
                 <Route
                   path="/foh-test"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}>
                       <FohTest />
                     </ProtectedRoute>
                   }
