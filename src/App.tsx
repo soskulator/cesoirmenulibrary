@@ -135,7 +135,7 @@ const App = () => (
                 <Route
                   path="/food-quiz"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}>
                       <FoodQuiz />
                     </ProtectedRoute>
                   }
