@@ -143,7 +143,7 @@ const App = () => (
                 <Route
                   path="/foh-test"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}>
                       <FohTest />
                     </ProtectedRoute>
                   }
