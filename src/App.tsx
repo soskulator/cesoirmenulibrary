@@ -45,6 +45,7 @@ const ROLES = {
   ALL_STAFF: ["lead_admin", "admin", "server", "bartender", "employee"] as const,
   ADMIN: ["admin", "lead_admin"] as const,
   LEAD_ONLY: "lead_admin" as const,
+  FOH_STAFF: ["lead_admin", "admin", "server", "bartender"] as const,
 };
 
 // ─── Loading fallback for lazy routes ───
