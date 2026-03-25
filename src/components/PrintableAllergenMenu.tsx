@@ -1,5 +1,6 @@
 import { useMemo, forwardRef } from 'react';
 import { MenuItem, AllergenType, allergens, getCategoryById } from '@/data/menuData';
+import logoImage from '@/assets/cesoir-logo.png';
 import { AllergenModification } from '@/hooks/useAllergenModifications';
 import { DbCategory } from '@/hooks/useCategories';
 
