@@ -100,7 +100,74 @@ export default function LeadAdminDashboard() {
   });
   const [deletingCategoryId, setDeletingCategoryId] = useState<string | null>(null);
 
-  
+  const [quickStats, setQuickStats] = useState<{
+    testsThisWeek: number;
+    avgScore: number;
+    activeToday: number;
+    neverTested: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchQuickStats = async () => {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const [
+        { data: attempts },
+        { data: sessions },
+        { data: profiles },
+        { data: testedUsers },
+      ] = await Promise.all([
+        supabase
+          .from('foh_test_attempts')
+          .select('percentage')
+          .not('completed_at', 'is', null)
+          .gte('completed_at', weekAgo.toISOString()),
+        supabase
+          .from('user_sessions')
+          .select('user_id')
+          .gte('session_start', today.toISOString()),
+        supabase
+          .from('profiles')
+          .select('id'),
+        supabase
+          .from('foh_test_attempts')
+          .select('user_id')
+          .not('completed_at', 'is', null),
+      ]);
+
+      const avg = attempts?.length
+        ? Math.round(
+            attempts.reduce(
+              (s, a) => s + (a.percentage || 0), 0
+            ) / attempts.length
+          )
+        : 0;
+
+      const testedIds = new Set(
+        (testedUsers || []).map(t => t.user_id)
+      );
+      const neverTested = (profiles || []).filter(
+        p => !testedIds.has(p.id)
+      ).length;
+
+      const activeIds = new Set(
+        (sessions || []).map(s => s.user_id)
+      );
+
+      setQuickStats({
+        testsThisWeek: attempts?.length || 0,
+        avgScore: avg,
+        activeToday: activeIds.size,
+        neverTested,
+      });
+    };
+    fetchQuickStats();
+  }, []);
+
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth');
