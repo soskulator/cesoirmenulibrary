@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { useMenuItems } from '@/hooks/useMenuItems';
+import { DietaryBadges } from '@/components/DietaryBadge';
 import { getDishImage } from '@/data/dishImages';
 import { useQuizScores } from '@/hooks/useQuizScores';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
