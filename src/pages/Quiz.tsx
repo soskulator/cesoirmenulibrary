@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
+import { useStudyProgress } from '@/hooks/useStudyProgress';
 import { supabase } from '@/integrations/supabase/client';
 import {
   ArrowRight,
@@ -23,6 +24,23 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+
+// Study links for required tests
+const STUDY_LINKS: Record<string, { label: string; path: string }> = {
+  service_staff: { label: 'Review Menu', path: '/categories' },
+  server_assistant: { label: 'Review Menu', path: '/categories' },
+  wine_test: { label: 'Review Wines', path: '/wine-list' },
+  wine: { label: 'Review Wines', path: '/wine-list' },
+};
+
+// Study links for practice cards
+const PRACTICE_STUDY_LINKS: Record<string, string> = {
+  '/wine-quiz': '/wine-list',
+  '/food-quiz': '/categories',
+  '/cocktail-flashcards': '/cocktails',
+  '/spirits-quiz': '/spirits',
+  '/allergy-quiz': '/allergy',
+};
 
 interface TestConfiguration {
   id: string;
@@ -94,7 +112,7 @@ function getVisual(testType: string) {
 
 // Unified display type for rendering
 interface DisplayTest {
-  id: string | null; // null for pure fallbacks
+  id: string | null;
   test_name: string;
   test_type: string;
   total_questions: number;
@@ -109,11 +127,60 @@ interface DisplayTest {
 
 export default function QuizPage() {
   usePageTitle("Training Tests");
-  const { hasPermission, isServerAssistant, isLeadAdmin } = useAuth();
+  const { hasPermission, isServerAssistant, isLeadAdmin, user } = useAuth();
+  const { getStats, isLoading: progressLoading } = useStudyProgress();
+  const progressStats = getStats();
+
   const [dbTests, setDbTests] = useState<TestConfiguration[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
   useEffect(() => { const t = setTimeout(() => setMinTimeElapsed(true), 300); return () => clearTimeout(t); }, []);
+
+  // Fetch last attempt for progress summary
+  const [lastAttempt, setLastAttempt] = useState<{
+    percentage: number; test_type: string; completed_at: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('foh_test_attempts')
+      .select('percentage, test_type, completed_at')
+      .eq('user_id', user.id)
+      .not('completed_at', 'is', null)
+      .order('completed_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => { if (data) setLastAttempt(data); });
+  }, [user]);
+
+  // Fetch per-test-type scores
+  const [testScores, setTestScores] = useState<
+    Record<string, { percentage: number; completed_at: string }>
+  >({});
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('foh_test_attempts')
+      .select('test_type, percentage, completed_at')
+      .eq('user_id', user.id)
+      .not('completed_at', 'is', null)
+      .order('completed_at', { ascending: false })
+      .then(({ data }) => {
+        if (!data) return;
+        const latest: Record<string, { percentage: number; completed_at: string }> = {};
+        data.forEach(row => {
+          if (!latest[row.test_type]) {
+            latest[row.test_type] = {
+              percentage: row.percentage ?? 0,
+              completed_at: row.completed_at!,
+            };
+          }
+        });
+        setTestScores(latest);
+      });
+  }, [user]);
 
   useEffect(() => {
     const fetchTests = async () => {
@@ -124,7 +191,6 @@ export default function QuizPage() {
           .select('*')
           .order('updated_at');
 
-        // Non-lead-admins only see active tests
         if (!isLeadAdmin) {
           query = query.eq('is_active', true);
         }
@@ -137,7 +203,6 @@ export default function QuizPage() {
           return;
         }
 
-        console.log('Fetched test configurations:', data);
         setDbTests((data as TestConfiguration[]) ?? []);
       } catch (err) {
         console.error('Unexpected error fetching test configurations:', err);
@@ -149,12 +214,11 @@ export default function QuizPage() {
     fetchTests();
   }, [isLeadAdmin]);
 
-  // Build merged display list: fallbacks + DB tests
+  // Build merged display list
   const displayTests: DisplayTest[] = (() => {
     const dbMap = new Map(dbTests.map(t => [t.test_type, t]));
     const result: DisplayTest[] = [];
 
-    // 1. Always show fallback tests (merged with DB data if available)
     for (const fb of FALLBACK_TESTS) {
       const dbMatch = dbMap.get(fb.test_type);
       if (dbMatch) {
@@ -189,7 +253,6 @@ export default function QuizPage() {
       }
     }
 
-    // 2. Add remaining DB tests not covered by fallbacks
     for (const [, dbTest] of dbMap) {
       const visual = getVisual(dbTest.test_type);
       result.push({
@@ -210,7 +273,6 @@ export default function QuizPage() {
     return result;
   })();
 
-  // Filter for server assistants
   const visibleTests = isServerAssistant
     ? displayTests.filter(t => t.test_type !== 'service_staff')
     : displayTests;
@@ -227,6 +289,35 @@ export default function QuizPage() {
             Choose your test or practice quiz below
           </p>
         </div>
+
+        {/* Progress Summary Strip */}
+        {!isLoading && !progressLoading && (
+          <div className="grid grid-cols-2 gap-3 mb-6 sm:mb-8">
+            <div className="rounded-xl bg-muted/50 border border-border p-3 text-center">
+              <p className="text-xl font-bold text-copper">
+                {progressStats.known}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Items Studied
+              </p>
+            </div>
+            <div className="rounded-xl bg-muted/50 border border-border p-3 text-center">
+              <p className={cn(
+                "text-xl font-bold",
+                lastAttempt
+                  ? lastAttempt.percentage >= 70
+                    ? 'text-sage'
+                    : 'text-destructive'
+                  : 'text-muted-foreground'
+              )}>
+                {lastAttempt ? `${Math.round(lastAttempt.percentage)}%` : '—'}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Last Test Score
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* SECTION 1: Required Tests */}
         <div className="mb-6 sm:mb-8">
@@ -265,6 +356,19 @@ export default function QuizPage() {
                                   Inactive
                                 </Badge>
                               )}
+                              {testScores[test.test_type] && (
+                                <Badge
+                                  className={cn(
+                                    "text-[10px] px-1.5 py-0 ml-1",
+                                    testScores[test.test_type].percentage >= test.passing_score
+                                      ? "bg-sage/20 text-sage border-sage/30"
+                                      : "bg-destructive/20 text-destructive border-destructive/30"
+                                  )}
+                                  variant="outline"
+                                >
+                                  {Math.round(testScores[test.test_type].percentage)}%
+                                </Badge>
+                              )}
                             </div>
                             <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                               <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -281,6 +385,16 @@ export default function QuizPage() {
                                 {test.time_limit_minutes ? `${test.time_limit_minutes} min` : 'No limit'}
                               </span>
                             </div>
+                            {STUDY_LINKS[test.test_type] && (
+                              <Link
+                                to={STUDY_LINKS[test.test_type].path}
+                                onClick={(e) => e.stopPropagation()}
+                                className="mt-2 inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                {STUDY_LINKS[test.test_type].label}
+                                <ArrowRight className="w-2.5 h-2.5" />
+                              </Link>
+                            )}
                           </div>
                           <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
                             {isLeadAdmin && test.isFromDb && test.id && (
@@ -313,7 +427,7 @@ export default function QuizPage() {
           <p className="text-xs text-muted-foreground mb-4">
             Self-study quizzes from the menu — not graded, no time limit.
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
             {hasPermission('quiz:wine') && (
               <Link to="/wine-quiz" className="group">
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5 text-center">
@@ -321,6 +435,13 @@ export default function QuizPage() {
                     <Wine className="w-5 h-5 text-burgundy" />
                   </div>
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-burgundy transition-colors">Wine</h3>
+                  <Link
+                    to={PRACTICE_STUDY_LINKS['/wine-quiz']}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] text-muted-foreground mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity inline-block"
+                  >
+                    Study First →
+                  </Link>
                 </div>
               </Link>
             )}
@@ -332,6 +453,13 @@ export default function QuizPage() {
                     <UtensilsCrossed className="w-5 h-5 text-sage" />
                   </div>
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-sage transition-colors">Food</h3>
+                  <Link
+                    to={PRACTICE_STUDY_LINKS['/food-quiz']}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] text-muted-foreground mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity inline-block"
+                  >
+                    Study First →
+                  </Link>
                 </div>
               </Link>
             )}
@@ -343,6 +471,13 @@ export default function QuizPage() {
                     <Martini className="w-5 h-5 text-gold" />
                   </div>
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-gold transition-colors">Cocktails</h3>
+                  <Link
+                    to={PRACTICE_STUDY_LINKS['/cocktail-flashcards']}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] text-muted-foreground mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity inline-block"
+                  >
+                    Study First →
+                  </Link>
                 </div>
               </Link>
             )}
@@ -354,27 +489,35 @@ export default function QuizPage() {
                     <Martini className="w-5 h-5 text-copper" />
                   </div>
                   <h3 className="font-semibold text-sm text-foreground group-hover:text-copper transition-colors">Spirits</h3>
+                  <Link
+                    to={PRACTICE_STUDY_LINKS['/spirits-quiz']}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] text-muted-foreground mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity inline-block"
+                  >
+                    Study First →
+                  </Link>
+                </div>
+              </Link>
+            )}
+
+            {hasPermission('quiz:allergy') && (
+              <Link to="/allergy-quiz" className="group">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 transition-colors mx-auto mb-2">
+                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                  </div>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-destructive transition-colors">Allergy</h3>
+                  <Link
+                    to={PRACTICE_STUDY_LINKS['/allergy-quiz']}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] text-muted-foreground mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity inline-block"
+                  >
+                    Study First →
+                  </Link>
                 </div>
               </Link>
             )}
           </div>
-
-          {hasPermission('quiz:allergy') && (
-            <Link to="/allergy-quiz" className="group block">
-              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 transition-colors">
-                    <AlertTriangle className="w-5 h-5 text-destructive" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <h3 className="font-semibold text-foreground group-hover:text-destructive transition-colors">Allergy Quiz</h3>
-                    <p className="text-xs text-muted-foreground">Ingredient removal training</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-destructive group-hover:translate-x-1 transition-all" />
-                </div>
-              </div>
-            </Link>
-          )}
         </div>
       </div>
     </Layout>
