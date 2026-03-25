@@ -264,11 +264,6 @@ export function Header() {
           {/* Auth Section */}
           <div className="w-px h-5 bg-border mx-1.5" />
           {loading ? <div className="w-8 h-8 rounded-full bg-muted animate-pulse" /> : user ? <div className="flex items-center gap-2">
-              {/* Role Badge - visible next to avatar */}
-              <Badge variant="outline" className={cn("hidden xl:flex items-center gap-1 text-[10px] px-1.5 py-0.5", roleDisplay.color)}>
-                <roleDisplay.icon className="w-2.5 h-2.5" />
-                {roleDisplay.label}
-              </Badge>
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
