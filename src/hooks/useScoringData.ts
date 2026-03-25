@@ -80,6 +80,7 @@ export function useScoringData() {
   const [leaderboard, setLeaderboard] = useState<StaffScore[]>([]);
   const [overview, setOverview] = useState<OverviewStats | null>(null);
   const [incompleteStaff, setIncompleteStaff] = useState<IncompleteStaff[]>([]);
+  const [inactiveStaff, setInactiveStaff] = useState<InactiveStaff[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchAll = useCallback(async () => {
