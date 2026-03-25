@@ -385,6 +385,26 @@ export default function LeadAdminDashboard() {
             </div>
           </div>
 
+          {quickStats && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+              {[
+                { label: 'Tests This Week', value: quickStats.testsThisWeek, color: 'text-copper' },
+                { label: 'Avg Score', value: `${quickStats.avgScore}%`, color: quickStats.avgScore >= 70 ? 'text-jade' : 'text-destructive' },
+                { label: 'Active Today', value: quickStats.activeToday, color: 'text-copper' },
+                { label: 'Never Tested', value: quickStats.neverTested, color: quickStats.neverTested > 0 ? 'text-destructive' : 'text-jade' },
+              ].map(stat => (
+                <div key={stat.label} className="rounded-xl bg-muted/50 border border-border p-3 text-center">
+                  <p className={cn("text-2xl font-bold font-serif", stat.color)}>
+                    {stat.value}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Full Menu Items Editor */}
           <div className="mb-6 sm:mb-8">
             <MenuItemsManager
