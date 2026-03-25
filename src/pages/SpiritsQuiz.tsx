@@ -88,6 +88,7 @@ export default function SpiritsQuizPage() {
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
   const [quizType, setQuizType] = useState<'all' | 'identify' | 'knowledge' | 'cocktails'>('all');
+  const { saveQuizScore } = useQuizScores();
 
   const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('spirits');
   const { items: allMenuItems } = useMenuItems();
