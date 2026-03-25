@@ -462,22 +462,24 @@ export default function Index() {
             const category = getCategoryById(menuItem.categoryId);
             const image = getDishImage(menuItem.id, menuItem.imageUrl);
             return <motion.div key={menuItem.id} variants={fadeUp}>
-                  <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden">
-                    {image && <div className="relative h-40 overflow-hidden">
-                        <img src={image} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 to-transparent" />
-                        <Badge className="absolute top-3 left-3 bg-copper/90 text-charcoal text-xs font-semibold">
-                          {category?.name || "Menu Item"}
-                        </Badge>
-                      </div>}
-                    <CardContent className="p-5 md:p-6">
-                      <h3 className="font-serif text-xl font-semibold mb-2 group-hover:text-copper transition-colors">
-                        {menuItem.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{menuItem.shortDescription}</p>
-                      <p className="text-xs text-muted-foreground/70 line-clamp-2">{menuItem.ingredientsText}</p>
-                    </CardContent>
-                  </Card>
+                  <Link to={`/categories/${menuItem.categoryId}`} className="block">
+                    <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden cursor-pointer">
+                      {image && <div className="relative h-40 overflow-hidden">
+                          <img src={image} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 to-transparent" />
+                          <Badge className="absolute top-3 left-3 bg-copper/90 text-charcoal text-xs font-semibold">
+                            {category?.name || "Menu Item"}
+                          </Badge>
+                        </div>}
+                      <CardContent className="p-5 md:p-6">
+                        <h3 className="font-serif text-xl font-semibold mb-2 group-hover:text-copper transition-colors">
+                          {menuItem.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{menuItem.shortDescription}</p>
+                        <p className="text-xs text-muted-foreground/70 line-clamp-2">{menuItem.ingredientsText}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </motion.div>;
           })}
           </motion.div>
