@@ -248,6 +248,7 @@ export default function SpiritsQuizPage() {
     setScore({ correct: 0, incorrect: 0 });
     setAnsweredQuestions(new Set());
     setShowAnswer(false);
+    scoreSavedRef.current = false;
   };
 
   const currentQuestion = shuffledQuestions[currentIndex];

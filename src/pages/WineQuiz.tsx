@@ -161,6 +161,7 @@ export default function WineQuizPage() {
     setScore({ correct: 0, incorrect: 0 });
     setAnsweredQuestions(new Set());
     setShowAnswer(false);
+    scoreSavedRef.current = false;
   };
 
   const currentQuestion = shuffledQuestions[currentIndex];
