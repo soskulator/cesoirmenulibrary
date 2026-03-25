@@ -378,6 +378,19 @@ export function Header() {
         <nav className="container py-4 flex flex-col gap-0.5">
           {/* Browse Section */}
           <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Browse</p>
+          <Link
+            to="/search"
+            onClick={() => setMobileMenuOpen(false)}
+            className={cn(
+              "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors border-l-2",
+              location.pathname === '/search'
+                ? "bg-copper/10 text-copper border-copper"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
+            )}
+          >
+            <Search className="w-5 h-5" />
+            <span className="font-medium text-sm">Search</span>
+          </Link>
           {filteredNavItems.filter(i => ['/', '/categories', '/wine-list', '/spirits', '/cocktails'].includes(i.path)).map(item => {
             const isActive = location.pathname === item.path;
             return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>

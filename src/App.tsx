@@ -110,6 +110,14 @@ const App = () => (
                   }
                 />
                 <Route
+                  path="/search"
+                  element={
+                    <ProtectedRoute>
+                      <SearchPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/flashcards"
                   element={
                     <ProtectedRoute>
