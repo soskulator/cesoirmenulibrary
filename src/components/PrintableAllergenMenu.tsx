@@ -95,6 +95,9 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
         <style>{`
           @media print {
             body * { visibility: hidden; }
+            .print-menu, .print-menu * {
+              visibility: visible !important;
+            }
             .print-menu {
               display: block !important;
               position: absolute;
