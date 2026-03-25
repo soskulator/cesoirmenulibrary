@@ -20,6 +20,7 @@ import {
   AllergenType, 
   getAllergenById,
   getCategoryById,
+  isDietaryType,
   MenuItem
 } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
