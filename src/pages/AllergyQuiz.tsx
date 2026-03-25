@@ -53,7 +53,7 @@ type AnyQuizQuestion = AllergyQuizQuestion | ModificationQuizQuestion;
 
 // Parse ingredients from ingredientsText
 const parseIngredients = (ingredientsText: string): { name: string; allergens: AllergenType[]; removable: boolean }[] => {
-  const allergenKeywords: Record<AllergenType, string[]> = {
+  const allergenKeywords: Record<string, string[]> = {
     gluten: ['bread', 'brioche', 'crouton', 'puff pastry', 'crostini', 'baguette', 'flour', 'panko', 'pasta', 'spaghetti', 'ravioli', 'frites', 'tempura'],
     dairy: ['cheese', 'butter', 'cream', 'gruyère', 'parmesan', 'burrata', 'milk', 'mascarpone', 'crème'],
     egg: ['egg', 'yolk', 'mayo', 'mayonnaise', 'aioli'],

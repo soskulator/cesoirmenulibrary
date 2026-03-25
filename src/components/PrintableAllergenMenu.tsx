@@ -1,5 +1,5 @@
 import { useMemo, forwardRef } from 'react';
-import { MenuItem, AllergenType, allergens, getCategoryById } from '@/data/menuTypes';
+import { MenuItem, AllergenType, allergens, getCategoryById, isDietaryType } from '@/data/menuTypes';
 import logoImage from '@/assets/cesoir-logo.png';
 import { AllergenModification } from '@/hooks/useAllergenModifications';
 import { DbCategory } from '@/hooks/useCategories';
@@ -38,13 +38,22 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
 
       const grouped: Record<string, CategorizedItem[]> = {};
 
+      const selectedDietary = selectedAllergens.filter(isDietaryType);
+      const selectedReal = selectedAllergens.filter(a => !isDietaryType(a));
+
       foodItems.forEach(item => {
-        const matching = item.allergens.filter(a => selectedAllergens.includes(a));
+        // Check dietary: item must have ALL selected dietary tags
+        const hasAllDietary = selectedDietary.every(d => item.allergens.includes(d));
+        if (!hasAllDietary) {
+          // Skip items that don't meet dietary requirements — don't add to print menu
+          return;
+        }
+
+        const matching = item.allergens.filter(a => selectedReal.includes(a));
         let status: ItemStatus = 'safe';
         let modNotes = '';
 
         if (matching.length > 0) {
-          // Check if ALL matching allergens can be removed
           const allModifiable = matching.every(allergenId => {
             const mod = modifications.find(
               m => m.menu_item_id === item.id && m.allergen_type === allergenId
@@ -52,7 +61,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
             return mod?.can_remove;
           });
 
-        if (allModifiable) {
+          if (allModifiable) {
             status = 'modifiable';
             const notes = matching
               .map(allergenId => {
@@ -64,7 +73,6 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               .filter(Boolean);
             modNotes = notes.join('; ');
           } else {
-            // Skip items that cannot accommodate — don't add to print menu
             return;
           }
         }

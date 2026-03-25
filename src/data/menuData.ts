@@ -1,53 +1,6 @@
-export type AllergenType = 
-  | 'gluten' 
-  | 'dairy' 
-  | 'egg' 
-  | 'nuts' 
-  | 'shellfish' 
-  | 'fish' 
-  | 'soy' 
-  | 'sesame' 
-  | 'allium' 
-  | 'nightshade';
-
-export interface Allergen {
-  id: AllergenType;
-  name: string;
-  icon: string;
-  commonName: string;
-}
-
-export interface Question {
-  id: string;
-  type: 'selling' | 'allergy' | 'quiz';
-  prompt: string;
-  answer: string;
-}
-
-export interface MenuItem {
-  id: string;
-  categoryId: string;
-  name: string;
-  shortDescription: string;
-  longDescription: string;
-  ingredientsText: string;
-  prepNotes: string;
-  sellingPointsText: string;
-  imageUrl: string;
-  allergens: AllergenType[];
-  questions: Question[];
-  isPublished: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  nameFrench: string;
-  sortOrder: number;
-  icon: string;
-}
+// Re-export types from menuTypes to avoid duplication
+export type { AllergenType, Allergen, Question, MenuItem, Category } from './menuTypes';
+import type { AllergenType, Allergen, Question, MenuItem, Category } from './menuTypes';
 
 export interface DailyFocus {
   date: string;

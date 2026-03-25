@@ -20,6 +20,7 @@ import {
   AllergenType, 
   getAllergenById,
   getCategoryById,
+  isDietaryType,
   MenuItem
 } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
@@ -62,7 +63,7 @@ interface TrainingDish {
   ingredients: TrainingIngredient[];
 }
 
-const allergenKeywords: Record<AllergenType, string[]> = {
+const allergenKeywords: Record<string, string[]> = {
   gluten: ['bread', 'crouton', 'pasta', 'flour', 'bun', 'brioche', 'puff', 'panko', 'baguette', 'crostini', 'tempura', 'spaghetti', 'ravioli', 'gnocchi'],
   dairy: ['butter', 'cream', 'cheese', 'parmesan', 'gruyère', 'burrata', 'beurre', 'mascarpone', 'crème', 'milk'],
   egg: ['egg', 'aioli', 'mayo', 'mayonnaise', 'hollandaise', 'béarnaise'],
@@ -237,19 +238,30 @@ function AllergyCheckContent() {
     );
   };
 
+  // Separate selected into allergens vs dietary
+  const selectedDietary = useMemo(() => selectedAllergens.filter(isDietaryType), [selectedAllergens]);
+  const selectedRealAllergens = useMemo(() => selectedAllergens.filter(a => !isDietaryType(a)), [selectedAllergens]);
+
   const itemsWithAllergens = useMemo(() => {
     if (selectedAllergens.length === 0) return [];
-    return allergenRelevantItems.filter(item =>
-      item.allergens.some(a => selectedAllergens.includes(a))
-    );
-  }, [selectedAllergens, allergenRelevantItems]);
+    return allergenRelevantItems.filter(item => {
+      // Item is unsafe if it CONTAINS any selected real allergen
+      const hasAllergen = item.allergens.some(a => selectedRealAllergens.includes(a));
+      // Item is unsafe if it LACKS any selected dietary tag
+      const missingDietary = selectedDietary.some(d => !item.allergens.includes(d));
+      return hasAllergen || missingDietary;
+    });
+  }, [selectedAllergens, selectedRealAllergens, selectedDietary, allergenRelevantItems]);
 
   const safeItems = useMemo(() => {
     if (selectedAllergens.length === 0) return allergenRelevantItems;
-    return allergenRelevantItems.filter(item =>
-      !item.allergens.some(a => selectedAllergens.includes(a))
-    );
-  }, [selectedAllergens, allergenRelevantItems]);
+    return allergenRelevantItems.filter(item => {
+      // Safe means: doesn't contain any selected real allergen AND has all selected dietary tags
+      const hasNoAllergen = !item.allergens.some(a => selectedRealAllergens.includes(a));
+      const hasAllDietary = selectedDietary.every(d => item.allergens.includes(d));
+      return hasNoAllergen && hasAllDietary;
+    });
+  }, [selectedAllergens, selectedRealAllergens, selectedDietary, allergenRelevantItems]);
 
   const filteredSafeItems = useMemo(() => {
     if (!searchQuery) return safeItems;
@@ -286,11 +298,12 @@ function AllergyCheckContent() {
       </div>
       <div className="mb-6 no-print">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Guest's Allergens — tap to select
+          Guest's Allergens & Dietary Preferences — tap to select
         </p>
-        <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 mb-3">
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2 mb-3">
           {allergens.map((allergen) => {
             const isSelected = selectedAllergens.includes(allergen.id);
+            const isDietary = allergen.isDietary;
             return (
               <button
                 key={allergen.id}
@@ -299,8 +312,12 @@ function AllergyCheckContent() {
                   "flex flex-col items-center justify-center",
                   "gap-1 p-2 rounded-xl border-2 transition-all",
                   "text-center min-h-[4rem]",
-                  isSelected
+                  isSelected && isDietary
+                    ? "border-jade bg-jade/10 scale-95"
+                    : isSelected
                     ? "border-destructive bg-destructive/10 scale-95"
+                    : isDietary
+                    ? "border-border bg-card hover:border-jade/40 hover:bg-jade/5"
                     : "border-border bg-card hover:border-destructive/40 hover:bg-destructive/5"
                 )}
               >
@@ -309,7 +326,9 @@ function AllergyCheckContent() {
                 </span>
                 <span className={cn(
                   "text-[9px] font-medium leading-tight",
-                  isSelected
+                  isSelected && isDietary
+                    ? "text-jade"
+                    : isSelected
                     ? "text-destructive"
                     : "text-muted-foreground"
                 )}>
@@ -321,8 +340,8 @@ function AllergyCheckContent() {
         </div>
         {selectedAllergens.length > 0 && (
           <div className="flex items-center justify-between">
-            <p className="text-xs text-destructive font-medium">
-              {selectedAllergens.length} allergen{selectedAllergens.length > 1 ? 's' : ''} selected
+            <p className="text-xs text-muted-foreground font-medium">
+              {selectedAllergens.length} filter{selectedAllergens.length > 1 ? 's' : ''} selected
             </p>
             <button
               onClick={() => setSelectedAllergens([])}
@@ -398,7 +417,7 @@ function AllergyCheckContent() {
           <div className="no-print">
             <div className="flex items-center gap-2 mb-4">
               <X className="w-5 h-5 text-destructive" />
-              <h2 className="font-serif text-xl font-semibold">Contains Selected Allergens</h2>
+              <h2 className="font-serif text-xl font-semibold">Cannot Accommodate</h2>
               <Badge variant="destructive">{itemsWithAllergens.length}</Badge>
             </div>
 
