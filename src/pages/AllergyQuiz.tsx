@@ -106,6 +106,7 @@ const generateQuestions = (): AllergyQuizQuestion[] => {
 export default function AllergyQuizPage() {
   usePageTitle("Allergy Quiz");
   const [quizStarted, setQuizStarted] = useState(false);
+  const [questionLimit, setQuestionLimit] = useState<number | null>(20);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<Set<string>>(new Set());
