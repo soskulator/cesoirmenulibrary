@@ -192,6 +192,19 @@ export function Header() {
     const interval = setInterval(fetchPendingCount, 30000);
     return () => clearInterval(interval);
   }, [isAdmin]);
+
+  useEffect(() => {
+    if (!user) return;
+    const today = new Date().toISOString().split('T')[0];
+    supabase
+      .from('daily_focus_settings')
+      .select('id')
+      .eq('focus_date', today)
+      .maybeSingle()
+      .then(({ data }) => {
+        setHasTodayFocus(!!data);
+      });
+  }, [user]);
   
   const getInitials = (name: string | null, email: string) => {
     if (name) {
