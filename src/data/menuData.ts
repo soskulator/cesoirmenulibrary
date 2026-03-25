@@ -1,6 +1,6 @@
 // Re-export types from menuTypes to avoid duplication
 export type { AllergenType, Allergen, Question, MenuItem, Category } from './menuTypes';
-import type { AllergenType } from './menuTypes';
+import type { AllergenType, Allergen, Question, MenuItem, Category } from './menuTypes';
 
 export interface DailyFocus {
   date: string;
