@@ -191,7 +191,6 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
             }
             .status-safe { background: #5a8f5a; }
             .status-modifiable { background: #d4a030; }
-            .status-avoid { background: #c44; }
             .print-item-name {
               font-weight: 600;
               font-size: 10pt;
