@@ -80,32 +80,40 @@ export default function AllergenMenuPage() {
             Per-Allergen Menu
           </h1>
           <p className="text-sm text-muted-foreground">
-            Select an allergen to see the full modified menu for that guest
+            Select an allergen or dietary preference to see the full modified menu
           </p>
         </div>
 
-        {/* Allergen selector */}
-        <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 mb-8">
-          {allergens.map(allergen => (
-            <button
-              key={allergen.id}
-              onClick={() => setSelected(selected === allergen.id ? null : allergen.id)}
-              className={cn(
-                "flex flex-col items-center justify-center gap-1 p-2 rounded-xl border-2 transition-all min-h-[4rem]",
-                selected === allergen.id
-                  ? "border-copper bg-copper/10 scale-95"
-                  : "border-border bg-card hover:border-copper/40"
-              )}
-            >
-              <span className="text-xl leading-none">{allergen.icon}</span>
-              <span className={cn(
-                "text-[9px] font-medium leading-tight text-center",
-                selected === allergen.id ? "text-copper" : "text-muted-foreground"
-              )}>
-                {allergen.commonName.split('/')[0]}
-              </span>
-            </button>
-          ))}
+        {/* Allergen & dietary selector */}
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2 mb-8">
+          {allergens.map(allergen => {
+            const isActive = selected === allergen.id;
+            const isDietary = allergen.isDietary;
+            return (
+              <button
+                key={allergen.id}
+                onClick={() => setSelected(isActive ? null : allergen.id)}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1 p-2 rounded-xl border-2 transition-all min-h-[4rem]",
+                  isActive && isDietary
+                    ? "border-jade bg-jade/10 scale-95"
+                    : isActive
+                    ? "border-copper bg-copper/10 scale-95"
+                    : isDietary
+                    ? "border-border bg-card hover:border-jade/40"
+                    : "border-border bg-card hover:border-copper/40"
+                )}
+              >
+                <span className="text-xl leading-none">{allergen.icon}</span>
+                <span className={cn(
+                  "text-[9px] font-medium leading-tight text-center",
+                  isActive && isDietary ? "text-jade" : isActive ? "text-copper" : "text-muted-foreground"
+                )}>
+                  {allergen.commonName.split('/')[0]}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Empty state */}
