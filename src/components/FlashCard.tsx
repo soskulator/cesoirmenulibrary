@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { MenuItem } from '@/data/menuTypes';
 import { getDishImage } from '@/data/dishImages';
 import { AllergenList } from './AllergenBadge';
+import { DietaryBadges } from './DietaryBadge';
 import { cn } from '@/lib/utils';
 
 interface FlashCardProps {
