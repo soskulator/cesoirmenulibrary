@@ -21,7 +21,7 @@ import {
   Target, Calendar, XCircle, Trash2,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useScoringData, type StaffScore, type StaffDetail } from '@/hooks/useScoringData';
+import { useScoringData, type StaffScore, type StaffDetail, type InactiveStaff } from '@/hooks/useScoringData';
 import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
 import { QuizPerformanceDashboard } from '@/components/admin/QuizPerformanceDashboard';
 import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
