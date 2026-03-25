@@ -484,35 +484,86 @@ export default function AuthPage() {
 
   return (
     <Layout>
-      <div className="relative min-h-[80vh] flex items-center justify-center">
-        <div className="absolute inset-0 z-0" style={{ backgroundImage: `url(${bayfrontBg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12 }} />
-        <div className="relative z-10 w-full max-w-md px-4 py-8 sm:py-16">
+      <div className="min-h-[100svh] flex flex-col lg:flex-row">
+
+        {/* ── LEFT PANEL (desktop only) ── */}
+        <div className="hidden lg:flex lg:w-[45%] relative flex-col items-center justify-center overflow-hidden bg-charcoal">
+          {/* Background sketch */}
+          <div className="absolute inset-0">
+            <img
+              src={bayfrontBg}
+              alt=""
+              className="w-full h-full object-cover opacity-15"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-charcoal/60 via-charcoal/20 to-charcoal/80" />
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 flex flex-col items-center text-center px-12">
+            <img
+              src={logoImage}
+              alt="Ce Soir"
+              className="h-48 w-auto mb-6 drop-shadow-2xl"
+            />
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-copper to-transparent mb-5" />
+            <h2 className="font-serif text-cream text-2xl font-light tracking-wide mb-2">
+              Staff Training Portal
+            </h2>
+            <p className="text-cream/50 text-sm tracking-[0.15em] uppercase font-light">
+              Naples, Florida
+            </p>
+
+            {/* Feature list */}
+            <div className="mt-10 space-y-3 text-left w-full max-w-xs">
+              {[
+                'Full menu & beverage reference',
+                'Interactive flashcards',
+                'AI-graded knowledge tests',
+                'Daily shift focus updates',
+              ].map((feat) => (
+                <div key={feat} className="flex items-center gap-3">
+                  <div className="w-1 h-1 rounded-full bg-copper flex-shrink-0" />
+                  <p className="text-cream/60 text-sm font-light">{feat}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom copper line */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-copper/40 to-transparent" />
+        </div>
+
+        {/* ── RIGHT PANEL — Form ── */}
+        <div className="flex-1 flex flex-col items-center justify-center min-h-[100svh] lg:min-h-0 bg-cream px-6 py-10 lg:py-16">
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            className="w-full max-w-sm"
           >
-            <div className="text-center mb-8">
-              <img src={logoImage} alt="Ce Soir" className="h-20 mx-auto mb-3" />
-              <h1 className="font-serif text-2xl font-semibold text-charcoal">Staff Training Portal</h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                {isInviteSignup
-                  ? 'Create your account to get started'
-                  : mode === 'signup'
-                    ? 'Create your account'
-                    : 'Log in to access tests, flashcards, and menu reference'}
+            {/* Mobile logo — hidden on desktop */}
+            <div className="lg:hidden text-center mb-8">
+              <img
+                src={logoImage}
+                alt="Ce Soir"
+                className="h-24 mx-auto mb-3"
+              />
+              <div className="w-8 h-px bg-gradient-to-r from-transparent via-copper to-transparent mx-auto mb-3" />
+              <p className="text-xs tracking-[0.2em] uppercase text-copper/70 font-medium">
+                Staff Training Portal
               </p>
             </div>
 
             {/* Invitation banner */}
             {isInviteSignup && (
-              <div className="mb-4 p-4 bg-copper/10 border border-copper/20 rounded-lg text-center">
+              <div className="mb-5 p-4 bg-copper/10 border border-copper/20 rounded-xl text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <UserPlus className="w-4 h-4 text-copper" />
                   <span className="font-medium text-sm">You've been invited!</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  You've been invited to join as{' '}
+                  Joining as{' '}
                   <Badge variant="secondary" className="text-xs ml-1">
                     {invitation?.roleName || ROLE_LABELS[invitation?.role || ''] || invitation?.role}
                   </Badge>
@@ -520,15 +571,29 @@ export default function AuthPage() {
               </div>
             )}
 
-            <Card className="border-0 shadow-elevated rounded-xl bg-background/95 backdrop-blur-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Lock className="w-5 h-5 text-copper" />
-                  {isInviteSignup ? 'Create Account' : mode === 'signup' ? 'Sign Up' : 'Sign In'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {/* Tab toggle — hidden when invite signup */}
+            {/* Form card */}
+            <div className="bg-white rounded-2xl shadow-elevated border border-border/40 overflow-hidden">
+
+              {/* Card header strip */}
+              <div className="h-0.5 bg-gradient-to-r from-transparent via-copper to-transparent" />
+
+              <div className="p-6 sm:p-8">
+                <h1 className="font-serif text-xl font-semibold text-charcoal mb-1">
+                  {isInviteSignup
+                    ? 'Create your account'
+                    : mode === 'signup'
+                      ? 'Create account'
+                      : 'Welcome back'}
+                </h1>
+                <p className="text-sm text-muted-foreground mb-6">
+                  {isInviteSignup
+                    ? 'Set up your Ce Soir training account'
+                    : mode === 'signup'
+                      ? 'Join the training platform'
+                      : 'Sign in to your training portal'}
+                </p>
+
+                {/* Tab toggle */}
                 {!isInviteSignup && (
                   <div className="flex gap-1 mb-6 p-1 bg-muted rounded-lg">
                     <button
@@ -659,10 +724,12 @@ export default function AuthPage() {
                     </p>
                   )}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <p className="text-xs text-muted-foreground text-center mt-6">Need help logging in? Contact your manager</p>
+            <p className="text-xs text-muted-foreground text-center mt-6">
+              Need access? Contact your manager
+            </p>
           </motion.div>
         </div>
       </div>
