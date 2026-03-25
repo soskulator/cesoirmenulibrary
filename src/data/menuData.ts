@@ -475,7 +475,7 @@ export const menuItems: MenuItem[] = [
     name: 'Wild Mushroom Ravioli',
     shortDescription: 'Gorgonzola-truffle cream, walnut, pangrattato',
     longDescription: 'House-made ravioli filled with earthy forest mushrooms and herbs. Thin, delicate pasta finished with gorgonzola-truffle cream sauce (fresh truffle, gorgonzola, cream, white wine, shallots, thyme, rosemary). Topped with toasted walnuts and pangrattato.',
-    ingredientsText: 'House-made pasta, wild mushrooms, herbs, gorgonzola, fresh truffle, cream, white wine, shallots, thyme, rosemary, walnuts, pangrattato',
+    ingredientsText: 'House-made pasta (flour, egg), wild mushrooms, herbs, gorgonzola, fresh truffle, cream, white wine, shallots, thyme, rosemary, walnuts, pangrattato',
     prepNotes: 'Ravioli are house-made with deep, earthy filling. Sauce combines gorgonzola + fresh truffle. Both walnuts and pangrattato for layered texture.',
     sellingPointsText: 'House-made pasta • Fresh truffle • Gorgonzola cream • Toasted walnuts',
     imageUrl: '/placeholder.svg',
