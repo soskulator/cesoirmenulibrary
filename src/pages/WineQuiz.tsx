@@ -56,6 +56,7 @@ export default function WineQuizPage() {
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
   const [quizType, setQuizType] = useState<'all' | 'identify' | 'knowledge'>('all');
+  const { saveQuizScore } = useQuizScores();
 
   const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('wine');
   const { items: allMenuItems } = useMenuItems();
