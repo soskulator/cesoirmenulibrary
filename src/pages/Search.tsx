@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { useAuth } from '@/contexts/AuthContext';
 import { categories } from '@/data/menuData';
-import { Search, UtensilsCrossed, Wine, Martini, GlassWater, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Search, UtensilsCrossed, Wine, Martini, GlassWater, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const DEST: Record<string, string> = {
@@ -43,30 +43,32 @@ const CAT_COLOR: Record<string, string> = {
 };
 
 export default function SearchPage() {
-  usePageTitle("Search");
+  usePageTitle('Search');
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
+  const normalizedQuery = query.trim().toLowerCase();
   const { items, isLoading } = useMenuItems();
   const { hasPermission } = useAuth();
 
   const results = useMemo(() => {
-    if (query.trim().length < 2) return [];
-    const q = query.toLowerCase();
-    return items.filter(item => {
+    if (normalizedQuery.length < 2) return [];
+
+    return items.filter((item) => {
       if (!item.isPublished) return false;
+
       const permKey = CAT_PERMISSION[item.categoryId];
       if (permKey && !hasPermission(permKey)) return false;
+
       return (
-        item.name.toLowerCase().includes(q) ||
-        item.ingredientsText.toLowerCase().includes(q) ||
-        item.allergens.some(a => a.toLowerCase().includes(q))
+        item.name.toLowerCase().includes(normalizedQuery) ||
+        item.allergens.some((allergen) => allergen.toLowerCase().includes(normalizedQuery))
       );
     });
-  }, [query, items, hasPermission]);
+  }, [normalizedQuery, items, hasPermission]);
 
   const grouped = useMemo(() => {
     const map: Record<string, typeof results> = {};
-    results.forEach(item => {
+    results.forEach((item) => {
       if (!map[item.categoryId]) map[item.categoryId] = [];
       map[item.categoryId].push(item);
     });
@@ -76,60 +78,53 @@ export default function SearchPage() {
   return (
     <Layout>
       <div className="container max-w-2xl py-6 sm:py-8 px-3 sm:px-4">
-
-        {/* Search Input */}
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             autoFocus
             placeholder="Search dishes, wines, cocktails, spirits..."
             value={query}
-            onChange={(e) => setSearchParams(
-              e.target.value ? { q: e.target.value } : {}
-            )}
+            onChange={(e) => setSearchParams(e.target.value ? { q: e.target.value } : {})}
             className="pl-9 h-12 text-base"
           />
         </div>
 
-        {/* Empty state - no query */}
-        {query.trim().length < 2 && (
+        {normalizedQuery.length < 2 && (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm">
-              Type at least 2 characters to search across the entire menu, wine list, cocktails and spirits
+              Type at least 2 characters to search by dish name or allergen
             </p>
           </div>
         )}
 
-        {/* No results */}
-        {query.trim().length >= 2 && results.length === 0 && !isLoading && (
+        {normalizedQuery.length >= 2 && results.length === 0 && !isLoading && (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-sm">
-              No results for <strong>"{query}"</strong>
+              No results for <strong>&quot;{query}&quot;</strong>
             </p>
-            <p className="text-xs mt-1 opacity-60">
-              Try a dish name, ingredient, or allergen
-            </p>
+            <p className="text-xs mt-1 opacity-60">Try a dish name or allergen</p>
           </div>
         )}
 
-        {/* Results grouped by category */}
         {Object.entries(grouped).map(([catId, catItems]) => {
-          const cat = categories.find(c => c.id === catId);
+          const cat = categories.find((c) => c.id === catId);
           const dest = DEST[catId] || '/categories';
           const Icon = CAT_ICON[catId] || UtensilsCrossed;
           const color = CAT_COLOR[catId] || 'text-sage';
+
           return (
             <div key={catId} className="mb-6">
               <div className="flex items-center gap-2 mb-2">
-                <Icon className={cn("w-4 h-4", color)} />
+                <Icon className={cn('w-4 h-4', color)} />
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {cat?.name || catId}
                   <span className="ml-1.5 opacity-60">({catItems.length})</span>
                 </h2>
               </div>
+
               <div className="space-y-2">
-                {catItems.map(item => (
+                {catItems.map((item) => (
                   <Link
                     key={item.id}
                     to={dest}
@@ -144,13 +139,13 @@ export default function SearchPage() {
                       </p>
                       {item.allergens.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1.5">
-                          {item.allergens.slice(0, 4).map(a => (
+                          {item.allergens.map((allergen) => (
                             <Badge
-                              key={a}
+                              key={allergen}
                               variant="outline"
                               className="text-[9px] px-1 py-0 border-destructive/30 text-destructive/70"
                             >
-                              {a}
+                              {allergen}
                             </Badge>
                           ))}
                         </div>
@@ -164,10 +159,9 @@ export default function SearchPage() {
           );
         })}
 
-        {/* Result count */}
         {results.length > 0 && (
           <p className="text-center text-xs text-muted-foreground mt-4 pb-4">
-            {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+            {results.length} result{results.length !== 1 ? 's' : ''} for &quot;{query}&quot;
           </p>
         )}
       </div>
