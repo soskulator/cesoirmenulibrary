@@ -156,7 +156,8 @@ export default function WineQuizPage() {
 
   const startQuiz = () => {
     const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
-    setShuffledQuestions(shuffled);
+    const limited = questionLimit ? shuffled.slice(0, questionLimit) : shuffled;
+    setShuffledQuestions(limited);
     setQuizStarted(true);
     setCurrentIndex(0);
     setScore({ correct: 0, incorrect: 0 });
