@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User } from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import cesoirLogo from '@/assets/cesoir-logo.png';
@@ -232,6 +232,20 @@ export function Header() {
             <HelpCircle className="w-4 h-4" />
             Test
             {location.pathname === '/quiz' && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
+           </Link>
+
+          {/* Search Icon */}
+          <Link
+            to="/search"
+            className={cn(
+              "relative px-2.5 py-1.5 rounded-md transition-colors",
+              location.pathname === '/search'
+                ? "text-burgundy"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
+            )}
+            title="Search"
+          >
+            <Search className="w-4 h-4" />
           </Link>
           
           {isAdmin && <>
@@ -364,6 +378,19 @@ export function Header() {
         <nav className="container py-4 flex flex-col gap-0.5">
           {/* Browse Section */}
           <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Browse</p>
+          <Link
+            to="/search"
+            onClick={() => setMobileMenuOpen(false)}
+            className={cn(
+              "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors border-l-2",
+              location.pathname === '/search'
+                ? "bg-copper/10 text-copper border-copper"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
+            )}
+          >
+            <Search className="w-5 h-5" />
+            <span className="font-medium text-sm">Search</span>
+          </Link>
           {filteredNavItems.filter(i => ['/', '/categories', '/wine-list', '/spirits', '/cocktails'].includes(i.path)).map(item => {
             const isActive = location.pathname === item.path;
             return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
