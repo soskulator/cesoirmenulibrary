@@ -58,6 +58,15 @@ export interface IncompleteStaff {
   missingTests: string[];
 }
 
+export interface InactiveStaff {
+  userId: string;
+  fullName: string;
+  email: string;
+  role: string | null;
+  lastSeen: string | null;
+  daysSinceActive: number;
+}
+
 const ROLE_LABELS: Record<string, string> = {
   lead_admin: 'Lead Admin',
   admin: 'Admin',
@@ -71,6 +80,7 @@ export function useScoringData() {
   const [leaderboard, setLeaderboard] = useState<StaffScore[]>([]);
   const [overview, setOverview] = useState<OverviewStats | null>(null);
   const [incompleteStaff, setIncompleteStaff] = useState<IncompleteStaff[]>([]);
+  const [inactiveStaff, setInactiveStaff] = useState<InactiveStaff[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchAll = useCallback(async () => {
@@ -81,11 +91,13 @@ export function useScoringData() {
         { data: roles },
         { data: attempts },
         { data: testConfigs },
+        { data: sessions },
       ] = await Promise.all([
         supabase.from('profiles').select('id, full_name, email'),
         supabase.from('user_roles').select('user_id, role'),
         supabase.from('foh_test_attempts').select('*').not('completed_at', 'is', null).order('completed_at', { ascending: false }),
         supabase.from('test_configurations').select('test_type, test_name').eq('is_active', true),
+        supabase.from('user_sessions').select('user_id, session_end, last_heartbeat').order('session_end', { ascending: false }),
       ]);
 
       const roleMap: Record<string, string> = {};
@@ -209,6 +221,42 @@ export function useScoringData() {
         }
       });
       setIncompleteStaff(incomplete);
+
+      // Build inactive staff list (7+ days)
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const latestSessionMap: Record<string, string> = {};
+      (sessions || []).forEach(s => {
+        const uid = s.user_id;
+        const ts = s.session_end || s.last_heartbeat;
+        if (ts && !latestSessionMap[uid]) {
+          latestSessionMap[uid] = ts;
+        }
+      });
+
+      const inactive: InactiveStaff[] = [];
+      (profiles || []).forEach(p => {
+        const role = roleMap[p.id];
+        if (role === 'lead_admin' || role === 'admin') return;
+        const lastSeen = latestSessionMap[p.id] || null;
+        if (!lastSeen || new Date(lastSeen) < sevenDaysAgo) {
+          const days = lastSeen
+            ? Math.floor((Date.now() - new Date(lastSeen).getTime()) / 86400000)
+            : 999;
+          inactive.push({
+            userId: p.id,
+            fullName: p.full_name || 'Unknown',
+            email: p.email,
+            role: role || null,
+            lastSeen,
+            daysSinceActive: days,
+          });
+        }
+      });
+
+      inactive.sort((a, b) => b.daysSinceActive - a.daysSinceActive);
+      setInactiveStaff(inactive);
 
     } catch (err) {
       console.error('Error fetching scoring data:', err);
@@ -373,6 +421,7 @@ export function useScoringData() {
     leaderboard,
     overview,
     incompleteStaff,
+    inactiveStaff,
     isLoading,
     fetchAll,
     fetchStaffDetail,

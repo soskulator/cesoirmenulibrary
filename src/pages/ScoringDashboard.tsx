@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -20,7 +21,7 @@ import {
   Target, Calendar, XCircle, Trash2,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useScoringData, type StaffScore, type StaffDetail } from '@/hooks/useScoringData';
+import { useScoringData, type StaffScore, type StaffDetail, type InactiveStaff } from '@/hooks/useScoringData';
 import { StaffActivityLog } from '@/components/admin/StaffActivityLog';
 import { QuizPerformanceDashboard } from '@/components/admin/QuizPerformanceDashboard';
 import { FohTestQuestionManager } from '@/components/admin/FohTestQuestionManager';
@@ -49,7 +50,7 @@ export default function ScoringDashboard() {
   usePageTitle("Staff Scoring");
   const { isAdmin, isLeadAdmin } = useAuth();
   const {
-    leaderboard, overview, incompleteStaff, isLoading,
+    leaderboard, overview, incompleteStaff, inactiveStaff, isLoading,
     fetchAll, fetchStaffDetail, exportCSV, sendReminder, deleteUserScores,
   } = useScoringData();
 
@@ -323,6 +324,45 @@ export default function ScoringDashboard() {
             </CollapsibleContent>
           </Card>
         </Collapsible>
+
+        {inactiveStaff.length > 0 && (
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Bell className="w-4 h-4 text-gold" />
+                Inactive Staff
+                <Badge variant="outline" className="text-gold border-gold/30 bg-gold/10 ml-1">
+                  {inactiveStaff.length}
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                Staff who haven't logged in for 7+ days
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {inactiveStaff.map(s => (
+                  <div key={s.userId} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
+                    <div>
+                      <p className="text-sm font-medium">{s.fullName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {s.email} · {ROLE_LABELS[s.role || ''] || 'Staff'}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className={cn(
+                      "text-xs",
+                      s.daysSinceActive >= 14
+                        ? "border-destructive/30 text-destructive bg-destructive/10"
+                        : "border-gold/30 text-gold bg-gold/10"
+                    )}>
+                      {s.daysSinceActive === 999 ? 'Never logged in' : `${s.daysSinceActive}d ago`}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* SECTION 4: Test Management */}
         {isAdmin && (
