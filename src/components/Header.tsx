@@ -454,5 +454,6 @@ export function Header() {
         </nav>
       </motion.div>
     </header>
+    <HeaderSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
   </>;
 }
