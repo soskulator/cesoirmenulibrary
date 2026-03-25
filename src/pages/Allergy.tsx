@@ -195,6 +195,14 @@ export default function AllergyPage() {
 
 function AllergyCheckContent() {
   const { items: menuItems, isLoading } = useMenuItems();
+  const { modifications } = useAllergenModifications();
+
+  const getModsForItem = (itemId: string, allergenIds: AllergenType[]) => {
+    return allergenIds
+      .map(a => modifications.find(m => m.menu_item_id === itemId && m.allergen_type === a))
+      .filter(Boolean);
+  };
+
   const [selectedAllergens, setSelectedAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categorySearchQuery, setCategorySearchQuery] = useState('');
