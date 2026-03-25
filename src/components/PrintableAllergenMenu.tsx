@@ -161,7 +161,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
             }
             .dot-safe { width: 6pt; height: 6pt; border-radius: 50%; background: #5a8f5a; display: inline-block; }
             .dot-mod { width: 6pt; height: 6pt; border-radius: 50%; background: #d4a030; display: inline-block; }
-            .dot-avoid { width: 6pt; height: 6pt; border-radius: 50%; background: #c44; display: inline-block; }
+            
             .print-course {
               margin-bottom: 14pt;
               page-break-inside: avoid;
