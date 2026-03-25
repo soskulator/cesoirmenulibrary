@@ -183,8 +183,9 @@ export default function FoodQuizPage() {
   const [shuffledQuestions, setShuffledQuestions] = useState<FoodQuizQuestion[]>([]);
 
   const startQuiz = () => {
-    setShuffledQuestions(shuffle(allQuestions));
-    setQuizStarted(true);
+    const shuffled = shuffle(allQuestions);
+    const limited = questionLimit ? shuffled.slice(0, questionLimit) : shuffled;
+    setShuffledQuestions(limited);
     setCurrentIndex(0);
     setScore({ correct: 0, incorrect: 0 });
     setUserAnswer('');
