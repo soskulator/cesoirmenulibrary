@@ -113,6 +113,7 @@ export function Header() {
     role,
     fullName,
     signOut,
+    refreshRole,
     loading
   } = useAuth();
   
