@@ -30,22 +30,34 @@ export default function AllergenMenuPage() {
     const modifiable: typeof foodItems = [];
     const cannot: typeof foodItems = [];
 
+    const isDietary = isDietaryType(selected);
+
     foodItems.forEach(item => {
-      const hasAllergen = item.allergens.includes(selected);
-
-      if (!hasAllergen) {
-        safe.push(item);
-        return;
-      }
-
-      const mod = modifications.find(
-        m => m.menu_item_id === item.id && m.allergen_type === selected
-      );
-
-      if (mod?.can_remove) {
-        modifiable.push(item);
+      if (isDietary) {
+        // Dietary: item tagged with this = safe, not tagged = cannot accommodate
+        if (item.allergens.includes(selected)) {
+          safe.push(item);
+        } else {
+          cannot.push(item);
+        }
       } else {
-        cannot.push(item);
+        // Allergen: item tagged = contains allergen (check if modifiable)
+        const hasAllergen = item.allergens.includes(selected);
+
+        if (!hasAllergen) {
+          safe.push(item);
+          return;
+        }
+
+        const mod = modifications.find(
+          m => m.menu_item_id === item.id && m.allergen_type === selected
+        );
+
+        if (mod?.can_remove) {
+          modifiable.push(item);
+        } else {
+          cannot.push(item);
+        }
       }
     });
 
