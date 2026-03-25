@@ -1,5 +1,6 @@
 import { useMemo, forwardRef } from 'react';
 import { MenuItem, AllergenType, allergens, getCategoryById } from '@/data/menuData';
+import logoImage from '@/assets/cesoir-logo.png';
 import { AllergenModification } from '@/hooks/useAllergenModifications';
 import { DbCategory } from '@/hooks/useCategories';
 
@@ -109,6 +110,12 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               font-size: 10pt;
               color: #1a1a1a;
               line-height: 1.4;
+            }
+            .print-logo {
+              height: 60pt;
+              width: auto;
+              margin: 0 auto 8pt;
+              display: block;
             }
             .print-header {
               text-align: center;
@@ -226,7 +233,8 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
         `}</style>
 
         <div className="print-header">
-          <div className="print-title">Ce Soir — Adapted Menu</div>
+          <img src={logoImage} alt="Ce Soir" className="print-logo" />
+          <div className="print-title">Adapted Menu</div>
           <div className="print-subtitle">{today}</div>
           <div className="print-allergens-list">
             Avoiding: {allergenNames.join(' · ')}
