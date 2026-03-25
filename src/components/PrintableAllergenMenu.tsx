@@ -233,7 +233,8 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
         `}</style>
 
         <div className="print-header">
-          <div className="print-title">Ce Soir — Adapted Menu</div>
+          <img src={logoImage} alt="Ce Soir" className="print-logo" />
+          <div className="print-title">Adapted Menu</div>
           <div className="print-subtitle">{today}</div>
           <div className="print-allergens-list">
             Avoiding: {allergenNames.join(' · ')}
