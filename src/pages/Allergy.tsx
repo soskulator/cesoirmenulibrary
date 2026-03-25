@@ -199,6 +199,7 @@ export default function AllergyPage() {
 function AllergyCheckContent() {
   const { items: menuItems, isLoading } = useMenuItems();
   const { modifications } = useAllergenModifications();
+  const { categories: dbCategories } = useCategories();
 
   const getModsForItem = (itemId: string, allergenIds: AllergenType[]) => {
     return allergenIds
