@@ -13,9 +13,9 @@ import {
   menuItems as staticMenuItems, 
   allergens, 
   AllergenType,
-  filterByAllergen,
   MenuItem
-} from '@/data/menuData';
+} from '@/data/menuTypes';
+import { filterByAllergen } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 
 import { 

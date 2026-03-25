@@ -6,7 +6,8 @@ import { Layout } from '@/components/Layout';
 import { BeverageFlashCard } from '@/components/BeverageFlashCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { menuItems as staticMenuItems, MenuItem } from '@/data/menuData';
+import { menuItems as staticMenuItems } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { 
   Check,

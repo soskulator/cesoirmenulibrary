@@ -21,7 +21,7 @@ import {
   getAllergenById,
   getCategoryById,
   MenuItem
-} from '@/data/menuData';
+} from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { useAllergenModifications } from '@/hooks/useAllergenModifications';
 import { getDishImage } from '@/data/dishImages';
