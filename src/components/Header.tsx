@@ -1,9 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User, Search } from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User, Search, Pencil, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Input } from '@/components/ui/input';
 import { HeaderSearch } from '@/components/HeaderSearch';
 import cesoirLogo from '@/assets/cesoir-logo.png';
 import { useAuth } from '@/contexts/AuthContext';
@@ -94,6 +95,9 @@ const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: bool
 };
 
 export function Header() {
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState('');
+  const [savingName, setSavingName] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
@@ -109,6 +113,7 @@ export function Header() {
     role,
     fullName,
     signOut,
+    refreshRole,
     loading
   } = useAuth();
   
@@ -197,6 +202,51 @@ export function Header() {
     }
     return email.substring(0, 2).toUpperCase();
   };
+
+  const handleStartEdit = () => {
+    setNameInput(fullName || '');
+    setEditingName(true);
+  };
+
+  const handleSaveName = async () => {
+    if (!user || !nameInput.trim()) return;
+    setSavingName(true);
+    const { error } = await supabase
+      .from('profiles')
+      .update({ full_name: nameInput.trim() })
+      .eq('id', user.id);
+    setSavingName(false);
+    if (!error) {
+      setEditingName(false);
+      refreshRole(); // refreshes fullName from context
+    }
+  };
+
+  const ProfileEditBlock = () => (
+    <div className="px-2 py-1.5">
+      {editingName ? (
+        <div className="flex items-center gap-1.5">
+          <Input
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+            className="h-7 text-sm"
+            placeholder="Full name"
+            autoFocus
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSaveName(); if (e.key === 'Escape') setEditingName(false); }}
+          />
+          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={handleSaveName} disabled={savingName}>
+            {savingName ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 text-jade" />}
+          </Button>
+        </div>
+      ) : (
+        <button onClick={handleStartEdit} className="flex items-center gap-2 w-full text-left hover:bg-accent rounded-md px-1 py-0.5 transition-colors">
+          <User className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm truncate flex-1">{fullName || 'Set your name'}</span>
+          <Pencil className="w-3 h-3 text-muted-foreground" />
+        </button>
+      )}
+    </div>
+  );
   return <>
       {/* Status bar background - extends behind notch/dynamic island */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top)] bg-background z-[60]" />
@@ -264,11 +314,6 @@ export function Header() {
           {/* Auth Section */}
           <div className="w-px h-5 bg-border mx-1.5" />
           {loading ? <div className="w-8 h-8 rounded-full bg-muted animate-pulse" /> : user ? <div className="flex items-center gap-2">
-              {/* Role Badge - visible next to avatar */}
-              <Badge variant="outline" className={cn("hidden xl:flex items-center gap-1 text-[10px] px-1.5 py-0.5", roleDisplay.color)}>
-                <roleDisplay.icon className="w-2.5 h-2.5" />
-                {roleDisplay.label}
-              </Badge>
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
@@ -288,15 +333,7 @@ export function Header() {
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-1.5">
-                  <div className="flex items-center gap-2">
-                    <roleDisplay.icon className={cn("w-4 h-4", roleDisplay.color)} />
-                    <span className={cn("text-sm font-medium", roleDisplay.color)}>
-                      {roleDisplay.label}
-                    </span>
-                  </div>
-                </div>
+                <ProfileEditBlock />
                 <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -313,13 +350,6 @@ export function Header() {
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center gap-1.5">
-          {/* Mobile Role Badge */}
-          {!loading && user && (
-            <Badge variant="outline" className={cn("flex items-center gap-1 text-[10px] px-1.5 py-0.5", roleDisplay.color)}>
-              <roleDisplay.icon className="w-2.5 h-2.5" />
-              <span className="hidden xs:inline">{roleDisplay.label}</span>
-            </Badge>
-          )}
           {!loading && user && <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0">
@@ -339,15 +369,7 @@ export function Header() {
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-1.5">
-                  <div className="flex items-center gap-2">
-                    <roleDisplay.icon className={cn("w-4 h-4", roleDisplay.color)} />
-                    <span className={cn("text-sm font-medium", roleDisplay.color)}>
-                      {roleDisplay.label}
-                    </span>
-                  </div>
-                </div>
+                <ProfileEditBlock />
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
