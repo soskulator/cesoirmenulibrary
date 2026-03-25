@@ -417,7 +417,7 @@ function AllergyCheckContent() {
           <div className="no-print">
             <div className="flex items-center gap-2 mb-4">
               <X className="w-5 h-5 text-destructive" />
-              <h2 className="font-serif text-xl font-semibold">Contains Selected Allergens</h2>
+              <h2 className="font-serif text-xl font-semibold">Cannot Accommodate</h2>
               <Badge variant="destructive">{itemsWithAllergens.length}</Badge>
             </div>
 

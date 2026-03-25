@@ -120,7 +120,7 @@ export default function AllergenMenuPage() {
         {!selected && (
           <div className="text-center py-16 text-muted-foreground">
             <AlertTriangle className="w-10 h-10 mx-auto mb-3 opacity-20" />
-            <p className="text-sm">Tap an allergen above to see the full modified menu</p>
+            <p className="text-sm">Tap an allergen or dietary preference above to see the filtered menu</p>
           </div>
         )}
 
