@@ -51,6 +51,7 @@ const getWineRegion = (wine: MenuItem) => {
 export default function WineQuizPage() {
   usePageTitle("Wine Quiz");
   const [quizStarted, setQuizStarted] = useState(false);
+  const [questionLimit, setQuestionLimit] = useState<number | null>(20);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
