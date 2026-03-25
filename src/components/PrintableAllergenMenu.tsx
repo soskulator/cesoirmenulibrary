@@ -207,10 +207,6 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               margin-left: 14pt;
               padding: 1pt 0;
             }
-            .print-item-avoid {
-              color: #999;
-              text-decoration: line-through;
-            }
             .print-footer {
               margin-top: 16pt;
               padding-top: 8pt;
