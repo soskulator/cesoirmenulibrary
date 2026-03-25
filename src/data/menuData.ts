@@ -231,7 +231,7 @@ export const menuItems: MenuItem[] = [
     name: 'Foie Gras Terrine',
     shortDescription: 'Fig mostarda, brûlée brioche, pistachio-pine nut crumble, port gelée',
     longDescription: 'Whole lobes of foie gras gently seasoned, shaped, and slowly cooked until perfectly smooth and luxurious. Served with fig mostarda (black mission figs with Pinot Noir vinegar, port, mustard seeds), ruby port gelée, pistachio-pine nut crumble, and caramelized brûlée brioche.',
-    ingredientsText: 'Foie gras (fatty duck liver), fig mostarda (black mission figs, Pinot Noir vinegar, port, mustard seeds, thyme, Dijon), port gelée, pistachios, pine nuts, brioche, sugar',
+    ingredientsText: 'Foie gras (fatty duck liver), fig mostarda (black mission figs, Pinot Noir vinegar, port, mustard seeds, thyme, Dijon), port gelée, pistachios, pine nuts, brioche (butter, egg), sugar',
     prepNotes: 'Terrine slices like soft butter. Fig Mostarda is sweet-tart, not spicy. Port Gelée adds wine aromatics. Brioche is brûléed with caramelized sugar crust.',
     sellingPointsText: 'Silky terrine texture • Fig mostarda • Pistachio-pine nut crumble • Ruby port gelée',
     imageUrl: '/placeholder.svg',
