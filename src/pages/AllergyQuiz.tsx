@@ -572,19 +572,21 @@ export default function AllergyQuizPage() {
                 </CardContent>
               </Card>
 
-              {/* Action Buttons */}
-              {!showAnswer ? (
-                <Button
-                  variant="burgundy"
-                  size="sm"
-                  className="w-full h-10 sm:h-12 text-sm"
-                  onClick={checkAnswer}
-                  disabled={selectedIngredients.size === 0}
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Check Answer
-                </Button>
-              ) : (
+              {/* Action Buttons — only for ingredient questions */}
+              {currentQuestion.type !== 'modification' && (
+                <>
+                  {!showAnswer ? (
+                    <Button
+                      variant="burgundy"
+                      size="sm"
+                      className="w-full h-10 sm:h-12 text-sm"
+                      onClick={checkAnswer}
+                      disabled={selectedIngredients.size === 0}
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Check Answer
+                    </Button>
+                  ) : (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
