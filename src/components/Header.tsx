@@ -101,6 +101,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
+  const [hasTodayFocus, setHasTodayFocus] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const {
