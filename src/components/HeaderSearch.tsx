@@ -210,7 +210,7 @@ export function HeaderSearch({ isOpen, onClose }: HeaderSearchProps) {
                                       variant="outline"
                                       className="text-[9px] px-1 py-0 border-destructive/30 text-destructive/70"
                                     >
-                                      {a}
+                                      <Highlight text={a} query={normalizedQuery} />
                                     </Badge>
                                   ))}
                                 </div>
