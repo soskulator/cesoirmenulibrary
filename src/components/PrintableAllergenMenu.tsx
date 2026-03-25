@@ -91,7 +91,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
     });
 
     return (
-      <div ref={ref} className="print-menu hidden print:block">
+      <div ref={ref} className="print-menu" style={{ display: 'none' }}>
         <style>{`
           @media print {
             body * { visibility: hidden; }
