@@ -409,91 +409,165 @@ export default function AllergyQuizPage() {
             >
               <Card variant="elevated" className="mb-4 sm:mb-6">
                 <CardContent className="p-3 sm:p-4 md:p-6">
-                  {/* Question Header */}
-                  <div className="flex items-center gap-2 mb-4 flex-wrap">
-                    <Badge className="bg-destructive/10 text-destructive text-xs">
-                      {currentQuestion.allergenIcon} {currentQuestion.allergenName} Allergy
-                    </Badge>
-                  </div>
-
-                  {/* Question */}
-                  <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold mb-2">
-                    {currentQuestion.dishName}
-                  </h2>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    Select all ingredients to remove for a guest with a <strong>{currentQuestion.allergenName}</strong> allergy:
-                  </p>
-
-                  {/* Ingredients */}
-                  <div className="space-y-2 mb-4">
-                    {currentQuestion.allIngredients.filter(ing => ing.removable).map((ingredient) => {
-                      const isSelected = selectedIngredients.has(ingredient.name);
-                      const isCorrect = showAnswer && currentQuestion.ingredientsToRemove.includes(ingredient.name);
-                      const isWrong = showAnswer && isSelected && !currentQuestion.ingredientsToRemove.includes(ingredient.name);
-                      const isMissed = showAnswer && !isSelected && currentQuestion.ingredientsToRemove.includes(ingredient.name);
-                      
-                      return (
-                        <button
-                          key={ingredient.name}
-                          onClick={() => !showAnswer && toggleIngredient(ingredient.name)}
-                          disabled={showAnswer}
+                  {currentQuestion.type === 'modification' ? (
+                    // Modification question
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        <Badge className="bg-copper/10 text-copper text-xs">
+                          {(currentQuestion as ModificationQuizQuestion).allergenIcon}{' '}
+                          {(currentQuestion as ModificationQuizQuestion).allergenName} Modification
+                        </Badge>
+                        {!(currentQuestion as ModificationQuizQuestion).canRemove && (
+                          <Badge className="bg-destructive/10 text-destructive text-xs">
+                            Cannot Remove
+                          </Badge>
+                        )}
+                      </div>
+                      <h2 className="font-serif text-lg sm:text-xl font-semibold mb-4">
+                        {currentQuestion.prompt}
+                      </h2>
+                      {showAnswer ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
                           className={cn(
-                            "w-full flex items-center justify-between p-3 rounded-lg border transition-all text-left",
-                            showAnswer && isCorrect && isSelected && "bg-sage/20 border-sage",
-                            showAnswer && isWrong && "bg-destructive/20 border-destructive",
-                            showAnswer && isMissed && "bg-gold/20 border-gold",
-                            !showAnswer && isSelected && "bg-burgundy/10 border-burgundy",
-                            !showAnswer && !isSelected && "bg-muted/50 border-border hover:bg-muted"
+                            "p-4 rounded-lg border-l-4",
+                            (currentQuestion as ModificationQuizQuestion).canRemove
+                              ? "bg-jade/10 border-jade"
+                              : "bg-amber-50 border-amber-400"
                           )}
                         >
-                          <span className="text-sm font-medium">{ingredient.name}</span>
-                          <div className="flex items-center gap-2">
-                            {ingredient.allergens.length > 0 && (
-                              <div className="flex gap-1">
-                                {ingredient.allergens.map(a => {
-                                  const allergenInfo = allergens.find(al => al.id === a);
-                                  return (
-                                    <span key={a} className="text-xs" title={allergenInfo?.name}>
-                                      {allergenInfo?.icon}
-                                    </span>
-                                  );
-                                })}
-                              </div>
-                            )}
-                            {!showAnswer && (
-                              isSelected ? (
-                                <Minus className="w-4 h-4 text-burgundy" />
-                              ) : (
-                                <Plus className="w-4 h-4 text-muted-foreground" />
-                              )
-                            )}
-                            {showAnswer && isCorrect && isSelected && <Check className="w-4 h-4 text-sage" />}
-                            {showAnswer && isWrong && <X className="w-4 h-4 text-destructive" />}
-                            {showAnswer && isMissed && <AlertTriangle className="w-4 h-4 text-gold" />}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Answer Feedback */}
-                  {showAnswer && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="p-3 sm:p-4 bg-muted rounded-lg"
-                    >
-                      <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2">
-                        Correct ingredients to remove:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {currentQuestion.ingredientsToRemove.map(ing => (
-                          <Badge key={ing} variant="secondary" className="text-xs">
-                            {ing}
-                          </Badge>
-                        ))}
+                          <p className="text-sm font-medium mb-1 text-muted-foreground">
+                            Correct response:
+                          </p>
+                          <p className="text-sm leading-relaxed">
+                            {(currentQuestion as ModificationQuizQuestion).substitutionNotes}
+                          </p>
+                        </motion.div>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          className="w-full h-11"
+                          onClick={() => setShowAnswer(true)}
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          Reveal Answer
+                        </Button>
+                      )}
+                      {showAnswer && (
+                        <div className="mt-4 flex gap-3">
+                          <Button
+                            variant="outline"
+                            className="flex-1 h-10 border-sage text-sage hover:bg-sage/10"
+                            onClick={() => {
+                              setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
+                              goToNext();
+                            }}
+                          >
+                            <Check className="w-4 h-4 mr-2" />
+                            I knew this
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="flex-1 h-10 border-destructive text-destructive hover:bg-destructive/10"
+                            onClick={() => {
+                              setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
+                              goToNext();
+                            }}
+                          >
+                            <X className="w-4 h-4 mr-2" />
+                            Still learning
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    // Existing ingredient-removal UI
+                    <>
+                      {/* Question Header */}
+                      <div className="flex items-center gap-2 mb-4 flex-wrap">
+                        <Badge className="bg-destructive/10 text-destructive text-xs">
+                          {currentQuestion.allergenIcon} {currentQuestion.allergenName} Allergy
+                        </Badge>
                       </div>
-                    </motion.div>
+
+                      <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold mb-2">
+                        {currentQuestion.dishName}
+                      </h2>
+                      <p className="text-muted-foreground text-sm mb-4">
+                        Select all ingredients to remove for a guest with a <strong>{currentQuestion.allergenName}</strong> allergy:
+                      </p>
+
+                      <div className="space-y-2 mb-4">
+                        {(currentQuestion as AllergyQuizQuestion).allIngredients.filter(ing => ing.removable).map((ingredient) => {
+                          const isSelected = selectedIngredients.has(ingredient.name);
+                          const isCorrect = showAnswer && (currentQuestion as AllergyQuizQuestion).ingredientsToRemove.includes(ingredient.name);
+                          const isWrong = showAnswer && isSelected && !(currentQuestion as AllergyQuizQuestion).ingredientsToRemove.includes(ingredient.name);
+                          const isMissed = showAnswer && !isSelected && (currentQuestion as AllergyQuizQuestion).ingredientsToRemove.includes(ingredient.name);
+                          
+                          return (
+                            <button
+                              key={ingredient.name}
+                              onClick={() => !showAnswer && toggleIngredient(ingredient.name)}
+                              disabled={showAnswer}
+                              className={cn(
+                                "w-full flex items-center justify-between p-3 rounded-lg border transition-all text-left",
+                                showAnswer && isCorrect && isSelected && "bg-sage/20 border-sage",
+                                showAnswer && isWrong && "bg-destructive/20 border-destructive",
+                                showAnswer && isMissed && "bg-gold/20 border-gold",
+                                !showAnswer && isSelected && "bg-burgundy/10 border-burgundy",
+                                !showAnswer && !isSelected && "bg-muted/50 border-border hover:bg-muted"
+                              )}
+                            >
+                              <span className="text-sm font-medium">{ingredient.name}</span>
+                              <div className="flex items-center gap-2">
+                                {ingredient.allergens.length > 0 && (
+                                  <div className="flex gap-1">
+                                    {ingredient.allergens.map(a => {
+                                      const allergenInfo = allergens.find(al => al.id === a);
+                                      return (
+                                        <span key={a} className="text-xs" title={allergenInfo?.name}>
+                                          {allergenInfo?.icon}
+                                        </span>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                                {!showAnswer && (
+                                  isSelected ? (
+                                    <Minus className="w-4 h-4 text-burgundy" />
+                                  ) : (
+                                    <Plus className="w-4 h-4 text-muted-foreground" />
+                                  )
+                                )}
+                                {showAnswer && isCorrect && isSelected && <Check className="w-4 h-4 text-sage" />}
+                                {showAnswer && isWrong && <X className="w-4 h-4 text-destructive" />}
+                                {showAnswer && isMissed && <AlertTriangle className="w-4 h-4 text-gold" />}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {showAnswer && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="p-3 sm:p-4 bg-muted rounded-lg"
+                        >
+                          <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2">
+                            Correct ingredients to remove:
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {(currentQuestion as AllergyQuizQuestion).ingredientsToRemove.map(ing => (
+                              <Badge key={ing} variant="secondary" className="text-xs">
+                                {ing}
+                              </Badge>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>
