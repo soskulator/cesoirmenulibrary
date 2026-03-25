@@ -347,6 +347,19 @@ export default function LeadAdminDashboard() {
   };
 
   if (authLoading) {
+    return (
+      <Layout>
+        <div className="bg-admin-bg min-h-screen">
+          <div className="container py-8 max-w-6xl">
+            <p className="text-muted-foreground">Checking permissions…</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!user || !isLeadAdmin) return null;
+
   return (
     <Layout>
       <div className="bg-admin-bg min-h-screen">
