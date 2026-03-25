@@ -111,6 +111,12 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               color: #1a1a1a;
               line-height: 1.4;
             }
+            .print-logo {
+              height: 60pt;
+              width: auto;
+              margin: 0 auto 8pt;
+              display: block;
+            }
             .print-header {
               text-align: center;
               margin-bottom: 20pt;
