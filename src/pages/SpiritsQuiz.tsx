@@ -10,6 +10,7 @@ import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
+import { useQuizScores } from '@/hooks/useQuizScores';
 
 import { 
   Check, 
