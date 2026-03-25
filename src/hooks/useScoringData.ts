@@ -421,6 +421,7 @@ export function useScoringData() {
     leaderboard,
     overview,
     incompleteStaff,
+    inactiveStaff,
     isLoading,
     fetchAll,
     fetchStaffDetail,
