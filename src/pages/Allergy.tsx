@@ -347,7 +347,7 @@ function AllergyCheckContent() {
               </div>
               <Button variant="outline" size="sm" onClick={handlePrint} className="no-print">
                 <Printer className="w-4 h-4 mr-2" />
-                Print
+                Print Adapted Menu
               </Button>
             </div>
 
