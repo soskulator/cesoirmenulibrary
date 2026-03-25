@@ -109,14 +109,7 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="/search"
-                  element={
-                    <ProtectedRoute>
-                      <SearchPage />
-                    </ProtectedRoute>
-                  }
-                />
+                {/* /search route removed — search is now a header overlay */}
                 <Route
                   path="/flashcards"
                   element={
