@@ -129,16 +129,46 @@ export default function AllergyQuizPage() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<Set<string>>(new Set());
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
-  const [shuffledQuestions, setShuffledQuestions] = useState<AllergyQuizQuestion[]>([]);
+  const [shuffledQuestions, setShuffledQuestions] = useState<AnyQuizQuestion[]>([]);
   
   // DB allergy questions are available but this quiz format is specialized
   // (ingredient removal), so DB questions are currently informational only
   const { questions: dbAllergyQuestions, isEmpty: dbIsEmpty } = useCategoryQuestions('allergy');
+  const { items: dbItems } = useMenuItems();
+  const { modifications } = useAllergenModifications();
 
   const allQuestions = useMemo(() => generateQuestions(), []);
 
+  const modificationQuestions = useMemo((): ModificationQuizQuestion[] => {
+    return modifications
+      .filter(m => m.substitution_notes?.trim().length > 0)
+      .map(m => {
+        const item = dbItems.find(i => i.id === m.menu_item_id);
+        const allergenInfo = allergens.find(a => a.id === m.allergen_type);
+        if (!item || !allergenInfo) return null;
+
+        const prompt = m.can_remove
+          ? `A guest has a ${allergenInfo.name} allergy. How do you modify the ${item.name}?`
+          : `A guest has a ${allergenInfo.name} allergy and asks about the ${item.name}. What do you tell them?`;
+
+        return {
+          id: `mod-${m.id}`,
+          type: 'modification' as const,
+          dishName: item.name,
+          allergenName: allergenInfo.name,
+          allergenIcon: allergenInfo.icon,
+          canRemove: m.can_remove,
+          substitutionNotes: m.substitution_notes,
+          prompt,
+          correctAnswer: m.substitution_notes,
+        };
+      })
+      .filter(Boolean) as ModificationQuizQuestion[];
+  }, [modifications, dbItems]);
+
   const startQuiz = () => {
-    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+    const combined: AnyQuizQuestion[] = [...allQuestions, ...modificationQuestions];
+    const shuffled = [...combined].sort(() => Math.random() - 0.5);
     const limited = questionLimit ? shuffled.slice(0, questionLimit) : shuffled;
     setShuffledQuestions(limited);
     setQuizStarted(true);
