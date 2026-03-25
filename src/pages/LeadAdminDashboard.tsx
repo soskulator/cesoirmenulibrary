@@ -47,6 +47,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
+import { cn } from '@/lib/utils';
 
 export default function LeadAdminDashboard() {
   usePageTitle("Dashboard");
