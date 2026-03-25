@@ -369,15 +369,7 @@ export function Header() {
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-1.5">
-                  <div className="flex items-center gap-2">
-                    <roleDisplay.icon className={cn("w-4 h-4", roleDisplay.color)} />
-                    <span className={cn("text-sm font-medium", roleDisplay.color)}>
-                      {roleDisplay.label}
-                    </span>
-                  </div>
-                </div>
+                <ProfileEditBlock />
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
