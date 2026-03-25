@@ -195,6 +195,14 @@ export default function AllergyPage() {
 
 function AllergyCheckContent() {
   const { items: menuItems, isLoading } = useMenuItems();
+  const { modifications } = useAllergenModifications();
+
+  const getModsForItem = (itemId: string, allergenIds: AllergenType[]) => {
+    return allergenIds
+      .map(a => modifications.find(m => m.menu_item_id === itemId && m.allergen_type === a))
+      .filter(Boolean);
+  };
+
   const [selectedAllergens, setSelectedAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categorySearchQuery, setCategorySearchQuery] = useState('');
@@ -398,6 +406,28 @@ function AllergyCheckContent() {
                               <AllergenBadge key={a} allergenId={a} size="sm" />
                             ))}
                           </div>
+                          {(() => {
+                            const mods = getModsForItem(item.id, matchingAllergens);
+                            const removable = mods.filter(m => m?.can_remove && m?.substitution_notes?.trim());
+                            const cannotRemove = mods.filter(m => !m?.can_remove && m?.substitution_notes?.trim());
+                            if (removable.length === 0 && cannotRemove.length === 0) return null;
+                            return (
+                              <div className="mt-3 space-y-2">
+                                {removable.map((mod, i) => (
+                                  <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-jade/10 border border-jade/20">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-jade mt-0.5 flex-shrink-0" />
+                                    <p className="text-xs text-jade-dark leading-relaxed">{mod?.substitution_notes}</p>
+                                  </div>
+                                ))}
+                                {cannotRemove.map((mod, i) => (
+                                  <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-amber-50 border border-amber-200">
+                                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
+                                    <p className="text-xs text-amber-700 leading-relaxed">{mod?.substitution_notes}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
                     </CardContent>
