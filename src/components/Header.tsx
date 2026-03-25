@@ -270,9 +270,6 @@ export function Header() {
                   <item.icon className="w-4 h-4" />
                   {item.label}
                 </span>
-                {item.path === '/daily-focus' && hasTodayFocus && (
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-copper animate-pulse" />
-                )}
                 {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{
               type: "spring",
               bounce: 0.2,
