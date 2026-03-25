@@ -357,7 +357,12 @@ export default function AllergyQuizPage() {
 
           <div className="text-center space-y-4">
             <p className="text-muted-foreground mb-3 sm:mb-4 text-xs sm:text-sm">
-              {questionLimit ? Math.min(questionLimit, allQuestions.length) : allQuestions.length} questions
+              {questionLimit ? Math.min(questionLimit, allQuestions.length + modificationQuestions.length) : allQuestions.length + modificationQuestions.length} questions
+              {modificationQuestions.length > 0 && (
+                <span className="block text-copper text-[11px] mt-1">
+                  Includes {modificationQuestions.length} modification questions
+                </span>
+              )}
             </p>
             <Button 
               variant="burgundy" 
