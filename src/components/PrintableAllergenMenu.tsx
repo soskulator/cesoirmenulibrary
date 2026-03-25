@@ -52,7 +52,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
             return mod?.can_remove;
           });
 
-          if (allModifiable) {
+        if (allModifiable) {
             status = 'modifiable';
             const notes = matching
               .map(allergenId => {
@@ -64,7 +64,8 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               .filter(Boolean);
             modNotes = notes.join('; ');
           } else {
-            status = 'avoid';
+            // Skip items that cannot accommodate — don't add to print menu
+            return;
           }
         }
 
