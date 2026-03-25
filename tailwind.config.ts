@@ -271,7 +271,9 @@ export default {
   			'slide-in-right': 'slide-in-right 0.4s ease-out',
   			'slide-in-left': 'slide-in-left 0.4s ease-out',
   			'pulse-gentle': 'pulse-gentle 2s ease-in-out infinite',
-  			shimmer: 'shimmer 2s linear infinite'
+			shimmer: 'shimmer 2s linear infinite',
+			'line-grow': 'line-grow 1.2s cubic-bezier(0.4,0,0.2,1) forwards',
+			'logo-reveal': 'logo-reveal 0.7s ease-out forwards'
   		}
   	}
   },
