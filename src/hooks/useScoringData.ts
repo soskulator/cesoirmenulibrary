@@ -222,6 +222,42 @@ export function useScoringData() {
       });
       setIncompleteStaff(incomplete);
 
+      // Build inactive staff list (7+ days)
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const latestSessionMap: Record<string, string> = {};
+      (sessions || []).forEach(s => {
+        const uid = s.user_id;
+        const ts = s.session_end || s.last_heartbeat;
+        if (ts && !latestSessionMap[uid]) {
+          latestSessionMap[uid] = ts;
+        }
+      });
+
+      const inactive: InactiveStaff[] = [];
+      (profiles || []).forEach(p => {
+        const role = roleMap[p.id];
+        if (role === 'lead_admin' || role === 'admin') return;
+        const lastSeen = latestSessionMap[p.id] || null;
+        if (!lastSeen || new Date(lastSeen) < sevenDaysAgo) {
+          const days = lastSeen
+            ? Math.floor((Date.now() - new Date(lastSeen).getTime()) / 86400000)
+            : 999;
+          inactive.push({
+            userId: p.id,
+            fullName: p.full_name || 'Unknown',
+            email: p.email,
+            role: role || null,
+            lastSeen,
+            daysSinceActive: days,
+          });
+        }
+      });
+
+      inactive.sort((a, b) => b.daysSinceActive - a.daysSinceActive);
+      setInactiveStaff(inactive);
+
     } catch (err) {
       console.error('Error fetching scoring data:', err);
     } finally {
