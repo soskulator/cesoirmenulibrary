@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
