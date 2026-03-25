@@ -303,6 +303,7 @@ function AllergyCheckContent() {
         <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2 mb-3">
           {allergens.map((allergen) => {
             const isSelected = selectedAllergens.includes(allergen.id);
+            const isDietary = allergen.isDietary;
             return (
               <button
                 key={allergen.id}
@@ -311,8 +312,12 @@ function AllergyCheckContent() {
                   "flex flex-col items-center justify-center",
                   "gap-1 p-2 rounded-xl border-2 transition-all",
                   "text-center min-h-[4rem]",
-                  isSelected
+                  isSelected && isDietary
+                    ? "border-jade bg-jade/10 scale-95"
+                    : isSelected
                     ? "border-destructive bg-destructive/10 scale-95"
+                    : isDietary
+                    ? "border-border bg-card hover:border-jade/40 hover:bg-jade/5"
                     : "border-border bg-card hover:border-destructive/40 hover:bg-destructive/5"
                 )}
               >
@@ -321,7 +326,9 @@ function AllergyCheckContent() {
                 </span>
                 <span className={cn(
                   "text-[9px] font-medium leading-tight",
-                  isSelected
+                  isSelected && isDietary
+                    ? "text-jade"
+                    : isSelected
                     ? "text-destructive"
                     : "text-muted-foreground"
                 )}>
