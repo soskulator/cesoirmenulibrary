@@ -349,7 +349,7 @@ export default function AllergyQuizPage() {
                   onClick={() => setQuestionLimit(null)}
                   className="h-8 sm:h-9 text-xs sm:text-sm"
                 >
-                  All ({allQuestions.length})
+                  All ({allQuestions.length + modificationQuestions.length})
                 </Button>
               </div>
             </CardContent>
