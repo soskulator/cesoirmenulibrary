@@ -58,9 +58,7 @@ export default function SearchPage() {
       if (permKey && !hasPermission(permKey)) return false;
       return (
         item.name.toLowerCase().includes(q) ||
-        item.shortDescription.toLowerCase().includes(q) ||
         item.ingredientsText.toLowerCase().includes(q) ||
-        item.sellingPointsText.toLowerCase().includes(q) ||
         item.allergens.some(a => a.toLowerCase().includes(q))
       );
     });
