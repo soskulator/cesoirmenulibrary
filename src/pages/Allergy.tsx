@@ -238,19 +238,30 @@ function AllergyCheckContent() {
     );
   };
 
+  // Separate selected into allergens vs dietary
+  const selectedDietary = useMemo(() => selectedAllergens.filter(isDietaryType), [selectedAllergens]);
+  const selectedRealAllergens = useMemo(() => selectedAllergens.filter(a => !isDietaryType(a)), [selectedAllergens]);
+
   const itemsWithAllergens = useMemo(() => {
     if (selectedAllergens.length === 0) return [];
-    return allergenRelevantItems.filter(item =>
-      item.allergens.some(a => selectedAllergens.includes(a))
-    );
-  }, [selectedAllergens, allergenRelevantItems]);
+    return allergenRelevantItems.filter(item => {
+      // Item is unsafe if it CONTAINS any selected real allergen
+      const hasAllergen = item.allergens.some(a => selectedRealAllergens.includes(a));
+      // Item is unsafe if it LACKS any selected dietary tag
+      const missingDietary = selectedDietary.some(d => !item.allergens.includes(d));
+      return hasAllergen || missingDietary;
+    });
+  }, [selectedAllergens, selectedRealAllergens, selectedDietary, allergenRelevantItems]);
 
   const safeItems = useMemo(() => {
     if (selectedAllergens.length === 0) return allergenRelevantItems;
-    return allergenRelevantItems.filter(item =>
-      !item.allergens.some(a => selectedAllergens.includes(a))
-    );
-  }, [selectedAllergens, allergenRelevantItems]);
+    return allergenRelevantItems.filter(item => {
+      // Safe means: doesn't contain any selected real allergen AND has all selected dietary tags
+      const hasNoAllergen = !item.allergens.some(a => selectedRealAllergens.includes(a));
+      const hasAllDietary = selectedDietary.every(d => item.allergens.includes(d));
+      return hasNoAllergen && hasAllDietary;
+    });
+  }, [selectedAllergens, selectedRealAllergens, selectedDietary, allergenRelevantItems]);
 
   const filteredSafeItems = useMemo(() => {
     if (!searchQuery) return safeItems;
