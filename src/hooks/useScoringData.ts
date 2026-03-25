@@ -58,6 +58,15 @@ export interface IncompleteStaff {
   missingTests: string[];
 }
 
+export interface InactiveStaff {
+  userId: string;
+  fullName: string;
+  email: string;
+  role: string | null;
+  lastSeen: string | null;
+  daysSinceActive: number;
+}
+
 const ROLE_LABELS: Record<string, string> = {
   lead_admin: 'Lead Admin',
   admin: 'Admin',
