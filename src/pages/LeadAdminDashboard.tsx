@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -44,7 +44,13 @@ import {
   Trash2,
   Check,
   RefreshCw,
-  Loader2
+  Loader2,
+  BookOpen,
+  CalendarDays,
+  BarChart2,
+  FolderOpen,
+  ShieldAlert,
+  Link as LinkIcon
 } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
 import { cn } from '@/lib/utils';
@@ -82,6 +88,7 @@ export default function LeadAdminDashboard() {
   } = useCategories();
   
   // Menu Management state
+  const [activeTab, setActiveTab] = useState<'menu' | 'training' | 'schedule' | 'data'>('menu');
   const [menuTab, setMenuTab] = useState<'food' | 'wines' | 'cocktails' | 'spirits'>('food');
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -357,11 +364,12 @@ export default function LeadAdminDashboard() {
     <Layout>
       <div className="bg-admin-bg min-h-screen">
         <div className="container px-4 sm:px-6 py-6 sm:py-8 max-w-6xl mx-auto">
-          {/* Header */}
+
+          {/* ── Header ── */}
           <div className="mb-6 sm:mb-8">
-            <Button 
-              variant="ghost" 
-              asChild 
+            <Button
+              variant="ghost"
+              asChild
               className="mb-3 sm:mb-4 text-muted-foreground hover:text-foreground -ml-2"
             >
               <Link to="/admin">
@@ -369,8 +377,8 @@ export default function LeadAdminDashboard() {
                 Back to Admin
               </Link>
             </Button>
-            
-            <div className="flex items-center gap-3 sm:gap-4">
+
+            <div className="flex items-center gap-3 sm:gap-4 mb-6">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-terra-cotta to-soft-clay flex items-center justify-center shadow-lg flex-shrink-0">
                 <Crown className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
@@ -378,69 +386,70 @@ export default function LeadAdminDashboard() {
                 <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
                   Lead Admin Dashboard
                 </h1>
-                <p className="text-sm sm:text-base text-muted-foreground truncate">
-                  Manage menu, categories & analytics
+                <p className="text-sm text-muted-foreground">
+                  Menu · Training · Schedule · Data
                 </p>
               </div>
             </div>
+
+            {/* ── Quick Stats Strip ── */}
+            {quickStats && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                {[
+                  { label: 'Tests This Week', value: quickStats.testsThisWeek, color: 'text-copper' },
+                  { label: 'Avg Score', value: `${quickStats.avgScore}%`, color: quickStats.avgScore >= 70 ? 'text-jade' : 'text-destructive' },
+                  { label: 'Active Today', value: quickStats.activeToday, color: 'text-copper' },
+                  { label: 'Never Tested', value: quickStats.neverTested, color: quickStats.neverTested > 0 ? 'text-destructive' : 'text-jade' },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-xl bg-card border border-border p-3 text-center shadow-sm">
+                    <p className={`text-2xl font-bold font-serif ${stat.color}`}>{stat.value}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {quickStats && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              {[
-                { label: 'Tests This Week', value: quickStats.testsThisWeek, color: 'text-copper' },
-                { label: 'Avg Score', value: `${quickStats.avgScore}%`, color: quickStats.avgScore >= 70 ? 'text-jade' : 'text-destructive' },
-                { label: 'Active Today', value: quickStats.activeToday, color: 'text-copper' },
-                { label: 'Never Tested', value: quickStats.neverTested, color: quickStats.neverTested > 0 ? 'text-destructive' : 'text-jade' },
-              ].map(stat => (
-                <div key={stat.label} className="rounded-xl bg-muted/50 border border-border p-3 text-center">
-                  <p className={cn("text-2xl font-bold font-serif", stat.color)}>
-                    {stat.value}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* ── Main Tabs ── */}
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as 'menu' | 'training' | 'schedule' | 'data')}
+          >
+            <TabsList className="grid grid-cols-4 w-full mb-6 h-auto p-1">
+              <TabsTrigger value="menu" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
+                <FolderOpen className="w-4 h-4" />
+                <span>Menu</span>
+              </TabsTrigger>
+              <TabsTrigger value="training" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
+                <BookOpen className="w-4 h-4" />
+                <span>Training</span>
+              </TabsTrigger>
+              <TabsTrigger value="schedule" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
+                <CalendarDays className="w-4 h-4" />
+                <span>Schedule</span>
+              </TabsTrigger>
+              <TabsTrigger value="data" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
+                <BarChart2 className="w-4 h-4" />
+                <span>Data</span>
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Full Menu Items Editor */}
-          <div className="mb-6 sm:mb-8">
-            <MenuItemsManager
-              items={menuItems}
-              categories={categories}
-              isLoading={menuLoading}
-              onUpdate={updateItem}
-              onAdd={addItem}
-              onBulkUpdate={bulkUpdate}
-              onRefresh={fetchItems}
-            />
-          </div>
+            {/* ════════════ MENU TAB ════════════ */}
+            <TabsContent value="menu" className="space-y-6 mt-0">
 
-          {/* Weekly Focus Manager */}
-          <div className="mb-6 sm:mb-8">
-            <WeeklyFocusManager
-              menuItems={menuItems}
-              categories={categories}
-            />
-          </div>
+              {/* Full Menu Editor */}
+              <MenuItemsManager
+                items={menuItems}
+                categories={categories}
+                isLoading={menuLoading}
+                onUpdate={updateItem}
+                onAdd={addItem}
+                onBulkUpdate={bulkUpdate}
+                onRefresh={fetchItems}
+              />
 
-          {/* Allergy Management */}
-          <div className="mb-6 sm:mb-8">
-            <AllergyManagement categories={categories} />
-          </div>
-
-          {/* Management Cards Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            
-            {/* 1. Menu Management Center */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0 }}
-            >
-              <Card className="bg-card shadow-card h-full">
+              {/* Menu Management Card — item list with tabs + search */}
+              <Card className="bg-card shadow-card">
                 <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
                   <div className="flex items-center justify-between gap-2">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-terra-cotta/10 flex items-center justify-center flex-shrink-0">
@@ -448,77 +457,46 @@ export default function LeadAdminDashboard() {
                     </div>
                     <div className="flex items-center gap-2">
                       {!isInitialized && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={initializeFromStatic}
-                          disabled={menuLoading}
-                          className="text-xs sm:text-sm"
-                        >
-                          {menuLoading ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
-                          ) : (
-                            <RefreshCw className="w-3.5 h-3.5 mr-1" />
-                          )}
+                        <Button size="sm" variant="outline" onClick={initializeFromStatic} disabled={menuLoading} className="text-xs sm:text-sm">
+                          {menuLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <RefreshCw className="w-3.5 h-3.5 mr-1" />}
                           Sync to DB
                         </Button>
                       )}
-                      <Button 
-                        size="sm" 
-                        className="bg-terra-cotta hover:bg-terra-cotta/90 text-white text-xs sm:text-sm"
-                        onClick={() => setIsAddingItem(true)}
-                      >
+                      <Button size="sm" className="bg-terra-cotta hover:bg-terra-cotta/90 text-white text-xs sm:text-sm" onClick={() => setIsAddingItem(true)}>
                         <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                         Add Item
                       </Button>
                     </div>
                   </div>
-                  <CardTitle className="font-serif text-lg sm:text-xl">Menu Management</CardTitle>
+                  <CardTitle className="font-serif text-lg sm:text-xl">Menu Items</CardTitle>
                   <CardDescription className="text-xs sm:text-sm">
-                    {isInitialized ? (
-                      <span className="text-jade">✓ Synced to database</span>
-                    ) : (
-                      'Click "Sync to DB" to enable persistent storage'
-                    )}
+                    {isInitialized ? <span className="text-jade">✓ Synced to database</span> : 'Click "Sync to DB" to enable persistent storage'}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <Tabs 
-                    value={menuTab} 
-                    onValueChange={(val) => setMenuTab(val as 'food' | 'wines' | 'cocktails' | 'spirits')} 
-                    className="mb-4"
-                  >
+                  <Tabs value={menuTab} onValueChange={(val) => setMenuTab(val as 'food' | 'wines' | 'cocktails' | 'spirits')} className="mb-4">
                     <TabsList className="w-full grid grid-cols-4 h-auto p-1">
                       <TabsTrigger value="food" className="text-[10px] sm:text-xs py-2 px-1 sm:px-2 flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1">
-                        <UtensilsCrossed className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-                        <span>Food</span>
+                        <UtensilsCrossed className="w-3.5 h-3.5 sm:w-3 sm:h-3" /><span>Food</span>
                       </TabsTrigger>
                       <TabsTrigger value="wines" className="text-[10px] sm:text-xs py-2 px-1 sm:px-2 flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1">
-                        <Wine className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-                        <span>Wines</span>
+                        <Wine className="w-3.5 h-3.5 sm:w-3 sm:h-3" /><span>Wines</span>
                       </TabsTrigger>
                       <TabsTrigger value="cocktails" className="text-[10px] sm:text-xs py-2 px-1 sm:px-2 flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1">
-                        <Martini className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-                        <span>Cocktails</span>
+                        <Martini className="w-3.5 h-3.5 sm:w-3 sm:h-3" /><span>Cocktails</span>
                       </TabsTrigger>
                       <TabsTrigger value="spirits" className="text-[10px] sm:text-xs py-2 px-1 sm:px-2 flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1">
-                        <GlassWater className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-                        <span>Spirits</span>
+                        <GlassWater className="w-3.5 h-3.5 sm:w-3 sm:h-3" /><span>Spirits</span>
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
-                  
+
                   <div className="relative mb-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search items..."
-                      value={menuSearchQuery}
-                      onChange={(e) => setMenuSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
+                    <Input placeholder="Search items..." value={menuSearchQuery} onChange={(e) => setMenuSearchQuery(e.target.value)} className="pl-10" />
                   </div>
-                  
-                  <ScrollArea className="h-[440px]">
+
+                  <ScrollArea className="h-[400px]">
                     {menuLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
@@ -526,19 +504,11 @@ export default function LeadAdminDashboard() {
                     ) : (
                       <div className="space-y-2 pr-3">
                         {filteredMenuItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                          >
+                          <div key={item.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
                             <div className="flex items-center gap-3 flex-1 min-w-0">
-                              {/* Photo thumbnail */}
                               <div className="w-10 h-10 rounded-md bg-muted overflow-hidden flex-shrink-0">
                                 {item.imageUrl && item.imageUrl !== '/placeholder.svg' ? (
-                                  <img 
-                                    src={item.imageUrl} 
-                                    alt={item.name}
-                                    className="w-full h-full object-cover"
-                                  />
+                                  <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center bg-muted-foreground/10">
                                     <span className="text-xs text-muted-foreground">—</span>
@@ -551,26 +521,17 @@ export default function LeadAdminDashboard() {
                               </div>
                             </div>
                             <div className="flex items-center gap-1 ml-2">
-                              <Button 
-                                size="icon" 
-                                variant="ghost" 
-                                className="h-8 w-8"
-                                onClick={() => setEditingItem(item)}
-                              >
+                              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditingItem(item)}>
                                 <Edit className="w-3.5 h-3.5 text-muted-foreground" />
                               </Button>
-                              <Button 
-                                size="icon" 
-                                variant="ghost" 
+                              <Button
+                                size="icon"
+                                variant="ghost"
                                 className="h-8 w-8 text-destructive"
                                 disabled={deletingId === item.id}
                                 onClick={async () => {
                                   if (!isInitialized) {
-                                    toast({
-                                      title: 'Sync Required',
-                                      description: 'Please sync menu to database first.',
-                                      variant: 'destructive',
-                                    });
+                                    toast({ title: 'Sync Required', description: 'Please sync menu to database first.', variant: 'destructive' });
                                     return;
                                   }
                                   setDeletingId(item.id);
@@ -578,11 +539,7 @@ export default function LeadAdminDashboard() {
                                   setDeletingId(null);
                                 }}
                               >
-                                {deletingId === item.id ? (
-                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                ) : (
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                )}
+                                {deletingId === item.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                               </Button>
                             </div>
                           </div>
@@ -590,124 +547,90 @@ export default function LeadAdminDashboard() {
                       </div>
                     )}
                   </ScrollArea>
-                  
-                  <p className="text-xs text-muted-foreground mt-3 text-center">
-                    {filteredMenuItems.length} items
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-3 text-center">{filteredMenuItems.length} items</p>
                 </CardContent>
               </Card>
-            </motion.div>
 
-            {/* 2. Category Manager */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Card className="bg-card shadow-card">
-                <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-soft-clay/20 flex items-center justify-center flex-shrink-0">
-                      <DatabaseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-soft-clay" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {!categoriesInitialized && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={initializeCategories}
-                          disabled={categoriesLoading}
-                          className="text-xs sm:text-sm"
-                        >
-                          {categoriesLoading ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" />
-                          ) : (
-                            <RefreshCw className="w-3.5 h-3.5 mr-1" />
-                          )}
-                          Sync
-                        </Button>
-                      )}
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="border-soft-clay/30 text-soft-clay hover:bg-soft-clay/10 text-xs sm:text-sm"
-                        onClick={openAddCategoryDialog}
-                      >
-                        <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-                        Add
-                      </Button>
-                    </div>
-                  </div>
-                  <CardTitle className="font-serif text-lg sm:text-xl">Category Manager</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">
-                    {categoriesInitialized ? (
-                      <span className="text-jade">✓ {categories.length} categories in database</span>
-                    ) : (
-                      'Click "Sync" to enable persistent storage'
-                    )}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="px-3 sm:px-6 pb-4">
-                  <div className="space-y-1.5 sm:space-y-2">
-                    {categoriesLoading ? (
-                      <div className="flex items-center justify-center py-8">
-                        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              {/* Category Manager + Photo Gallery side by side */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+
+                {/* Category Manager */}
+                <Card className="bg-card shadow-card">
+                  <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-soft-clay/20 flex items-center justify-center flex-shrink-0">
+                        <DatabaseIcon className="w-4 h-4 sm:w-5 sm:h-5 text-soft-clay" />
                       </div>
-                    ) : (
-                      categories.map((category) => (
-                        <div
-                          key={category.id}
-                          className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                        >
-                          <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0 cursor-move" />
-                          <span className="text-lg sm:text-xl">{category.icon}</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-xs sm:text-sm truncate">{category.name}</p>
-                            <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{category.name_french}</p>
-                          </div>
-                          <Badge variant="secondary" className="text-[10px] sm:text-xs flex-shrink-0">
-                            {menuItems.filter(m => m.categoryId === category.id).length}
-                          </Badge>
-                          <div className="flex items-center gap-1">
-                            <Button 
-                              size="icon" 
-                              variant="ghost" 
-                              className="h-7 w-7"
-                              onClick={() => openEditCategoryDialog(category)}
-                            >
-                              <Edit className="w-3 h-3 text-muted-foreground" />
-                            </Button>
-                            <Button 
-                              size="icon" 
-                              variant="ghost" 
-                              className="h-7 w-7 text-destructive"
-                              disabled={deletingCategoryId === category.id}
-                              onClick={() => handleDeleteCategory(category.id)}
-                            >
-                              {deletingCategoryId === category.id ? (
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                              ) : (
-                                <Trash2 className="w-3 h-3" />
-                              )}
-                            </Button>
-                          </div>
+                      <div className="flex items-center gap-2">
+                        {!categoriesInitialized && (
+                          <Button size="sm" variant="outline" onClick={initializeCategories} disabled={categoriesLoading} className="text-xs sm:text-sm">
+                            {categoriesLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <RefreshCw className="w-3.5 h-3.5 mr-1" />}
+                            Sync
+                          </Button>
+                        )}
+                        <Button size="sm" variant="outline" className="border-soft-clay/30 text-soft-clay hover:bg-soft-clay/10 text-xs sm:text-sm" onClick={openAddCategoryDialog}>
+                          <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                          Add
+                        </Button>
+                      </div>
+                    </div>
+                    <CardTitle className="font-serif text-lg sm:text-xl">Categories</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">
+                      {categoriesInitialized ? <span className="text-jade">✓ {categories.length} categories</span> : 'Click "Sync" to enable persistent storage'}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-3 sm:px-6 pb-4">
+                    <div className="space-y-1.5 sm:space-y-2">
+                      {categoriesLoading ? (
+                        <div className="flex items-center justify-center py-8">
+                          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                         </div>
-                      ))
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                      ) : (
+                        categories.map((category) => (
+                          <div key={category.id} className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                            <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0 cursor-move" />
+                            <span className="text-lg sm:text-xl">{category.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-xs sm:text-sm truncate">{category.name}</p>
+                              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{category.name_french}</p>
+                            </div>
+                            <Badge variant="secondary" className="text-[10px] sm:text-xs flex-shrink-0">
+                              {menuItems.filter(m => m.categoryId === category.id).length}
+                            </Badge>
+                            <div className="flex items-center gap-1">
+                              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEditCategoryDialog(category)}>
+                                <Edit className="w-3 h-3 text-muted-foreground" />
+                              </Button>
+                              <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" disabled={deletingCategoryId === category.id} onClick={() => handleDeleteCategory(category.id)}>
+                                {deletingCategoryId === category.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
 
-            {/* 3. Daily Focus - now handled by WeeklyFocusManager above the grid */}
+                {/* Photo Gallery */}
+                <PhotoGallery menuItems={menuItems} onAssignPhoto={handleAssignPhoto} />
+              </div>
+            </TabsContent>
 
-            {/* 4. Bulk Operations (CSV Import) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Card className="bg-card shadow-card h-full">
+            {/* ════════════ TRAINING TAB ════════════ */}
+            <TabsContent value="training" className="space-y-6 mt-0">
+              <AllergyManagement categories={categories} />
+            </TabsContent>
+
+            {/* ════════════ SCHEDULE TAB ════════════ */}
+            <TabsContent value="schedule" className="space-y-6 mt-0">
+              <WeeklyFocusManager menuItems={menuItems} categories={categories} />
+            </TabsContent>
+
+            {/* ════════════ DATA TAB ════════════ */}
+            <TabsContent value="data" className="space-y-6 mt-0">
+              {/* Bulk Operations (CSV Import) */}
+              <Card className="bg-card shadow-card">
                 <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-copper/10 flex items-center justify-center">
                     <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
@@ -716,44 +639,28 @@ export default function LeadAdminDashboard() {
                   <CardDescription className="text-xs sm:text-sm">Import menu items from CSV</CardDescription>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <input
-                    ref={csvInputRef}
-                    type="file"
-                    accept=".csv"
-                    onChange={handleCSVUpload}
-                    className="hidden"
-                  />
-                  
+                  <input ref={csvInputRef} type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
+
                   <div className="mb-3 sm:mb-4">
-                    <Button 
-                      variant="link" 
-                      className="p-0 h-auto text-terra-cotta text-xs sm:text-sm"
-                      onClick={downloadCSVTemplate}
-                    >
+                    <Button variant="link" className="p-0 h-auto text-terra-cotta text-xs sm:text-sm" onClick={downloadCSVTemplate}>
                       <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                       Download CSV Template
                     </Button>
                   </div>
-                  
+
                   <div
                     onClick={() => !isUploadingCSV && csvInputRef.current?.click()}
                     className={`border-2 border-dashed border-muted rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:border-terra-cotta/50 hover:bg-terra-cotta/5 active:bg-terra-cotta/10 transition-colors ${isUploadingCSV ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-muted/80 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                      {isUploadingCSV ? (
-                        <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 text-terra-cotta animate-spin" />
-                      ) : (
-                        <File className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
-                      )}
+                      {isUploadingCSV ? <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 text-terra-cotta animate-spin" /> : <File className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />}
                     </div>
                     <p className="text-xs sm:text-sm font-medium text-foreground mb-1">
                       {isUploadingCSV ? 'Uploading...' : 'Drop CSV file here'}
                     </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground">
-                      or tap to browse
-                    </p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">or tap to browse</p>
                   </div>
-                  
+
                   <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-lg bg-jade/10 border border-jade/30">
                     <p className="text-[10px] sm:text-xs text-jade-dark">
                       <strong>✓ Ready:</strong> CSV uploads enabled via Lovable Cloud.
@@ -761,24 +668,10 @@ export default function LeadAdminDashboard() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </TabsContent>
+          </Tabs>
 
-            {/* 5. Photo Gallery */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-            >
-              <PhotoGallery 
-                menuItems={menuItems}
-                onAssignPhoto={handleAssignPhoto}
-              />
-            </motion.div>
-
-          </div>
-
-
-          {/* Edit Dialog */}
+          {/* ── Dialogs (always rendered) ── */}
           <MenuItemEditDialog
             item={editingItem}
             open={!!editingItem}
@@ -787,7 +680,6 @@ export default function LeadAdminDashboard() {
             mode="edit"
           />
 
-          {/* Add Dialog */}
           <MenuItemEditDialog
             item={null}
             open={isAddingItem}
@@ -797,61 +689,35 @@ export default function LeadAdminDashboard() {
             mode="add"
           />
 
-          {/* Category Edit Dialog */}
           <Dialog open={isAddingCategory} onOpenChange={setIsAddingCategory}>
             <DialogContent className="max-w-md">
               <DialogHeader>
-                <DialogTitle>
-                  {editingCategory ? 'Edit Category' : 'Add New Category'}
-                </DialogTitle>
+                <DialogTitle>{editingCategory ? 'Edit Category' : 'Add New Category'}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 {!editingCategory && (
                   <div className="space-y-2">
                     <Label>Category ID</Label>
-                    <Input
-                      value={categoryFormData.id}
-                      onChange={(e) => setCategoryFormData({ ...categoryFormData, id: e.target.value })}
-                      placeholder="e.g., appetizers (auto-generated if empty)"
-                    />
+                    <Input value={categoryFormData.id} onChange={(e) => setCategoryFormData({ ...categoryFormData, id: e.target.value })} placeholder="e.g., appetizers (auto-generated if empty)" />
                     <p className="text-xs text-muted-foreground">Leave empty to auto-generate from name</p>
                   </div>
                 )}
                 <div className="space-y-2">
                   <Label>Name</Label>
-                  <Input
-                    value={categoryFormData.name}
-                    onChange={(e) => setCategoryFormData({ ...categoryFormData, name: e.target.value })}
-                    placeholder="e.g., Appetizers"
-                  />
+                  <Input value={categoryFormData.name} onChange={(e) => setCategoryFormData({ ...categoryFormData, name: e.target.value })} placeholder="e.g., Appetizers" />
                 </div>
                 <div className="space-y-2">
                   <Label>French Name</Label>
-                  <Input
-                    value={categoryFormData.name_french}
-                    onChange={(e) => setCategoryFormData({ ...categoryFormData, name_french: e.target.value })}
-                    placeholder="e.g., Entrées"
-                  />
+                  <Input value={categoryFormData.name_french} onChange={(e) => setCategoryFormData({ ...categoryFormData, name_french: e.target.value })} placeholder="e.g., Entrées" />
                 </div>
                 <div className="space-y-2">
                   <Label>Icon (Emoji)</Label>
-                  <Input
-                    value={categoryFormData.icon}
-                    onChange={(e) => setCategoryFormData({ ...categoryFormData, icon: e.target.value })}
-                    placeholder="e.g., 🍽️"
-                    className="text-2xl"
-                  />
+                  <Input value={categoryFormData.icon} onChange={(e) => setCategoryFormData({ ...categoryFormData, icon: e.target.value })} placeholder="e.g., 🍽️" className="text-2xl" />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddingCategory(false)}>
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={handleSaveCategory}
-                  disabled={!categoryFormData.name.trim()}
-                  className="bg-soft-clay hover:bg-soft-clay/90"
-                >
+                <Button variant="outline" onClick={() => setIsAddingCategory(false)}>Cancel</Button>
+                <Button onClick={handleSaveCategory} disabled={!categoryFormData.name.trim()} className="bg-soft-clay hover:bg-soft-clay/90">
                   {editingCategory ? 'Update' : 'Add'} Category
                 </Button>
               </DialogFooter>
