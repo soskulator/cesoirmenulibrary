@@ -224,8 +224,9 @@ export default function AllergyQuizPage() {
     setScore({ correct: 0, incorrect: 0 });
     setSelectedIngredients(new Set());
     setShowAnswer(false);
+    const combined: AnyQuizQuestion[] = [...allQuestions, ...modificationQuestions];
     setShuffledQuestions(
-      [...allQuestions].sort(() => Math.random() - 0.5).slice(0, questionLimit ?? allQuestions.length)
+      [...combined].sort(() => Math.random() - 0.5).slice(0, questionLimit ?? combined.length)
     );
   };
 
