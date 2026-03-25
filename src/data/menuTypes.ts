@@ -73,7 +73,20 @@ export const allergens: Allergen[] = [
   { id: 'sesame', name: 'Sesame', icon: '⚪', commonName: 'Sesame' },
   { id: 'allium', name: 'Allium', icon: '🧅', commonName: 'Onion/Garlic' },
   { id: 'nightshade', name: 'Nightshade', icon: '🍅', commonName: 'Tomato/Pepper' },
+  { id: 'vegetarian', name: 'Vegetarian', icon: '🥬', commonName: 'Vegetarian', isDietary: true },
+  { id: 'vegan', name: 'Vegan', icon: '🌱', commonName: 'Vegan', isDietary: true },
 ];
+
+/** Only traditional allergens (excludes dietary preferences like vegan/vegetarian) */
+export const allergensOnly = allergens.filter(a => !a.isDietary);
+
+/** Only dietary preference tags */
+export const dietaryTags = allergens.filter(a => a.isDietary);
+
+/** Check if an allergen type is a dietary preference (positive tag) rather than an allergen (negative tag) */
+export const isDietaryType = (id: AllergenType | string): boolean => {
+  return allergens.find(a => a.id === id)?.isDietary === true;
+};
 
 export const categories: Category[] = [
   { id: 'crudo', name: 'Crudo et Tartare', nameFrench: 'Raw & Cured Preparations', sortOrder: 1, icon: '🍣' },
