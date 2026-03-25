@@ -213,7 +213,14 @@ export default function WineQuizPage() {
     }
   };
 
-  // Quiz complete screen
+  // Save score and show complete screen
+  if (isComplete && shuffledQuestions.length > 0) {
+    const pct = Math.round(
+      (score.correct / shuffledQuestions.length) * 100
+    );
+    saveQuizScore('wine', score.correct, shuffledQuestions.length);
+  }
+
   if (isComplete) {
     const percentage = Math.round((score.correct / shuffledQuestions.length) * 100);
     
