@@ -442,10 +442,7 @@ export default function Index() {
             </Button>
           </motion.div>
 
-          <motion.div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="show" viewport={{
-          once: true,
-          margin: "-40px"
-        }}>
+          <motion.div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="show" viewport={vp}>
             {foodItems.map((menuItem) => {
             const category = getCategoryById(menuItem.categoryId);
             const image = getDishImage(menuItem.id, menuItem.imageUrl);
