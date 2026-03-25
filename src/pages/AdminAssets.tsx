@@ -352,11 +352,11 @@ export default function AdminAssetsPage() {
                 <h3 className="text-sm font-semibold mb-3">Typography</h3>
                 <div className="space-y-3">
                   <div>
-                    <p className="font-serif text-2xl">Playfair Display</p>
+                    <p className="font-serif text-2xl">Source Serif Pro</p>
                     <p className="text-xs text-muted-foreground">Headlines & Titles</p>
                   </div>
                   <div>
-                    <p className="font-sans text-lg">DM Sans</p>
+                    <p className="font-sans text-lg">Source Sans Pro</p>
                     <p className="text-xs text-muted-foreground">Body Text & UI</p>
                   </div>
                 </div>
