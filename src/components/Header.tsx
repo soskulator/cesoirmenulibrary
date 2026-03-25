@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User, Search, Pencil, Check, Loader2 } from 'lucide-react';
+import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, Shield, ShieldCheck, User, Search, Pencil, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
@@ -44,39 +44,12 @@ const navItems = [{
   path: '/allergy',
   label: 'Allergy Center',
   icon: AlertTriangle
-}];
-// Knowledge Tests (was FoH)
-const knowledgeTestItems = [{
-  path: '/foh-test',
-  label: 'Knowledge Test',
-  icon: ClipboardList,
-  subItems: [
-    { path: '/foh-test?type=service_staff', label: 'Bartender/Server Test', icon: UserCheck },
-    { path: '/foh-test?type=server_assistant', label: 'Server Assistant', icon: Users }
-  ]
-}];
-
-// Menu Knowledge Tests
-const menuTestItems = [{
-  path: '/wine-quiz',
-  label: 'Wine Test',
-  icon: Wine
-}, {
-  path: '/spirits-quiz',
-  label: 'Spirits Test',
-  icon: Martini
 }, {
   path: '/quiz',
-  label: 'Food Test',
+  label: 'Test',
   icon: HelpCircle
 }];
 
-// Other Tests
-const otherTestItems = [{
-  path: '/allergy-quiz',
-  label: 'Allergy Test',
-  icon: AlertTriangle
-}];
 const adminItems = [{
   path: '/admin',
   label: 'Admin Center',
@@ -278,16 +251,6 @@ export function Header() {
               </Link>;
         })}
 
-          {/* Test Link - Direct */}
-          <Link to="/quiz" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5",
-            location.pathname === '/quiz' || location.pathname === '/foh-test' || location.pathname === '/wine-quiz' || location.pathname === '/spirits-quiz' || location.pathname === '/food-quiz' || location.pathname === '/allergy-quiz'
-              ? "text-burgundy"
-              : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-            <HelpCircle className="w-4 h-4" />
-            Test
-            {location.pathname === '/quiz' && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
-           </Link>
-
           {/* Search Icon */}
           <button
             onClick={() => setSearchOpen(true)}
@@ -425,10 +388,7 @@ export function Header() {
           {/* Training Section */}
           <div className="h-px bg-border my-2" />
           <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Training</p>
-          {[
-            { path: '/quiz', label: 'Tests', icon: HelpCircle },
-            ...filteredNavItems.filter(i => ['/flashcards', '/daily-focus'].includes(i.path)),
-          ].map(item => {
+          {filteredNavItems.filter(i => ['/quiz', '/flashcards', '/daily-focus'].includes(i.path)).map(item => {
             const isActive = location.pathname === item.path;
             return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
                   <item.icon className="w-5 h-5" />
