@@ -83,6 +83,7 @@ const getTastingNotes = (item: MenuItem) => {
 export default function SpiritsQuizPage() {
   usePageTitle("Spirits Quiz");
   const [quizStarted, setQuizStarted] = useState(false);
+  const [questionLimit, setQuestionLimit] = useState<number | null>(20);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
@@ -242,7 +243,8 @@ export default function SpiritsQuizPage() {
 
   const startQuiz = () => {
     const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
-    setShuffledQuestions(shuffled);
+    const limited = questionLimit ? shuffled.slice(0, questionLimit) : shuffled;
+    setShuffledQuestions(limited);
     setQuizStarted(true);
     setCurrentIndex(0);
     setScore({ correct: 0, incorrect: 0 });
@@ -448,9 +450,37 @@ export default function SpiritsQuizPage() {
             </CardContent>
           </Card>
 
+          {/* Question Limit Selector */}
+          <Card className="mb-6 sm:mb-8">
+            <CardContent className="p-3 sm:p-4 md:p-6">
+              <h2 className="font-semibold mb-3 text-sm sm:text-base">How many questions?</h2>
+              <div className="flex flex-wrap gap-2">
+                {[10, 20, 30].map(n => (
+                  <Button
+                    key={n}
+                    variant={questionLimit === n ? "burgundy" : "secondary"}
+                    size="sm"
+                    onClick={() => setQuestionLimit(n)}
+                    className="h-8 sm:h-9 text-xs sm:text-sm min-w-[3rem]"
+                  >
+                    {n}
+                  </Button>
+                ))}
+                <Button
+                  variant={questionLimit === null ? "burgundy" : "secondary"}
+                  size="sm"
+                  onClick={() => setQuestionLimit(null)}
+                  className="h-8 sm:h-9 text-xs sm:text-sm"
+                >
+                  All ({allQuestions.length})
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="text-center">
             <p className="text-muted-foreground mb-3 sm:mb-4 text-xs sm:text-sm">
-              {allQuestions.length} questions available
+              {questionLimit ? Math.min(questionLimit, allQuestions.length) : allQuestions.length} questions available
             </p>
             <Button 
               variant="burgundy" 

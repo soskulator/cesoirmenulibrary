@@ -68,6 +68,9 @@ const fadeUp = {
     }
   }
 };
+
+// Shared viewport config — triggers as soon as ANY part is visible
+const vp = { once: true, amount: 0 as const, margin: "50px" };
 export default function Index() {
   usePageTitle("");
   const {
@@ -296,13 +299,10 @@ export default function Index() {
           <motion.div initial={{
           opacity: 0,
           y: 32
-        }} whileInView={{
+         }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-20px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.7
         }} className="text-center mb-14">
             <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground mb-4">
@@ -311,10 +311,7 @@ export default function Index() {
             <p className="text-muted-foreground max-w-md mx-auto">Master our menu</p>
           </motion.div>
 
-          <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={{
-          once: true,
-          margin: "-40px"
-        }} className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={vp} className="grid gap-4 grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => <motion.div key={feature.path} variants={fadeUp}>
                 <Link to={feature.path}>
                   <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-500 hover:shadow-elevated min-h-[48px]">
@@ -343,10 +340,7 @@ export default function Index() {
         }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-60px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.6
         }}>
               <Card className="border-0 shadow-elevated overflow-hidden">
@@ -403,10 +397,7 @@ export default function Index() {
         }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-20px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.7
         }} className="mb-8">
               <h2 className="font-serif text-3xl font-semibold text-center mb-2">Featured Cocktail</h2>
@@ -425,13 +416,10 @@ export default function Index() {
           <motion.div initial={{
           opacity: 0,
           y: 32
-        }} whileInView={{
+         }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-20px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.7
         }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
             <div>
@@ -454,10 +442,7 @@ export default function Index() {
             </Button>
           </motion.div>
 
-          <motion.div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="show" viewport={{
-          once: true,
-          margin: "-40px"
-        }}>
+          <motion.div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="show" viewport={vp}>
             {foodItems.map((menuItem) => {
             const category = getCategoryById(menuItem.categoryId);
             const image = getDishImage(menuItem.id, menuItem.imageUrl);
@@ -492,13 +477,10 @@ export default function Index() {
           <motion.div initial={{
           opacity: 0,
           y: 32
-        }} whileInView={{
+           }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-20px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.7
         }}>
             <Card className="border-0 bg-gradient-to-r from-charcoal to-charcoal-light text-cream overflow-hidden">

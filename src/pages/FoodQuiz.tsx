@@ -52,6 +52,7 @@ const getWrongOptions = (correct: string, allItems: string[], count: number): st
 export default function FoodQuizPage() {
   usePageTitle("Food Quiz");
   const [quizStarted, setQuizStarted] = useState(false);
+  const [questionLimit, setQuestionLimit] = useState<number | null>(20);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [userAnswer, setUserAnswer] = useState('');
@@ -182,8 +183,9 @@ export default function FoodQuizPage() {
   const [shuffledQuestions, setShuffledQuestions] = useState<FoodQuizQuestion[]>([]);
 
   const startQuiz = () => {
-    setShuffledQuestions(shuffle(allQuestions));
-    setQuizStarted(true);
+    const shuffled = shuffle(allQuestions);
+    const limited = questionLimit ? shuffled.slice(0, questionLimit) : shuffled;
+    setShuffledQuestions(limited);
     setCurrentIndex(0);
     setScore({ correct: 0, incorrect: 0 });
     setUserAnswer('');
@@ -383,9 +385,37 @@ export default function FoodQuizPage() {
             </CardContent>
           </Card>
 
+          {/* Question Limit Selector */}
+          <Card className="mb-6 sm:mb-8">
+            <CardContent className="p-4 sm:p-6">
+              <h2 className="font-semibold mb-3 text-sm sm:text-base">How many questions?</h2>
+              <div className="flex flex-wrap gap-2">
+                {[10, 20, 30].map(n => (
+                  <Button
+                    key={n}
+                    variant={questionLimit === n ? "burgundy" : "secondary"}
+                    size="sm"
+                    onClick={() => setQuestionLimit(n)}
+                    className="h-8 sm:h-9 text-xs sm:text-sm min-w-[3rem]"
+                  >
+                    {n}
+                  </Button>
+                ))}
+                <Button
+                  variant={questionLimit === null ? "burgundy" : "secondary"}
+                  size="sm"
+                  onClick={() => setQuestionLimit(null)}
+                  className="h-8 sm:h-9 text-xs sm:text-sm"
+                >
+                  All ({allQuestions.length})
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="text-center">
             <p className="text-muted-foreground mb-3 sm:mb-4 text-xs sm:text-sm">
-              {allQuestions.length} questions • ~5 min
+              {questionLimit ? Math.min(questionLimit, allQuestions.length) : allQuestions.length} questions
             </p>
             <Button 
               variant="burgundy" 
