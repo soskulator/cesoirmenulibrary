@@ -18,7 +18,7 @@ import {
   X,
   Check
 } from 'lucide-react';
-import { MenuItem, categories } from '@/data/menuData';
+import { MenuItem, categories } from '@/data/menuTypes';
 
 interface PhotoFile {
   name: string;

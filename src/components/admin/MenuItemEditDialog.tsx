@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { MenuItem, categories, AllergenType } from '@/data/menuData';
+import { MenuItem, categories, AllergenType } from '@/data/menuTypes';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
