@@ -95,6 +95,7 @@ const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: bool
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
