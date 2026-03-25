@@ -515,7 +515,7 @@ export const menuItems: MenuItem[] = [
     name: 'Linguine Vongole',
     shortDescription: 'Little neck clams, white wine, garlic, chili, parsley',
     longDescription: 'Classic Italian pasta with tender little neck clams in a fragrant white wine, garlic, and chili sauce. Finished with fresh parsley and extra virgin olive oil.',
-    ingredientsText: 'Linguine, little neck clams, white wine, garlic, Calabrian chili, parsley, extra virgin olive oil, lemon',
+    ingredientsText: 'Linguine pasta, little neck clams, white wine, garlic, Calabrian chili, parsley, extra virgin olive oil, lemon',
     prepNotes: 'Clams should be cooked just until opened. Sauce should be brothy and fragrant. Fresh parsley added at the end.',
     sellingPointsText: 'Fresh little neck clams • White wine broth • Gentle chili warmth • Classic Italian preparation',
     imageUrl: '/placeholder.svg',
