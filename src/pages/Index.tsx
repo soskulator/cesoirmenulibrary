@@ -416,13 +416,10 @@ export default function Index() {
           <motion.div initial={{
           opacity: 0,
           y: 32
-        }} whileInView={{
+         }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-20px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.7
         }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
             <div>
