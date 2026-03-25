@@ -120,17 +120,42 @@ export default function Index() {
       return;
     }
     const fetchProgress = async () => {
-      const [attemptsRes, studyRes] = await Promise.all([supabase.from("foh_test_attempts").select("percentage, completed_at").eq("user_id", user.id).not("completed_at", "is", null).order("completed_at", {
-        ascending: false
-      }).limit(1), supabase.from("study_progress").select("id", {
-        count: "exact",
-        head: true
-      }).eq("user_id", user.id)]);
+      const [attemptsRes, studyRes, quizScoresRes] = await Promise.all([
+        supabase
+          .from("foh_test_attempts")
+          .select("percentage, completed_at")
+          .eq("user_id", user.id)
+          .not("completed_at", "is", null)
+          .order("completed_at", { ascending: false })
+          .limit(1),
+        supabase
+          .from("study_progress")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id),
+        supabase
+          .from("quiz_scores")
+          .select("quiz_type, percentage, completed_at")
+          .eq("user_id", user.id)
+          .order("completed_at", { ascending: false })
+          .limit(20),
+      ]);
+
       const lastAttempt = attemptsRes.data?.[0];
+
+      const quizScores = quizScoresRes.data ?? [];
+      const bestPractice = quizScores.reduce<number | null>(
+        (best, row) =>
+          best === null || row.percentage > best ? row.percentage : best,
+        null
+      );
+
+      const displayScore = lastAttempt?.percentage ?? bestPractice ?? null;
+      const displayDate = lastAttempt?.completed_at ?? quizScores[0]?.completed_at ?? null;
+
       setProgressData({
-        lastScore: lastAttempt?.percentage ?? null,
-        lastDate: lastAttempt?.completed_at ?? null,
-        flashcardsStudied: studyRes.count ?? 0
+        lastScore: displayScore,
+        lastDate: displayDate,
+        flashcardsStudied: studyRes.count ?? 0,
       });
     };
     fetchProgress();
