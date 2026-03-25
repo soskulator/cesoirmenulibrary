@@ -175,6 +175,9 @@ export default function AllergyQuizPage() {
     setScore({ correct: 0, incorrect: 0 });
     setSelectedIngredients(new Set());
     setShowAnswer(false);
+    setShuffledQuestions(
+      [...allQuestions].sort(() => Math.random() - 0.5).slice(0, questionLimit ?? allQuestions.length)
+    );
   };
 
   const progress = shuffledQuestions.length > 0 
