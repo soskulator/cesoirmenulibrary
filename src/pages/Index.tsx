@@ -477,13 +477,10 @@ export default function Index() {
           <motion.div initial={{
           opacity: 0,
           y: 32
-        }} whileInView={{
+           }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-20px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.7
         }}>
             <Card className="border-0 bg-gradient-to-r from-charcoal to-charcoal-light text-cream overflow-hidden">
