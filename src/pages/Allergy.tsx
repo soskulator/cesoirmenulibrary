@@ -262,44 +262,55 @@ function AllergyCheckContent() {
 
   return (
     <div>
-      {/* Allergen Selection */}
-      <Card className="mb-8 no-print">
-        <CardHeader>
-          <CardTitle className="text-lg">Guest's Allergens</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Select all allergens the guest needs to avoid:
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {allergens.map((allergen) => (
-              <Button
+      <div className="mb-6 no-print">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+          Guest's Allergens — tap to select
+        </p>
+        <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 mb-3">
+          {allergens.map((allergen) => {
+            const isSelected = selectedAllergens.includes(allergen.id);
+            return (
+              <button
                 key={allergen.id}
-                variant={selectedAllergens.includes(allergen.id) ? "destructive" : "outline"}
-                size="sm"
                 onClick={() => toggleAllergen(allergen.id)}
-                className="transition-all"
-              >
-                <span className="mr-1">{allergen.icon}</span>
-                {allergen.name}
-                {selectedAllergens.includes(allergen.id) && (
-                  <X className="w-3 h-3 ml-1" />
+                className={cn(
+                  "flex flex-col items-center justify-center",
+                  "gap-1 p-2 rounded-xl border-2 transition-all",
+                  "text-center min-h-[4rem]",
+                  isSelected
+                    ? "border-destructive bg-destructive/10 scale-95"
+                    : "border-border bg-card hover:border-destructive/40 hover:bg-destructive/5"
                 )}
-              </Button>
-            ))}
-          </div>
-          {selectedAllergens.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
+              >
+                <span className="text-xl leading-none">
+                  {allergen.icon}
+                </span>
+                <span className={cn(
+                  "text-[9px] font-medium leading-tight",
+                  isSelected
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                )}>
+                  {allergen.commonName.split('/')[0]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        {selectedAllergens.length > 0 && (
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-destructive font-medium">
+              {selectedAllergens.length} allergen{selectedAllergens.length > 1 ? 's' : ''} selected
+            </p>
+            <button
               onClick={() => setSelectedAllergens([])}
-              className="mt-4"
+              className="text-xs text-muted-foreground hover:text-foreground underline transition-colors"
             >
               Clear all
-            </Button>
-          )}
-        </CardContent>
-      </Card>
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Results */}
       {selectedAllergens.length > 0 ? (
