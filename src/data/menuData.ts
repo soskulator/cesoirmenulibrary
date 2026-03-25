@@ -317,7 +317,7 @@ export const menuItems: MenuItem[] = [
     prepNotes: 'Oysters must be pristine and ice-cold. Green apple mignonette is bright and crisp. Pink peppercorn foam is floral, not spicy.',
     sellingPointsText: 'Daily fresh selection • Green apple mignonette • Pink peppercorn foam • East or West coast choice',
     imageUrl: '/placeholder.svg',
-    allergens: ['shellfish', 'allium', 'soy'],
+    allergens: ['shellfish', 'allium'],
     questions: [
       { id: 'q97', type: 'selling', prompt: 'What comes with the oysters?', answer: 'Green apple mignonette, preserved lemon, and pink peppercorn foam.' },
       { id: 'q98', type: 'allergy', prompt: 'Is the foam spicy?', answer: 'No, pink peppercorns are floral and fragrant, not spicy.' },
