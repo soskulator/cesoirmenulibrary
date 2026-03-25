@@ -249,12 +249,12 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               <div key={item.id}>
                 <div className="print-item">
                   <span className={`print-item-status status-${status}`} />
-                  <span className={`print-item-name ${status === 'avoid' ? 'print-item-avoid' : ''}`}>
+                  <span className="print-item-name">
                     {item.name}
                   </span>
                 </div>
                 {item.shortDescription && (
-                  <div className={`print-item-desc ${status === 'avoid' ? 'print-item-avoid' : ''}`}>
+                  <div className="print-item-desc">
                     {item.shortDescription}
                   </div>
                 )}
