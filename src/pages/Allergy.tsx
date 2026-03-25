@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useCategories } from '@/hooks/useCategories';
+import { PrintableAllergenMenu } from '@/components/PrintableAllergenMenu';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
