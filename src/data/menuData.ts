@@ -169,7 +169,7 @@ export const menuItems: MenuItem[] = [
     name: 'Hamachi Crudo',
     shortDescription: 'Thinly sliced yellowtail, citrus, olive oil, sea salt',
     longDescription: 'Pristine slices of yellowtail hamachi dressed simply with extra virgin olive oil, fresh citrus, fleur de sel, and micro greens.',
-    ingredientsText: 'Hamachi (yellowtail), extra virgin olive oil, lemon, lime, fleur de sel, micro greens',
+    ingredientsText: 'Hamachi yellowtail (fish), extra virgin olive oil, lemon, lime, fleur de sel, micro greens',
     prepNotes: 'Fish must be sashimi-grade and sliced paper-thin. Dress just before service.',
     sellingPointsText: 'Sashimi-grade hamachi • Paper-thin slices • Clean, bright flavors • Elegant simplicity',
     imageUrl: '/placeholder.svg',
