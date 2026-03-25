@@ -46,7 +46,7 @@ const requiredAssets = [
   },
   {
     name: 'Font Files (Optional)',
-    description: 'Currently using Playfair Display (serif) and DM Sans (sans-serif) from Google Fonts.',
+    description: 'Currently using Source Serif Pro (serif) and Source Sans Pro (sans-serif) from Google Fonts.',
     status: 'configured',
     fileTypes: '.woff, .woff2, .ttf',
   },
