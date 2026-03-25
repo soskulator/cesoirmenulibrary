@@ -49,8 +49,8 @@ const staggerContainer = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.2
+      staggerChildren: 0.06,
+      delayChildren: 0.1
     }
   }
 };
@@ -63,7 +63,7 @@ const fadeUp = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.3,
       ease: "easeOut" as const
     }
   }
@@ -167,7 +167,7 @@ export default function Index() {
     }}>
         {/* Background sketch */}
         <div className="absolute inset-0">
-          <img src={bayfrontSketch} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" fetchPriority="high" decoding="async" width={1920} height={1280} />
+          <img src={bayfrontSketch} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" loading="eager" decoding="async" width={1920} height={1280} />
           <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
         </div>
 
@@ -301,7 +301,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }} className="text-center mb-14">
@@ -405,7 +405,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }} className="mb-8">
@@ -430,7 +430,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
@@ -497,7 +497,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }}>
