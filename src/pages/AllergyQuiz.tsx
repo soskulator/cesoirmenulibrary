@@ -493,9 +493,15 @@ export default function AllergyQuizPage() {
                         </Badge>
                       </div>
 
-                      <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold mb-2">
-                        {currentQuestion.dishName}
-                      </h2>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold mb-2">
+                          {currentQuestion.dishName}
+                        </h2>
+                        {(() => {
+                          const matchItem = dbItems.find(i => i.id === (currentQuestion as AllergyQuizQuestion).dishId);
+                          return matchItem ? <DietaryBadges item={matchItem} size="sm" /> : null;
+                        })()}
+                      </div>
                       <p className="text-muted-foreground text-sm mb-4">
                         Select all ingredients to remove for a guest with a <strong>{currentQuestion.allergenName}</strong> allergy:
                       </p>
