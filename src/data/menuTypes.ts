@@ -12,7 +12,9 @@ export type AllergenType =
   | 'soy' 
   | 'sesame' 
   | 'allium' 
-  | 'nightshade';
+  | 'nightshade'
+  | 'vegetarian'
+  | 'vegan';
 
 export interface Allergen {
   id: AllergenType;
