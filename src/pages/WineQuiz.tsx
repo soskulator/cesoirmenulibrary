@@ -197,6 +197,9 @@ export default function WineQuizPage() {
     setScore({ correct: 0, incorrect: 0 });
     setAnsweredQuestions(new Set());
     setShowAnswer(false);
+    setShuffledQuestions(
+      [...allQuestions].sort(() => Math.random() - 0.5)
+    );
   };
 
   const progress = shuffledQuestions.length > 0 
