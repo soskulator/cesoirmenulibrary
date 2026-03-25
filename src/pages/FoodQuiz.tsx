@@ -52,6 +52,7 @@ const getWrongOptions = (correct: string, allItems: string[], count: number): st
 export default function FoodQuizPage() {
   usePageTitle("Food Quiz");
   const [quizStarted, setQuizStarted] = useState(false);
+  const [questionLimit, setQuestionLimit] = useState<number | null>(20);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [userAnswer, setUserAnswer] = useState('');
