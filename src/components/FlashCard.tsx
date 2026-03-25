@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { MenuItem } from '@/data/menuTypes';
 import { getDishImage } from '@/data/dishImages';
 import { AllergenList } from './AllergenBadge';
+import { DietaryBadges } from './DietaryBadge';
 import { cn } from '@/lib/utils';
 
 interface FlashCardProps {
@@ -125,6 +126,7 @@ export function FlashCard({
             <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-cream drop-shadow-md">
               {item.name}
             </h2>
+            <DietaryBadges item={item} size="sm" className="justify-center mt-1.5" />
           </div>
         </div>
 
@@ -171,11 +173,12 @@ export function FlashCard({
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{item.sellingPointsText}</p>
             </div>
 
-            {/* Allergens */}
-            {showAllergens && item.allergens.length > 0 && (
+            {/* Dietary & Allergens */}
+            <DietaryBadges item={item} size="sm" />
+            {showAllergens && item.allergens.filter(a => a !== 'vegetarian' && a !== 'vegan').length > 0 && (
               <div>
                 <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-destructive mb-1">Allergens</h3>
-                <AllergenList allergens={item.allergens} size="sm" />
+                <AllergenList allergens={item.allergens.filter(a => a !== 'vegetarian' && a !== 'vegan')} size="sm" />
               </div>
             )}
 

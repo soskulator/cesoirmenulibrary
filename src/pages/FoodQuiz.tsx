@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { useMenuItems } from '@/hooks/useMenuItems';
+import { DietaryBadges } from '@/components/DietaryBadge';
 import { getDishImage } from '@/data/dishImages';
 import { useQuizScores } from '@/hooks/useQuizScores';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
@@ -557,6 +558,10 @@ export default function FoodQuizPage() {
                       <p className="text-sm">
                         <span className="text-muted-foreground">Answer: </span>
                         <span className="font-medium">{currentQuestion.correctAnswer}</span>
+                        {currentQuestion.itemId && (() => {
+                          const matchItem = allMenuItems.find(i => i.id === currentQuestion.itemId);
+                          return matchItem ? <DietaryBadges item={matchItem} size="sm" className="ml-2" /> : null;
+                        })()}
                       </p>
                     </motion.div>
                   )}
