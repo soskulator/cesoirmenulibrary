@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -10,6 +10,7 @@ import { MenuItem } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
+import { useQuizScores } from '@/hooks/useQuizScores';
 
 import { 
   Check, 
@@ -55,6 +56,7 @@ export default function WineQuizPage() {
   const [score, setScore] = useState({ correct: 0, incorrect: 0 });
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
   const [quizType, setQuizType] = useState<'all' | 'identify' | 'knowledge'>('all');
+  const { saveQuizScore } = useQuizScores();
 
   const { questions: dbQuestions, isLoading: isLoadingDb, isEmpty: dbIsEmpty } = useCategoryQuestions('wine');
   const { items: allMenuItems } = useMenuItems();
@@ -211,7 +213,15 @@ export default function WineQuizPage() {
     }
   };
 
-  // Quiz complete screen
+  // Save score when quiz completes
+  const scoreSavedRef = useRef(false);
+  useEffect(() => {
+    if (isComplete && shuffledQuestions.length > 0 && !scoreSavedRef.current) {
+      scoreSavedRef.current = true;
+      saveQuizScore('wine', score.correct, shuffledQuestions.length);
+    }
+  }, [isComplete, score.correct, shuffledQuestions.length, saveQuizScore]);
+
   if (isComplete) {
     const percentage = Math.round((score.correct / shuffledQuestions.length) * 100);
     
