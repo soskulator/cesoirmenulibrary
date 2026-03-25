@@ -237,18 +237,13 @@ export function Header() {
            </Link>
 
           {/* Search Icon */}
-          <Link
-            to="/search"
-            className={cn(
-              "relative px-2.5 py-1.5 rounded-md transition-colors",
-              location.pathname === '/search'
-                ? "text-burgundy"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent"
-            )}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="relative px-2.5 py-1.5 rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent"
             title="Search"
           >
             <Search className="w-4 h-4" />
-          </Link>
+          </button>
           
           {isAdmin && <>
               <div className="w-px h-5 bg-border mx-1.5" />
