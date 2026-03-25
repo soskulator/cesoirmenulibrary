@@ -587,29 +587,31 @@ export default function AllergyQuizPage() {
                       Check Answer
                     </Button>
                   ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <Button
-                    variant="burgundy"
-                    size="sm"
-                    className="w-full h-10 sm:h-12 text-sm"
-                    onClick={goToNext}
-                  >
-                    {currentIndex < shuffledQuestions.length - 1 ? (
-                      <>
-                        Next Question
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </>
-                    ) : (
-                      <>
-                        See Results
-                        <Trophy className="w-4 h-4 ml-2" />
-                      </>
-                    )}
-                  </Button>
-                </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <Button
+                        variant="burgundy"
+                        size="sm"
+                        className="w-full h-10 sm:h-12 text-sm"
+                        onClick={goToNext}
+                      >
+                        {currentIndex < shuffledQuestions.length - 1 ? (
+                          <>
+                            Next Question
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </>
+                        ) : (
+                          <>
+                            See Results
+                            <Trophy className="w-4 h-4 ml-2" />
+                          </>
+                        )}
+                      </Button>
+                    </motion.div>
+                  )}
+                </>
               )}
             </motion.div>
           </AnimatePresence>
