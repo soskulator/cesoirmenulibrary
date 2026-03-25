@@ -551,6 +551,16 @@ function AllergyCheckContent() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Printable Adapted Menu (hidden on screen, shown on print) */}
+      {selectedAllergens.length > 0 && (
+        <PrintableAllergenMenu
+          selectedAllergens={selectedAllergens}
+          menuItems={menuItems}
+          modifications={modifications}
+          categories={dbCategories}
+        />
+      )}
     </div>
   );
 }
