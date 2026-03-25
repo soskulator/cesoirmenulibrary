@@ -195,7 +195,7 @@ export function HeaderSearch({ isOpen, onClose }: HeaderSearchProps) {
                           >
                             <div className="flex-1 min-w-0 pr-2">
                               <p className="font-medium text-sm group-hover:text-copper transition-colors truncate">
-                                {item.name}
+                                <Highlight text={item.name} query={normalizedQuery} />
                               </p>
                               {item.shortDescription && (
                                 <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">
