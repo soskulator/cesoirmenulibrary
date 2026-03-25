@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { menuItems, categories, allergens, AllergenType } from '@/data/menuData';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
+import { useAllergenModifications } from '@/hooks/useAllergenModifications';
+import { useMenuItems } from '@/hooks/useMenuItems';
 import { 
   Check, 
   X, 
