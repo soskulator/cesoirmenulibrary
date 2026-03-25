@@ -300,13 +300,14 @@ export default function SpiritsQuizPage() {
     }
   };
 
-  // Save score and show complete screen
-  if (isComplete && shuffledQuestions.length > 0) {
-    const pct = Math.round(
-      (score.correct / shuffledQuestions.length) * 100
-    );
-    saveQuizScore('spirits', score.correct, shuffledQuestions.length);
-  }
+  // Save score when quiz completes
+  const scoreSavedRef = useRef(false);
+  useEffect(() => {
+    if (isComplete && shuffledQuestions.length > 0 && !scoreSavedRef.current) {
+      scoreSavedRef.current = true;
+      saveQuizScore('spirits', score.correct, shuffledQuestions.length);
+    }
+  }, [isComplete, score.correct, shuffledQuestions.length, saveQuizScore]);
 
   if (isComplete) {
     const percentage = Math.round((score.correct / shuffledQuestions.length) * 100);
