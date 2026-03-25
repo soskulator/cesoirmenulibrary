@@ -44,7 +44,13 @@ import {
   Trash2,
   Check,
   RefreshCw,
-  Loader2
+  Loader2,
+  BookOpen,
+  CalendarDays,
+  BarChart2,
+  FolderOpen,
+  ShieldAlert,
+  Link as LinkIcon
 } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
 import { cn } from '@/lib/utils';
