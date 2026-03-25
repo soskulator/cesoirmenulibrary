@@ -495,7 +495,7 @@ export const menuItems: MenuItem[] = [
     name: 'Lamb Bolognese',
     shortDescription: 'House-made pappardelle, ground lamb ragù, Parmesan',
     longDescription: 'Rich, slow-simmered lamb bolognese made with ground lamb and house-made ragù alla bolognese. Served over wide, silky house-made pappardelle, finished with freshly grated Parmesan.',
-    ingredientsText: 'Ground lamb, house-made pappardelle, ragù (tomato, wine, aromatics, herbs), Parmesan, olive oil',
+    ingredientsText: 'Ground lamb, house-made pappardelle (flour, egg), ragù (tomato, wine, onion, garlic, herbs), Parmesan, olive oil',
     prepNotes: 'Ragù is slow-cooked for depth and richness. Ground lamb gives warm, aromatic, slightly sweet profile. Pappardelle is house-made, soft and silky.',
     sellingPointsText: 'House-made pappardelle • Slow-cooked lamb ragù • Freshly grated Parmesan',
     imageUrl: '/placeholder.svg',
