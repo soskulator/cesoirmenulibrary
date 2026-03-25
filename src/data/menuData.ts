@@ -413,7 +413,7 @@ export const menuItems: MenuItem[] = [
     name: 'Bouillabaisse',
     shortDescription: 'Lobster, prawns, snapper, clams, saffron broth, rouille',
     longDescription: 'Refined Provençal-style seafood stew with poached lobster, Josper-grilled prawns, olive-oil confit snapper, and steamed clams. Served in crystal-clear saffron shellfish broth (lobster stock, fennel, leek, saffron, tomato, white wine, Pernod). Accompanied by traditional rouille.',
-    ingredientsText: 'Lobster, prawns, snapper, clams, saffron, lobster stock, fennel, leek, tomato, white wine, Pernod, rouille (potato, saffron, garlic, egg yolk, olive oil)',
+    ingredientsText: 'Lobster, prawns, snapper fish, clams, saffron, lobster stock, fennel, leek, tomato, white wine, Pernod, rouille (potato, saffron, garlic, egg yolk, olive oil)',
     prepNotes: 'Light, aromatic, elegant — not a heavy stew. Broth is clarified for purity and depth. Each seafood cooked individually and precisely. Rouille is creamy, garlicky, gently warm.',
     sellingPointsText: 'Crystal-clear saffron broth • Multiple seafood preparations • Traditional rouille • Elegant presentation',
     imageUrl: '/placeholder.svg',
