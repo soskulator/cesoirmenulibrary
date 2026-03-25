@@ -167,7 +167,7 @@ export default function Index() {
     }}>
         {/* Background sketch */}
         <div className="absolute inset-0">
-          <img src={bayfrontSketch} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" fetchPriority="high" decoding="async" width={1920} height={1280} />
+          <img src={bayfrontSketch} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" loading="eager" decoding="async" width={1920} height={1280} />
           <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-cream/20 to-cream/60" />
         </div>
 
