@@ -52,7 +52,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
             return mod?.can_remove;
           });
 
-          if (allModifiable) {
+        if (allModifiable) {
             status = 'modifiable';
             const notes = matching
               .map(allergenId => {
@@ -64,7 +64,8 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               .filter(Boolean);
             modNotes = notes.join('; ');
           } else {
-            status = 'avoid';
+            // Skip items that cannot accommodate — don't add to print menu
+            return;
           }
         }
 
@@ -160,7 +161,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
             }
             .dot-safe { width: 6pt; height: 6pt; border-radius: 50%; background: #5a8f5a; display: inline-block; }
             .dot-mod { width: 6pt; height: 6pt; border-radius: 50%; background: #d4a030; display: inline-block; }
-            .dot-avoid { width: 6pt; height: 6pt; border-radius: 50%; background: #c44; display: inline-block; }
+            
             .print-course {
               margin-bottom: 14pt;
               page-break-inside: avoid;
@@ -190,7 +191,6 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
             }
             .status-safe { background: #5a8f5a; }
             .status-modifiable { background: #d4a030; }
-            .status-avoid { background: #c44; }
             .print-item-name {
               font-weight: 600;
               font-size: 10pt;
@@ -206,10 +206,6 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               font-size: 8pt;
               margin-left: 14pt;
               padding: 1pt 0;
-            }
-            .print-item-avoid {
-              color: #999;
-              text-decoration: line-through;
             }
             .print-footer {
               margin-top: 16pt;
@@ -242,7 +238,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
           <div className="print-legend">
             <span className="print-legend-item"><span className="dot-safe" /> Safe as-is</span>
             <span className="print-legend-item"><span className="dot-mod" /> Can be modified</span>
-            <span className="print-legend-item"><span className="dot-avoid" /> Cannot accommodate</span>
+            
           </div>
         </div>
 
@@ -253,12 +249,12 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
               <div key={item.id}>
                 <div className="print-item">
                   <span className={`print-item-status status-${status}`} />
-                  <span className={`print-item-name ${status === 'avoid' ? 'print-item-avoid' : ''}`}>
+                  <span className="print-item-name">
                     {item.name}
                   </span>
                 </div>
                 {item.shortDescription && (
-                  <div className={`print-item-desc ${status === 'avoid' ? 'print-item-avoid' : ''}`}>
+                  <div className="print-item-desc">
                     {item.shortDescription}
                   </div>
                 )}
