@@ -433,9 +433,6 @@ export function Header() {
             return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
                   <item.icon className="w-5 h-5" />
                   <span className="font-medium text-sm">{item.label}</span>
-                  {item.path === '/daily-focus' && hasTodayFocus && (
-                    <span className="ml-auto w-2 h-2 rounded-full bg-copper animate-pulse" />
-                  )}
                 </Link>;
           })}
 
