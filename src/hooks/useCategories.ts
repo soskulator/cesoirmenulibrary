@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { categories as staticCategories } from '@/data/menuData';
+import { categories as staticCategories } from '@/data/menuTypes';
 
 export interface DbCategory {
   id: string;

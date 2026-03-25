@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { menuItems as staticMenuItems, MenuItem, AllergenType, Question } from '@/data/menuData';
+import { menuItems as staticMenuItems } from '@/data/menuData';
+import { MenuItem, AllergenType, Question } from '@/data/menuTypes';
 
 interface DbMenuItem {
   id: string;
