@@ -340,10 +340,7 @@ export default function Index() {
         }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-60px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.6
         }}>
               <Card className="border-0 shadow-elevated overflow-hidden">
