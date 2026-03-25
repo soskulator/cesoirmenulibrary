@@ -120,8 +120,9 @@ export default function AllergyQuizPage() {
   const allQuestions = useMemo(() => generateQuestions(), []);
 
   const startQuiz = () => {
-    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5).slice(0, 20); // Limit to 20 questions
-    setShuffledQuestions(shuffled);
+    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+    const limited = questionLimit ? shuffled.slice(0, questionLimit) : shuffled;
+    setShuffledQuestions(limited);
     setQuizStarted(true);
     setCurrentIndex(0);
     setScore({ correct: 0, incorrect: 0 });
