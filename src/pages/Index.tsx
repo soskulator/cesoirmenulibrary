@@ -301,7 +301,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }} className="text-center mb-14">
@@ -405,7 +405,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }} className="mb-8">
@@ -430,7 +430,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
@@ -497,7 +497,7 @@ export default function Index() {
           y: 0
         }} viewport={{
           once: true,
-          margin: "-80px"
+          margin: "-20px"
         }} transition={{
           duration: 0.7
         }}>
