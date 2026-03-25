@@ -167,6 +167,14 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/allergen-menu"
+                  element={
+                    <ProtectedRoute>
+                      <AllergenMenu />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* ── Role-restricted routes — all staff roles ── */}
                 <Route
