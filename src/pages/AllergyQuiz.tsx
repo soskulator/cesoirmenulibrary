@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils';
 
 interface AllergyQuizQuestion {
   id: string;
+  type?: 'ingredient';
   dishName: string;
   dishId: string;
   allergen: AllergenType;
@@ -32,7 +33,22 @@ interface AllergyQuizQuestion {
   allergenIcon: string;
   ingredientsToRemove: string[];
   allIngredients: { name: string; allergens: AllergenType[]; removable: boolean }[];
+  prompt?: string;
 }
+
+interface ModificationQuizQuestion {
+  id: string;
+  type: 'modification';
+  dishName: string;
+  allergenName: string;
+  allergenIcon: string;
+  canRemove: boolean;
+  substitutionNotes: string;
+  prompt: string;
+  correctAnswer: string;
+}
+
+type AnyQuizQuestion = AllergyQuizQuestion | ModificationQuizQuestion;
 
 // Parse ingredients from ingredientsText
 const parseIngredients = (ingredientsText: string): { name: string; allergens: AllergenType[]; removable: boolean }[] => {
