@@ -83,6 +83,22 @@ export default function FlashcardsPage() {
     if (idx >= 0) setCurrentIndex(idx);
   }, [initialItem, filteredItems]);
 
+  // Resume from first unstudied item
+  useEffect(() => {
+    if (!user) return;
+    if (initialItem) return; // respect deep-link
+    if (filteredItems.length === 0) return;
+    if (isRandomMode) return;
+
+    const firstUnstudied = filteredItems.findIndex(
+      (item) => !isKnown(item.name) && !isStudied(item.name)
+    );
+
+    if (firstUnstudied > 0) {
+      setCurrentIndex(firstUnstudied);
+    }
+  }, [filteredItems, user, isKnown, isStudied, initialItem, isRandomMode]);
+
   useEffect(() => {
     if (filteredItems.length === 0) return;
     if (currentIndex >= filteredItems.length) {
