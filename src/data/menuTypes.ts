@@ -21,6 +21,8 @@ export interface Allergen {
   name: string;
   icon: string;
   commonName: string;
+  /** Dietary tags use inverted logic: an item marked with 'vegan' IS vegan (positive), unlike allergens where the mark means the item CONTAINS the allergen (negative). */
+  isDietary?: boolean;
 }
 
 export interface Question {
