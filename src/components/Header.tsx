@@ -95,6 +95,9 @@ const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: bool
 };
 
 export function Header() {
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState('');
+  const [savingName, setSavingName] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
