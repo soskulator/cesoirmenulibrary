@@ -238,7 +238,7 @@ export const PrintableAllergenMenu = forwardRef<HTMLDivElement, PrintableAllerge
           <div className="print-legend">
             <span className="print-legend-item"><span className="dot-safe" /> Safe as-is</span>
             <span className="print-legend-item"><span className="dot-mod" /> Can be modified</span>
-            <span className="print-legend-item"><span className="dot-avoid" /> Cannot accommodate</span>
+            
           </div>
         </div>
 
