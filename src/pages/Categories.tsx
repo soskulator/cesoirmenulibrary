@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { AllergenList } from '@/components/AllergenBadge';
+import { DietaryBadges } from '@/components/DietaryBadge';
 import { categories, getCategoryById, MenuItem } from '@/data/menuTypes';
 import { getMenuItemsByCategory } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
