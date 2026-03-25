@@ -308,13 +308,6 @@ export function Header() {
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center gap-1.5">
-          {/* Mobile Role Badge */}
-          {!loading && user && (
-            <Badge variant="outline" className={cn("flex items-center gap-1 text-[10px] px-1.5 py-0.5", roleDisplay.color)}>
-              <roleDisplay.icon className="w-2.5 h-2.5" />
-              <span className="hidden xs:inline">{roleDisplay.label}</span>
-            </Badge>
-          )}
           {!loading && user && <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0">

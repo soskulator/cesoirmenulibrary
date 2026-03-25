@@ -210,9 +210,10 @@ function AllergyCheckContent() {
 
   // Get allergen-relevant items from database menu items
   const allergenRelevantItems = useMemo(() => {
+    const beverageCategories = ['wine', 'spirits', 'cocktails'];
     return menuItems.filter(item => 
       item.isPublished && 
-      item.categoryId !== 'spirits'
+      !beverageCategories.includes(item.categoryId)
     );
   }, [menuItems]);
 
