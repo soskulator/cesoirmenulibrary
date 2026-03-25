@@ -355,20 +355,14 @@ export function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>}
-          <Link
-            to="/search"
-            onClick={() => setMobileMenuOpen(false)}
-            className={cn(
-              "inline-flex h-8 w-8 items-center justify-center rounded-full border transition-colors",
-              location.pathname === '/search'
-                ? "border-copper/30 bg-copper/10 text-copper"
-                : "border-border text-muted-foreground hover:text-foreground hover:bg-accent"
-            )}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             title="Search"
             aria-label="Search"
           >
             <Search className="w-4 h-4" />
-          </Link>
+          </button>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </Button>
