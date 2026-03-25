@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <img src={cesoirLogo} alt="Ce Soir" className="h-14 w-auto mb-4" />
+            <img src={cesoirLogo} alt="Ce Soir" className="h-36 w-auto -mb-6" />
             <p className="text-cream/60 text-sm leading-relaxed">French - Mediterranean cuisine in the heart of Naples, Florida.</p>
           </div>
 
