@@ -19,6 +19,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 // ─── Lazy-loaded pages (split into separate chunks) ───
 const Categories = lazy(() => import("./pages/Categories"));
+const SearchPage = lazy(() => import("./pages/Search"));
 const WineList = lazy(() => import("./pages/WineList"));
 const Spirits = lazy(() => import("./pages/Spirits"));
 const Cocktails = lazy(() => import("./pages/Cocktails"));
