@@ -397,10 +397,7 @@ export default function Index() {
         }} whileInView={{
           opacity: 1,
           y: 0
-        }} viewport={{
-          once: true,
-          margin: "-20px"
-        }} transition={{
+        }} viewport={vp} transition={{
           duration: 0.7
         }} className="mb-8">
               <h2 className="font-serif text-3xl font-semibold text-center mb-2">Featured Cocktail</h2>
