@@ -91,11 +91,13 @@ export function useScoringData() {
         { data: roles },
         { data: attempts },
         { data: testConfigs },
+        { data: sessions },
       ] = await Promise.all([
         supabase.from('profiles').select('id, full_name, email'),
         supabase.from('user_roles').select('user_id, role'),
         supabase.from('foh_test_attempts').select('*').not('completed_at', 'is', null).order('completed_at', { ascending: false }),
         supabase.from('test_configurations').select('test_type, test_name').eq('is_active', true),
+        supabase.from('user_sessions').select('user_id, session_end, last_heartbeat').order('session_end', { ascending: false }),
       ]);
 
       const roleMap: Record<string, string> = {};
