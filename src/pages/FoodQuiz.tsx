@@ -450,6 +450,18 @@ export default function FoodQuizPage() {
                     </Badge>
                   </div>
 
+                  {/* Dish Image */}
+                  {currentQuestion.imageUrl && (
+                    <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-4 bg-muted">
+                      <img
+                        src={currentQuestion.imageUrl}
+                        alt="Identify this dish"
+                        className="w-full h-full object-cover"
+                        loading="eager"
+                      />
+                    </div>
+                  )}
+
                   {/* Question */}
                   <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6">
                     {currentQuestion.prompt}
