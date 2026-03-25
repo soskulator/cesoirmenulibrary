@@ -44,39 +44,12 @@ const navItems = [{
   path: '/allergy',
   label: 'Allergy Center',
   icon: AlertTriangle
-}];
-// Knowledge Tests (was FoH)
-const knowledgeTestItems = [{
-  path: '/foh-test',
-  label: 'Knowledge Test',
-  icon: ClipboardList,
-  subItems: [
-    { path: '/foh-test?type=service_staff', label: 'Bartender/Server Test', icon: UserCheck },
-    { path: '/foh-test?type=server_assistant', label: 'Server Assistant', icon: Users }
-  ]
-}];
-
-// Menu Knowledge Tests
-const menuTestItems = [{
-  path: '/wine-quiz',
-  label: 'Wine Test',
-  icon: Wine
-}, {
-  path: '/spirits-quiz',
-  label: 'Spirits Test',
-  icon: Martini
 }, {
   path: '/quiz',
-  label: 'Food Test',
+  label: 'Test',
   icon: HelpCircle
 }];
 
-// Other Tests
-const otherTestItems = [{
-  path: '/allergy-quiz',
-  label: 'Allergy Test',
-  icon: AlertTriangle
-}];
 const adminItems = [{
   path: '/admin',
   label: 'Admin Center',
