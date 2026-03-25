@@ -33,6 +33,7 @@ const FoodQuiz = lazy(() => import("./pages/FoodQuiz"));
 const FohTest = lazy(() => import("./pages/FohTest"));
 const DailyFocus = lazy(() => import("./pages/DailyFocus"));
 const Allergy = lazy(() => import("./pages/Allergy"));
+const AllergenMenu = lazy(() => import("./pages/AllergenMenu"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminAssets = lazy(() => import("./pages/AdminAssets"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
@@ -163,6 +164,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Allergy />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/allergen-menu"
+                  element={
+                    <ProtectedRoute>
+                      <AllergenMenu />
                     </ProtectedRoute>
                   }
                 />

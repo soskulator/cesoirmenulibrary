@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -271,6 +272,15 @@ function AllergyCheckContent() {
 
   return (
     <div>
+      <div className="flex justify-end mb-4">
+        <Link
+          to="/allergen-menu"
+          className="inline-flex items-center gap-1.5 text-sm text-copper hover:text-copper-dark transition-colors font-medium"
+        >
+          <Sparkles className="w-4 h-4" />
+          Full allergen menu view
+        </Link>
+      </div>
       <div className="mb-6 no-print">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
           Guest's Allergens — tap to select
