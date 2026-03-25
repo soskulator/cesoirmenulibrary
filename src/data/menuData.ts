@@ -557,7 +557,7 @@ export const menuItems: MenuItem[] = [
     name: 'Wagyu Filet 8oz',
     shortDescription: 'Wagyu beef filet, choice of sauce, au feu de charbon',
     longDescription: '8-ounce Wagyu filet grilled in our Josper charcoal oven for deep smokiness and perfect caramelization. Choice of sauce: Bordelaise, Au Poivre, Béarnaise, or Sauce Périgordine (+$10).',
-    ingredientsText: 'Wagyu beef filet (8oz), house steak seasoning, choice of sauce',
+    ingredientsText: 'Wagyu beef filet (8oz), house steak seasoning, choice of sauce (sauces contain butter, cream, egg yolk, shallots)',
     prepNotes: 'Josper oven for perfect char. Rest after cooking.',
     sellingPointsText: 'Wagyu beef • Josper charcoal grilled • Choice of classic sauces',
     imageUrl: '/placeholder.svg',
