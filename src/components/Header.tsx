@@ -251,16 +251,6 @@ export function Header() {
               </Link>;
         })}
 
-          {/* Test Link - Direct */}
-          <Link to="/quiz" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors flex items-center gap-1.5",
-            location.pathname === '/quiz' || location.pathname === '/foh-test' || location.pathname === '/wine-quiz' || location.pathname === '/spirits-quiz' || location.pathname === '/food-quiz' || location.pathname === '/allergy-quiz'
-              ? "text-burgundy"
-              : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-            <HelpCircle className="w-4 h-4" />
-            Test
-            {location.pathname === '/quiz' && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
-           </Link>
-
           {/* Search Icon */}
           <button
             onClick={() => setSearchOpen(true)}
