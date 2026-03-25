@@ -298,7 +298,7 @@ function AllergyCheckContent() {
       </div>
       <div className="mb-6 no-print">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Guest's Allergens — tap to select
+          Guest's Allergens & Dietary Preferences — tap to select
         </p>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 mb-3">
           {allergens.map((allergen) => {
