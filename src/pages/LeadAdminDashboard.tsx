@@ -47,6 +47,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { MenuItem } from '@/data/menuData';
+import { cn } from '@/lib/utils';
 
 export default function LeadAdminDashboard() {
   usePageTitle("Dashboard");
@@ -99,7 +100,74 @@ export default function LeadAdminDashboard() {
   });
   const [deletingCategoryId, setDeletingCategoryId] = useState<string | null>(null);
 
-  
+  const [quickStats, setQuickStats] = useState<{
+    testsThisWeek: number;
+    avgScore: number;
+    activeToday: number;
+    neverTested: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchQuickStats = async () => {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const [
+        { data: attempts },
+        { data: sessions },
+        { data: profiles },
+        { data: testedUsers },
+      ] = await Promise.all([
+        supabase
+          .from('foh_test_attempts')
+          .select('percentage')
+          .not('completed_at', 'is', null)
+          .gte('completed_at', weekAgo.toISOString()),
+        supabase
+          .from('user_sessions')
+          .select('user_id')
+          .gte('session_start', today.toISOString()),
+        supabase
+          .from('profiles')
+          .select('id'),
+        supabase
+          .from('foh_test_attempts')
+          .select('user_id')
+          .not('completed_at', 'is', null),
+      ]);
+
+      const avg = attempts?.length
+        ? Math.round(
+            attempts.reduce(
+              (s, a) => s + (a.percentage || 0), 0
+            ) / attempts.length
+          )
+        : 0;
+
+      const testedIds = new Set(
+        (testedUsers || []).map(t => t.user_id)
+      );
+      const neverTested = (profiles || []).filter(
+        p => !testedIds.has(p.id)
+      ).length;
+
+      const activeIds = new Set(
+        (sessions || []).map(s => s.user_id)
+      );
+
+      setQuickStats({
+        testsThisWeek: attempts?.length || 0,
+        avgScore: avg,
+        activeToday: activeIds.size,
+        neverTested,
+      });
+    };
+    fetchQuickStats();
+  }, []);
+
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth');
@@ -316,6 +384,26 @@ export default function LeadAdminDashboard() {
               </div>
             </div>
           </div>
+
+          {quickStats && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+              {[
+                { label: 'Tests This Week', value: quickStats.testsThisWeek, color: 'text-copper' },
+                { label: 'Avg Score', value: `${quickStats.avgScore}%`, color: quickStats.avgScore >= 70 ? 'text-jade' : 'text-destructive' },
+                { label: 'Active Today', value: quickStats.activeToday, color: 'text-copper' },
+                { label: 'Never Tested', value: quickStats.neverTested, color: quickStats.neverTested > 0 ? 'text-destructive' : 'text-jade' },
+              ].map(stat => (
+                <div key={stat.label} className="rounded-xl bg-muted/50 border border-border p-3 text-center">
+                  <p className={cn("text-2xl font-bold font-serif", stat.color)}>
+                    {stat.value}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Full Menu Items Editor */}
           <div className="mb-6 sm:mb-8">
