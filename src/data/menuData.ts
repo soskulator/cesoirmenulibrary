@@ -417,7 +417,7 @@ export const menuItems: MenuItem[] = [
     prepNotes: 'Light, aromatic, elegant — not a heavy stew. Broth is clarified for purity and depth. Each seafood cooked individually and precisely. Rouille is creamy, garlicky, gently warm.',
     sellingPointsText: 'Crystal-clear saffron broth • Multiple seafood preparations • Traditional rouille • Elegant presentation',
     imageUrl: '/placeholder.svg',
-    allergens: ['shellfish', 'fish', 'dairy', 'egg', 'allium', 'nightshade'],
+    allergens: ['shellfish', 'fish', 'egg', 'allium', 'nightshade'],
     questions: [
       { id: 'q37', type: 'selling', prompt: 'What seafood is included?', answer: 'Poached lobster, Josper-grilled prawns, olive-oil confit snapper, and steamed clams.' },
       { id: 'q38', type: 'allergy', prompt: 'Can guests with shellfish allergies have this?', answer: 'No, this dish contains multiple shellfish and cross-contact is unavoidable.' },
