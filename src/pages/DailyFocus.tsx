@@ -124,9 +124,41 @@ export default function DailyFocusPage() {
     fetchImages();
   }, [focusItems, activeCocktail]);
 
-  const handleRefresh = () => {
-    setCustomFocusItems(getRandomFocusItems());
-    setRefreshKey(prev => prev + 1);
+  const handleRefresh = async () => {
+    try {
+      setIsLoadingSaved(true);
+      const { data, error } = await supabase
+        .from('daily_focus_settings')
+        .select('menu_item_ids, cocktail_id, notes')
+        .eq('focus_date', today)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data && data.menu_item_ids?.length > 0) {
+        const items = data.menu_item_ids
+          .map(id => menuItems.find(item => item.id === id))
+          .filter((item): item is MenuItem => item !== undefined);
+        setSavedFocusItems(items);
+        setCustomFocusItems(null);
+      } else {
+        setSavedFocusItems([]);
+        setCustomFocusItems(getRandomFocusItems());
+      }
+
+      if (data?.cocktail_id) {
+        const cocktail = menuItems.find(i => i.id === data.cocktail_id);
+        setSavedCocktail(cocktail || null);
+      } else {
+        setSavedCocktail(null);
+      }
+    } catch (error) {
+      console.error('Error refreshing focus:', error);
+      setCustomFocusItems(getRandomFocusItems());
+    } finally {
+      setIsLoadingSaved(false);
+      setRefreshKey(prev => prev + 1);
+    }
   };
 
   if (isLoadingSaved || !minTimeElapsed) {
