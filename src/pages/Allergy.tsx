@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useCategories } from '@/hooks/useCategories';
+import { PrintableAllergenMenu } from '@/components/PrintableAllergenMenu';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
@@ -197,6 +199,7 @@ export default function AllergyPage() {
 function AllergyCheckContent() {
   const { items: menuItems, isLoading } = useMenuItems();
   const { modifications } = useAllergenModifications();
+  const { categories: dbCategories } = useCategories();
 
   const getModsForItem = (itemId: string, allergenIds: AllergenType[]) => {
     return allergenIds
@@ -344,7 +347,7 @@ function AllergyCheckContent() {
               </div>
               <Button variant="outline" size="sm" onClick={handlePrint} className="no-print">
                 <Printer className="w-4 h-4 mr-2" />
-                Print
+                Print Adapted Menu
               </Button>
             </div>
 
@@ -548,6 +551,16 @@ function AllergyCheckContent() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Printable Adapted Menu (hidden on screen, shown on print) */}
+      {selectedAllergens.length > 0 && (
+        <PrintableAllergenMenu
+          selectedAllergens={selectedAllergens}
+          menuItems={menuItems}
+          modifications={modifications}
+          categories={dbCategories}
+        />
+      )}
     </div>
   );
 }
