@@ -232,6 +232,20 @@ export function Header() {
             <HelpCircle className="w-4 h-4" />
             Test
             {location.pathname === '/quiz' && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
+           </Link>
+
+          {/* Search Icon */}
+          <Link
+            to="/search"
+            className={cn(
+              "relative px-2.5 py-1.5 rounded-md transition-colors",
+              location.pathname === '/search'
+                ? "text-burgundy"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
+            )}
+            title="Search"
+          >
+            <Search className="w-4 h-4" />
           </Link>
           
           {isAdmin && <>
