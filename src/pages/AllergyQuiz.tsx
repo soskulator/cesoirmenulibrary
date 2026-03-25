@@ -193,9 +193,10 @@ export default function AllergyQuizPage() {
   };
 
   const checkAnswer = () => {
-    if (!currentQuestion) return;
+    if (!currentQuestion || currentQuestion.type === 'modification') return;
     
-    const correctIngredients = new Set(currentQuestion.ingredientsToRemove);
+    const q = currentQuestion as AllergyQuizQuestion;
+    const correctIngredients = new Set(q.ingredientsToRemove);
     const isCorrect = 
       selectedIngredients.size === correctIngredients.size &&
       [...selectedIngredients].every(ing => correctIngredients.has(ing));
