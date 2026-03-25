@@ -340,8 +340,8 @@ function AllergyCheckContent() {
         </div>
         {selectedAllergens.length > 0 && (
           <div className="flex items-center justify-between">
-            <p className="text-xs text-destructive font-medium">
-              {selectedAllergens.length} allergen{selectedAllergens.length > 1 ? 's' : ''} selected
+            <p className="text-xs text-muted-foreground font-medium">
+              {selectedAllergens.length} filter{selectedAllergens.length > 1 ? 's' : ''} selected
             </p>
             <button
               onClick={() => setSelectedAllergens([])}
