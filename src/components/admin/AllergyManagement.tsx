@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAllergenModifications } from '@/hooks/useAllergenModifications';
 import { useMenuItems } from '@/hooks/useMenuItems';
-import { allergens, AllergenType, getAllergenById } from '@/data/menuData';
+import { allergens, AllergenType, getAllergenById } from '@/data/menuTypes';
 import { DbCategory } from '@/hooks/useCategories';
 import { AlertTriangle, Search, Grid3x3, BookOpen, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';

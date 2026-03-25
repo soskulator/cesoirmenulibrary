@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { useAuth } from '@/contexts/AuthContext';
-import { categories } from '@/data/menuData';
+import { categories } from '@/data/menuTypes';
 import { Search, UtensilsCrossed, Wine, Martini, GlassWater, ArrowRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';

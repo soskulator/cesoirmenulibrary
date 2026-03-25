@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layers, CreditCard, HelpCircle, AlertTriangle, ArrowRight, ArrowDown, MapPin, BookOpen, Utensils, GraduationCap, TrendingUp, Brain, LogIn } from "lucide-react";
-import { getCategoryById } from "@/data/menuData";
+import { getCategoryById } from "@/data/menuTypes";
 import { useMenuItems } from "@/hooks/useMenuItems";
 import { useCategories } from "@/hooks/useCategories";
 import { useDailyRotation } from "@/hooks/useDailyRotation";

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
-import { MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { getDishImage } from '@/data/dishImages';
 import { AllergenList } from './AllergenBadge';
 import { cn } from '@/lib/utils';
