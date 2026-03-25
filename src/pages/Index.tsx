@@ -311,10 +311,7 @@ export default function Index() {
             <p className="text-muted-foreground max-w-md mx-auto">Master our menu</p>
           </motion.div>
 
-          <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={{
-          once: true,
-          margin: "-40px"
-        }} className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={vp} className="grid gap-4 grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => <motion.div key={feature.path} variants={fadeUp}>
                 <Link to={feature.path}>
                   <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-500 hover:shadow-elevated min-h-[48px]">
