@@ -68,6 +68,9 @@ const fadeUp = {
     }
   }
 };
+
+// Shared viewport config — triggers as soon as ANY part is visible
+const vp = { once: true, amount: 0 as const, margin: "50px" };
 export default function Index() {
   usePageTitle("");
   const {
