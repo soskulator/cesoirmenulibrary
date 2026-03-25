@@ -27,6 +27,8 @@ const badgeVariants = cva(
         "allergen-sesame": "border-transparent bg-stone-100 text-stone-800",
         "allergen-allium": "border-transparent bg-purple-100 text-purple-800",
         "allergen-nightshade": "border-transparent bg-rose-100 text-rose-800",
+        "allergen-vegetarian": "border-transparent bg-emerald-100 text-emerald-800",
+        "allergen-vegan": "border-transparent bg-lime-100 text-lime-800",
       },
     },
     defaultVariants: {

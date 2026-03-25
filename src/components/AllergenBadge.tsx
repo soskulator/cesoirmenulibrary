@@ -20,6 +20,8 @@ const allergenVariantMap: Record<AllergenType, string> = {
   sesame: 'allergen-sesame',
   allium: 'allergen-allium',
   nightshade: 'allergen-nightshade',
+  vegetarian: 'allergen-vegetarian',
+  vegan: 'allergen-vegan',
 };
 
 export function AllergenBadge({ allergenId, showIcon = true, size = 'default', className }: AllergenBadgeProps) {

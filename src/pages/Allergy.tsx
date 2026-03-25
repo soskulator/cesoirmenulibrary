@@ -62,7 +62,7 @@ interface TrainingDish {
   ingredients: TrainingIngredient[];
 }
 
-const allergenKeywords: Record<AllergenType, string[]> = {
+const allergenKeywords: Record<string, string[]> = {
   gluten: ['bread', 'crouton', 'pasta', 'flour', 'bun', 'brioche', 'puff', 'panko', 'baguette', 'crostini', 'tempura', 'spaghetti', 'ravioli', 'gnocchi'],
   dairy: ['butter', 'cream', 'cheese', 'parmesan', 'gruyère', 'burrata', 'beurre', 'mascarpone', 'crème', 'milk'],
   egg: ['egg', 'aioli', 'mayo', 'mayonnaise', 'hollandaise', 'béarnaise'],
