@@ -1,4 +1,4 @@
-import { AllergenType, getAllergenById } from '@/data/menuData';
+import { AllergenType, getAllergenById } from '@/data/menuTypes';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 

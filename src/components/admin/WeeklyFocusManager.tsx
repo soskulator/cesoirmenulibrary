@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   format, startOfWeek, endOfWeek, addDays, addWeeks, subWeeks, isSameDay, isToday,
 } from 'date-fns';
-import { MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { DbCategory } from '@/hooks/useCategories';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

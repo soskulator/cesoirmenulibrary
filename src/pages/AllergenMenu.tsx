@@ -4,7 +4,7 @@ import { Layout } from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { useAllergenModifications } from '@/hooks/useAllergenModifications';
-import { allergens, AllergenType, getCategoryById } from '@/data/menuData';
+import { allergens, AllergenType, getCategoryById } from '@/data/menuTypes';
 import { CheckCircle2, AlertTriangle, XCircle, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';

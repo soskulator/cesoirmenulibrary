@@ -10,12 +10,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
   categories, 
-  menuItems as staticMenuItems, 
   allergens, 
   AllergenType,
-  filterByAllergen,
   MenuItem
-} from '@/data/menuData';
+} from '@/data/menuTypes';
+import { menuItems as staticMenuItems, filterByAllergen } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 
 import { 

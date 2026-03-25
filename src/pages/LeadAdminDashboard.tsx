@@ -52,7 +52,7 @@ import {
   ShieldAlert,
   Link as LinkIcon
 } from 'lucide-react';
-import { MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { cn } from '@/lib/utils';
 
 export default function LeadAdminDashboard() {

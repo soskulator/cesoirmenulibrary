@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { getDishImage } from '@/data/dishImages';
 import { ArrowLeft, Martini, Sparkles, Star, Clock, ChevronDown, Wine as WineGlass, Loader2 } from 'lucide-react';

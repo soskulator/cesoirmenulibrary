@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Wine, BookOpen, ArrowRight, GlassWater, ListOrdered, Clock } from 'lucide-react';
-import { MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { getDishImage } from '@/data/dishImages';
 import { extractGlassware } from '@/hooks/useDailyRotation';
 

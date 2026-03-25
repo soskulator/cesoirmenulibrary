@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
 
 /**

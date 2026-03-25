@@ -1,7 +1,7 @@
 import { forwardRef, useEffect } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { X, Wine, Sparkles, GlassWater } from 'lucide-react';
-import { MenuItem } from '@/data/menuData';
+import { MenuItem } from '@/data/menuTypes';
 import { getDishImage } from '@/data/dishImages';
 import { cn } from '@/lib/utils';
 

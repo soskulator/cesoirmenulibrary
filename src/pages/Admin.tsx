@@ -29,7 +29,8 @@ import {
   Trophy,
   Lock,
 } from 'lucide-react';
-import { menuItems, categories } from '@/data/menuData';
+import { categories } from '@/data/menuTypes';
+import { menuItems } from '@/data/menuData';
 import { useMenuItems } from '@/hooks/useMenuItems';
 
 const adminSections = [
