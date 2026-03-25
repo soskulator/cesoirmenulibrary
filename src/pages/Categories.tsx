@@ -682,11 +682,12 @@ export default function CategoriesPage() {
                             <p className="text-sm text-charcoal/60 line-clamp-1 mt-0.5">
                               {menuItem.shortDescription}
                             </p>
-                            {menuItem.allergens.length > 0 && (
-                              <div className="mt-2">
-                                <AllergenList allergens={menuItem.allergens} size="sm" showIcons={false} />
-                              </div>
-                            )}
+                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                              <DietaryBadges item={menuItem} size="sm" />
+                              {menuItem.allergens.filter(a => a !== 'vegetarian' && a !== 'vegan').length > 0 && (
+                                <AllergenList allergens={menuItem.allergens.filter(a => a !== 'vegetarian' && a !== 'vegan')} size="sm" showIcons={false} />
+                              )}
+                            </div>
                           </div>
 
                           {/* Arrow */}

@@ -126,6 +126,7 @@ export function FlashCard({
             <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-cream drop-shadow-md">
               {item.name}
             </h2>
+            <DietaryBadges item={item} size="sm" className="justify-center mt-1.5" />
           </div>
         </div>
 
