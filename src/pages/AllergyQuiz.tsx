@@ -23,6 +23,7 @@ import {
   Plus
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { DietaryBadges } from '@/components/DietaryBadge';
 
 interface AllergyQuizQuestion {
   id: string;
