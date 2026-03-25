@@ -99,6 +99,7 @@ export default function FlashcardsPage() {
     }
   }, [filteredItems, user, isKnown, isStudied, initialItem, isRandomMode]);
 
+  useEffect(() => {
     if (filteredItems.length === 0) return;
     if (currentIndex >= filteredItems.length) {
       setCurrentIndex(filteredItems.length - 1);
