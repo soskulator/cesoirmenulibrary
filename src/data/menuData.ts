@@ -133,7 +133,7 @@ export const menuItems: MenuItem[] = [
     prepNotes: 'Classic French-style tartare — clean, elegant, not overly seasoned. Confit egg yolk adds silky richness. Gluten-free presentation possible without crostini.',
     sellingPointsText: 'Hand-cut prime beef • Wild garlic mayo • Confit quail egg yolk • Classic French preparation',
     imageUrl: '/placeholder.svg',
-    allergens: ['egg', 'dairy', 'allium', 'gluten', 'fish'],
+    allergens: ['egg', 'allium', 'gluten', 'fish'],
     questions: [
       { id: 'q7', type: 'selling', prompt: 'What grade of beef is used?', answer: 'Prime USDA beef tenderloin, hand-cut' },
       { id: 'q8', type: 'allergy', prompt: 'Can this be made gluten-free?', answer: 'Yes, without the crostini. The tartare itself is gluten-free.' },
