@@ -101,6 +101,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
+  const [hasTodayFocus, setHasTodayFocus] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const {
@@ -191,6 +192,19 @@ export function Header() {
     const interval = setInterval(fetchPendingCount, 30000);
     return () => clearInterval(interval);
   }, [isAdmin]);
+
+  useEffect(() => {
+    if (!user) return;
+    const today = new Date().toISOString().split('T')[0];
+    supabase
+      .from('daily_focus_settings')
+      .select('id')
+      .eq('focus_date', today)
+      .maybeSingle()
+      .then(({ data }) => {
+        setHasTodayFocus(!!data);
+      });
+  }, [user]);
   
   const getInitials = (name: string | null, email: string) => {
     if (name) {
@@ -268,6 +282,9 @@ export function Header() {
                   <item.icon className="w-4 h-4" />
                   {item.label}
                 </span>
+                {item.path === '/daily-focus' && hasTodayFocus && (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-copper animate-pulse" />
+                )}
                 {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{
               type: "spring",
               bounce: 0.2,
@@ -431,6 +448,9 @@ export function Header() {
             return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
                   <item.icon className="w-5 h-5" />
                   <span className="font-medium text-sm">{item.label}</span>
+                  {item.path === '/daily-focus' && hasTodayFocus && (
+                    <span className="ml-auto w-2 h-2 rounded-full bg-copper animate-pulse" />
+                  )}
                 </Link>;
           })}
 
