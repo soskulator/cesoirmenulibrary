@@ -50,7 +50,7 @@ export default function ScoringDashboard() {
   usePageTitle("Staff Scoring");
   const { isAdmin, isLeadAdmin } = useAuth();
   const {
-    leaderboard, overview, incompleteStaff, isLoading,
+    leaderboard, overview, incompleteStaff, inactiveStaff, isLoading,
     fetchAll, fetchStaffDetail, exportCSV, sendReminder, deleteUserScores,
   } = useScoringData();
 
