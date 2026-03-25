@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Home, Layers, CreditCard, HelpCircle, Star, Settings, AlertTriangle, Menu, X, LogIn, LogOut, Wine, GlassWater, Martini, ClipboardList, Users, UserCheck, UtensilsCrossed, BookOpen, Shield, ShieldCheck, User, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { HeaderSearch } from '@/components/HeaderSearch';
 import cesoirLogo from '@/assets/cesoir-logo.png';
 import { useAuth } from '@/contexts/AuthContext';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -94,6 +95,7 @@ const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: bool
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -235,18 +237,13 @@ export function Header() {
            </Link>
 
           {/* Search Icon */}
-          <Link
-            to="/search"
-            className={cn(
-              "relative px-2.5 py-1.5 rounded-md transition-colors",
-              location.pathname === '/search'
-                ? "text-burgundy"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent"
-            )}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="relative px-2.5 py-1.5 rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent"
             title="Search"
           >
             <Search className="w-4 h-4" />
-          </Link>
+          </button>
           
           {isAdmin && <>
               <div className="w-px h-5 bg-border mx-1.5" />
@@ -358,20 +355,14 @@ export function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>}
-          <Link
-            to="/search"
-            onClick={() => setMobileMenuOpen(false)}
-            className={cn(
-              "inline-flex h-8 w-8 items-center justify-center rounded-full border transition-colors",
-              location.pathname === '/search'
-                ? "border-copper/30 bg-copper/10 text-copper"
-                : "border-border text-muted-foreground hover:text-foreground hover:bg-accent"
-            )}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             title="Search"
             aria-label="Search"
           >
             <Search className="w-4 h-4" />
-          </Link>
+          </button>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </Button>
@@ -392,19 +383,13 @@ export function Header() {
         <nav className="container py-4 flex flex-col gap-0.5">
           {/* Browse Section */}
           <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Browse</p>
-          <Link
-            to="/search"
-            onClick={() => setMobileMenuOpen(false)}
-            className={cn(
-              "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors border-l-2",
-              location.pathname === '/search'
-                ? "bg-copper/10 text-copper border-copper"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
-            )}
+          <button
+            onClick={() => { setMobileMenuOpen(false); setSearchOpen(true); }}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors border-l-2 border-transparent text-muted-foreground hover:text-foreground hover:bg-accent"
           >
             <Search className="w-5 h-5" />
             <span className="font-medium text-sm">Search</span>
-          </Link>
+          </button>
           {filteredNavItems.filter(i => ['/', '/categories', '/wine-list', '/spirits', '/cocktails'].includes(i.path)).map(item => {
             const isActive = location.pathname === item.path;
             return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
@@ -469,5 +454,6 @@ export function Header() {
         </nav>
       </motion.div>
     </header>
+    <HeaderSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
   </>;
 }

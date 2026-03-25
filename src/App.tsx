@@ -19,7 +19,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 // ─── Lazy-loaded pages (split into separate chunks) ───
 const Categories = lazy(() => import("./pages/Categories"));
-const SearchPage = lazy(() => import("./pages/Search"));
+// SearchPage removed — search is now a header overlay
 const WineList = lazy(() => import("./pages/WineList"));
 const Spirits = lazy(() => import("./pages/Spirits"));
 const Cocktails = lazy(() => import("./pages/Cocktails"));
@@ -109,14 +109,7 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="/search"
-                  element={
-                    <ProtectedRoute>
-                      <SearchPage />
-                    </ProtectedRoute>
-                  }
-                />
+                {/* /search route removed — search is now a header overlay */}
                 <Route
                   path="/flashcards"
                   element={
