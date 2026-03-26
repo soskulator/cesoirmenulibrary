@@ -71,10 +71,10 @@ const trainingItems = [
 ];
 
 const testItems = [
-  { path: '/foh-test?type=service_staff', label: 'Bartender / Server Test', icon: HelpCircle, separator: false },
+  { path: '/foh-test?type=service_staff', label: 'Bartender / Server Test', icon: HelpCircle, separator: false, sectionLabel: 'Tests' },
   { path: '/foh-test?type=server_assistant', label: 'Server Assistant Test', icon: HelpCircle, separator: false },
   { path: '/foh-test?type=wine_test', label: 'Wine Knowledge Test', icon: Wine, separator: true },
-  { path: '/wine-quiz', label: 'Wine Practice', icon: Wine, separator: false },
+  { path: '/wine-quiz', label: 'Wine Practice', icon: Wine, separator: true, sectionLabel: 'Practice' },
   { path: '/spirits-quiz', label: 'Spirits Practice', icon: GlassWater, separator: false },
   { path: '/cocktail-flashcards', label: 'Cocktails Practice', icon: Martini, separator: false },
   { path: '/food-quiz', label: 'Food Practice', icon: HelpCircle, separator: false },
@@ -158,6 +158,9 @@ function HoverDropdown({
                 return (
                   <div key={item.path}>
                     {item.separator && idx > 0 && <div className="border-t border-border my-1" />}
+                    {('sectionLabel' in item && (item as any).sectionLabel) && (
+                      <div className="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{(item as any).sectionLabel}</div>
+                    )}
                     <Link
                       to={item.path}
                       onClick={() => setOpen(false)}
