@@ -165,9 +165,11 @@ export function BeverageFlashCard({
               ? "bg-charcoal" 
               : "bg-black/90"
           )}>
-            <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-cream/40 mb-1 text-center">
-              Swipe up to flip
-            </p>
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <span className="text-[9px] uppercase tracking-widest text-cream/40">← prev</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/40">↕ flip</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/40">next →</span>
+            </div>
             <h2 className="font-serif text-base sm:text-lg md:text-xl font-semibold text-cream text-center leading-tight truncate">
               {item.name}
             </h2>
