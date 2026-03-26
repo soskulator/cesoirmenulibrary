@@ -34,7 +34,8 @@ const categoryAccents: Record<string, string> = {
   sauces: 'border-copper/25',
 };
 
-const SWIPE_THRESHOLD = 50;
+const SWIPE_THRESHOLD = 60;
+const VELOCITY_THRESHOLD = 400;
 
 export function FlashCard({ 
   item, 
