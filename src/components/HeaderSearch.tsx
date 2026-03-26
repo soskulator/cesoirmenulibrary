@@ -43,9 +43,10 @@ function Highlight({ text, query }: { text: string; query: string }) {
 interface HeaderSearchProps {
   isOpen: boolean;
   onClose: () => void;
+  origin?: 'top' | 'bottom';
 }
 
-export function HeaderSearch({ isOpen, onClose }: HeaderSearchProps) {
+export function HeaderSearch({ isOpen, onClose, origin = 'top' }: HeaderSearchProps) {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
