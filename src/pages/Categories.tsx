@@ -557,83 +557,67 @@ export default function CategoriesPage() {
                 </motion.div>
 
                 {/* Expanded Sauce Subcategory Items */}
-                <AnimatePresence mode="wait">
+                <AnimatePresence initial={false}>
                   {expandedSubcategory && (
                     <motion.section
                       key={expandedSubcategory}
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="overflow-hidden"
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.12, ease: 'easeOut' }}
+                      className="overflow-hidden pb-8"
                     >
-                      <motion.div
-                        initial={{ y: 8, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -10, opacity: 0 }}
-                        transition={{ duration: 0.15, delay: 0, ease: 'easeOut' }}
-                        className="pb-8"
-                      >
-                        <div className="mb-6 pb-3 border-b border-charcoal/10">
-                          <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
-                            {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].title}
-                          </h2>
-                          <p className="text-copper font-serif italic text-base mt-1">
-                            {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].subtitle}
-                          </p>
-                        </div>
+                      <div className="mb-6 pb-3 border-b border-charcoal/10">
+                        <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal">
+                          {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].title}
+                        </h2>
+                        <p className="text-copper font-serif italic text-base mt-1">
+                          {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].subtitle}
+                        </p>
+                      </div>
 
-                        <div className="space-y-2 md:space-y-3">
-                          {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].ids
-                            .map((id) => items.find((i) => i.id === id))
-                            .filter(Boolean)
-                            .map((menuItem, idx) => {
-                              if (!menuItem) return null;
-                              const dishImage = getDishImage(menuItem.id, menuItem.imageUrl);
-                              const pairedDish = menuItem.shortDescription.includes('—') 
-                                ? menuItem.shortDescription.split('—').pop()?.trim() 
-                                : null;
-                              return (
-                                <motion.div 
-                                  key={menuItem.id}
-                                  custom={idx}
-                                  variants={itemReveal}
-                                  initial="hidden"
-                                  animate="show"
-                                  exit="exit"
-                                >
-                                  <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
-                                    <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-150 ease-out active:scale-[0.99]">
-                                      <div className="w-12 h-14 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
-                                        {dishImage ? (
-                                          <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-150" />
-                                        ) : (
-                                          <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl">🫗</div>
-                                        )}
+                      <div className="space-y-2 md:space-y-3">
+                        {sauceSubcategories[expandedSubcategory as keyof typeof sauceSubcategories].ids
+                          .map((id) => items.find((i) => i.id === id))
+                          .filter(Boolean)
+                          .map((menuItem) => {
+                            if (!menuItem) return null;
+                            const dishImage = getDishImage(menuItem.id, menuItem.imageUrl);
+                            const pairedDish = menuItem.shortDescription.includes('—')
+                              ? menuItem.shortDescription.split('—').pop()?.trim()
+                              : null;
+
+                            return (
+                              <Link key={menuItem.id} to={`/flashcards?item=${menuItem.id}`} className="group block">
+                                <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-150 ease-out active:scale-[0.99]">
+                                  <div className="w-12 h-14 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
+                                    {dishImage ? (
+                                      <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-150" />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl">🫗</div>
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-100 truncate">
+                                      {menuItem.name}
+                                    </h3>
+                                    {pairedDish && (
+                                      <p className="text-xs md:text-sm text-copper font-medium mt-0.5 line-clamp-1">
+                                        Served with: {pairedDish}
+                                      </p>
+                                    )}
+                                    {menuItem.allergens.length > 0 && (
+                                      <div className="mt-1">
+                                        <AllergenList allergens={menuItem.allergens} size="sm" showIcons={false} />
                                       </div>
-                                      <div className="flex-1 min-w-0">
-                                        <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-100 truncate">
-                                          {menuItem.name}
-                                        </h3>
-                                        {pairedDish && (
-                                          <p className="text-xs md:text-sm text-copper font-medium mt-0.5 line-clamp-1">
-                                            Served with: {pairedDish}
-                                          </p>
-                                        )}
-                                        {menuItem.allergens.length > 0 && (
-                                          <div className="mt-1">
-                                            <AllergenList allergens={menuItem.allergens} size="sm" showIcons={false} />
-                                          </div>
-                                        )}
-                                      </div>
-                                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-150 shrink-0" />
-                                    </div>
-                                  </Link>
-                                </motion.div>
-                              );
-                            })}
-                        </div>
-                      </motion.div>
+                                    )}
+                                  </div>
+                                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-150 shrink-0" />
+                                </div>
+                              </Link>
+                            );
+                          })}
+                      </div>
                     </motion.section>
                   )}
                 </AnimatePresence>
