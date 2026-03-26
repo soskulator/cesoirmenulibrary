@@ -189,8 +189,46 @@ const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: bool
   if (role === 'employee') return { label: 'Staff', icon: User, color: 'text-muted-foreground' };
   return { label: 'Staff', icon: User, color: 'text-muted-foreground' };
 };
+// ─── ProfileEditBlock (extracted to avoid remount on every render) ───
+interface ProfileEditBlockProps {
+  editingName: boolean;
+  nameInput: string;
+  savingName: boolean;
+  fullName: string | null;
+  setEditingName: (v: boolean) => void;
+  setNameInput: (v: string) => void;
+  handleSaveName: () => void;
+  handleStartEdit: () => void;
+}
 
-export function Header() {
+function ProfileEditBlock({ editingName, nameInput, savingName, fullName, setEditingName, setNameInput, handleSaveName, handleStartEdit }: ProfileEditBlockProps) {
+  return (
+    <div className="px-2 py-1.5">
+      {editingName ? (
+        <div className="flex items-center gap-1.5">
+          <Input
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+            className="h-7 text-sm"
+            placeholder="Full name"
+            autoFocus
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSaveName(); if (e.key === 'Escape') setEditingName(false); }}
+          />
+          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={handleSaveName} disabled={savingName}>
+            {savingName ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 text-jade" />}
+          </Button>
+        </div>
+      ) : (
+        <button onClick={handleStartEdit} className="flex items-center gap-2 w-full text-left hover:bg-accent rounded-md px-1 py-0.5 transition-colors">
+          <User className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm truncate flex-1">{fullName || 'Set your name'}</span>
+          <Pencil className="w-3 h-3 text-muted-foreground" />
+        </button>
+      )}
+    </div>
+  );
+}
+
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [savingName, setSavingName] = useState(false);
