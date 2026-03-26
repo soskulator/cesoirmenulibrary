@@ -63,7 +63,7 @@ const fadeUp = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.3,
+    duration: 0.2,
       ease: "easeOut" as const
     }
   }
