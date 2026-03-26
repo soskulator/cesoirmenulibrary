@@ -53,6 +53,13 @@ export default function FohTestPage() {
   const navigate = useNavigate();
   const urlTestType = searchParams.get('type') || null;
   const [selectedTestType, setSelectedTestType] = useState<string | null>(urlTestType);
+
+  // Sync selectedTestType when URL query param changes (same route, different test)
+  useEffect(() => {
+    if (urlTestType && urlTestType !== selectedTestType && !testStarted) {
+      setSelectedTestType(urlTestType);
+    }
+  }, [urlTestType]);
   const [testStarted, setTestStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
