@@ -465,7 +465,7 @@ export default function FohTestPage() {
             {showScoreDetails && (
               <>
                 <Card className="mb-6 overflow-hidden">
-                  <div className="bg-gradient-to-r from-burgundy to-burgundy/80 p-4 sm:p-6 text-white">
+                  <div className="bg-gradient-to-r from-copper to-copper/80 p-4 sm:p-6 text-white">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-copper-foreground/80 text-sm">Your Score</p>

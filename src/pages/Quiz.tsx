@@ -72,7 +72,7 @@ const FALLBACK_TESTS: Array<{
     time_limit_minutes: null,
     icon: Users,
     color: 'text-copper',
-    bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20',
+    bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20',
     description: 'Complete service knowledge',
   },
   {
@@ -90,10 +90,10 @@ const FALLBACK_TESTS: Array<{
 
 // Map test_type to icon + color for DB tests
 const TEST_TYPE_VISUALS: Record<string, { icon: typeof ClipboardList; color: string; bgColor: string }> = {
-  service_staff: { icon: Users, color: 'text-copper', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20' },
+  service_staff: { icon: Users, color: 'text-copper', bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20' },
   server_assistant: { icon: UserCheck, color: 'text-jade', bgColor: 'from-jade/10 via-jade/5 to-transparent border-jade/20' },
-  wine_test: { icon: Wine, color: 'text-copper', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20' },
-  wine: { icon: Wine, color: 'text-copper', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20' },
+  wine_test: { icon: Wine, color: 'text-copper', bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20' },
+  wine: { icon: Wine, color: 'text-copper', bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20' },
   food_test: { icon: UtensilsCrossed, color: 'text-sage', bgColor: 'from-sage/10 via-sage/5 to-transparent border-sage/20' },
   food: { icon: UtensilsCrossed, color: 'text-sage', bgColor: 'from-sage/10 via-sage/5 to-transparent border-sage/20' },
   spirits_test: { icon: Martini, color: 'text-copper', bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20' },
@@ -430,7 +430,7 @@ export default function QuizPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
             {hasPermission('quiz:wine') && (
               <Link to="/wine-quiz" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5 text-center">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
                     <Wine className="w-5 h-5 text-copper" />
                   </div>

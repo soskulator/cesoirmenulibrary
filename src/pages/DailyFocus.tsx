@@ -205,7 +205,7 @@ export default function DailyFocusPage() {
         </div>
 
         {/* Instructions */}
-        <Card className="mb-4 sm:mb-6 md:mb-8 bg-gradient-to-r from-burgundy/5 to-gold/5 border-none">
+        <Card className="mb-4 sm:mb-6 md:mb-8 bg-gradient-to-r from-copper/5 to-gold/5 border-none">
           <CardContent className="p-3 sm:p-4 md:p-6">
             <p className="text-center text-muted-foreground text-xs sm:text-sm">
               These are today's featured items. Make sure you can confidently describe each dish, 
