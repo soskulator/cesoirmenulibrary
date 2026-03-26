@@ -212,8 +212,8 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.08
+      staggerChildren: 0.03,
+      delayChildren: 0
     }
   }
 };
