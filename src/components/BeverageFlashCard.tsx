@@ -77,6 +77,9 @@ export function BeverageFlashCard({
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [10, -10]);
   const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+  const cardRotate = useTransform(x, [-150, 0, 150], [-8, 0, 8]);
+  const rightGlow = useTransform(x, [0, 100], [0, 0.25]);
+  const leftGlow = useTransform(x, [-100, 0], [0.25, 0]);
 
   const handleFlip = () => setIsFlipped((prev) => !prev);
 
