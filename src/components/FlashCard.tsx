@@ -125,9 +125,11 @@ export function FlashCard({
 
           {/* Name overlay with larger touch target */}
           <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 md:p-6 text-center">
-            <p className="text-[10px] sm:text-xs uppercase tracking-widest text-cream/70 mb-1">
-              Swipe up to flip • Left/right to navigate
-            </p>
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <span className="text-[9px] uppercase tracking-widest text-cream/50">← prev</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/50">↕ flip</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/50">next →</span>
+            </div>
             <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-cream drop-shadow-md">
               {item.name}
             </h2>
