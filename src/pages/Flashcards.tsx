@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -51,6 +51,7 @@ export default function FlashcardsPage() {
   const [isRandomMode, setIsRandomMode] = useState(false);
   const [localKnown, setLocalKnown] = useState<Set<string>>(new Set());
   const [localReview, setLocalReview] = useState<Set<string>>(new Set());
+  const hasAutoResumed = useRef(false);
 
   // Filter items
   const filteredItems = useMemo(() => {
@@ -82,12 +83,13 @@ export default function FlashcardsPage() {
     if (idx >= 0) setCurrentIndex(idx);
   }, [initialItem, filteredItems]);
 
-  // Resume from first unstudied item
+  // Resume from first unstudied item — once only after progress loads
   useEffect(() => {
     if (!user) return;
     if (initialItem) return; // respect deep-link
     if (filteredItems.length === 0) return;
     if (isRandomMode) return;
+    if (hasAutoResumed.current) return; // only auto-resume once
 
     const firstUnstudied = filteredItems.findIndex(
       (item) => !isKnown(item.name) && !isStudied(item.name)
@@ -96,6 +98,7 @@ export default function FlashcardsPage() {
     if (firstUnstudied > 0) {
       setCurrentIndex(firstUnstudied);
     }
+    hasAutoResumed.current = true;
   }, [filteredItems, user, isKnown, isStudied, initialItem, isRandomMode]);
 
   useEffect(() => {
