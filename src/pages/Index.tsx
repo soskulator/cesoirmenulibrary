@@ -420,7 +420,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
             <div>
               <div className="flex items-center gap-3 mb-2">
