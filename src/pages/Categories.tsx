@@ -195,9 +195,9 @@ const itemReveal = {
     x: 0,
     scale: 1,
     transition: {
-      duration: 0.35,
-      delay: i * 0.04,
-      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number]
+      duration: 0.15,
+      delay: i * 0.02,
+      ease: 'easeOut' as const
     }
   }),
   exit: {
