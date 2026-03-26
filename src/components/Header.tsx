@@ -136,7 +136,7 @@ function HoverDropdown({
         {indicator}
         <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} />
         {triggerActive && (
-          <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
+          <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'tween', duration: 0.12, ease: 'easeOut' }} />
         )}
       </button>
       <AnimatePresence>
@@ -397,7 +397,7 @@ export function Header() {
             return (
               <Link to="/" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5"><Home className="w-4 h-4" />Home</span>
-                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'tween', duration: 0.12, ease: 'easeOut' }} />}
               </Link>
             );
           })()}
@@ -443,7 +443,7 @@ export function Header() {
             return (
               <Link to="/allergy" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5"><AlertTriangle className="w-4 h-4" />Allergy Center</span>
-                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'tween', duration: 0.12, ease: 'easeOut' }} />}
               </Link>
             );
           })()}
@@ -571,7 +571,7 @@ export function Header() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="md:hidden overflow-hidden border-t border-border bg-background relative z-50"
           >
             <nav className="container py-4 flex flex-col gap-0.5">
