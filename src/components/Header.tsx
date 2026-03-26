@@ -84,6 +84,7 @@ const testItems = [
 // ─── HoverDropdown — opens on hover with fade-in ───
 function HoverDropdown({
   label,
+  icon: Icon,
   items,
   activePaths,
   isActive,
@@ -93,6 +94,7 @@ function HoverDropdown({
   navPermissionMap,
 }: {
   label: string;
+  icon?: React.ComponentType<{ className?: string }>;
   items: { path: string; label: string; icon: React.ComponentType<{ className?: string }>; separator?: boolean }[];
   activePaths?: string[];
   isActive?: boolean;
