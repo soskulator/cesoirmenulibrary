@@ -296,11 +296,11 @@ function AllergyCheckContent() {
           Full allergen menu view
         </Link>
       </div>
-      <div className="mb-6 no-print">
+      <div className="sticky top-[3.75rem] lg:top-[4.5rem] z-20 bg-background/95 backdrop-blur-sm py-3 -mx-4 px-4 border-b border-border mb-4 no-print">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
           Guest's Allergens & Dietary Preferences — tap to select
         </p>
-        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2 mb-3">
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 gap-2 mb-4">
           {allergens.map((allergen) => {
             const isSelected = selectedAllergens.includes(allergen.id);
             const isDietary = allergen.isDietary;
@@ -311,7 +311,7 @@ function AllergyCheckContent() {
                 className={cn(
                   "flex flex-col items-center justify-center",
                   "gap-1 p-2 rounded-xl border-2 transition-all",
-                  "text-center min-h-[4rem]",
+                  "text-center min-h-[52px]",
                   isSelected && isDietary
                     ? "border-jade bg-jade/10 scale-95"
                     : isSelected
@@ -325,7 +325,7 @@ function AllergyCheckContent() {
                   {allergen.icon}
                 </span>
                 <span className={cn(
-                  "text-[9px] font-medium leading-tight",
+                  "text-[11px] sm:text-xs font-medium leading-tight",
                   isSelected && isDietary
                     ? "text-jade"
                     : isSelected
