@@ -728,7 +728,7 @@ export default function CategoriesPage() {
         opacity: 1,
         y: 0
       }} transition={{
-        duration: 0.8
+        duration: 0.2
       }}>
           <h1 className="font-serif text-4xl md:text-6xl font-bold text-charcoal tracking-tight">
             The Menu
