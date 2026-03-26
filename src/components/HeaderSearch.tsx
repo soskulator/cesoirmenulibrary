@@ -125,18 +125,18 @@ export function HeaderSearch({ isOpen, onClose }: HeaderSearchProps) {
             onClick={onClose}
           />
 
-          {/* Search Panel */}
+          {/* Search Panel — top on desktop, bottom on mobile */}
           <motion.div
             ref={panelRef}
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+            exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed top-0 left-0 right-0 z-[60] bg-background border-b border-border shadow-xl pt-[env(safe-area-inset-top)]"
+            className="fixed left-0 right-0 z-[60] bg-background border-t border-border shadow-xl bottom-0 pb-[env(safe-area-inset-bottom)] md:bottom-auto md:top-0 md:border-t-0 md:border-b md:pt-[env(safe-area-inset-top)]"
           >
-            <div className="container max-w-2xl px-3 sm:px-4 py-3">
-              {/* Input row */}
-              <div className="relative flex items-center gap-2">
+            <div className="container max-w-2xl px-3 sm:px-4 py-3 flex flex-col-reverse md:flex-col">
+              {/* Input row — renders at bottom on mobile via flex-col-reverse */}
+              <div className="relative flex items-center gap-2 mt-2 md:mt-0 md:mb-0">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <Input
                   ref={inputRef}
@@ -155,8 +155,8 @@ export function HeaderSearch({ isOpen, onClose }: HeaderSearchProps) {
                 </button>
               </div>
 
-              {/* Results */}
-              <div className="mt-2 max-h-[60vh] overflow-y-auto overscroll-contain">
+              {/* Results — renders above input on mobile */}
+              <div className="md:mt-2 max-h-[50vh] overflow-y-auto overscroll-contain">
                 {normalizedQuery.length < 2 && (
                   <p className="text-center text-xs text-muted-foreground py-8 opacity-60">
                     Type at least 2 characters
