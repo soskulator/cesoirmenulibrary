@@ -752,7 +752,7 @@ export default function CategoriesPage() {
                     {hasMinimalistIcon ? (
                       <div className="relative overflow-hidden rounded-2xl h-36 sm:h-44 lg:h-32 bg-cream border border-charcoal/8 transition-all duration-150 hover:shadow-lg hover:border-copper/30 hover:bg-cream-dark/30">
                         {/* Minimalistic Icon - Semi-transparent in corner */}
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 lg:w-28 h-28 sm:h-36 lg:h-28 opacity-40 group-hover:opacity-60 transition-opacity duration-500">
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 lg:w-28 h-28 sm:h-36 lg:h-28 opacity-40 group-hover:opacity-60 transition-opacity duration-150">
                           <img 
                             src={categoryData.icon} 
                             alt="" 
