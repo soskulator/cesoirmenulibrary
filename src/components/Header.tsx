@@ -158,8 +158,8 @@ function HoverDropdown({
                 return (
                   <div key={item.path}>
                     {item.separator && idx > 0 && <div className="border-t border-border my-1" />}
-                    {'sectionLabel' in item && item.sectionLabel && (
-                      <div className="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{item.sectionLabel}</div>
+                    {('sectionLabel' in item && (item as any).sectionLabel) && (
+                      <div className="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{(item as any).sectionLabel}</div>
                     )}
                     <Link
                       to={item.path}
