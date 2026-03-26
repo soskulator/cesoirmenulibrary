@@ -390,7 +390,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-0.5">
+        <nav className="hidden md:flex items-center gap-0.5">
           {/* Home — standalone */}
           {(() => {
             const isActive = location.pathname === '/';
