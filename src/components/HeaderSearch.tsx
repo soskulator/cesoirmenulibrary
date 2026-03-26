@@ -126,14 +126,19 @@ export function HeaderSearch({ isOpen, onClose, origin = 'top' }: HeaderSearchPr
             onClick={onClose}
           />
 
-          {/* Search Panel — top on desktop, bottom on mobile */}
+          {/* Search Panel */}
           <motion.div
             ref={panelRef}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: origin === 'bottom' ? 40 : -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
+            exit={{ opacity: 0, y: origin === 'bottom' ? 40 : -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed left-0 right-0 z-[60] bg-background border-t border-border shadow-xl bottom-0 pb-[env(safe-area-inset-bottom)] md:bottom-auto md:top-0 md:border-t-0 md:border-b md:pt-[env(safe-area-inset-top)]"
+            className={cn(
+              "fixed left-0 right-0 z-[60] bg-background shadow-xl",
+              origin === 'bottom'
+                ? "bottom-0 border-t border-border pb-[env(safe-area-inset-bottom)]"
+                : "top-0 border-b border-border pt-[env(safe-area-inset-top)]"
+            )}
           >
             <div className="container max-w-2xl px-3 sm:px-4 py-3 flex flex-col-reverse md:flex-col">
               {/* Input row — renders at bottom on mobile via flex-col-reverse */}
