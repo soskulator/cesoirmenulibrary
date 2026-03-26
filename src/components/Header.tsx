@@ -71,12 +71,11 @@ const trainingItems = [
 ];
 
 const testItems = [
-  { path: '/foh-test', label: 'Knowledge Test', icon: HelpCircle, separator: false },
   { path: '/foh-test?type=service_staff', label: 'Bartender / Server Test', icon: HelpCircle, separator: false },
   { path: '/foh-test?type=server_assistant', label: 'Server Assistant Test', icon: HelpCircle, separator: true },
   { path: '/wine-quiz', label: 'Wine Test', icon: Wine, separator: false },
   { path: '/spirits-quiz', label: 'Spirits Test', icon: GlassWater, separator: false },
-  { path: '/quiz', label: 'Food Test', icon: HelpCircle, separator: false },
+  { path: '/food-quiz', label: 'Food Test', icon: HelpCircle, separator: false },
   { path: '/allergy-quiz', label: 'Allergy Test', icon: AlertTriangle, separator: false },
 ];
 
