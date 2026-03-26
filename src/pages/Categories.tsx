@@ -273,6 +273,14 @@ export default function CategoriesPage() {
         </div>
 
         <div className="min-h-screen">
+          {/* Breadcrumb */}
+          <nav className="container pt-4 mb-4 text-xs text-muted-foreground">
+            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+            <span> / </span>
+            <Link to="/categories" className="hover:text-foreground transition-colors">Menu</Link>
+            <span> / </span>
+            <span className="text-foreground">{category.name}</span>
+          </nav>
           {/* Elegant Header */}
           <motion.header 
             className="pt-6 pb-8 md:pb-12 px-6" 
