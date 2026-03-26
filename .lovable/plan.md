@@ -1,44 +1,23 @@
 
 
-# Fix Image Loading Performance
+## Fix Swipe Gesture Logic in FlashCard and BeverageFlashCard
 
-## Problem
-The file `src/data/dishImages.ts` statically imports **170+ image files** at the top of the file. Since this module is imported by the homepage (via `useDailyRotation` and `getDishImage`), **every image is loaded as a Vite module on initial page load**, even though only 3-4 are displayed. The performance profile shows:
-- First Contentful Paint: **5.2 seconds**
-- 213 script-type resources (many are image imports processed by Vite)
-- Slowest resources include spirit/drink images taking 1.4-1.6 seconds each
+### Problem
+1. Fast flick gestures are ignored because only offset distance is checked, not velocity
+2. `dragElastic={0.1}` makes cards feel unresponsive during drag
 
-## Solution: Convert to Lazy Dynamic Imports
+### Changes
 
-Replace all static `import` statements in `dishImages.ts` with a **URL-based approach using `new URL(..., import.meta.url).href`**. This gives Vite the asset URL without eagerly loading/processing each file as a JS module. The browser then only fetches images when they are actually rendered (via `loading="lazy"` on `<img>` tags).
+**Both `src/components/FlashCard.tsx` and `src/components/BeverageFlashCard.tsx`:**
 
-## Technical Changes
+1. Update constants: `SWIPE_THRESHOLD = 60`, add `VELOCITY_THRESHOLD = 400`
+2. Replace `handleDragEnd` with new logic that triggers on either offset OR velocity, using a horizontal-vs-vertical classifier that also considers velocity direction
+3. Change `dragElastic` from `0.1` to `0.25`
 
-### 1. Rewrite `src/data/dishImages.ts`
-- Remove all 170+ `import` statements at the top
-- Replace with inline URL resolution using Vite's `new URL('./path', import.meta.url).href` pattern for each entry in the `dishImages` map
-- Example change:
-  ```typescript
-  // BEFORE
-  import frenchOnionSoup from '@/assets/dishes/french-onion-soup.jpg';
-  export const dishImages = { 'app-1': frenchOnionSoup, ... };
+The new `handleDragEnd` logic (identical in both files):
+- Determine if gesture is horizontal using both offset and velocity
+- For vertical: flip if offset > 60px OR velocity > 400px/s
+- For horizontal: navigate if offset > 60px OR velocity > 400px/s, using offset or velocity sign for direction
 
-  // AFTER (no imports needed)
-  const img = (path: string) => new URL(`../assets/${path}`, import.meta.url).href;
-  export const dishImages: Record<string, string> = {
-    'app-1': img('dishes/french-onion-soup.jpg'),
-    ...
-  };
-  ```
-- The `getDishImage`, `getUniqueImage`, `hasUniqueImage` functions and the `uniqueWineImages`/`uniqueSpiritImages` sets remain unchanged
-
-### 2. Verify hero image optimization in `src/pages/Index.tsx`
-- The hero background (`bayfront-fountain-sketch.jpg`) and logo (`cesoir-logo.png`) are already using direct imports with `fetchPriority="high"` -- these should stay as static imports since they are above-the-fold critical assets
-- The food focus cards already use `loading="lazy"` -- no changes needed there
-
-## Expected Impact
-- Eliminates ~170 unnecessary JS module evaluations on page load
-- FCP should drop from ~5s to under 2s
-- Images will only be fetched by the browser when they scroll into view or are referenced by a visible component
-- No visual changes -- all images will continue to render identically
+No visual, layout, or structural changes.
 
