@@ -211,8 +211,8 @@ export default function Index() {
         }} animate={{
           opacity: 1
         }} transition={{
-          delay: 0.6,
-          duration: 0.5
+          delay: 0.2,
+          duration: 0.2
         }} />
 
           {/* Location */}
