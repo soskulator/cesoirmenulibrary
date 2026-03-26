@@ -185,8 +185,8 @@ export default function Index() {
           opacity: 1,
           scale: 1
         }} transition={{
-          duration: 0.9,
-          delay: 0.2
+          duration: 0.35,
+          delay: 0
         }} className="mb-0 mt-4">
             <img src={logoImage} alt="Ce Soir" className="h-[16rem] md:h-[22rem] lg:h-[26rem] w-auto mx-auto drop-shadow-lg" width={530} height={466} decoding="async" />
           </motion.div>
