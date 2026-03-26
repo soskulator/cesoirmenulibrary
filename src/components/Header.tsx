@@ -510,7 +510,7 @@ export function Header() {
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="lg:hidden flex items-center gap-1.5">
+        <div className="md:hidden flex items-center gap-1.5">
           {!loading && user && <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0">
