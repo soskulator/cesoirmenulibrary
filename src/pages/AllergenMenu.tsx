@@ -139,7 +139,7 @@ export default function AllergenMenuPage() {
               {grouped.modifiable.length > 0 && (
                 <section>
                   <div className="flex items-center gap-2 mb-3">
-                    <AlertTriangle className="w-4 h-4 text-gold" />
+                    <AlertTriangle className="w-4 h-4 text-copper" />
                     <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Modifiable ({grouped.modifiable.length})
                     </h2>
@@ -151,7 +151,7 @@ export default function AllergenMenuPage() {
                       );
                       const cat = getCategoryById(item.categoryId);
                       return (
-                        <Card key={item.id} className="border-gold/30 bg-gold/5">
+                        <Card key={item.id} className="border-copper/30 bg-copper/5">
                           <CardContent className="p-3">
                             <div className="flex items-start gap-2">
                               <span className="text-base mt-0.5 opacity-60">{cat?.icon}</span>

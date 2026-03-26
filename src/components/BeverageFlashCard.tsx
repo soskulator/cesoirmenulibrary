@@ -32,7 +32,7 @@ const getBeverageType = (categoryId: string) => {
         frontBg: 'bg-gradient-to-b from-[#f8f6f3] via-[#f0ebe4] to-[#e8e2d9]',
         backBg: 'bg-gradient-to-b from-[#1a1a2e] via-[#232340] to-[#0f0f1a]',
         frontTextColor: 'text-charcoal',
-        accentColor: 'text-gold',
+        accentColor: 'text-copper',
         icon: GlassWater,
         imageBg: '#f8f6f3',
         imageGradient: 'from-[#f8f6f3] via-transparent to-[#f8f6f3]',

@@ -108,11 +108,6 @@ export default {
   				DEFAULT: 'hsl(var(--charcoal))',
   				light: 'hsl(var(--charcoal-light))'
   			},
-  			burgundy: {
-  				DEFAULT: 'hsl(var(--copper))',
-  				light: 'hsl(var(--copper-light))',
-  				dark: 'hsl(var(--copper-dark))'
-  			},
 			gold: {
 				DEFAULT: 'hsl(var(--gold))',
 				light: 'hsl(var(--gold-light))'

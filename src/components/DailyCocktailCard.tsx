@@ -37,7 +37,7 @@ export function DailyCocktailCard({ cocktail, dateString, dbImageUrl }: DailyCoc
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-copper/20 to-burgundy/20 flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-br from-copper/20 to-copper/20 flex items-center justify-center">
                   <Wine className="w-24 h-24 text-copper/40" />
                 </div>
               )}

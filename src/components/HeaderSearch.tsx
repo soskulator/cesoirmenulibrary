@@ -22,9 +22,9 @@ const CAT_ICON: Record<string, typeof Search> = {
 };
 
 const CAT_COLOR: Record<string, string> = {
-  wine: 'text-burgundy',
+  wine: 'text-copper',
   spirits: 'text-copper',
-  cocktails: 'text-gold',
+  cocktails: 'text-copper',
 };
 
 function Highlight({ text, query }: { text: string; query: string }) {

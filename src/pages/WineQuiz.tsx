@@ -214,8 +214,8 @@ export default function WineQuizPage() {
       case 'identify': return { label: 'Identify', icon: Wine, color: 'bg-copper/10 text-copper' };
       case 'region': return { label: 'Region', icon: MapPin, color: 'bg-jade/10 text-jade' };
       case 'grape': return { label: 'Grape', icon: Grape, color: 'bg-rose-gold/20 text-rose-gold' };
-      case 'pairing': return { label: 'Pairing', color: 'bg-gold/10 text-gold' };
-      default: return { label: 'Knowledge', color: 'bg-burgundy/10 text-burgundy' };
+      case 'pairing': return { label: 'Pairing', color: 'bg-copper/10 text-copper' };
+      default: return { label: 'Knowledge', color: 'bg-copper/10 text-copper' };
     }
   };
 
@@ -268,7 +268,7 @@ export default function WineQuizPage() {
             </div>
 
             <div className="flex gap-2 sm:gap-4 justify-center">
-              <Button variant="burgundy" size="sm" onClick={startQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
+              <Button variant="copper" size="sm" onClick={startQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
                 <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Try Again
               </Button>
@@ -302,7 +302,7 @@ export default function WineQuizPage() {
               <h2 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Select Test Type</h2>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 <Button
-                  variant={quizType === 'all' ? "burgundy" : "secondary"}
+                  variant="copper"
                   onClick={() => setQuizType('all')}
                   size="sm"
                   className="h-8 sm:h-9 text-xs sm:text-sm"
@@ -310,7 +310,7 @@ export default function WineQuizPage() {
                   🍷 All Questions
                 </Button>
                 <Button
-                  variant={quizType === 'identify' ? "burgundy" : "secondary"}
+                  variant="copper"
                   onClick={() => setQuizType('identify')}
                   size="sm"
                   className="h-8 sm:h-9 text-xs sm:text-sm"
@@ -322,7 +322,7 @@ export default function WineQuizPage() {
                   </Badge>
                 </Button>
                 <Button
-                  variant={quizType === 'knowledge' ? "burgundy" : "secondary"}
+                  variant="copper"
                   onClick={() => setQuizType('knowledge')}
                   size="sm"
                   className="h-8 sm:h-9 text-xs sm:text-sm"
@@ -362,7 +362,7 @@ export default function WineQuizPage() {
                 {[10, 20, 30].map(n => (
                   <Button
                     key={n}
-                    variant={questionLimit === n ? "burgundy" : "secondary"}
+                    variant="copper"
                     size="sm"
                     onClick={() => setQuestionLimit(n)}
                     className="h-8 sm:h-9 text-xs sm:text-sm min-w-[3rem]"
@@ -371,7 +371,7 @@ export default function WineQuizPage() {
                   </Button>
                 ))}
                 <Button
-                  variant={questionLimit === null ? "burgundy" : "secondary"}
+                  variant="copper"
                   size="sm"
                   onClick={() => setQuestionLimit(null)}
                   className="h-8 sm:h-9 text-xs sm:text-sm"
@@ -387,7 +387,7 @@ export default function WineQuizPage() {
               {questionLimit ? Math.min(questionLimit, allQuestions.length) : allQuestions.length} questions available
             </p>
             <Button 
-              variant="burgundy" 
+              variant="copper" 
               size="sm"
               onClick={startQuiz}
               disabled={allQuestions.length === 0}

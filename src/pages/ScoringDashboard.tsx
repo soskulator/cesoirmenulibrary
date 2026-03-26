@@ -329,9 +329,9 @@ export default function ScoringDashboard() {
           <Card className="mt-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Bell className="w-4 h-4 text-gold" />
+                <Bell className="w-4 h-4 text-copper" />
                 Inactive Staff
-                <Badge variant="outline" className="text-gold border-gold/30 bg-gold/10 ml-1">
+                <Badge variant="outline" className="text-copper border-copper/30 bg-copper/10 ml-1">
                   {inactiveStaff.length}
                 </Badge>
               </CardTitle>
@@ -353,7 +353,7 @@ export default function ScoringDashboard() {
                       "text-xs",
                       s.daysSinceActive >= 14
                         ? "border-destructive/30 text-destructive bg-destructive/10"
-                        : "border-gold/30 text-gold bg-gold/10"
+                        : "border-copper/30 text-copper bg-copper/10"
                     )}>
                       {s.daysSinceActive === 999 ? 'Never logged in' : `${s.daysSinceActive}d ago`}
                     </Badge>

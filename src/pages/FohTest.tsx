@@ -354,7 +354,7 @@ export default function FohTestPage() {
   const getScoreGrade = (percentage: number) => {
     const passingScore = testConfig?.passing_score ?? 70;
     if (percentage >= passingScore + 20) return { grade: 'A', label: 'Excellent!', color: 'text-sage' };
-    if (percentage >= passingScore + 10) return { grade: 'B', label: 'Great Job!', color: 'text-gold' };
+    if (percentage >= passingScore + 10) return { grade: 'B', label: 'Great Job!', color: 'text-copper' };
     if (percentage >= passingScore) return { grade: 'C', label: 'Passed', color: 'text-copper' };
     if (percentage >= passingScore - 10) return { grade: 'D', label: 'Needs Improvement', color: 'text-orange-500' };
     return { grade: 'F', label: 'Study Required', color: 'text-destructive' };
@@ -424,8 +424,8 @@ export default function FohTestPage() {
           >
             {/* Header */}
             <div className="text-center mb-6 sm:mb-8">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
-                <Trophy className="w-10 h-10 sm:w-12 sm:h-12 text-gold" />
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-copper/20 flex items-center justify-center mx-auto mb-4">
+                <Trophy className="w-10 h-10 sm:w-12 sm:h-12 text-copper" />
               </div>
               <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                 {getTestDisplayName(selectedTestType!, testConfig?.test_name)} Complete!
@@ -465,10 +465,10 @@ export default function FohTestPage() {
             {showScoreDetails && (
               <>
                 <Card className="mb-6 overflow-hidden">
-                  <div className="bg-gradient-to-r from-burgundy to-burgundy/80 p-4 sm:p-6 text-white">
+                  <div className="bg-gradient-to-r from-copper to-copper/80 p-4 sm:p-6 text-white">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-burgundy-foreground/80 text-sm">Your Score</p>
+                        <p className="text-copper-foreground/80 text-sm">Your Score</p>
                         <p className="text-4xl sm:text-5xl font-bold">{score.percentage}%</p>
                       </div>
                       <div className="text-right">
@@ -545,7 +545,7 @@ export default function FohTestPage() {
                 <Card className="mb-6">
                   <CardContent className="p-4 sm:p-6">
                     <h3 className="font-semibold mb-4 flex items-center gap-2">
-                      <ClipboardList className="w-5 h-5 text-burgundy" />
+                      <ClipboardList className="w-5 h-5 text-copper" />
                       Question Review
                     </h3>
                     <div className="space-y-4 max-h-[60vh] overflow-y-auto">
@@ -596,7 +596,7 @@ export default function FohTestPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button variant="burgundy" onClick={startTest} className="h-11">
+              <Button variant="copper" onClick={startTest} className="h-11">
                 <RotateCcw className="w-5 h-5 mr-2" />
                 Retake Test
               </Button>
@@ -665,8 +665,8 @@ export default function FohTestPage() {
       <Layout>
         <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
           <div className="text-center mb-6 sm:mb-8">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-4">
-              <ClipboardList className="w-8 h-8 sm:w-10 sm:h-10 text-burgundy" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-copper/10 flex items-center justify-center mx-auto mb-4">
+              <ClipboardList className="w-8 h-8 sm:w-10 sm:h-10 text-copper" />
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
               {testName}
@@ -681,7 +681,7 @@ export default function FohTestPage() {
               <h2 className="font-semibold mb-4">Test Overview</h2>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="p-3 bg-muted rounded-lg text-center">
-                  <p className="text-2xl font-bold text-burgundy">{totalQuestions}</p>
+                  <p className="text-2xl font-bold text-copper">{totalQuestions}</p>
                   <p className="text-xs text-muted-foreground">Questions</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg text-center">
@@ -705,7 +705,7 @@ export default function FohTestPage() {
           </Card>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="burgundy" size="lg" onClick={startTest} className="h-12 px-8">
+            <Button variant="copper" size="lg" onClick={startTest} className="h-12 px-8">
               Start Test
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
@@ -777,15 +777,15 @@ export default function FohTestPage() {
                           className={cn(
                             "w-full p-3 sm:p-4 text-left rounded-lg border-2 transition-all",
                             selectedAnswer === idx
-                              ? "border-burgundy bg-burgundy/10"
-                              : "border-border hover:border-burgundy/50 hover:bg-muted/50"
+                              ? "border-copper bg-copper/10"
+                              : "border-border hover:border-copper/50 hover:bg-muted/50"
                           )}
                         >
                           <span className="flex items-center gap-3">
                             <span className={cn(
                               "w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-medium",
                               selectedAnswer === idx
-                                ? "border-burgundy bg-burgundy text-white"
+                                ? "border-copper bg-copper text-white"
                                 : "border-muted-foreground"
                             )}>
                               {String.fromCharCode(65 + idx)}
@@ -868,7 +868,7 @@ export default function FohTestPage() {
                 )}
                 {currentQuestion.type === 'multiple_choice' ? (
                   <Button
-                    variant="burgundy"
+                    variant="copper"
                     className="flex-1 h-11"
                     onClick={submitMultipleChoice}
                     disabled={selectedAnswer === null}
@@ -878,7 +878,7 @@ export default function FohTestPage() {
                   </Button>
                 ) : evaluationResult === null ? (
                   <Button
-                    variant="burgundy"
+                    variant="copper"
                     className="flex-1 h-11"
                     onClick={submitShortAnswer}
                     disabled={shortAnswer.trim().length < 2 || isEvaluating}
@@ -897,7 +897,7 @@ export default function FohTestPage() {
                   </Button>
                 ) : (
                   <Button
-                    variant="burgundy"
+                    variant="copper"
                     className="flex-1 h-11"
                     onClick={proceedToNext}
                   >
@@ -928,7 +928,7 @@ export default function FohTestPage() {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-gold" />
+                <AlertTriangle className="w-5 h-5 text-copper" />
                 Submit Test Early?
               </AlertDialogTitle>
               <AlertDialogDescription className="space-y-2">
@@ -947,7 +947,7 @@ export default function FohTestPage() {
               <AlertDialogCancel>Continue Test</AlertDialogCancel>
               <AlertDialogAction 
                 onClick={submitTestEarly}
-                className="bg-burgundy hover:bg-burgundy/90"
+                className="bg-copper hover:bg-copper/90"
               >
                 Submit Now
               </AlertDialogAction>

@@ -162,7 +162,7 @@ export function Leaderboard() {
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
-      case 1: return <Trophy className="w-5 h-5 text-gold" />;
+      case 1: return <Trophy className="w-5 h-5 text-copper" />;
       case 2: return <Medal className="w-5 h-5 text-silver" />;
       case 3: return <Award className="w-5 h-5 text-bronze" />;
       default: return <span className="text-sm font-bold text-muted-foreground w-5 text-center">{rank}</span>;
@@ -171,7 +171,7 @@ export function Leaderboard() {
 
   const getRankBg = (rank: number) => {
     switch (rank) {
-      case 1: return 'bg-gradient-to-r from-gold/20 via-gold/10 to-transparent border-gold/30';
+      case 1: return 'bg-gradient-to-r from-gold/20 via-gold/10 to-transparent border-copper/30';
       case 2: return 'bg-gradient-to-r from-silver/20 via-silver/10 to-transparent border-silver/30';
       case 3: return 'bg-gradient-to-r from-bronze/20 via-bronze/10 to-transparent border-bronze/30';
       default: return 'bg-muted/50';
@@ -182,8 +182,8 @@ export function Leaderboard() {
     <Card className="bg-card shadow-card">
       <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
         <div className="flex items-center justify-between gap-2">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
-            <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-gold" />
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-copper/10 flex items-center justify-center flex-shrink-0">
+            <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
           </div>
           <Tabs value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
             <TabsList className="h-8">
@@ -242,7 +242,7 @@ export function Leaderboard() {
                     <div className="text-right flex-shrink-0">
                       <p className={cn(
                         "font-bold text-lg",
-                        rank === 1 ? "text-gold" : 
+                        rank === 1 ? "text-copper" : 
                         rank === 2 ? "text-silver" : 
                         rank === 3 ? "text-copper" : 
                         "text-foreground"

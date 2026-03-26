@@ -129,14 +129,14 @@ function HoverDropdown({
       <button
         className={cn(
           'relative flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
-          triggerActive ? 'text-burgundy' : 'text-muted-foreground hover:text-foreground hover:bg-accent',
+          triggerActive ? 'text-copper' : 'text-muted-foreground hover:text-foreground hover:bg-accent',
         )}
       >
         {label}
         {indicator}
         <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} />
         {triggerActive && (
-          <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
+          <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
         )}
       </button>
       <AnimatePresence>
@@ -162,7 +162,7 @@ function HoverDropdown({
                       onClick={() => setOpen(false)}
                       className={cn(
                         'flex items-center gap-2 px-3 py-2 text-sm transition-colors',
-                        itemActive ? 'text-burgundy bg-burgundy/5' : 'text-foreground hover:bg-accent',
+                        itemActive ? 'text-copper bg-copper/5' : 'text-foreground hover:bg-accent',
                       )}
                     >
                       <item.icon className="w-4 h-4" />
@@ -395,9 +395,9 @@ export function Header() {
           {(() => {
             const isActive = location.pathname === '/';
             return (
-              <Link to="/" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              <Link to="/" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5"><Home className="w-4 h-4" />Home</span>
-                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
               </Link>
             );
           })()}
@@ -441,9 +441,9 @@ export function Header() {
           {hasPermission('page:allergy') && (() => {
             const isActive = location.pathname === '/allergy';
             return (
-              <Link to="/allergy" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              <Link to="/allergy" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                 <span className="flex items-center gap-1.5"><AlertTriangle className="w-4 h-4" />Allergy Center</span>
-                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
               </Link>
             );
           })()}
@@ -459,7 +459,7 @@ export function Header() {
           
           {isAdmin && <>
               <div className="w-px h-5 bg-border mx-1.5" />
-              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", location.pathname.startsWith(item.path) ? "text-gold bg-gold/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+              {adminItems.map(item => <Link key={item.path} to={item.path} className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", location.pathname.startsWith(item.path) ? "text-copper bg-copper/10" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
                   <span className="flex items-center gap-1.5">
                     <item.icon className="w-4 h-4" />
                     {item.label}

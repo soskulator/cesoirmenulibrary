@@ -181,8 +181,8 @@ export function FohTestQuestionManager() {
       <CardHeader className="pb-4 px-3 sm:px-6">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-burgundy/10 flex items-center justify-center flex-shrink-0">
-              <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5 text-burgundy" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-copper/10 flex items-center justify-center flex-shrink-0">
+              <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
             </div>
             <div className="min-w-0">
               <CardTitle className="font-serif text-lg sm:text-xl mb-0.5">FoH Test Questions</CardTitle>
@@ -214,7 +214,7 @@ export function FohTestQuestionManager() {
             )}
             <Button 
               size="sm" 
-              className="bg-burgundy hover:bg-burgundy/90 text-white text-xs h-8 px-3"
+              className="bg-copper hover:bg-copper/90 text-white text-xs h-8 px-3"
               onClick={openAddDialog}
             >
               <Plus className="w-3.5 h-3.5 mr-1.5" />
@@ -492,7 +492,7 @@ export function FohTestQuestionManager() {
             <Button 
               onClick={handleSave}
               disabled={isSaving || !formData.question.trim() || !formData.correct_answer.trim()}
-              className="bg-burgundy hover:bg-burgundy/90"
+              className="bg-copper hover:bg-copper/90"
             >
               {isSaving ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

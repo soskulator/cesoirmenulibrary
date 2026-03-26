@@ -62,18 +62,9 @@
     --soft-clay: 24 55% 65%;
     --admin-bg: 30 20% 96%;
 
-    /* Legacy support - map old names to new */
-    --burgundy: 20 55% 50%;
-    --burgundy-light: 22 50% 62%;
-    --burgundy-dark: 18 60% 38%;
+    /* Legacy support — kept for Lead Admin role badge only */
     --gold: 22 55% 55%;
     --gold-light: 25 50% 68%;
-    --silver: 210 10% 60%;
-    --silver-light: 210 8% 75%;
-    --bronze: 30 45% 45%;
-    --bronze-light: 30 40% 60%;
-    --sage: 160 35% 28%;
-    --sage-light: 158 25% 75%;
 
     /* Allergen colors */
     --allergen-gluten: 35 85% 55%;
@@ -220,8 +211,8 @@
     @apply bg-gradient-to-r from-[hsl(var(--gold))] to-[hsl(var(--gold-light))] bg-clip-text text-transparent;
   }
 
-  .text-gradient-burgundy {
-    @apply bg-gradient-to-r from-[hsl(var(--burgundy))] to-[hsl(var(--burgundy-light))] bg-clip-text text-transparent;
+  .text-gradient-copper {
+    @apply bg-gradient-to-r from-[hsl(var(--copper))] to-[hsl(var(--copper-light))] bg-clip-text text-transparent;
   }
 
   .bg-texture {
