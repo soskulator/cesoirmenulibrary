@@ -181,7 +181,7 @@ function HoverDropdown({
 
 // Role display helper
 const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: boolean) => {
-  if (isLeadAdmin) return { label: 'Lead Admin', icon: ShieldCheck, color: 'text-copper' };
+  if (isLeadAdmin) return { label: 'Lead Admin', icon: ShieldCheck, color: 'text-gold' };
   if (isAdmin) return { label: 'Admin', icon: Shield, color: 'text-copper' };
   if (role === 'server') return { label: 'Server', icon: User, color: 'text-muted-foreground' };
   if (role === 'bartender') return { label: 'Bartender', icon: User, color: 'text-muted-foreground' };
