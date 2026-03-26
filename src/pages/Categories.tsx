@@ -548,7 +548,7 @@ export default function CategoriesPage() {
                             className="absolute inset-0 bg-gradient-to-r from-copper-light/20 to-transparent pointer-events-none"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.1 }}
                           />
                         )}
                       </motion.button>
