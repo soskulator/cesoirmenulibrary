@@ -398,7 +398,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }} className="mb-8">
               <h2 className="font-serif text-3xl font-semibold text-center mb-2">Featured Cocktail</h2>
               <p className="text-muted-foreground text-center max-w-sm mx-auto">
