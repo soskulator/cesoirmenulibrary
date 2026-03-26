@@ -13,9 +13,9 @@ import { QuestionFormModal } from './QuestionFormModal';
 import { BulkImportModal } from './BulkImportModal';
 
 const categoryColors: Record<string, string> = {
-  service: 'bg-burgundy/15 text-burgundy border-burgundy/30',
+  service: 'bg-copper/15 text-copper border-copper/30',
   menu: 'bg-jade/15 text-jade border-jade/30',
-  drinks: 'bg-gold/15 text-gold border-gold/30',
+  drinks: 'bg-copper/15 text-copper border-copper/30',
   operations: 'bg-terracotta/15 text-terracotta border-terracotta/30',
   general: 'bg-muted text-muted-foreground border-muted',
   allergy: 'bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-900/30 dark:text-rose-400',

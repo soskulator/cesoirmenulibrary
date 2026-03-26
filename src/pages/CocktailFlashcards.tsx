@@ -50,7 +50,7 @@ const classifyCocktail = (cocktail: MenuItem) => {
 
 const styleInfo = {
   classic: { title: 'Classic', icon: Clock, color: 'bg-copper/20 text-copper' },
-  signature: { title: 'Signature', icon: Star, color: 'bg-gold/20 text-gold' },
+  signature: { title: 'Signature', icon: Star, color: 'bg-copper/20 text-copper' },
   specials: { title: 'Special', icon: Sparkles, color: 'bg-sage/20 text-sage' },
 };
 
@@ -186,7 +186,7 @@ export default function CocktailFlashcardsPage() {
         {/* Style Filter Pills */}
         <div className="mb-4 flex flex-wrap gap-2">
           <Button
-            variant={selectedStyle === '' ? "burgundy" : "secondary"}
+            variant="copper"
             size="sm"
             onClick={() => {
               setSelectedStyle('');
@@ -202,7 +202,7 @@ export default function CocktailFlashcardsPage() {
             return (
               <Button
                 key={style}
-                variant={selectedStyle === style ? "burgundy" : "secondary"}
+                variant="copper"
                 size="sm"
                 onClick={() => {
                   setSelectedStyle(style);
@@ -231,7 +231,7 @@ export default function CocktailFlashcardsPage() {
             <span className="text-sage">
               ✓ {user ? stats.known : localKnown.size}
             </span>
-            <span className="text-gold">
+            <span className="text-copper">
               ↻ {user ? stats.review : localReview.size}
             </span>
           </div>
@@ -287,7 +287,7 @@ export default function CocktailFlashcardsPage() {
         {currentItem && (
           <div className="mt-4 sm:mt-6 flex gap-3 sm:gap-4 justify-center">
             <Button
-              variant="burgundy-outline"
+              variant="copper-outline"
               size="sm"
               onClick={markForReview}
               className="flex-1 max-w-xs h-11 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"

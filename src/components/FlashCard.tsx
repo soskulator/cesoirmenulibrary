@@ -30,7 +30,7 @@ const categoryAccents: Record<string, string> = {
   entrees: 'border-jade/30',
   desserts: 'border-rose-gold/30',
   sides: 'border-wood/30',
-  specials: 'border-gold/30',
+  specials: 'border-copper/30',
   sauces: 'border-copper/25',
 };
 

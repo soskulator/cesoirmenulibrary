@@ -269,7 +269,7 @@ export default function FoodQuizPage() {
     switch (format) {
       case 'write': return { label: 'Write Answer', color: 'bg-copper/10 text-copper' };
       case 'select': return { label: 'Select One', color: 'bg-jade/10 text-jade' };
-      case 'eliminate': return { label: 'Eliminate Wrong', color: 'bg-gold/10 text-gold' };
+      case 'eliminate': return { label: 'Eliminate Wrong', color: 'bg-copper/10 text-copper' };
     }
   };
 
@@ -317,7 +317,7 @@ export default function FoodQuizPage() {
             </div>
 
             <div className="flex gap-2 sm:gap-4 justify-center">
-              <Button variant="burgundy" size="sm" onClick={startQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
+              <Button variant="copper" size="sm" onClick={startQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
                 <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Try Again
               </Button>
@@ -359,7 +359,7 @@ export default function FoodQuizPage() {
                   <span className="text-sm text-muted-foreground">Pick the correct answer</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge className="bg-gold/10 text-gold text-xs">Eliminate</Badge>
+                  <Badge className="bg-copper/10 text-copper text-xs">Eliminate</Badge>
                   <span className="text-sm text-muted-foreground">Remove wrong answers</span>
                 </div>
               </div>
@@ -394,7 +394,7 @@ export default function FoodQuizPage() {
                 {[10, 20, 30].map(n => (
                   <Button
                     key={n}
-                    variant={questionLimit === n ? "burgundy" : "secondary"}
+                    variant="copper"
                     size="sm"
                     onClick={() => setQuestionLimit(n)}
                     className="h-8 sm:h-9 text-xs sm:text-sm min-w-[3rem]"
@@ -403,7 +403,7 @@ export default function FoodQuizPage() {
                   </Button>
                 ))}
                 <Button
-                  variant={questionLimit === null ? "burgundy" : "secondary"}
+                  variant="copper"
                   size="sm"
                   onClick={() => setQuestionLimit(null)}
                   className="h-8 sm:h-9 text-xs sm:text-sm"
@@ -419,7 +419,7 @@ export default function FoodQuizPage() {
               {questionLimit ? Math.min(questionLimit, allQuestions.length) : allQuestions.length} questions
             </p>
             <Button 
-              variant="burgundy" 
+              variant="copper" 
               size="sm"
               onClick={startQuiz}
               disabled={allQuestions.length === 0}
@@ -518,7 +518,7 @@ export default function FoodQuizPage() {
                           {currentQuestion.options.map((option) => (
                             <Button
                               key={option}
-                              variant={selectedOptions.has(option) ? "burgundy" : "outline"}
+                              variant="copper"
                               className={cn(
                                 "justify-start h-auto py-3 px-4 text-left text-sm",
                                 selectedOptions.has(option) && currentQuestion.format === 'eliminate' && "line-through opacity-60"
@@ -572,7 +572,7 @@ export default function FoodQuizPage() {
               <div className="flex gap-2 sm:gap-4">
                 {!showResult ? (
                   <Button
-                    variant="burgundy"
+                    variant="copper"
                     size="sm"
                     className="flex-1 h-10 sm:h-12 text-sm"
                     onClick={checkAnswer}
@@ -586,7 +586,7 @@ export default function FoodQuizPage() {
                   </Button>
                 ) : (
                   <Button
-                    variant="burgundy"
+                    variant="copper"
                     size="sm"
                     className="flex-1 h-10 sm:h-12 text-sm"
                     onClick={goToNext}

@@ -214,7 +214,7 @@ export default function FlashcardsPage() {
               <Filter className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline">Filters</span>
               {excludeAllergens.length > 0 && (
-                <Badge variant="burgundy" className="ml-1 sm:ml-2 text-xs">
+                <Badge variant="copper" className="ml-1 sm:ml-2 text-xs">
                   {excludeAllergens.length}
                 </Badge>
               )}
@@ -224,7 +224,7 @@ export default function FlashcardsPage() {
           {/* Category Pills */}
           <div className="flex flex-wrap gap-2">
             <Button
-              variant={selectedCategory === '' ? "burgundy" : "secondary"}
+              variant="copper"
               size="sm"
               onClick={() => {
                 setSelectedCategory('');
@@ -236,7 +236,7 @@ export default function FlashcardsPage() {
             {categories.map((cat) => (
               <Button
                 key={cat.id}
-                variant={selectedCategory === cat.id ? "burgundy" : "secondary"}
+                variant="copper"
                 size="sm"
                 onClick={() => {
                   setSelectedCategory(cat.id);
@@ -289,7 +289,7 @@ export default function FlashcardsPage() {
             <span className="text-sage">
               ✓ {user ? stats.known : localKnown.size}
             </span>
-            <span className="text-gold">
+            <span className="text-copper">
               ↻ {user ? stats.review : localReview.size}
             </span>
           </div>
@@ -366,7 +366,7 @@ export default function FlashcardsPage() {
         {currentItem && (
           <div className="mt-4 sm:mt-6 flex gap-3 sm:gap-4 justify-center">
             <Button
-              variant="burgundy-outline"
+              variant="copper-outline"
               size="sm"
               onClick={markForReview}
               className="flex-1 max-w-xs h-11 sm:h-12 text-sm sm:text-base active:scale-95 transition-transform"

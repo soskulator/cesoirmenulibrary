@@ -71,8 +71,8 @@ const FALLBACK_TESTS: Array<{
     passing_score: 70,
     time_limit_minutes: null,
     icon: Users,
-    color: 'text-burgundy',
-    bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20',
+    color: 'text-copper',
+    bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20',
     description: 'Complete service knowledge',
   },
   {
@@ -90,16 +90,16 @@ const FALLBACK_TESTS: Array<{
 
 // Map test_type to icon + color for DB tests
 const TEST_TYPE_VISUALS: Record<string, { icon: typeof ClipboardList; color: string; bgColor: string }> = {
-  service_staff: { icon: Users, color: 'text-burgundy', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20' },
+  service_staff: { icon: Users, color: 'text-copper', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20' },
   server_assistant: { icon: UserCheck, color: 'text-jade', bgColor: 'from-jade/10 via-jade/5 to-transparent border-jade/20' },
-  wine_test: { icon: Wine, color: 'text-burgundy', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20' },
-  wine: { icon: Wine, color: 'text-burgundy', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-burgundy/20' },
+  wine_test: { icon: Wine, color: 'text-copper', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20' },
+  wine: { icon: Wine, color: 'text-copper', bgColor: 'from-burgundy/10 via-burgundy/5 to-transparent border-copper/20' },
   food_test: { icon: UtensilsCrossed, color: 'text-sage', bgColor: 'from-sage/10 via-sage/5 to-transparent border-sage/20' },
   food: { icon: UtensilsCrossed, color: 'text-sage', bgColor: 'from-sage/10 via-sage/5 to-transparent border-sage/20' },
   spirits_test: { icon: Martini, color: 'text-copper', bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20' },
   spirits: { icon: Martini, color: 'text-copper', bgColor: 'from-copper/10 via-copper/5 to-transparent border-copper/20' },
-  cocktails_test: { icon: Martini, color: 'text-gold', bgColor: 'from-gold/10 via-gold/5 to-transparent border-gold/20' },
-  cocktails: { icon: Martini, color: 'text-gold', bgColor: 'from-gold/10 via-gold/5 to-transparent border-gold/20' },
+  cocktails_test: { icon: Martini, color: 'text-copper', bgColor: 'from-gold/10 via-gold/5 to-transparent border-copper/20' },
+  cocktails: { icon: Martini, color: 'text-copper', bgColor: 'from-gold/10 via-gold/5 to-transparent border-copper/20' },
   allergy_test: { icon: AlertTriangle, color: 'text-destructive', bgColor: 'from-destructive/10 via-destructive/5 to-transparent border-destructive/20' },
   allergy: { icon: AlertTriangle, color: 'text-destructive', bgColor: 'from-destructive/10 via-destructive/5 to-transparent border-destructive/20' },
 };
@@ -281,8 +281,8 @@ export default function QuizPage() {
     <Layout>
       <div className="container py-6 sm:py-8 md:py-12 max-w-2xl px-3 sm:px-4">
         <div className="text-center mb-6 sm:mb-8">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-burgundy/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
-            <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-burgundy" />
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-copper/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-copper" />
           </div>
           <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mb-2">Staff Testing Center</h1>
           <p className="text-muted-foreground text-xs sm:text-sm">
@@ -430,11 +430,11 @@ export default function QuizPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
             {hasPermission('quiz:wine') && (
               <Link to="/wine-quiz" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-burgundy/20 p-4 transition-all duration-300 hover:border-burgundy/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5 text-center">
-                  <div className="w-10 h-10 rounded-lg bg-burgundy/10 flex items-center justify-center group-hover:bg-burgundy/20 transition-colors mx-auto mb-2">
-                    <Wine className="w-5 h-5 text-burgundy" />
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-burgundy/10 via-burgundy/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-burgundy/10 hover:-translate-y-0.5 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
+                    <Wine className="w-5 h-5 text-copper" />
                   </div>
-                  <h3 className="font-semibold text-sm text-foreground group-hover:text-burgundy transition-colors">Wine</h3>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-copper transition-colors">Wine</h3>
                   <Link
                     to={PRACTICE_STUDY_LINKS['/wine-quiz']}
                     onClick={(e) => e.stopPropagation()}
@@ -466,11 +466,11 @@ export default function QuizPage() {
 
             {hasPermission('page:cocktail-flashcards') && (
               <Link to="/cocktail-flashcards" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gold/10 via-gold/5 to-transparent border border-gold/20 p-4 transition-all duration-300 hover:border-gold/40 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-0.5 text-center">
-                  <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors mx-auto mb-2">
-                    <Martini className="w-5 h-5 text-gold" />
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gold/10 via-gold/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-0.5 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
+                    <Martini className="w-5 h-5 text-copper" />
                   </div>
-                  <h3 className="font-semibold text-sm text-foreground group-hover:text-gold transition-colors">Cocktails</h3>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-copper transition-colors">Cocktails</h3>
                   <Link
                     to={PRACTICE_STUDY_LINKS['/cocktail-flashcards']}
                     onClick={(e) => e.stopPropagation()}

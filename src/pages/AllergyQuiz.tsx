@@ -251,8 +251,8 @@ export default function AllergyQuizPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
-              <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gold" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-copper/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <Trophy className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-copper" />
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Test Complete!</h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8">
@@ -276,11 +276,11 @@ export default function AllergyQuizPage() {
 
             <div className="mb-6 sm:mb-8">
               <Progress value={percentage} className="h-3 sm:h-4 mb-2" />
-              <p className="text-xl sm:text-2xl font-bold text-burgundy">{percentage}%</p>
+              <p className="text-xl sm:text-2xl font-bold text-copper">{percentage}%</p>
             </div>
 
             <div className="flex gap-2 sm:gap-4 justify-center">
-              <Button variant="burgundy" size="sm" onClick={startQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
+              <Button variant="copper" size="sm" onClick={startQuiz} className="h-10 sm:h-11 px-4 sm:px-6 text-sm">
                 <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Try Again
               </Button>
@@ -314,15 +314,15 @@ export default function AllergyQuizPage() {
               <h2 className="font-semibold mb-3 text-sm sm:text-base">How It Works</h2>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <span className="text-burgundy">1.</span>
+                  <span className="text-copper">1.</span>
                   <span>You'll see a dish and an allergy to accommodate</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-burgundy">2.</span>
+                  <span className="text-copper">2.</span>
                   <span>Select all ingredients that should be removed</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-burgundy">3.</span>
+                  <span className="text-copper">3.</span>
                   <span>Check your answer to see if you got it right</span>
                 </li>
               </ul>
@@ -337,7 +337,7 @@ export default function AllergyQuizPage() {
                 {[10, 20, 30].map(n => (
                   <Button
                     key={n}
-                    variant={questionLimit === n ? "burgundy" : "secondary"}
+                    variant="copper"
                     size="sm"
                     onClick={() => setQuestionLimit(n)}
                     className="h-8 sm:h-9 text-xs sm:text-sm min-w-[3rem]"
@@ -346,7 +346,7 @@ export default function AllergyQuizPage() {
                   </Button>
                 ))}
                 <Button
-                  variant={questionLimit === null ? "burgundy" : "secondary"}
+                  variant="copper"
                   size="sm"
                   onClick={() => setQuestionLimit(null)}
                   className="h-8 sm:h-9 text-xs sm:text-sm"
@@ -367,7 +367,7 @@ export default function AllergyQuizPage() {
               )}
             </p>
             <Button 
-              variant="burgundy" 
+              variant="copper" 
               size="sm"
               onClick={startQuiz}
               disabled={allQuestions.length === 0}
@@ -522,8 +522,8 @@ export default function AllergyQuizPage() {
                                 "w-full flex items-center justify-between p-3 rounded-lg border transition-all text-left",
                                 showAnswer && isCorrect && isSelected && "bg-sage/20 border-sage",
                                 showAnswer && isWrong && "bg-destructive/20 border-destructive",
-                                showAnswer && isMissed && "bg-gold/20 border-gold",
-                                !showAnswer && isSelected && "bg-burgundy/10 border-burgundy",
+                                showAnswer && isMissed && "bg-copper/20 border-copper",
+                                !showAnswer && isSelected && "bg-copper/10 border-copper",
                                 !showAnswer && !isSelected && "bg-muted/50 border-border hover:bg-muted"
                               )}
                             >
@@ -543,14 +543,14 @@ export default function AllergyQuizPage() {
                                 )}
                                 {!showAnswer && (
                                   isSelected ? (
-                                    <Minus className="w-4 h-4 text-burgundy" />
+                                    <Minus className="w-4 h-4 text-copper" />
                                   ) : (
                                     <Plus className="w-4 h-4 text-muted-foreground" />
                                   )
                                 )}
                                 {showAnswer && isCorrect && isSelected && <Check className="w-4 h-4 text-sage" />}
                                 {showAnswer && isWrong && <X className="w-4 h-4 text-destructive" />}
-                                {showAnswer && isMissed && <AlertTriangle className="w-4 h-4 text-gold" />}
+                                {showAnswer && isMissed && <AlertTriangle className="w-4 h-4 text-copper" />}
                               </div>
                             </button>
                           );
@@ -585,7 +585,7 @@ export default function AllergyQuizPage() {
                 <>
                   {!showAnswer ? (
                     <Button
-                      variant="burgundy"
+                      variant="copper"
                       size="sm"
                       className="w-full h-10 sm:h-12 text-sm"
                       onClick={checkAnswer}
@@ -600,7 +600,7 @@ export default function AllergyQuizPage() {
                       animate={{ opacity: 1 }}
                     >
                       <Button
-                        variant="burgundy"
+                        variant="copper"
                         size="sm"
                         className="w-full h-10 sm:h-12 text-sm"
                         onClick={goToNext}

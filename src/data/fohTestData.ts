@@ -828,9 +828,9 @@ export const getCategoryLabel = (category: string): string => {
 
 export const getCategoryColor = (category: string): string => {
   const colors: Record<string, string> = {
-    'service': 'bg-burgundy/20 text-burgundy',
+    'service': 'bg-copper/20 text-copper',
     'menu': 'bg-jade/20 text-jade',
-    'drinks': 'bg-gold/20 text-gold',
+    'drinks': 'bg-copper/20 text-copper',
     'operations': 'bg-terracotta/20 text-terracotta',
     'general': 'bg-muted text-muted-foreground',
   };

@@ -180,8 +180,8 @@ export default function DailyFocusPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <Star className="w-6 h-6 sm:w-8 sm:h-8 text-gold" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-copper/20 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <Star className="w-6 h-6 sm:w-8 sm:h-8 text-copper" />
             </div>
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
               <h1 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
@@ -191,10 +191,10 @@ export default function DailyFocusPage() {
                 variant="ghost" 
                 size="icon"
                 onClick={handleRefresh}
-                className="h-8 w-8 sm:h-10 sm:w-10 rounded-full hover:bg-gold/20 active:scale-95 transition-transform"
+                className="h-8 w-8 sm:h-10 sm:w-10 rounded-full hover:bg-copper/20 active:scale-95 transition-transform"
                 aria-label="Refresh daily focus items"
               >
-                <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 text-gold" />
+                <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 text-copper" />
               </Button>
             </div>
             <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs sm:text-sm">
@@ -264,7 +264,7 @@ export default function DailyFocusPage() {
                         </div>
                       </div>
                       <Button 
-                        variant="burgundy-outline" 
+                        variant="copper-outline" 
                         size="sm" 
                         onClick={() => navigate(`/flashcards?item=${menuItem!.id}`)}
                         className="shrink-0 h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
@@ -286,7 +286,7 @@ export default function DailyFocusPage() {
                     <div className="grid sm:grid-cols-2 gap-2 sm:gap-4">
                       {/* Ingredients */}
                       <div className="p-2 sm:p-4 bg-muted/50 rounded-lg">
-                        <h4 className="text-[10px] sm:text-sm font-semibold uppercase tracking-wider text-burgundy mb-1 sm:mb-2">
+                        <h4 className="text-[10px] sm:text-sm font-semibold uppercase tracking-wider text-copper mb-1 sm:mb-2">
                           Key Ingredients
                         </h4>
                         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">
@@ -295,8 +295,8 @@ export default function DailyFocusPage() {
                       </div>
 
                       {/* Selling Points */}
-                      <div className="p-2 sm:p-4 bg-gold/5 rounded-lg">
-                        <h4 className="text-[10px] sm:text-sm font-semibold uppercase tracking-wider text-gold mb-1 sm:mb-2">
+                      <div className="p-2 sm:p-4 bg-copper/5 rounded-lg">
+                        <h4 className="text-[10px] sm:text-sm font-semibold uppercase tracking-wider text-copper mb-1 sm:mb-2">
                           Selling Points
                         </h4>
                         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">
@@ -324,7 +324,7 @@ export default function DailyFocusPage() {
                         <ul className="space-y-1 sm:space-y-2">
                           {menuItem!.questions.slice(0, 2).map((q) => (
                             <li key={q.id} className="flex items-start gap-2 text-xs sm:text-sm">
-                              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 mt-0.5 text-burgundy shrink-0" />
+                              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 mt-0.5 text-copper shrink-0" />
                               <span className="text-muted-foreground">{q.prompt}</span>
                             </li>
                           ))}
@@ -356,7 +356,7 @@ export default function DailyFocusPage() {
           </p>
           <div className="flex gap-2 sm:gap-4 justify-center">
             <Button 
-              variant="burgundy" 
+              variant="copper" 
               size="sm"
               className="h-10 sm:h-11 px-4 sm:px-6 text-sm"
               onClick={() => navigate('/quiz')}

@@ -269,13 +269,13 @@ export default function AdminPage() {
                         </div>
                         {!accessible && <Lock className="w-3.5 h-3.5 text-copper/60" />}
                       </div>
-                      <CardTitle className={`text-base sm:text-lg ${accessible ? 'group-hover:text-burgundy' : ''} transition-colors`}>
+                      <CardTitle className={`text-base sm:text-lg ${accessible ? 'group-hover:text-copper' : ''} transition-colors`}>
                         {section.title}
                       </CardTitle>
                       <CardDescription className="text-xs sm:text-sm">{section.description}</CardDescription>
                     </CardHeader>
                     <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
-                      <Button variant="link" className="p-0 h-auto text-burgundy text-sm">
+                      <Button variant="link" className="p-0 h-auto text-copper text-sm">
                         {accessible ? 'Open' : 'Locked'}
                         {accessible ? <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" /> : <Lock className="w-3 h-3 ml-1" />}
                       </Button>

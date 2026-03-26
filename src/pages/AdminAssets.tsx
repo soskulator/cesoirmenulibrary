@@ -152,8 +152,8 @@ export default function AdminAssetsPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center">
-              <Image className="w-6 h-6 text-gold" />
+            <div className="w-12 h-12 rounded-full bg-copper/20 flex items-center justify-center">
+              <Image className="w-6 h-6 text-copper" />
             </div>
             <div>
               <h1 className="font-serif text-3xl font-bold">Assets & Design Direction</h1>
@@ -290,7 +290,7 @@ export default function AdminAssetsPage() {
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-gold" />
+              <FileText className="w-5 h-5 text-copper" />
               CSV Import Template
             </CardTitle>
             <CardDescription>
@@ -302,7 +302,7 @@ export default function AdminAssetsPage() {
               <p>name,category,shortDescription,longDescription,ingredients,allergens,sellingPoints,question1,answer1,question2,answer2</p>
               <p>"French Onion Soup","appetizers","Classic caramelized onion soup...","Our signature...","Vidalia onions, beef stock...","gluten,dairy,allium","House-made stock • 4-hour caramelized...","What makes our soup special?","4-hour caramelized onions...","Is it gluten-free?","Yes, without crouton"</p>
             </div>
-            <Button variant="burgundy" onClick={downloadCSVTemplate}>
+            <Button variant="copper" onClick={downloadCSVTemplate}>
               <Download className="w-4 h-4 mr-2" />
               Download CSV Template
             </Button>
@@ -313,7 +313,7 @@ export default function AdminAssetsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Palette className="w-5 h-5 text-gold" />
+              <Palette className="w-5 h-5 text-copper" />
               Current Brand Settings
             </CardTitle>
           </CardHeader>
@@ -324,14 +324,14 @@ export default function AdminAssetsPage() {
                 <h3 className="text-sm font-semibold mb-3">Brand Colors</h3>
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-burgundy" />
+                    <div className="w-10 h-10 rounded-lg bg-copper" />
                     <div>
                       <p className="text-sm font-medium">Burgundy (Primary)</p>
                       <p className="text-xs text-muted-foreground">HSL: 350 65% 35%</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gold" />
+                    <div className="w-10 h-10 rounded-lg bg-copper" />
                     <div>
                       <p className="text-sm font-medium">Gold (Accent)</p>
                       <p className="text-xs text-muted-foreground">HSL: 38 70% 55%</p>

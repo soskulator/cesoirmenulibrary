@@ -88,7 +88,7 @@ export function ActiveStaffTab({ staff, isLoading, onChangeRole, onRemove, onRef
   const getRoleBadge = (role: AppRole | null) => {
     switch (role) {
       case 'lead_admin':
-        return <Badge className="bg-burgundy text-cream"><ShieldCheck className="w-3 h-3 mr-1" />Lead Admin</Badge>;
+        return <Badge className="bg-copper text-cream"><ShieldCheck className="w-3 h-3 mr-1" />Lead Admin</Badge>;
       case 'admin':
         return <Badge className="bg-copper text-charcoal"><Shield className="w-3 h-3 mr-1" />Admin</Badge>;
       case 'server':
