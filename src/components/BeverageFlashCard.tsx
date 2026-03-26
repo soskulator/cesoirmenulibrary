@@ -12,7 +12,8 @@ interface BeverageFlashCardProps {
   onSwipeRight?: () => void;
 }
 
-const SWIPE_THRESHOLD = 50;
+const SWIPE_THRESHOLD = 60;
+const VELOCITY_THRESHOLD = 400;
 
 // Determine beverage type for styling
 const getBeverageType = (categoryId: string) => {
@@ -79,19 +80,20 @@ export function BeverageFlashCard({
 
   const handleFlip = () => setIsFlipped((prev) => !prev);
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const { offset } = info;
-    
-    // Check for vertical swipe to flip
-    if (Math.abs(offset.y) > SWIPE_THRESHOLD && Math.abs(offset.y) > Math.abs(offset.x)) {
-      handleFlip();
-    }
-    // Check for horizontal swipe to navigate
-    else if (Math.abs(offset.x) > SWIPE_THRESHOLD) {
-      if (offset.x > 0 && onSwipeRight) {
-        onSwipeRight();
-      } else if (offset.x < 0 && onSwipeLeft) {
-        onSwipeLeft();
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const { offset, velocity } = info;
+
+    const isHorizontal = Math.abs(offset.x) > Math.abs(offset.y)
+      || (Math.abs(velocity.x) > Math.abs(velocity.y) && Math.abs(velocity.x) > VELOCITY_THRESHOLD);
+
+    if (!isHorizontal) {
+      const shouldFlip = Math.abs(offset.y) > SWIPE_THRESHOLD || Math.abs(velocity.y) > VELOCITY_THRESHOLD;
+      if (shouldFlip) handleFlip();
+    } else {
+      const shouldNavigate = Math.abs(offset.x) > SWIPE_THRESHOLD || Math.abs(velocity.x) > VELOCITY_THRESHOLD;
+      if (shouldNavigate) {
+        if ((offset.x > 0 || velocity.x > 0) && onSwipeRight) onSwipeRight();
+        else if ((offset.x < 0 || velocity.x < 0) && onSwipeLeft) onSwipeLeft();
       }
     }
   };
@@ -102,7 +104,7 @@ export function BeverageFlashCard({
       style={{ x, y, rotateX, rotateY, perspective: 1000 }}
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      dragElastic={0.1}
+      dragElastic={0.25}
       onDragEnd={handleDragEnd}
       whileTap={{ scale: 0.98 }}
       tabIndex={0}
