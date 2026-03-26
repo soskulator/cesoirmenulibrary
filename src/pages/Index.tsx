@@ -341,7 +341,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.6
+          duration: 0.25
         }}>
               <Card className="border-0 shadow-elevated overflow-hidden">
                 <CardContent className="p-6 md:p-8">
