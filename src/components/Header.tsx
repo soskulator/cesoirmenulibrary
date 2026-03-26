@@ -290,7 +290,22 @@ export function Header() {
     return () => clearInterval(interval);
   }, [isAdmin]);
 
-  
+  // Check if today has a daily focus set
+  useEffect(() => {
+    const checkTodayFocus = async () => {
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const { data } = await supabase
+          .from('daily_focus_settings')
+          .select('id')
+          .eq('focus_date', today)
+          .maybeSingle();
+        setHasTodayFocus(!!data);
+      } catch { /* ignore */ }
+    };
+    checkTodayFocus();
+  }, []);
+
   const getInitials = (name: string | null, email: string) => {
     if (name) {
       const parts = name.trim().split(/\s+/);
