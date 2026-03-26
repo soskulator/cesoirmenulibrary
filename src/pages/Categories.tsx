@@ -286,7 +286,7 @@ export default function CategoriesPage() {
             className="pt-6 pb-8 md:pb-12 px-6" 
             initial={{ opacity: 0, y: -20 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             <div className="max-w-5xl mx-auto">
               <Link to="/categories" className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal transition-colors duration-100 mb-6 md:mb-8 group">
