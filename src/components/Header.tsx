@@ -387,6 +387,40 @@ export function Header() {
   return <>
       {/* Status bar background - extends behind notch/dynamic island */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top)] bg-background z-[60]" />
+      
+      {/* Utility bar - desktop only */}
+      {user && (
+        <div className="hidden md:block sticky top-0 z-50 w-full bg-copper/5 border-b border-copper/10 pt-[env(safe-area-inset-top)]">
+          <div className="container flex h-7 items-center justify-between text-[11px]">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <Calendar className="w-3 h-3 text-copper/60" />
+              <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+              {hasTodayFocus && (
+                <>
+                  <span className="text-copper/30">·</span>
+                  <Link to="/daily-focus" className="text-copper hover:text-copper/80 transition-colors flex items-center gap-1">
+                    <Star className="w-3 h-3" />
+                    Today's Focus Set
+                  </Link>
+                </>
+              )}
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <span>
+                {(() => {
+                  const hour = new Date().getHours();
+                  if (hour < 12) return 'Good morning';
+                  if (hour < 17) return 'Good afternoon';
+                  return 'Good evening';
+                })()}{fullName ? `, ${fullName.split(' ')[0]}` : ''}
+              </span>
+              <span className="text-copper/30">·</span>
+              <span className="text-copper/70 font-medium">{roleDisplay.label}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/90 pt-[env(safe-area-inset-top)]" style={{ WebkitBackdropFilter: 'blur(12px)' } as React.CSSProperties}>
       <div className="container flex h-[3.75rem] md:h-[4.5rem] items-center justify-between pb-1">
         {/* Logo */}
@@ -412,6 +446,7 @@ export function Header() {
           {/* Browse dropdown */}
           <HoverDropdown
             label="Browse"
+            icon={BookOpen}
             items={browseItems}
             activePaths={['/categories', '/wine-list', '/spirits', '/cocktails']}
             pathname={location.pathname}
@@ -422,6 +457,7 @@ export function Header() {
           {/* Training dropdown */}
           <HoverDropdown
             label="Training"
+            icon={GraduationCap}
             items={trainingItems}
             activePaths={['/flashcards', '/daily-focus']}
             pathname={location.pathname}
@@ -432,6 +468,7 @@ export function Header() {
           {/* Tests dropdown */}
           <HoverDropdown
             label="Tests"
+            icon={ClipboardCheck}
             items={testItems}
             activePaths={['/foh-test', '/wine-quiz', '/spirits-quiz', '/quiz', '/allergy-quiz']}
             pathname={location.pathname}
