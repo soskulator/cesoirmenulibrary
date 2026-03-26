@@ -493,7 +493,7 @@ function ProfileEditBlock({ editingName, nameInput, savingName, fullName, setEdi
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                <ProfileEditBlock />
+                <ProfileEditBlock {...profileEditProps} />
                 <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="mr-2 h-4 w-4" />
