@@ -552,87 +552,100 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />
-      )}
-
-      {/* Mobile Menu */}
-      <motion.div 
-        ref={mobileMenuRef}
-        initial={false} 
-        animate={{ height: mobileMenuOpen ? 'auto' : 0 }}
-        className="md:hidden overflow-hidden border-t border-border bg-background relative z-50">
-        <nav className="container py-4 flex flex-col gap-0.5">
-          {/* Browse Section */}
-          <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Browse</p>
-          <button
-            onClick={() => { setMobileMenuOpen(false); setSearchOpen(true); }}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors border-l-2 border-transparent text-muted-foreground hover:text-foreground hover:bg-accent"
+      <AnimatePresence initial={false}>
+        {mobileMenuOpen && (
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        {mobileMenuOpen && (
+          <motion.div
+            key="mobile-menu"
+            ref={mobileMenuRef}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            className="md:hidden overflow-hidden border-t border-border bg-background relative z-50"
           >
-            <Search className="w-5 h-5" />
-            <span className="font-medium text-sm">Search</span>
-          </button>
-          {filteredNavItems.filter(i => ['/', '/categories', '/wine-list', '/spirits', '/cocktails'].includes(i.path)).map(item => {
-            const isActive = location.pathname === item.path;
-            return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
-                  <item.icon className="w-5 h-5" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </Link>;
-          })}
-
-          {/* Training Section */}
-          <div className="h-px bg-border my-2" />
-          <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Training</p>
-          {filteredNavItems.filter(i => ['/quiz', '/flashcards', '/daily-focus'].includes(i.path)).map(item => {
-            const isActive = location.pathname === item.path;
-            return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
-                  <item.icon className="w-5 h-5" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </Link>;
-          })}
-
-          {/* Reference Section */}
-          <div className="h-px bg-border my-2" />
-          <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Reference</p>
-          {filteredNavItems.filter(i => ['/allergy'].includes(i.path)).map(item => {
-            const isActive = location.pathname === item.path;
-            return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
-                  <item.icon className="w-5 h-5" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </Link>;
-          })}
-
-          {/* Admin Section */}
-          {isAdmin && <>
-              <div className="h-px bg-border my-2" />
-              <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Admin</p>
-              {adminItems.map(item => {
-                const isActive = location.pathname.startsWith(item.path);
-                return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center justify-between px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
-                    <span className="flex items-center gap-3">
+            <nav className="container py-4 flex flex-col gap-0.5">
+              {/* Browse Section */}
+              <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Browse</p>
+              <button
+                onClick={() => { setMobileMenuOpen(false); setSearchOpen(true); }}
+                className="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors border-l-2 border-transparent text-muted-foreground hover:text-foreground hover:bg-accent"
+              >
+                <Search className="w-5 h-5" />
+                <span className="font-medium text-sm">Search</span>
+              </button>
+              {filteredNavItems.filter(i => ['/', '/categories', '/wine-list', '/spirits', '/cocktails'].includes(i.path)).map(item => {
+                const isActive = location.pathname === item.path;
+                return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
                       <item.icon className="w-5 h-5" />
                       <span className="font-medium text-sm">{item.label}</span>
-                    </span>
-                    {pendingReviewCount > 0 && (
-                      <Badge className="h-5 min-w-5 flex items-center justify-center text-[10px] bg-destructive text-destructive-foreground">
-                        {pendingReviewCount}
-                      </Badge>
-                    )}
-                  </Link>;
+                    </Link>;
               })}
-            </>}
 
-          {/* Auth Link - Mobile */}
-          {!user && <>
+              {/* Training Section */}
               <div className="h-px bg-border my-2" />
-              <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors text-copper hover:bg-copper/10">
-                <LogIn className="w-5 h-5" />
-                <span className="font-medium text-sm">Sign In</span>
-              </Link>
-            </>}
-        </nav>
-      </motion.div>
+              <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Training</p>
+              {filteredNavItems.filter(i => ['/quiz', '/flashcards', '/daily-focus'].includes(i.path)).map(item => {
+                const isActive = location.pathname === item.path;
+                return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
+                      <item.icon className="w-5 h-5" />
+                      <span className="font-medium text-sm">{item.label}</span>
+                    </Link>;
+              })}
+
+              {/* Reference Section */}
+              <div className="h-px bg-border my-2" />
+              <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Reference</p>
+              {filteredNavItems.filter(i => ['/allergy'].includes(i.path)).map(item => {
+                const isActive = location.pathname === item.path;
+                return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
+                      <item.icon className="w-5 h-5" />
+                      <span className="font-medium text-sm">{item.label}</span>
+                    </Link>;
+              })}
+
+              {/* Admin Section */}
+              {isAdmin && <>
+                  <div className="h-px bg-border my-2" />
+                  <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Admin</p>
+                  {adminItems.map(item => {
+                    const isActive = location.pathname.startsWith(item.path);
+                    return <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={cn("flex items-center justify-between px-4 py-2.5 rounded-lg transition-colors", isActive ? "bg-copper/10 text-copper border-l-2 border-copper" : "text-muted-foreground hover:text-foreground hover:bg-accent border-l-2 border-transparent")}>
+                        <span className="flex items-center gap-3">
+                          <item.icon className="w-5 h-5" />
+                          <span className="font-medium text-sm">{item.label}</span>
+                        </span>
+                        {pendingReviewCount > 0 && (
+                          <Badge className="h-5 min-w-5 flex items-center justify-center text-[10px] bg-destructive text-destructive-foreground">
+                            {pendingReviewCount}
+                          </Badge>
+                        )}
+                      </Link>;
+                  })}
+                </>}
+
+              {/* Auth Link - Mobile */}
+              {!user && <>
+                  <div className="h-px bg-border my-2" />
+                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors text-copper hover:bg-copper/10">
+                    <LogIn className="w-5 h-5" />
+                    <span className="font-medium text-sm">Sign In</span>
+                  </Link>
+                </>}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
     <HeaderSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
   </>;
