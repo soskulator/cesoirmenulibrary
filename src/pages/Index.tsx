@@ -49,8 +49,8 @@ const staggerContainer = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.1
+  staggerChildren: 0.03,
+      delayChildren: 0.05
     }
   }
 };
