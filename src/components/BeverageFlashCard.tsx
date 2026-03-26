@@ -77,6 +77,9 @@ export function BeverageFlashCard({
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [10, -10]);
   const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+  const cardRotate = useTransform(x, [-150, 0, 150], [-8, 0, 8]);
+  const rightGlow = useTransform(x, [0, 100], [0, 0.25]);
+  const leftGlow = useTransform(x, [-100, 0], [0.25, 0]);
 
   const handleFlip = () => setIsFlipped((prev) => !prev);
 
@@ -101,7 +104,7 @@ export function BeverageFlashCard({
   return (
     <motion.div
       className={cn('flip-card w-full max-w-md mx-auto cursor-pointer select-none touch-none h-[320px] sm:h-[380px] md:h-[460px]', className)}
-      style={{ x, y, rotateX, rotateY, perspective: 1000 }}
+      style={{ x, y, rotateX, rotateY, rotate: cardRotate, perspective: 1000 }}
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={0.25}
@@ -162,13 +165,19 @@ export function BeverageFlashCard({
               ? "bg-charcoal" 
               : "bg-black/90"
           )}>
-            <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-cream/40 mb-1 text-center">
-              Swipe up to flip
-            </p>
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <span className="text-[9px] uppercase tracking-widest text-cream/40">← prev</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/40">↕ flip</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/40">next →</span>
+            </div>
             <h2 className="font-serif text-base sm:text-lg md:text-xl font-semibold text-cream text-center leading-tight truncate">
               {item.name}
             </h2>
           </div>
+
+          {/* Directional edge glow */}
+          <motion.div className="absolute inset-y-0 right-0 w-16 bg-copper rounded-r-2xl pointer-events-none" style={{ opacity: rightGlow }} />
+          <motion.div className="absolute inset-y-0 left-0 w-16 bg-muted rounded-l-2xl pointer-events-none" style={{ opacity: leftGlow }} />
         </div>
 
         {/* Back: Details */}

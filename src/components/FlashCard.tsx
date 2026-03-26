@@ -56,6 +56,9 @@ export function FlashCard({
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [10, -10]);
   const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+  const cardRotate = useTransform(x, [-150, 0, 150], [-8, 0, 8]);
+  const rightGlow = useTransform(x, [0, 100], [0, 0.25]);
+  const leftGlow = useTransform(x, [-100, 0], [0.25, 0]);
 
   const handleFlip = () => setIsFlipped((prev) => !prev);
 
@@ -80,7 +83,7 @@ export function FlashCard({
   return (
     <motion.div
       className={cn('flip-card w-full max-w-lg mx-auto cursor-pointer select-none touch-none h-[520px] sm:h-[560px] md:h-[600px]', className)}
-      style={{ x, y, rotateX, rotateY, perspective: 1000 }}
+      style={{ x, y, rotateX, rotateY, rotate: cardRotate, perspective: 1000 }}
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={0.25}
@@ -122,14 +125,20 @@ export function FlashCard({
 
           {/* Name overlay with larger touch target */}
           <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 md:p-6 text-center">
-            <p className="text-[10px] sm:text-xs uppercase tracking-widest text-cream/70 mb-1">
-              Swipe up to flip • Left/right to navigate
-            </p>
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <span className="text-[9px] uppercase tracking-widest text-cream/50">← prev</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/50">↕ flip</span>
+              <span className="text-[9px] uppercase tracking-widest text-cream/50">next →</span>
+            </div>
             <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-cream drop-shadow-md">
               {item.name}
             </h2>
             <DietaryBadges item={item} size="sm" className="justify-center mt-1.5" />
           </div>
+
+          {/* Directional edge glow */}
+          <motion.div className="absolute inset-y-0 right-0 w-16 bg-copper rounded-r-xl pointer-events-none" style={{ opacity: rightGlow }} />
+          <motion.div className="absolute inset-y-0 left-0 w-16 bg-muted rounded-l-xl pointer-events-none" style={{ opacity: leftGlow }} />
         </div>
 
         {/* Back: Description */}
