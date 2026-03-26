@@ -244,26 +244,26 @@ export default function Index() {
           duration: 0.25
         }}>
             {user ? <>
-                <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-300" asChild>
+                <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-150" asChild>
                   <Link to="/quiz">
                     <Brain className="w-4 h-4 mr-2" />
                     Go to Training
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="w-full border-copper text-copper-dark font-semibold py-3.5 px-6 text-sm tracking-wide bg-white shadow-sm hover:bg-copper hover:text-white transition-all duration-300" asChild>
+                <Button size="lg" variant="outline" className="w-full border-copper text-copper-dark font-semibold py-3.5 px-6 text-sm tracking-wide bg-white shadow-sm hover:bg-copper hover:text-white transition-all duration-150" asChild>
                   <Link to="/categories">
                     <BookOpen className="w-4 h-4 mr-2" />
                     Explore Menu
                   </Link>
                 </Button>
               </> : <>
-                <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-300" asChild>
+                <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-150" asChild>
                   <Link to="/categories">
                     <BookOpen className="w-4 h-4 mr-2" />
                     Explore Menu
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="w-full border-copper text-copper-dark font-semibold py-3.5 px-6 text-sm tracking-wide bg-white shadow-sm hover:bg-copper hover:text-white transition-all duration-300" asChild>
+                <Button size="lg" variant="outline" className="w-full border-copper text-copper-dark font-semibold py-3.5 px-6 text-sm tracking-wide bg-white shadow-sm hover:bg-copper hover:text-white transition-all duration-150" asChild>
                   <Link to="/auth">
                     <LogIn className="w-4 h-4 mr-2" />
                     Staff Login
@@ -314,9 +314,9 @@ export default function Index() {
           <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={vp} className="grid gap-4 grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => <motion.div key={feature.path} variants={fadeUp}>
                 <Link to={feature.path}>
-                  <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-500 hover:shadow-elevated min-h-[48px]">
+                  <Card className="group h-full border-0 bg-card/50 hover:bg-card transition-all duration-150 hover:shadow-elevated min-h-[48px]">
                     <CardContent className="p-6 md:p-8 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-copper/10 text-copper flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:bg-copper group-hover:text-charcoal transition-all duration-500">
+                      <div className="w-14 h-14 rounded-2xl bg-copper/10 text-copper flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:bg-copper group-hover:text-charcoal transition-all duration-150">
                         <feature.icon className="w-6 h-6" />
                       </div>
                       <h3 className="font-serif text-lg md:text-xl font-semibold mb-2 group-hover:text-copper transition-colors">
@@ -448,9 +448,9 @@ export default function Index() {
             const image = getDishImage(menuItem.id, menuItem.imageUrl);
             return <motion.div key={menuItem.id} variants={fadeUp}>
                   <Link to={`/categories/${menuItem.categoryId}`} className="block">
-                    <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-500 overflow-hidden cursor-pointer">
+                    <Card className="group border-0 bg-card hover:shadow-elevated transition-all duration-150 overflow-hidden cursor-pointer">
                       {image && <div className="relative h-40 overflow-hidden">
-                          <img src={image} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                          <img src={image} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-150" loading="lazy" decoding="async" />
                           <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 to-transparent" />
                           <Badge className="absolute top-3 left-3 bg-copper/90 text-charcoal text-xs font-semibold">
                             {category?.name || "Menu Item"}

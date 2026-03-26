@@ -335,7 +335,7 @@ export default function QuizPage() {
                   <div key={test.test_type} className="relative">
                     <Link to={`/foh-test?type=${test.test_type}`} className={cn("group block", isInactive && "pointer-events-none")}>
                       <div className={cn(
-                        "relative overflow-hidden rounded-xl bg-gradient-to-br border p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5",
+                        "relative overflow-hidden rounded-xl bg-gradient-to-br border p-4 transition-all duration-150 hover:shadow-lg hover:-translate-y-0.5",
                         test.bgColor,
                         isInactive && "opacity-50 grayscale"
                       )}>
@@ -430,7 +430,7 @@ export default function QuizPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
             {hasPermission('quiz:wine') && (
               <Link to="/wine-quiz" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5 text-center">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-150 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
                     <Wine className="w-5 h-5 text-copper" />
                   </div>
@@ -448,7 +448,7 @@ export default function QuizPage() {
 
             {hasPermission('quiz:food') && (
               <Link to="/food-quiz" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-sage/10 via-sage/5 to-transparent border border-sage/20 p-4 transition-all duration-300 hover:border-sage/40 hover:shadow-lg hover:shadow-sage/10 hover:-translate-y-0.5 text-center">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-sage/10 via-sage/5 to-transparent border border-sage/20 p-4 transition-all duration-150 hover:border-sage/40 hover:shadow-lg hover:shadow-sage/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-sage/10 flex items-center justify-center group-hover:bg-sage/20 transition-colors mx-auto mb-2">
                     <UtensilsCrossed className="w-5 h-5 text-sage" />
                   </div>
@@ -466,7 +466,7 @@ export default function QuizPage() {
 
             {hasPermission('page:cocktail-flashcards') && (
               <Link to="/cocktail-flashcards" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gold/10 via-gold/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-0.5 text-center">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gold/10 via-gold/5 to-transparent border border-copper/20 p-4 transition-all duration-150 hover:border-copper/40 hover:shadow-lg hover:shadow-gold/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
                     <Martini className="w-5 h-5 text-copper" />
                   </div>
@@ -484,7 +484,7 @@ export default function QuizPage() {
 
             {hasPermission('quiz:spirits') && (
               <Link to="/spirits-quiz" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-300 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5 text-center">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-copper/10 via-copper/5 to-transparent border border-copper/20 p-4 transition-all duration-150 hover:border-copper/40 hover:shadow-lg hover:shadow-copper/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-copper/10 flex items-center justify-center group-hover:bg-copper/20 transition-colors mx-auto mb-2">
                     <Martini className="w-5 h-5 text-copper" />
                   </div>
@@ -502,7 +502,7 @@ export default function QuizPage() {
 
             {hasPermission('quiz:allergy') && (
               <Link to="/allergy-quiz" className="group">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5 text-center">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-destructive/10 via-destructive/5 to-transparent border border-destructive/20 p-4 transition-all duration-150 hover:border-destructive/40 hover:shadow-lg hover:shadow-destructive/10 hover:-translate-y-0.5 text-center">
                   <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 transition-colors mx-auto mb-2">
                     <AlertTriangle className="w-5 h-5 text-destructive" />
                   </div>

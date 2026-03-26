@@ -45,7 +45,7 @@ export function LazyImage({ src, alt, className, containerClassName }: LazyImage
         onLoad={handleLoad}
         onError={handleError}
         className={cn(
-          "transition-all duration-500",
+          "transition-all duration-150",
           isLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm",
           className
         )}
