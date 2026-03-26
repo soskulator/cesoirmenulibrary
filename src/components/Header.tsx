@@ -129,13 +129,14 @@ function HoverDropdown({
     <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <button
         className={cn(
-          'relative flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
+          'relative flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
           triggerActive ? 'text-copper' : 'text-muted-foreground hover:text-foreground hover:bg-accent',
         )}
       >
+        {icon && <Icon className="w-4 h-4" />}
         {label}
         {indicator}
-        <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} />
+        <ChevronDown className={cn('w-3 h-3 transition-transform', open && 'rotate-180')} />
         {triggerActive && (
           <motion.div layoutId="activeTab" className="absolute inset-0 bg-copper/10 rounded-md -z-10" transition={{ type: 'tween', duration: 0.12, ease: 'easeOut' }} />
         )}
