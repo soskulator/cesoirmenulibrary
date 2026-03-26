@@ -1,11 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Layers, CreditCard, AlertTriangle } from 'lucide-react';
+import { Home, Layers, Search, CreditCard, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { HeaderSearch } from './HeaderSearch';
 
 const items = [
   { path: '/', label: 'Home', icon: Home },
   { path: '/categories', label: 'Menu', icon: Layers },
-  { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
+  { path: '__search__', label: 'Search', icon: Search },
+  { path: '/flashcards', label: 'Cards', icon: CreditCard },
   { path: '/allergy', label: 'Allergy', icon: AlertTriangle },
 ];
 
