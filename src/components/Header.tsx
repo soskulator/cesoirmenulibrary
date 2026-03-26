@@ -421,6 +421,11 @@ export function Header() {
         </div>
       )}
 
+      {/* Decorative copper gradient line - desktop only */}
+      {user && (
+        <div className="hidden md:block h-[2px] w-full bg-gradient-to-r from-transparent via-[hsl(var(--copper))] to-transparent opacity-30" />
+      )}
+
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/90 pt-[env(safe-area-inset-top)]" style={{ WebkitBackdropFilter: 'blur(12px)' } as React.CSSProperties}>
       <div className="container flex h-[3.75rem] md:h-[4.5rem] items-center justify-between pb-1">
         {/* Logo */}
