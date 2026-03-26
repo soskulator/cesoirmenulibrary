@@ -12,7 +12,8 @@ interface BeverageFlashCardProps {
   onSwipeRight?: () => void;
 }
 
-const SWIPE_THRESHOLD = 50;
+const SWIPE_THRESHOLD = 60;
+const VELOCITY_THRESHOLD = 400;
 
 // Determine beverage type for styling
 const getBeverageType = (categoryId: string) => {
