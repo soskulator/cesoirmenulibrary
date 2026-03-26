@@ -83,12 +83,13 @@ export default function FlashcardsPage() {
     if (idx >= 0) setCurrentIndex(idx);
   }, [initialItem, filteredItems]);
 
-  // Resume from first unstudied item
+  // Resume from first unstudied item — once only after progress loads
   useEffect(() => {
     if (!user) return;
     if (initialItem) return; // respect deep-link
     if (filteredItems.length === 0) return;
     if (isRandomMode) return;
+    if (hasAutoResumed.current) return; // only auto-resume once
 
     const firstUnstudied = filteredItems.findIndex(
       (item) => !isKnown(item.name) && !isStudied(item.name)
@@ -97,6 +98,7 @@ export default function FlashcardsPage() {
     if (firstUnstudied > 0) {
       setCurrentIndex(firstUnstudied);
     }
+    hasAutoResumed.current = true;
   }, [filteredItems, user, isKnown, isStudied, initialItem, isRandomMode]);
 
   useEffect(() => {
