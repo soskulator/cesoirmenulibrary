@@ -49,8 +49,8 @@ const staggerContainer = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.1
+  staggerChildren: 0.03,
+      delayChildren: 0.05
     }
   }
 };
@@ -63,7 +63,7 @@ const fadeUp = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.3,
+    duration: 0.2,
       ease: "easeOut" as const
     }
   }
@@ -103,7 +103,7 @@ export default function Index() {
   const {
     scrollY
   } = useScroll();
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const heroOpacity = useTransform(scrollY, [0, 200], [1, 0]);
   const scrollToContent = () => {
     window.scrollTo({
       top: window.innerHeight * 0.8,
@@ -185,8 +185,8 @@ export default function Index() {
           opacity: 1,
           scale: 1
         }} transition={{
-          duration: 0.9,
-          delay: 0.2
+          duration: 0.35,
+          delay: 0
         }} className="mb-0 mt-4">
             <img src={logoImage} alt="Ce Soir" className="h-[16rem] md:h-[22rem] lg:h-[26rem] w-auto mx-auto drop-shadow-lg" width={530} height={466} decoding="async" />
           </motion.div>
@@ -199,8 +199,8 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} transition={{
-          delay: 0.5,
-          duration: 0.6
+          delay: 0.15,
+          duration: 0.25
         }}>
             Menu Library
           </motion.p>
@@ -211,8 +211,8 @@ export default function Index() {
         }} animate={{
           opacity: 1
         }} transition={{
-          delay: 0.6,
-          duration: 0.5
+          delay: 0.2,
+          duration: 0.2
         }} />
 
           {/* Location */}
@@ -223,8 +223,8 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} transition={{
-          delay: 0.7,
-          duration: 0.5
+          delay: 0.25,
+          duration: 0.2
         }}>
             <MapPin className="w-3.5 h-3.5 text-copper" />
             <span className="text-xs tracking-[0.2em] uppercase font-semibold" style={{
@@ -240,8 +240,8 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} transition={{
-          delay: 0.9,
-          duration: 0.6
+          delay: 0.3,
+          duration: 0.25
         }}>
             {user ? <>
                 <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-300" asChild>
@@ -278,10 +278,10 @@ export default function Index() {
         opacity: 0
       }} animate={{
         opacity: 0.4,
-        y: [0, 8, 0]
-      }} transition={{
+          y: [0, 8, 0]
+        }} transition={{
         opacity: {
-          delay: 1.8
+          delay: 0.8
         },
         y: {
           repeat: Infinity,
@@ -303,7 +303,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }} className="text-center mb-14">
             <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground mb-4">
               Staff Training Portal
@@ -341,7 +341,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.6
+          duration: 0.25
         }}>
               <Card className="border-0 shadow-elevated overflow-hidden">
                 <CardContent className="p-6 md:p-8">
@@ -398,7 +398,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }} className="mb-8">
               <h2 className="font-serif text-3xl font-semibold text-center mb-2">Featured Cocktail</h2>
               <p className="text-muted-foreground text-center max-w-sm mx-auto">
@@ -420,7 +420,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -481,7 +481,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }}>
             <Card className="border-0 bg-gradient-to-r from-charcoal to-charcoal-light text-cream overflow-hidden">
               <CardContent className="p-8 md:p-12">
