@@ -59,19 +59,20 @@ export function FlashCard({
 
   const handleFlip = () => setIsFlipped((prev) => !prev);
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const { offset, velocity } = info;
-    
-    // Check for vertical swipe to flip
-    if (Math.abs(offset.y) > SWIPE_THRESHOLD && Math.abs(offset.y) > Math.abs(offset.x)) {
-      handleFlip();
-    }
-    // Check for horizontal swipe to navigate
-    else if (Math.abs(offset.x) > SWIPE_THRESHOLD) {
-      if (offset.x > 0 && onSwipeRight) {
-        onSwipeRight();
-      } else if (offset.x < 0 && onSwipeLeft) {
-        onSwipeLeft();
+
+    const isHorizontal = Math.abs(offset.x) > Math.abs(offset.y)
+      || (Math.abs(velocity.x) > Math.abs(velocity.y) && Math.abs(velocity.x) > VELOCITY_THRESHOLD);
+
+    if (!isHorizontal) {
+      const shouldFlip = Math.abs(offset.y) > SWIPE_THRESHOLD || Math.abs(velocity.y) > VELOCITY_THRESHOLD;
+      if (shouldFlip) handleFlip();
+    } else {
+      const shouldNavigate = Math.abs(offset.x) > SWIPE_THRESHOLD || Math.abs(velocity.x) > VELOCITY_THRESHOLD;
+      if (shouldNavigate) {
+        if ((offset.x > 0 || velocity.x > 0) && onSwipeRight) onSwipeRight();
+        else if ((offset.x < 0 || velocity.x < 0) && onSwipeLeft) onSwipeLeft();
       }
     }
   };
