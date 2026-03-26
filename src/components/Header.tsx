@@ -135,7 +135,7 @@ function HoverDropdown({
           triggerActive ? 'text-copper' : 'text-muted-foreground hover:text-foreground hover:bg-accent',
         )}
       >
-        {icon && <Icon className="w-4 h-4" />}
+        {Icon && <Icon className="w-4 h-4" />}
         {label}
         {indicator}
         <ChevronDown className={cn('w-3 h-3 transition-transform', open && 'rotate-180')} />
