@@ -303,7 +303,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }} className="text-center mb-14">
             <h2 className="font-serif text-3xl md:text-4xl font-semibold text-foreground mb-4">
               Staff Training Portal
