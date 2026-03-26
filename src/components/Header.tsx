@@ -74,10 +74,11 @@ const testItems = [
   { path: '/foh-test?type=service_staff', label: 'Bartender / Server Test', icon: HelpCircle, separator: false },
   { path: '/foh-test?type=server_assistant', label: 'Server Assistant Test', icon: HelpCircle, separator: false },
   { path: '/foh-test?type=wine_test', label: 'Wine Knowledge Test', icon: Wine, separator: true },
-  { path: '/wine-quiz', label: 'Wine Practice Quiz', icon: Wine, separator: false },
-  { path: '/spirits-quiz', label: 'Spirits Test', icon: GlassWater, separator: false },
-  { path: '/food-quiz', label: 'Food Test', icon: HelpCircle, separator: false },
-  { path: '/allergy-quiz', label: 'Allergy Test', icon: AlertTriangle, separator: false },
+  { path: '/wine-quiz', label: 'Wine Practice', icon: Wine, separator: false },
+  { path: '/spirits-quiz', label: 'Spirits Practice', icon: GlassWater, separator: false },
+  { path: '/cocktail-flashcards', label: 'Cocktails Practice', icon: Martini, separator: false },
+  { path: '/food-quiz', label: 'Food Practice', icon: HelpCircle, separator: false },
+  { path: '/allergy-quiz', label: 'Allergy Practice', icon: AlertTriangle, separator: false },
 ];
 
 // ─── HoverDropdown — opens on hover with fade-in ───
