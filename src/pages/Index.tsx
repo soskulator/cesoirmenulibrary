@@ -278,10 +278,10 @@ export default function Index() {
         opacity: 0
       }} animate={{
         opacity: 0.4,
-        y: [0, 8, 0]
-      }} transition={{
+          y: [0, 8, 0]
+        }} transition={{
         opacity: {
-          delay: 1.8
+          delay: 0.8
         },
         y: {
           repeat: Infinity,
