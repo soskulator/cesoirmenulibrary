@@ -537,7 +537,7 @@ export default function CategoriesPage() {
                           </div>
                           <motion.div
                             animate={{ rotate: isExpanded ? 180 : 0 }}
-                            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                            transition={{ duration: 0.12, ease: 'easeOut' }}
                           >
                             <ChevronDown className={`w-5 h-5 shrink-0 ml-2 transition-colors duration-100 ${isExpanded ? 'text-white' : 'text-charcoal/40'}`} />
                           </motion.div>
