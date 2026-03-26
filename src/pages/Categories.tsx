@@ -289,8 +289,8 @@ export default function CategoriesPage() {
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <div className="max-w-5xl mx-auto">
-              <Link to="/categories" className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal transition-colors duration-300 mb-6 md:mb-8 group">
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
+              <Link to="/categories" className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal transition-colors duration-100 mb-6 md:mb-8 group">
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-150" />
                 <span className="text-sm tracking-wide uppercase">All Categories</span>
               </Link>
 
@@ -310,7 +310,7 @@ export default function CategoriesPage() {
                     {items.length} {isSpirits ? 'spirits' : categoryId === 'wine' ? 'wines' : categoryId === 'cocktails' ? 'cocktails' : categoryId === 'sauces' ? 'sauces' : 'dishes'}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-charcoal/30" />
-                  <Button variant="ghost" size="sm" asChild className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2 transition-all duration-300">
+                  <Button variant="ghost" size="sm" asChild className="text-copper hover:text-copper-light hover:bg-copper/5 -ml-2 transition-all duration-150">
                     <Link to={`/flashcards?category=${categoryId}`}>
                       <CreditCard className="w-4 h-4 mr-2" />
                       Study Flashcards
@@ -350,7 +350,7 @@ export default function CategoriesPage() {
                         onClick={() => toggleSubcategory(subcatKey)}
                         className={`
                           relative overflow-hidden rounded-2xl p-4 text-left
-                          border transition-all duration-500 ease-out
+                          border transition-all duration-150 ease-out
                           ${isExpanded 
                             ? 'bg-copper text-white border-copper shadow-lg shadow-copper/20 scale-[1.02]' 
                             : 'bg-white/80 backdrop-blur-sm text-charcoal border-charcoal/10 hover:border-copper/30 hover:bg-white hover:shadow-md'
@@ -360,10 +360,10 @@ export default function CategoriesPage() {
                       >
                         <div className="flex items-center justify-between">
                           <div className="min-w-0 flex-1">
-                            <h3 className={`font-serif font-semibold text-base md:text-lg truncate transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal'}`}>
+                            <h3 className={`font-serif font-semibold text-base md:text-lg truncate transition-colors duration-100 ${isExpanded ? 'text-white' : 'text-charcoal'}`}>
                               {subcat.title}
                             </h3>
-                            <p className={`text-xs md:text-sm font-serif italic mt-0.5 truncate transition-colors duration-300 ${isExpanded ? 'text-white/80' : 'text-copper'}`}>
+                            <p className={`text-xs md:text-sm font-serif italic mt-0.5 truncate transition-colors duration-100 ${isExpanded ? 'text-white/80' : 'text-copper'}`}>
                               {subcatItems.length} spirits
                             </p>
                           </div>
@@ -371,7 +371,7 @@ export default function CategoriesPage() {
                             animate={{ rotate: isExpanded ? 180 : 0 }}
                             transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                           >
-                            <ChevronDown className={`w-5 h-5 shrink-0 ml-2 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal/40'}`} />
+                            <ChevronDown className={`w-5 h-5 shrink-0 ml-2 transition-colors duration-100 ${isExpanded ? 'text-white' : 'text-charcoal/40'}`} />
                           </motion.div>
                         </div>
                         
@@ -435,14 +435,14 @@ export default function CategoriesPage() {
                                   exit="exit"
                                 >
                                   <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
-                                    <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-300 ease-out active:scale-[0.99]">
+                                    <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-150 ease-out active:scale-[0.99]">
                                       {/* Image */}
                                       <div className="w-12 h-14 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
                                         {dishImage ? (
                                           <img 
                                             src={dishImage} 
                                             alt={menuItem.name} 
-                                            className="w-auto h-full max-h-12 md:max-h-18 object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-sm" 
+                                            className="w-auto h-full max-h-12 md:max-h-18 object-contain group-hover:scale-102 transition-transform duration-150 drop-shadow-sm" 
                                           />
                                         ) : (
                                           <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl">
@@ -453,7 +453,7 @@ export default function CategoriesPage() {
 
                                       {/* Content */}
                                       <div className="flex-1 min-w-0">
-                                        <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-300 truncate">
+                                        <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-100 truncate">
                                           {menuItem.name}
                                         </h3>
                                         <p className="text-xs md:text-sm text-copper font-medium mt-0.5 line-clamp-1">
@@ -462,7 +462,7 @@ export default function CategoriesPage() {
                                       </div>
 
                                       {/* Arrow */}
-                                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-150 shrink-0" />
                                     </div>
                                   </Link>
                                 </motion.div>
@@ -518,7 +518,7 @@ export default function CategoriesPage() {
                         onClick={() => toggleSubcategory(subcatKey)}
                         className={`
                           relative overflow-hidden rounded-2xl p-4 text-left
-                          border transition-all duration-500 ease-out
+                          border transition-all duration-150 ease-out
                           ${isExpanded 
                             ? 'bg-copper text-white border-copper shadow-lg shadow-copper/20 scale-[1.02]' 
                             : 'bg-white/80 backdrop-blur-sm text-charcoal border-charcoal/10 hover:border-copper/30 hover:bg-white hover:shadow-md'
@@ -528,10 +528,10 @@ export default function CategoriesPage() {
                       >
                         <div className="flex items-center justify-between">
                           <div className="min-w-0 flex-1">
-                            <h3 className={`font-serif font-semibold text-base md:text-lg truncate transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal'}`}>
+                            <h3 className={`font-serif font-semibold text-base md:text-lg truncate transition-colors duration-100 ${isExpanded ? 'text-white' : 'text-charcoal'}`}>
                               {subcat.title}
                             </h3>
-                            <p className={`text-xs md:text-sm font-serif italic mt-0.5 truncate transition-colors duration-300 ${isExpanded ? 'text-white/80' : 'text-copper'}`}>
+                            <p className={`text-xs md:text-sm font-serif italic mt-0.5 truncate transition-colors duration-100 ${isExpanded ? 'text-white/80' : 'text-copper'}`}>
                               {subcat.subtitle} • {subcatItems.length} sauces
                             </p>
                           </div>
@@ -539,7 +539,7 @@ export default function CategoriesPage() {
                             animate={{ rotate: isExpanded ? 180 : 0 }}
                             transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                           >
-                            <ChevronDown className={`w-5 h-5 shrink-0 ml-2 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-charcoal/40'}`} />
+                            <ChevronDown className={`w-5 h-5 shrink-0 ml-2 transition-colors duration-100 ${isExpanded ? 'text-white' : 'text-charcoal/40'}`} />
                           </motion.div>
                         </div>
                         
@@ -603,16 +603,16 @@ export default function CategoriesPage() {
                                   exit="exit"
                                 >
                                   <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
-                                    <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-300 ease-out active:scale-[0.99]">
+                                    <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-copper/20 transition-all duration-150 ease-out active:scale-[0.99]">
                                       <div className="w-12 h-14 md:w-16 md:h-20 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-copper/5 to-cream/50 flex items-center justify-center">
                                         {dishImage ? (
-                                          <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                          <img src={dishImage} alt={menuItem.name} className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-150" />
                                         ) : (
                                           <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl">🫗</div>
                                         )}
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-300 truncate">
+                                        <h3 className="font-serif text-base md:text-lg font-semibold text-charcoal group-hover:text-copper transition-colors duration-100 truncate">
                                           {menuItem.name}
                                         </h3>
                                         {pairedDish && (
@@ -626,7 +626,7 @@ export default function CategoriesPage() {
                                           </div>
                                         )}
                                       </div>
-                                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-150 shrink-0" />
                                     </div>
                                   </Link>
                                 </motion.div>
@@ -666,14 +666,14 @@ export default function CategoriesPage() {
                       variants={item}
                     >
                       <Link to={`/flashcards?item=${menuItem.id}`} className="group block">
-                        <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-300 active:scale-[0.99]">
+                        <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-charcoal/5 hover:bg-white hover:shadow-lg hover:border-charcoal/10 transition-all duration-150 active:scale-[0.99]">
                           {/* Image */}
                           <div className="w-14 h-14 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 bg-cream">
                             {dishImage ? (
                               <img 
                                 src={dishImage} 
                                 alt={menuItem.name} 
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-150" 
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-2xl">
@@ -684,7 +684,7 @@ export default function CategoriesPage() {
 
                           {/* Content */}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-serif text-base md:text-xl font-semibold text-charcoal group-hover:text-copper transition-colors duration-300">
+                            <h3 className="font-serif text-base md:text-xl font-semibold text-charcoal group-hover:text-copper transition-colors duration-100">
                               {menuItem.name}
                             </h3>
                             <p className="text-sm text-charcoal/60 line-clamp-1 mt-0.5">
@@ -699,7 +699,7 @@ export default function CategoriesPage() {
                           </div>
 
                           {/* Arrow */}
-                          <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                          <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-charcoal/20 group-hover:text-copper group-hover:translate-x-1 transition-all duration-150 shrink-0" />
                         </div>
                       </Link>
                     </motion.div>
@@ -750,13 +750,13 @@ export default function CategoriesPage() {
                   <Link to={`/categories/${category.id}`} className="group block h-full">
                     {/* Food categories with minimalistic icons - Opaque button style */}
                     {hasMinimalistIcon ? (
-                      <div className="relative overflow-hidden rounded-2xl h-36 sm:h-44 lg:h-32 bg-cream border border-charcoal/8 transition-all duration-500 hover:shadow-lg hover:border-copper/30 hover:bg-cream-dark/30">
+                      <div className="relative overflow-hidden rounded-2xl h-36 sm:h-44 lg:h-32 bg-cream border border-charcoal/8 transition-all duration-150 hover:shadow-lg hover:border-copper/30 hover:bg-cream-dark/30">
                         {/* Minimalistic Icon - Semi-transparent in corner */}
                         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-28 sm:w-36 lg:w-28 h-28 sm:h-36 lg:h-28 opacity-40 group-hover:opacity-60 transition-opacity duration-500">
                           <img 
                             src={categoryData.icon} 
                             alt="" 
-                            className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700" 
+                            className="w-full h-full object-contain group-hover:scale-102 transition-transform duration-150" 
                           />
                         </div>
                         
@@ -765,7 +765,7 @@ export default function CategoriesPage() {
 
                         {/* Text Content - Left Aligned */}
                         <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5 lg:p-4">
-                          <h2 className="font-serif text-lg sm:text-2xl lg:text-xl font-bold text-charcoal group-hover:text-copper transition-colors duration-300">
+                          <h2 className="font-serif text-lg sm:text-2xl lg:text-xl font-bold text-charcoal group-hover:text-copper transition-colors duration-100">
                             {category.name}
                           </h2>
                           <p className="font-serif italic text-xs sm:text-sm lg:text-xs mt-0.5 text-copper/80">
@@ -783,7 +783,7 @@ export default function CategoriesPage() {
                       </div>
                     ) : (
                       /* Drinks and other categories with illustrated backgrounds */
-                      <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 lg:h-32 border transition-all duration-500 hover:shadow-xl ${
+                      <div className={`relative overflow-hidden rounded-2xl h-36 sm:h-44 lg:h-32 border transition-all duration-150 hover:shadow-xl ${
                         isDarkCategory 
                           ? 'border-charcoal/20 hover:border-charcoal/40' 
                           : 'border-charcoal/10 hover:border-copper/30'
@@ -793,12 +793,12 @@ export default function CategoriesPage() {
                           <img 
                             src={categoryData.illustrated} 
                             alt="" 
-                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-150" 
                           />
                         )}
                         
                         {/* Subtle Gradient Overlay */}
-                        <div className={`absolute inset-0 transition-all duration-500 ${
+                        <div className={`absolute inset-0 transition-all duration-150 ${
                           isDarkCategory
                             ? 'bg-gradient-to-r from-charcoal/70 via-charcoal/30 to-transparent'
                             : 'bg-gradient-to-r from-cream/80 via-cream/40 to-transparent'
@@ -806,7 +806,7 @@ export default function CategoriesPage() {
 
                         {/* Text Content - Left Aligned */}
                         <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-5 lg:p-4">
-                          <h2 className={`font-serif text-lg sm:text-2xl lg:text-xl font-bold drop-shadow-sm transition-colors duration-300 ${
+                          <h2 className={`font-serif text-lg sm:text-2xl lg:text-xl font-bold drop-shadow-sm transition-colors duration-100 ${
                             isDarkCategory
                               ? 'text-white group-hover:text-copper-light'
                               : 'text-charcoal group-hover:text-copper'
