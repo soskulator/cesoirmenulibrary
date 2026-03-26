@@ -159,18 +159,18 @@ export default function CocktailsPage() {
                   {/* Style Header Button */}
                   <button
                     onClick={() => toggleStyle(styleKey)}
-                    className={`w-full flex items-center justify-between p-5 md:p-6 rounded-2xl transition-all duration-300 group border
+                    className={`w-full flex items-center justify-between p-5 md:p-6 rounded-2xl transition-all duration-150 group border
                       ${open 
                         ? 'bg-copper/10 border-copper/30 shadow-lg' 
                         : 'bg-background/60 backdrop-blur-sm border-border/50 hover:bg-background/80 hover:border-copper/20 hover:shadow-md'
                       }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`p-3 rounded-xl transition-all duration-300 ${open ? 'bg-copper/20 scale-110' : 'bg-copper/5 group-hover:bg-copper/10 group-hover:scale-105'}`}>
-                        <StyleIcon className={`w-6 h-6 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} />
+                      <div className={`p-3 rounded-xl transition-all duration-150 ${open ? 'bg-copper/20 scale-110' : 'bg-copper/5 group-hover:bg-copper/10 group-hover:scale-105'}`}>
+                        <StyleIcon className={`w-6 h-6 transition-colors duration-100 ${open ? 'text-copper' : 'text-charcoal/50 group-hover:text-copper'}`} />
                       </div>
                       <div className="text-left">
-                        <h2 className={`font-serif text-xl md:text-2xl font-bold transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal group-hover:text-copper'}`}>
+                        <h2 className={`font-serif text-xl md:text-2xl font-bold transition-colors duration-100 ${open ? 'text-copper' : 'text-charcoal group-hover:text-copper'}`}>
                           {style.title}
                         </h2>
                         <p className="text-charcoal/50 text-sm mt-0.5 font-serif italic">
@@ -181,9 +181,9 @@ export default function CocktailsPage() {
                     <motion.div
                       animate={{ rotate: open ? 180 : 0 }}
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className={`p-2 rounded-full transition-colors duration-300 ${open ? 'bg-copper/20' : 'group-hover:bg-copper/10'}`}
+                      className={`p-2 rounded-full transition-colors duration-100 ${open ? 'bg-copper/20' : 'group-hover:bg-copper/10'}`}
                     >
-                      <ChevronDown className={`w-5 h-5 transition-colors duration-300 ${open ? 'text-copper' : 'text-charcoal/40 group-hover:text-copper'}`} />
+                      <ChevronDown className={`w-5 h-5 transition-colors duration-100 ${open ? 'text-copper' : 'text-charcoal/40 group-hover:text-copper'}`} />
                     </motion.div>
                   </button>
 
@@ -219,7 +219,7 @@ export default function CocktailsPage() {
                                   variants={item}
                                   custom={index}
                                   onClick={() => setSelectedCocktail(cocktail)}
-                                  className="group relative bg-background/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                                  className="group relative bg-background/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:border-copper/30 hover:shadow-lg transition-all duration-150 cursor-pointer"
                                 >
                                   <div className="flex items-stretch gap-4 p-4 min-h-[120px]">
                                     {/* Cocktail Image */}
@@ -228,7 +228,7 @@ export default function CocktailsPage() {
                                         <LazyImage
                                           src={image}
                                           alt={cocktail.name}
-                                          className="w-auto h-full max-h-20 md:max-h-24 object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-md"
+                                          className="w-auto h-full max-h-20 md:max-h-24 object-contain group-hover:scale-110 transition-transform duration-150 drop-shadow-md"
                                           containerClassName="w-full h-full flex items-center justify-center"
                                         />
                                       </div>
