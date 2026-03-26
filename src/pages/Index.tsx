@@ -481,7 +481,7 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} viewport={vp} transition={{
-          duration: 0.7
+          duration: 0.3
         }}>
             <Card className="border-0 bg-gradient-to-r from-charcoal to-charcoal-light text-cream overflow-hidden">
               <CardContent className="p-8 md:p-12">
