@@ -199,8 +199,8 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} transition={{
-          delay: 0.5,
-          duration: 0.6
+          delay: 0.15,
+          duration: 0.25
         }}>
             Menu Library
           </motion.p>
