@@ -229,7 +229,7 @@ function ProfileEditBlock({ editingName, nameInput, savingName, fullName, setEdi
   );
 }
 
-  const [editingName, setEditingName] = useState(false);
+  export function Header() {
   const [nameInput, setNameInput] = useState('');
   const [savingName, setSavingName] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
