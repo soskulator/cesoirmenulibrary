@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
+// Items used by both desktop dropdowns and mobile menu
 const navItems = [{
   path: '/',
   label: 'Home',
@@ -55,6 +56,128 @@ const adminItems = [{
   label: 'Admin Center',
   icon: Settings
 }];
+
+// ─── Desktop dropdown definitions ───
+const browseItems = [
+  { path: '/categories', label: 'Menu', icon: Layers },
+  { path: '/wine-list', label: 'Wine', icon: Wine },
+  { path: '/spirits', label: 'Spirits', icon: GlassWater },
+  { path: '/cocktails', label: 'Cocktails', icon: Martini },
+];
+
+const trainingItems = [
+  { path: '/flashcards', label: 'Flashcards', icon: CreditCard },
+  { path: '/daily-focus', label: 'Daily Focus', icon: Star },
+];
+
+const testItems = [
+  { path: '/foh-test', label: 'Knowledge Test', icon: HelpCircle, separator: false },
+  { path: '/foh-test?type=service_staff', label: 'Bartender / Server Test', icon: HelpCircle, separator: false },
+  { path: '/foh-test?type=server_assistant', label: 'Server Assistant Test', icon: HelpCircle, separator: true },
+  { path: '/wine-quiz', label: 'Wine Test', icon: Wine, separator: false },
+  { path: '/spirits-quiz', label: 'Spirits Test', icon: GlassWater, separator: false },
+  { path: '/quiz', label: 'Food Test', icon: HelpCircle, separator: false },
+  { path: '/allergy-quiz', label: 'Allergy Test', icon: AlertTriangle, separator: false },
+];
+
+// ─── HoverDropdown — opens on hover with fade-in ───
+function HoverDropdown({
+  label,
+  items,
+  activePaths,
+  isActive,
+  indicator,
+  pathname,
+  hasPermission: hasPerm,
+  navPermissionMap,
+}: {
+  label: string;
+  items: { path: string; label: string; icon: React.ComponentType<{ className?: string }>; separator?: boolean }[];
+  activePaths?: string[];
+  isActive?: boolean;
+  indicator?: React.ReactNode;
+  pathname: string;
+  hasPermission: (key: string) => boolean;
+  navPermissionMap: Record<string, string>;
+}) {
+  const [open, setOpen] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpen(true);
+  };
+  const handleLeave = () => {
+    timeoutRef.current = setTimeout(() => setOpen(false), 150);
+  };
+
+  const triggerActive =
+    isActive ??
+    (activePaths
+      ? activePaths.some(p => pathname === p || pathname.startsWith(p + '?'))
+      : false);
+
+  const filteredItems = items.filter(item => {
+    const permKey = navPermissionMap[item.path.split('?')[0]];
+    return !permKey || hasPerm(permKey);
+  });
+
+  if (filteredItems.length === 0) return null;
+
+  return (
+    <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+      <button
+        className={cn(
+          'relative flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
+          triggerActive ? 'text-burgundy' : 'text-muted-foreground hover:text-foreground hover:bg-accent',
+        )}
+      >
+        {label}
+        {indicator}
+        <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} />
+        {triggerActive && (
+          <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
+        )}
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-0 top-full pt-1 z-50"
+          >
+            <div className="min-w-[200px] bg-background border border-border shadow-elevated rounded-md py-1">
+              {filteredItems.map((item, idx) => {
+                const itemPathBase = item.path.split('?')[0];
+                const itemActive = pathname === itemPathBase && (item.path.includes('?')
+                  ? window.location.search === '?' + item.path.split('?')[1]
+                  : !window.location.search);
+                return (
+                  <div key={item.path}>
+                    {item.separator && idx > 0 && <div className="border-t border-border my-1" />}
+                    <Link
+                      to={item.path}
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        'flex items-center gap-2 px-3 py-2 text-sm transition-colors',
+                        itemActive ? 'text-burgundy bg-burgundy/5' : 'text-foreground hover:bg-accent',
+                      )}
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 // Role display helper
 const getRoleDisplay = (role: string | null, isLeadAdmin: boolean, isAdmin: boolean) => {
