@@ -240,8 +240,8 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} transition={{
-          delay: 0.9,
-          duration: 0.6
+          delay: 0.3,
+          duration: 0.25
         }}>
             {user ? <>
                 <Button size="lg" className="w-full bg-gradient-to-br from-copper to-copper-dark text-white font-semibold py-3.5 px-6 text-sm tracking-wide shadow-[0_4px_20px_rgba(184,115,58,0.3)] hover:shadow-[0_6px_28px_rgba(184,115,58,0.4)] hover:brightness-110 transition-all duration-300" asChild>
