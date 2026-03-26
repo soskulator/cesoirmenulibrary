@@ -83,7 +83,7 @@ export function FlashCard({
   return (
     <motion.div
       className={cn('flip-card w-full max-w-lg mx-auto cursor-pointer select-none touch-none h-[520px] sm:h-[560px] md:h-[600px]', className)}
-      style={{ x, y, rotateX, rotateY, perspective: 1000 }}
+      style={{ x, y, rotateX, rotateY, rotate: cardRotate, perspective: 1000 }}
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={0.25}
