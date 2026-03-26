@@ -104,7 +104,7 @@ export function BeverageFlashCard({
   return (
     <motion.div
       className={cn('flip-card w-full max-w-md mx-auto cursor-pointer select-none touch-none h-[320px] sm:h-[380px] md:h-[460px]', className)}
-      style={{ x, y, rotateX, rotateY, perspective: 1000 }}
+      style={{ x, y, rotateX, rotateY, rotate: cardRotate, perspective: 1000 }}
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={0.25}
