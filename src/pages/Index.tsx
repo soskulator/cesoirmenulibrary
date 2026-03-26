@@ -103,7 +103,7 @@ export default function Index() {
   const {
     scrollY
   } = useScroll();
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const heroOpacity = useTransform(scrollY, [0, 200], [1, 0]);
   const scrollToContent = () => {
     window.scrollTo({
       top: window.innerHeight * 0.8,
