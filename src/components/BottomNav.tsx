@@ -22,7 +22,7 @@ export function BottomNav() {
 
   return (
     <>
-      <HeaderSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <HeaderSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} origin="bottom" />
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border h-16 flex items-center justify-around px-2" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {navItems.map((item) => {
           if (item.path === '__search__') {
