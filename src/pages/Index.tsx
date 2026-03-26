@@ -57,7 +57,7 @@ const staggerContainer = {
 const fadeUp = {
   hidden: {
     opacity: 0,
-    y: 24
+    y: 10
   },
   show: {
     opacity: 1,
@@ -70,7 +70,7 @@ const fadeUp = {
 };
 
 // Shared viewport config — triggers as soon as ANY part is visible
-const vp = { once: true, amount: 0 as const, margin: "50px" };
+const vp = { once: true, amount: 0 as const };
 export default function Index() {
   usePageTitle("");
   const {
@@ -298,7 +298,7 @@ export default function Index() {
         <div className="container">
           <motion.div initial={{
           opacity: 0,
-          y: 32
+          y: 10
          }} whileInView={{
           opacity: 1,
           y: 0
@@ -336,7 +336,7 @@ export default function Index() {
           <div className="container max-w-2xl">
             <motion.div initial={{
           opacity: 0,
-          y: 24
+          y: 10
         }} whileInView={{
           opacity: 1,
           y: 0
@@ -393,7 +393,7 @@ export default function Index() {
           <div className="container">
             <motion.div initial={{
           opacity: 0,
-          y: 32
+          y: 10
         }} whileInView={{
           opacity: 1,
           y: 0
@@ -415,7 +415,7 @@ export default function Index() {
         <div className="container">
           <motion.div initial={{
           opacity: 0,
-          y: 32
+          y: 10
          }} whileInView={{
           opacity: 1,
           y: 0
@@ -476,7 +476,7 @@ export default function Index() {
         <div className="container">
           <motion.div initial={{
           opacity: 0,
-          y: 32
+          y: 10
            }} whileInView={{
           opacity: 1,
           y: 0
