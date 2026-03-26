@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { MotionConfig } from "framer-motion";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
