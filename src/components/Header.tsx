@@ -375,20 +375,62 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-0.5">
-          {filteredNavItems.map(item => {
-          const isActive = location.pathname === item.path;
-          return <Link key={item.path} to={item.path} className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
-                <span className="flex items-center gap-1.5">
-                  <item.icon className="w-4 h-4" />
-                  {item.label}
-                </span>
-                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{
-              type: "spring",
-              bounce: 0.2,
-              duration: 0.6
-            }} />}
-              </Link>;
-        })}
+          {/* Home — standalone */}
+          {(() => {
+            const isActive = location.pathname === '/';
+            return (
+              <Link to="/" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+                <span className="flex items-center gap-1.5"><Home className="w-4 h-4" />Home</span>
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
+              </Link>
+            );
+          })()}
+
+          {/* Browse dropdown */}
+          <HoverDropdown
+            label="Browse"
+            items={browseItems}
+            activePaths={['/categories', '/wine-list', '/spirits', '/cocktails']}
+            pathname={location.pathname}
+            hasPermission={hasPermission}
+            navPermissionMap={navPermissionMap}
+          />
+
+          {/* Training dropdown */}
+          <HoverDropdown
+            label="Training"
+            items={trainingItems}
+            activePaths={['/flashcards', '/daily-focus']}
+            pathname={location.pathname}
+            hasPermission={hasPermission}
+            navPermissionMap={navPermissionMap}
+            indicator={
+              hasTodayFocus && location.pathname !== '/daily-focus' ? (
+                <span className="w-1.5 h-1.5 rounded-full bg-copper animate-pulse" />
+              ) : undefined
+            }
+          />
+
+          {/* Tests dropdown */}
+          <HoverDropdown
+            label="Tests"
+            items={testItems}
+            activePaths={['/foh-test', '/wine-quiz', '/spirits-quiz', '/quiz', '/allergy-quiz']}
+            pathname={location.pathname}
+            hasPermission={hasPermission}
+            navPermissionMap={navPermissionMap}
+          />
+
+          {/* Allergy Center — standalone */}
+          {hasPermission('page:allergy') && (() => {
+            const isActive = location.pathname === '/allergy';
+            return (
+              <Link to="/allergy" className={cn("relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", isActive ? "text-burgundy" : "text-muted-foreground hover:text-foreground hover:bg-accent")}>
+                <span className="flex items-center gap-1.5"><AlertTriangle className="w-4 h-4" />Allergy Center</span>
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 bg-burgundy/10 rounded-md -z-10" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />}
+              </Link>
+            );
+          })()}
 
           {/* Search Icon */}
           <button
@@ -413,7 +455,6 @@ export function Header() {
                   )}
                 </Link>)}
             </>}
-
 
           {/* Auth Section */}
           <div className="w-px h-5 bg-border mx-1.5" />
