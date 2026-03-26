@@ -51,6 +51,7 @@ export default function FlashcardsPage() {
   const [isRandomMode, setIsRandomMode] = useState(false);
   const [localKnown, setLocalKnown] = useState<Set<string>>(new Set());
   const [localReview, setLocalReview] = useState<Set<string>>(new Set());
+  const hasAutoResumed = useRef(false);
 
   // Filter items
   const filteredItems = useMemo(() => {
