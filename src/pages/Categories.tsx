@@ -571,7 +571,7 @@ export default function CategoriesPage() {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -10, opacity: 0 }}
-                        transition={{ duration: 0.35, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        transition={{ duration: 0.15, delay: 0, ease: 'easeOut' }}
                         className="pb-8"
                       >
                         <div className="mb-6 pb-3 border-b border-charcoal/10">
