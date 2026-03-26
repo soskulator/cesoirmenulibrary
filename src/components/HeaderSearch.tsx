@@ -125,14 +125,14 @@ export function HeaderSearch({ isOpen, onClose }: HeaderSearchProps) {
             onClick={onClose}
           />
 
-          {/* Search Panel */}
+          {/* Search Panel — top on desktop, bottom on mobile */}
           <motion.div
             ref={panelRef}
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+            exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed top-0 left-0 right-0 z-[60] bg-background border-b border-border shadow-xl pt-[env(safe-area-inset-top)]"
+            className="fixed left-0 right-0 z-[60] bg-background border-t border-border shadow-xl bottom-0 pb-[env(safe-area-inset-bottom)] md:bottom-auto md:top-0 md:border-t-0 md:border-b md:pt-[env(safe-area-inset-top)]"
           >
             <div className="container max-w-2xl px-3 sm:px-4 py-3">
               {/* Input row */}
