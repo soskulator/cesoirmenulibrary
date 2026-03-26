@@ -135,6 +135,10 @@ export function FlashCard({
             </h2>
             <DietaryBadges item={item} size="sm" className="justify-center mt-1.5" />
           </div>
+
+          {/* Directional edge glow */}
+          <motion.div className="absolute inset-y-0 right-0 w-16 bg-copper rounded-r-xl pointer-events-none" style={{ opacity: rightGlow }} />
+          <motion.div className="absolute inset-y-0 left-0 w-16 bg-muted rounded-l-xl pointer-events-none" style={{ opacity: leftGlow }} />
         </div>
 
         {/* Back: Description */}
