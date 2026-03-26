@@ -211,8 +211,8 @@
     @apply bg-gradient-to-r from-[hsl(var(--gold))] to-[hsl(var(--gold-light))] bg-clip-text text-transparent;
   }
 
-  .text-gradient-burgundy {
-    @apply bg-gradient-to-r from-[hsl(var(--burgundy))] to-[hsl(var(--burgundy-light))] bg-clip-text text-transparent;
+  .text-gradient-copper {
+    @apply bg-gradient-to-r from-[hsl(var(--copper))] to-[hsl(var(--copper-light))] bg-clip-text text-transparent;
   }
 
   .bg-texture {
