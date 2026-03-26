@@ -397,7 +397,7 @@ export default function CategoriesPage() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
                       className="overflow-hidden"
                     >
                       <motion.div
