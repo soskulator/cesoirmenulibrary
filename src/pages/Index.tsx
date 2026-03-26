@@ -223,8 +223,8 @@ export default function Index() {
           opacity: 1,
           y: 0
         }} transition={{
-          delay: 0.7,
-          duration: 0.5
+          delay: 0.25,
+          duration: 0.2
         }}>
             <MapPin className="w-3.5 h-3.5 text-copper" />
             <span className="text-xs tracking-[0.2em] uppercase font-semibold" style={{
