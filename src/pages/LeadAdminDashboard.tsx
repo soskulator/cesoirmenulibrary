@@ -89,7 +89,7 @@ export default function LeadAdminDashboard() {
   } = useCategories();
   
   // Menu Management state
-  const [activeTab, setActiveTab] = useState<'menu' | 'training' | 'schedule' | 'data'>('menu');
+  const [activeTab, setActiveTab] = useState<'menu' | 'ingredients' | 'training' | 'schedule' | 'data'>('menu');
   const [menuTab, setMenuTab] = useState<'food' | 'wines' | 'cocktails' | 'spirits'>('food');
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
