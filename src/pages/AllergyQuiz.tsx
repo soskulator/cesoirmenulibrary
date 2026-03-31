@@ -576,6 +576,10 @@ export default function AllergyQuizPage() {
                           </div>
                         </motion.div>
                       )}
+
+                      {showAnswer && (
+                        <IngredientModNotes dishId={(currentQuestion as AllergyQuizQuestion).dishId} />
+                      )}
                     </>
                   )}
                 </CardContent>
