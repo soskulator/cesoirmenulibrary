@@ -24,8 +24,7 @@ import {
   MenuItem
 } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
-import { useAllergenModifications } from '@/hooks/useAllergenModifications';
-import { useDishIngredients } from '@/hooks/useDishIngredients';
+import { useDishIngredients, useAllDishIngredients, DishIngredient } from '@/hooks/useDishIngredients';
 import { getDishImage } from '@/data/dishImages';
 import { 
   AlertTriangle, 
@@ -53,6 +52,7 @@ interface TrainingIngredient {
   name: string;
   allergens: AllergenType[];
   removable: boolean;
+  omitNote?: string;
 }
 
 interface TrainingDish {
@@ -200,14 +200,7 @@ export default function AllergyPage() {
 
 function AllergyCheckContent() {
   const { items: menuItems, isLoading } = useMenuItems();
-  const { modifications } = useAllergenModifications();
   const { categories: dbCategories } = useCategories();
-
-  const getModsForItem = (itemId: string, allergenIds: AllergenType[]) => {
-    return allergenIds
-      .map(a => modifications.find(m => m.menu_item_id === itemId && m.allergen_type === a))
-      .filter(Boolean);
-  };
 
   const [selectedAllergens, setSelectedAllergens] = useState<AllergenType[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -439,32 +432,7 @@ function AllergyCheckContent() {
                               <AllergenBadge key={a} allergenId={a} size="sm" />
                             ))}
                           </div>
-                          {(() => {
-                            const mods = getModsForItem(item.id, matchingAllergens);
-                            const removable = mods.filter(m => m?.can_remove && m?.substitution_notes?.trim());
-                            const cannotRemove = mods.filter(m => !m?.can_remove && m?.substitution_notes?.trim());
-                            return (
-                              <>
-                                {(removable.length > 0 || cannotRemove.length > 0) && (
-                                  <div className="mt-3 space-y-2">
-                                    {removable.map((mod, i) => (
-                                      <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-jade/10 border border-jade/20">
-                                        <CheckCircle2 className="w-3.5 h-3.5 text-jade mt-0.5 flex-shrink-0" />
-                                        <p className="text-xs text-jade-dark leading-relaxed">{mod?.substitution_notes}</p>
-                                      </div>
-                                    ))}
-                                    {cannotRemove.map((mod, i) => (
-                                      <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-amber-50 border border-amber-200">
-                                        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                                        <p className="text-xs text-amber-700 leading-relaxed">{mod?.substitution_notes}</p>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                                <DishIngredientOmitContext itemId={item.id} selectedAllergens={matchingAllergens} />
-                              </>
-                            );
-                          })()}
+                          <DishIngredientOmitContext itemId={item.id} selectedAllergens={matchingAllergens} />
                         </div>
                       </div>
                     </CardContent>
@@ -583,7 +551,7 @@ function AllergyCheckContent() {
         <PrintableAllergenMenu
           selectedAllergens={selectedAllergens}
           menuItems={menuItems}
-          modifications={modifications}
+          modifications={[]}
           categories={dbCategories}
         />
       )}
@@ -595,14 +563,47 @@ function AllergyCheckContent() {
 
 function AllergyTrainingContent() {
   const { items: menuItems, isLoading } = useMenuItems();
-  const { modifications, isLoading: modsLoading } = useAllergenModifications();
+  const { ingredients: allIngredients, isLoading: ingredientsLoading } = useAllDishIngredients();
   const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['appetizers']);
   const [omittedIngredients, setOmittedIngredients] = useState<Set<string>>(new Set());
 
-  // Create training dishes from database menu items
-  const trainingDishes = useMemo(() => createTrainingDishes(menuItems), [menuItems]);
+  // Build ingredient lookup from dish_ingredients DB data
+  const ingredientsByDish = useMemo(() => {
+    const map: Record<string, DishIngredient[]> = {};
+    allIngredients.forEach(ing => {
+      if (!map[ing.menu_item_id]) map[ing.menu_item_id] = [];
+      map[ing.menu_item_id].push(ing);
+    });
+    return map;
+  }, [allIngredients]);
+
+  // Create training dishes, preferring structured dish_ingredients data
+  const trainingDishes = useMemo(() => {
+    return menuItems
+      .filter(item => foodCategories.includes(item.categoryId) && item.isPublished)
+      .map(item => {
+        const dbIngs = ingredientsByDish[item.id];
+        const ingredients: TrainingIngredient[] = dbIngs && dbIngs.length > 0
+          ? dbIngs.map(ing => ({
+              id: ing.id,
+              name: ing.ingredient_name,
+              allergens: (ing.allergens ?? []) as AllergenType[],
+              removable: ing.is_omittable,
+              omitNote: ing.is_omittable ? undefined : (ing.omit_note ?? undefined),
+            }))
+          : parseIngredients(item.ingredientsText, item.allergens);
+        return {
+          id: item.id,
+          name: item.name,
+          image: getDishImage(item.id, item.imageUrl) || '/placeholder.svg',
+          description: item.shortDescription,
+          categoryId: item.categoryId,
+          ingredients,
+        };
+      });
+  }, [menuItems, ingredientsByDish]);
   
   // Group dishes by category
   const dishesByCategory = useMemo(() => groupDishesByCategory(trainingDishes), [trainingDishes]);
@@ -943,7 +944,12 @@ function AllergyTrainingContent() {
                             />
                           </>
                         ) : (
-                          <span className="text-xs text-muted-foreground italic">Base ingredient</span>
+                          <div className="text-right">
+                            <span className="text-xs text-muted-foreground italic">Cannot omit</span>
+                            {ingredient.omitNote && (
+                              <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">{ingredient.omitNote}</p>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -952,10 +958,12 @@ function AllergyTrainingContent() {
               </CardContent>
             </Card>
 
-            {/* Admin-Defined Modification Notes */}
+            {/* Structured Ingredient Modification Guide */}
             {selectedDish && (() => {
-              const dishMods = modifications.filter(m => m.menu_item_id === selectedDish.id);
-              if (dishMods.length === 0) return null;
+              const dishIngs = ingredientsByDish[selectedDish.id];
+              if (!dishIngs || dishIngs.length === 0) return null;
+              const nonOmittable = dishIngs.filter(ing => !ing.is_omittable);
+              if (nonOmittable.length === 0) return null;
               return (
                 <Card className="border-copper/30">
                   <CardHeader className="pb-3">
@@ -965,25 +973,34 @@ function AllergyTrainingContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {dishMods.map(mod => {
-                      const allergen = getAllergenById(mod.allergen_type as AllergenType);
-                      return (
-                        <div key={mod.id || `${mod.menu_item_id}-${mod.allergen_type}`} className="flex items-start gap-3 p-2 rounded-md bg-muted/30">
-                          <span>{allergen?.icon || '⚠️'}</span>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-sm">{allergen?.name || mod.allergen_type}</span>
-                              <Badge variant={mod.can_remove ? 'sage' : 'destructive'} className="text-[10px]">
-                                {mod.can_remove ? 'Can Remove' : 'Cannot Remove'}
-                              </Badge>
-                            </div>
-                            {mod.substitution_notes && (
-                              <p className="text-xs text-muted-foreground mt-1">{mod.substitution_notes}</p>
-                            )}
+                    {nonOmittable.map(ing => (
+                      <div key={ing.id} className="flex items-start gap-3 p-2 rounded-md bg-muted/30">
+                        <span className="text-destructive text-sm mt-0.5">✗</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">{ing.ingredient_name}</span>
+                            <Badge variant="destructive" className="text-[10px]">
+                              Cannot Omit
+                            </Badge>
                           </div>
+                          {ing.omit_note && (
+                            <p className="text-xs text-muted-foreground mt-1 italic">{ing.omit_note}</p>
+                          )}
+                          {(ing.allergens ?? []).length > 0 && (
+                            <div className="flex gap-1 mt-1">
+                              {(ing.allergens ?? []).map(a => {
+                                const allergen = getAllergenById(a as AllergenType);
+                                return allergen ? (
+                                  <span key={a} className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                                    {allergen.icon} {allergen.name}
+                                  </span>
+                                ) : null;
+                              })}
+                            </div>
+                          )}
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </CardContent>
                 </Card>
               );
