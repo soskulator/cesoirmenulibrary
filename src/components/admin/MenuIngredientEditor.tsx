@@ -299,8 +299,8 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
   }
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
+    <Card className="flex flex-col min-h-[400px] lg:max-h-[calc(100vh-16rem)]">
+      <CardHeader className="pb-3 flex-shrink-0">
         <div className="flex items-center gap-3 flex-wrap">
           <CardTitle className="font-serif text-lg">{item.name}</CardTitle>
           {category && (
@@ -310,9 +310,9 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-1 min-h-0 flex flex-col">
         {/* Reference text */}
-        <div className="rounded-lg bg-muted/50 border border-border p-3">
+        <div className="rounded-lg bg-muted/50 border border-border p-3 flex-shrink-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
             Current ingredientsText — for reference only
           </p>
@@ -321,11 +321,11 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
           </p>
         </div>
 
-        <Separator />
+        <Separator className="flex-shrink-0" />
 
         {/* Ingredient rows */}
-        <ScrollArea className="max-h-[60vh]">
-          <div className="space-y-3 pr-2">
+        <ScrollArea className="flex-1 min-h-[24rem] lg:min-h-0 lg:h-full">
+          <div className="space-y-3 pr-2 pb-2">
             {ingredients.map((ing, idx) => (
               <div
                 key={ing.tempId}
@@ -410,7 +410,7 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
         </ScrollArea>
 
         {/* Add + Save */}
-        <div className="flex items-center gap-3 pt-2">
+        <div className="flex items-center gap-3 pt-2 flex-shrink-0">
           <Button variant="outline" size="sm" onClick={addIngredient} className="gap-1.5">
             <Plus className="w-3.5 h-3.5" />
             Add Ingredient
