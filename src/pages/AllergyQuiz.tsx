@@ -159,6 +159,7 @@ export default function AllergyQuizPage() {
           id: `mod-${m.id}`,
           type: 'modification' as const,
           dishName: item.name,
+          dishId: item.id,
           allergenName: allergenInfo.name,
           allergenIcon: allergenInfo.icon,
           canRemove: m.can_remove,
