@@ -1006,3 +1006,45 @@ function AllergyTrainingContent() {
     </div>
   );
 }
+
+// Small component to show dish_ingredients omittability context per allergen
+function DishIngredientOmitContext({ itemId, selectedAllergens }: { itemId: string; selectedAllergens: AllergenType[] }) {
+  const { ingredients, isLoading } = useDishIngredients(itemId);
+
+  if (isLoading || ingredients.length === 0) return null;
+
+  // Filter ingredients whose allergens array includes any of the selected allergens
+  const matching = ingredients.filter(ing =>
+    (ing.allergens ?? []).some(a => selectedAllergens.includes(a as AllergenType))
+  );
+
+  if (matching.length === 0) return null;
+
+  const anyOmittable = matching.some(ing => ing.is_omittable);
+
+  return (
+    <div className="mt-3 pt-2 border-t border-border/50">
+      <p className="text-[11px] font-semibold text-copper mb-1.5">Modifications available:</p>
+      <div className="space-y-1">
+        {matching.map(ing => (
+          <div key={ing.id} className="flex items-center gap-2 text-xs">
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium',
+                ing.is_omittable
+                  ? 'bg-jade/15 text-jade'
+                  : 'bg-destructive/10 text-destructive'
+              )}
+            >
+              {ing.is_omittable ? 'Can Omit' : 'Cannot Omit'}
+            </span>
+            <span className="text-muted-foreground">{ing.ingredient_name}</span>
+          </div>
+        ))}
+      </div>
+      {!anyOmittable && (
+        <p className="text-[11px] text-amber-600 mt-1.5">⚠️ No modifications available for this allergen</p>
+      )}
+    </div>
+  );
+}
