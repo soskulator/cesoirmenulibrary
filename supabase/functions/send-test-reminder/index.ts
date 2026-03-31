@@ -31,7 +31,6 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Authentication check
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -51,7 +50,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     const callerId = claimsData.claims.sub;
 
-    // Admin role check - only admins can send reminders
     const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     const { data: roleData } = await supabaseAdmin.from('user_roles').select('role').eq('user_id', callerId).single();
     if (!roleData || (roleData.role !== 'admin' && roleData.role !== 'lead_admin')) {
@@ -64,10 +62,15 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields: email and missingTests");
     }
 
-    // Use full_name if provided, fall back to "there" if not set or "Unknown"
     const displayName = (fullName && fullName !== 'Unknown') ? escapeHtml(fullName) : null;
     const greeting = displayName ? `Hi ${displayName},` : "Hi there,";
-    const testList = missingTests.map(t => `<li style="margin-bottom: 8px; color: #4a4a4a;">${escapeHtml(t)}</li>`).join("");
+    const testList = missingTests.map(t => `
+      <tr>
+        <td style="padding: 10px 16px; font-size: 15px; color: #5a5249; font-family: Georgia, 'Times New Roman', serif; border-bottom: 1px solid #f0ebe6;">
+          <span style="color: #C06C46; margin-right: 8px;">&#9670;</span> ${escapeHtml(t)}
+        </td>
+      </tr>
+    `).join("");
 
     console.log(`Sending test reminder to ${email} for tests: ${missingTests.join(", ")} (requested by admin ${callerId})`);
 
@@ -81,54 +84,31 @@ const handler = async (req: Request): Promise<Response> => {
         from: "Ce Soir <noreply@cesoirmenusnaples.com>",
         to: [email],
         subject: "Reminder: Complete Your Required Training Tests",
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          </head>
-          <body style="font-family: 'Georgia', serif; background-color: #2C241E; margin: 0; padding: 40px 20px;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: #F9F7F5; border-radius: 8px; overflow: hidden;">
-              <div style="background-color: #2C241E; padding: 40px 30px; text-align: center;">
-                <img src="https://cchhvuotfdxswpxwnxgv.supabase.co/storage/v1/object/public/email-assets/cesoir-logo.png?v=1" alt="Ce Soir" width="180" style="display: block; margin: 0 auto;" />
-              </div>
-              <div style="padding: 40px 30px;">
-                <h2 style="color: #2C241E; margin: 0 0 24px; font-size: 26px; font-weight: 500; font-family: 'Playfair Display', Georgia, serif; text-align: center;">
-                  Training Reminder
-                </h2>
-                <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">${greeting}</p>
-                <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">
-                  You have outstanding training tests that need to be completed. Please log in and finish the following:
-                </p>
-                <ul style="padding-left: 20px; margin: 0 0 32px; font-size: 16px; line-height: 1.8;">${testList}</ul>
-                <div style="text-align: center; margin: 32px 0;">
-                  <a href="${PUBLISHED_URL}" style="display: inline-block; background-color: #C06C46; color: #ffffff; text-decoration: none; padding: 16px 48px; border-radius: 4px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                    Go to Training Portal
-                  </a>
-                </div>
-              </div>
-              <div style="background-color: #2C241E; padding: 24px 30px; text-align: center;">
-                <p style="color: #D99572; font-size: 12px; margin: 0; letter-spacing: 0.5px;">
-                  © 2026 Ce Soir Naples · 492 Bayfront Pl, Naples FL, 34102
-                </p>
-              </div>
-            </div>
-          </body>
-          </html>
-        `,
+        html: buildEmailHtml({
+          preheader: "You have outstanding training tests that need to be completed",
+          headline: "Training Reminder",
+          body: `
+            <p style="color: #5a5249; line-height: 1.8; margin: 0 0 20px; font-size: 16px; font-family: Georgia, 'Times New Roman', serif;">${greeting}</p>
+            <p style="color: #5a5249; line-height: 1.8; margin: 0 0 24px; font-size: 16px; font-family: Georgia, 'Times New Roman', serif;">
+              You have outstanding training tests that need to be completed. Please log in and finish the following:
+            </p>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid #e8e0d8; margin: 0 0 8px; overflow: hidden;">
+              ${testList}
+            </table>
+          `,
+          ctaText: "Go to Training Portal",
+          ctaLink: PUBLISHED_URL,
+        }),
       }),
     });
 
     const emailData = await emailResponse.json();
-
     if (!emailResponse.ok) {
       console.error("Resend API error:", emailData);
       throw new Error(emailData.message || "Failed to send email");
     }
 
     console.log("Test reminder email sent successfully:", emailData);
-
     return new Response(JSON.stringify({ success: true, ...emailData }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -143,3 +123,101 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 serve(handler);
+
+// ─── Shared Email Template Builder ───────────────────────────────────────────
+
+interface EmailOptions {
+  preheader: string;
+  headline: string;
+  body: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showFallbackLink?: boolean;
+  footnote?: string;
+}
+
+function buildEmailHtml(opts: EmailOptions): string {
+  const cta = opts.ctaText && opts.ctaLink ? `
+    <div style="text-align: center; margin: 36px 0 0;">
+      <a href="${opts.ctaLink}" style="display: inline-block; background: linear-gradient(135deg, #C06C46 0%, #A8553A 100%); color: #ffffff; text-decoration: none; padding: 16px 52px; border-radius: 4px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-family: 'Helvetica Neue', Arial, sans-serif; box-shadow: 0 4px 16px rgba(192,108,70,0.3);">
+        ${opts.ctaText}
+      </a>
+    </div>
+  ` : '';
+
+  const fallback = opts.showFallbackLink && opts.ctaLink ? `
+    <div style="border-top: 1px solid #e8e0d8; margin: 36px 0 24px;"></div>
+    <p style="color: #9a9089; font-size: 12px; line-height: 1.6; margin: 0; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
+      If the button doesn't work, copy and paste this link into your browser:
+    </p>
+    <p style="margin: 8px 0 0; text-align: center;">
+      <a href="${opts.ctaLink}" style="color: #C06C46; font-size: 12px; word-break: break-all; font-family: 'Helvetica Neue', Arial, sans-serif;">${opts.ctaLink}</a>
+    </p>
+  ` : '';
+
+  const footnoteHtml = opts.footnote ? `
+    <p style="color: #9a9089; font-size: 12px; line-height: 1.5; margin: 24px 0 0; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
+      ${opts.footnote}
+    </p>
+  ` : '';
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ce Soir</title>
+  <!--[if mso]><style>body,table,td{font-family:Georgia,serif!important}</style><![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #1E1915; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+  <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #1E1915;">
+    ${opts.preheader}&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+  </div>
+  <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background-color: #1E1915;">
+    <tr>
+      <td align="center" style="padding: 32px 16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #FAF8F5; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.35);">
+          <tr>
+            <td style="background-color: #2C241E; padding: 44px 40px 36px; text-align: center;">
+              <img src="https://cchhvuotfdxswpxwnxgv.supabase.co/storage/v1/object/public/email-assets/cesoir-logo.png?v=1" alt="Ce Soir" width="160" style="display: block; margin: 0 auto; max-width: 160px; height: auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="height: 3px; background: linear-gradient(90deg, #2C241E 0%, #C06C46 20%, #D4956E 50%, #C06C46 80%, #2C241E 100%);"></td>
+          </tr>
+          <tr>
+            <td style="padding: 44px 40px 20px;">
+              <h1 style="color: #2C241E; margin: 0 0 8px; font-size: 30px; font-weight: 400; font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; text-align: center; letter-spacing: -0.5px;">
+                ${opts.headline}
+              </h1>
+              <div style="text-align: center; margin: 16px 0 32px;">
+                <span style="display: inline-block; width: 40px; height: 1px; background-color: #C06C46; vertical-align: middle;"></span>
+                <span style="display: inline-block; width: 6px; height: 6px; border: 1px solid #C06C46; border-radius: 50%; margin: 0 8px; vertical-align: middle;"></span>
+                <span style="display: inline-block; width: 40px; height: 1px; background-color: #C06C46; vertical-align: middle;"></span>
+              </div>
+              ${opts.body}
+              ${cta}
+              ${fallback}
+              ${footnoteHtml}
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #2C241E; padding: 28px 40px; text-align: center;">
+              <p style="color: #C06C46; font-size: 11px; margin: 0 0 6px; letter-spacing: 2px; text-transform: uppercase; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: 600;">
+                Ce Soir Naples
+              </p>
+              <p style="color: #7a6d62; font-size: 11px; margin: 0; font-family: Georgia, serif; line-height: 1.6;">
+                492 Bayfront Pl, Naples FL 34102
+              </p>
+              <p style="margin: 10px 0 0;">
+                <a href="https://cesoirnaples.com" style="color: #D4956E; font-size: 11px; text-decoration: none; font-family: Georgia, serif; border-bottom: 1px solid #D4956E33;">cesoirnaples.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}

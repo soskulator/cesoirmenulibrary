@@ -32,7 +32,6 @@ serve(async (req) => {
   }
 
   try {
-    // Authentication check
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -63,13 +62,11 @@ serve(async (req) => {
     }
 
     const resend = new Resend(resendApiKey);
-
     const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
     const body: NotifyRequest = await req.json();
     const { attemptId, testType } = body;
 
-    // Validate numeric fields
     const score = Number(body.score);
     const totalQuestions = Number(body.totalQuestions);
     const percentage = Number(body.percentage);
@@ -77,14 +74,12 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Invalid input' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Fetch the caller's actual profile name from DB instead of trusting request body
     const { data: callerProfile } = await supabaseAdmin.from('profiles').select('full_name, email').eq('id', userId).maybeSingle();
     const employeeName = callerProfile?.full_name || body.employeeName || null;
     const employeeEmail = callerProfile?.email || body.employeeEmail || '';
 
     console.log(`Notifying lead admins about test completion: ${employeeName} (${testType})`);
 
-    // Get all lead admin emails
     const { data: leadAdmins, error: leadAdminsError } = await supabaseAdmin
       .from('user_roles')
       .select('user_id')
@@ -126,13 +121,12 @@ serve(async (req) => {
 
     console.log(`Sending notification to ${adminEmails.length} lead admin(s)`);
 
-    // Look up test_name from test_configurations
     const FALLBACK_NAMES: Record<string, string> = {
       service_staff: 'Server & Bartender Test',
       server_assistant: 'Server Assistant Test',
     };
     let testTypeName = FALLBACK_NAMES[testType] ?? testType.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
-    
+
     const { data: configRow } = await supabaseAdmin
       .from('test_configurations')
       .select('test_name')
@@ -142,10 +136,12 @@ serve(async (req) => {
     if (configRow?.test_name) {
       testTypeName = configRow.test_name;
     }
+
     const rawDisplayName = (employeeName && employeeName !== 'Unknown') ? employeeName : employeeEmail;
     const displayName = escapeHtml(rawDisplayName);
     const safeTestTypeName = escapeHtml(testTypeName);
-    const passStatus = percentage >= 70 ? '✅ PASSED' : '⚠️ Needs Review';
+    const passColor = percentage >= 70 ? '#2d8a4e' : '#C06C46';
+    const passStatus = percentage >= 70 ? '&#10003; Passed' : '&#10007; Needs Review';
 
     const senderDomain = Deno.env.get('RESEND_SENDER_DOMAIN') || 'cesoirmenusnaples.com';
     const fromAddress = `Ce Soir Tests <no-reply@${senderDomain}>`;
@@ -154,75 +150,50 @@ serve(async (req) => {
       from: fromAddress,
       to: adminEmails,
       subject: `[Action Required] ${rawDisplayName} completed ${testTypeName}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
-        <body style="font-family: 'Georgia', serif; background-color: #2C241E; margin: 0; padding: 40px 20px;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #F9F7F5; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #2C241E; padding: 40px 30px; text-align: center;">
-              <img src="https://cchhvuotfdxswpxwnxgv.supabase.co/storage/v1/object/public/email-assets/cesoir-logo.png?v=1" alt="Ce Soir" width="180" style="display: block; margin: 0 auto;" />
-            </div>
-            <div style="padding: 40px 30px;">
-              <h2 style="color: #2C241E; margin: 0 0 24px; font-size: 26px; font-weight: 500; font-family: 'Playfair Display', Georgia, serif; text-align: center;">
-                FoH Test Completed
-              </h2>
-              <p style="color: #4a4a4a; line-height: 1.7; margin: 0 0 20px; font-size: 16px;">
-                A team member has completed their knowledge test and requires your review.
-              </p>
-              <div style="background: #ffffff; border-radius: 8px; padding: 24px; margin: 24px 0; border: 1px solid #e8e0d8;">
-                <table style="width: 100%; border-collapse: collapse;">
-                  <tr>
-                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Employee</td>
-                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${displayName}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Test Type</td>
-                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${safeTestTypeName}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Score</td>
-                    <td style="padding: 12px 0; color: #2C241E; font-weight: 600; text-align: right; border-bottom: 1px solid #f0ebe6;">${score}/${totalQuestions}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px; border-bottom: 1px solid #f0ebe6;">Percentage</td>
-                    <td style="padding: 12px 0; color: ${percentage >= 70 ? '#22c55e' : '#C06C46'}; font-weight: 700; font-size: 20px; text-align: right; border-bottom: 1px solid #f0ebe6;">${percentage}%</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 12px 0; color: #7a7067; font-size: 14px;">Status</td>
-                    <td style="padding: 12px 0; font-weight: 700; text-align: right; font-size: 16px;">${passStatus}</td>
-                  </tr>
-                </table>
-              </div>
-              <p style="color: #4a4a4a; line-height: 1.7; margin: 24px 0 32px; font-size: 15px; text-align: center;">
-                Please review this test in the Scoring Dashboard to verify the AI-graded answers and finalize the score.
-              </p>
-              <div style="text-align: center;">
-                <a href="https://cesoirmenulibrary.lovable.app/admin/scoring" style="display: inline-block; background-color: #C06C46; color: #ffffff; text-decoration: none; padding: 16px 48px; border-radius: 4px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                  Review Test
-                </a>
-              </div>
-            </div>
-            <div style="background-color: #2C241E; padding: 24px 30px; text-align: center;">
-              <p style="color: #D99572; font-size: 12px; margin: 0 0 4px; letter-spacing: 0.5px;">
-                Ce Soir Naples · Staff Training Portal
-              </p>
-              <p style="color: #D99572; font-size: 11px; margin: 0; opacity: 0.7;">
-                492 Bayfront Pl, Naples FL 34102 · cesoirnaples.com
-              </p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
+      html: buildEmailHtml({
+        preheader: `${rawDisplayName} completed ${testTypeName} — ${percentage}%. Review required.`,
+        headline: "Test Completed",
+        body: `
+          <p style="color: #5a5249; line-height: 1.8; margin: 0 0 24px; font-size: 16px; font-family: Georgia, 'Times New Roman', serif;">
+            A team member has completed their knowledge test and requires your review.
+          </p>
+
+          <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid #e8e0d8; overflow: hidden;">
+            <!-- Score Header -->
+            <tr>
+              <td colspan="2" style="background: linear-gradient(135deg, ${passColor}15 0%, ${passColor}08 100%); padding: 20px 24px; text-align: center; border-bottom: 1px solid #e8e0d8;">
+                <span style="display: inline-block; font-size: 36px; font-weight: 700; color: ${passColor}; font-family: 'Playfair Display', Georgia, serif; line-height: 1;">${percentage}%</span>
+                <br />
+                <span style="display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: ${passColor}; font-family: 'Helvetica Neue', Arial, sans-serif;">
+                  ${passStatus}
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 14px 24px; color: #7a7067; font-size: 14px; font-family: Georgia, serif; border-bottom: 1px solid #f0ebe6; width: 50%;">Employee</td>
+              <td style="padding: 14px 24px; color: #2C241E; font-weight: 600; text-align: right; font-size: 14px; font-family: Georgia, serif; border-bottom: 1px solid #f0ebe6;">${displayName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 14px 24px; color: #7a7067; font-size: 14px; font-family: Georgia, serif; border-bottom: 1px solid #f0ebe6;">Test</td>
+              <td style="padding: 14px 24px; color: #2C241E; font-weight: 600; text-align: right; font-size: 14px; font-family: Georgia, serif; border-bottom: 1px solid #f0ebe6;">${safeTestTypeName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 14px 24px; color: #7a7067; font-size: 14px; font-family: Georgia, serif;">Score</td>
+              <td style="padding: 14px 24px; color: #2C241E; font-weight: 600; text-align: right; font-size: 14px; font-family: Georgia, serif;">${score} / ${totalQuestions}</td>
+            </tr>
+          </table>
+
+          <p style="color: #7a7067; line-height: 1.7; margin: 28px 0 0; font-size: 15px; font-family: Georgia, 'Times New Roman', serif; text-align: center;">
+            Please review this test in the Scoring Dashboard to verify the AI-graded answers and finalize the score.
+          </p>
+        `,
+        ctaText: "Review Test",
+        ctaLink: "https://cesoirmenulibrary.lovable.app/admin/scoring",
+      }),
     });
 
     if (emailError) {
       console.error('Error sending email (non-fatal):', emailError);
-      // Don't throw - email failure shouldn't block test completion
       return new Response(
         JSON.stringify({ success: true, notifiedCount: 0, emailWarning: 'Email delivery failed but test recorded' }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -230,7 +201,6 @@ serve(async (req) => {
     }
 
     console.log('Notification email sent successfully');
-
     return new Response(
       JSON.stringify({ success: true, notifiedCount: adminEmails.length }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -245,3 +215,101 @@ serve(async (req) => {
     );
   }
 });
+
+// ─── Shared Email Template Builder ───────────────────────────────────────────
+
+interface EmailOptions {
+  preheader: string;
+  headline: string;
+  body: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showFallbackLink?: boolean;
+  footnote?: string;
+}
+
+function buildEmailHtml(opts: EmailOptions): string {
+  const cta = opts.ctaText && opts.ctaLink ? `
+    <div style="text-align: center; margin: 36px 0 0;">
+      <a href="${opts.ctaLink}" style="display: inline-block; background: linear-gradient(135deg, #C06C46 0%, #A8553A 100%); color: #ffffff; text-decoration: none; padding: 16px 52px; border-radius: 4px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-family: 'Helvetica Neue', Arial, sans-serif; box-shadow: 0 4px 16px rgba(192,108,70,0.3);">
+        ${opts.ctaText}
+      </a>
+    </div>
+  ` : '';
+
+  const fallback = opts.showFallbackLink && opts.ctaLink ? `
+    <div style="border-top: 1px solid #e8e0d8; margin: 36px 0 24px;"></div>
+    <p style="color: #9a9089; font-size: 12px; line-height: 1.6; margin: 0; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
+      If the button doesn't work, copy and paste this link into your browser:
+    </p>
+    <p style="margin: 8px 0 0; text-align: center;">
+      <a href="${opts.ctaLink}" style="color: #C06C46; font-size: 12px; word-break: break-all; font-family: 'Helvetica Neue', Arial, sans-serif;">${opts.ctaLink}</a>
+    </p>
+  ` : '';
+
+  const footnoteHtml = opts.footnote ? `
+    <p style="color: #9a9089; font-size: 12px; line-height: 1.5; margin: 24px 0 0; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
+      ${opts.footnote}
+    </p>
+  ` : '';
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ce Soir</title>
+  <!--[if mso]><style>body,table,td{font-family:Georgia,serif!important}</style><![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #1E1915; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+  <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #1E1915;">
+    ${opts.preheader}&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+  </div>
+  <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background-color: #1E1915;">
+    <tr>
+      <td align="center" style="padding: 32px 16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #FAF8F5; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.35);">
+          <tr>
+            <td style="background-color: #2C241E; padding: 44px 40px 36px; text-align: center;">
+              <img src="https://cchhvuotfdxswpxwnxgv.supabase.co/storage/v1/object/public/email-assets/cesoir-logo.png?v=1" alt="Ce Soir" width="160" style="display: block; margin: 0 auto; max-width: 160px; height: auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="height: 3px; background: linear-gradient(90deg, #2C241E 0%, #C06C46 20%, #D4956E 50%, #C06C46 80%, #2C241E 100%);"></td>
+          </tr>
+          <tr>
+            <td style="padding: 44px 40px 20px;">
+              <h1 style="color: #2C241E; margin: 0 0 8px; font-size: 30px; font-weight: 400; font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; text-align: center; letter-spacing: -0.5px;">
+                ${opts.headline}
+              </h1>
+              <div style="text-align: center; margin: 16px 0 32px;">
+                <span style="display: inline-block; width: 40px; height: 1px; background-color: #C06C46; vertical-align: middle;"></span>
+                <span style="display: inline-block; width: 6px; height: 6px; border: 1px solid #C06C46; border-radius: 50%; margin: 0 8px; vertical-align: middle;"></span>
+                <span style="display: inline-block; width: 40px; height: 1px; background-color: #C06C46; vertical-align: middle;"></span>
+              </div>
+              ${opts.body}
+              ${cta}
+              ${fallback}
+              ${footnoteHtml}
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #2C241E; padding: 28px 40px; text-align: center;">
+              <p style="color: #C06C46; font-size: 11px; margin: 0 0 6px; letter-spacing: 2px; text-transform: uppercase; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: 600;">
+                Ce Soir Naples
+              </p>
+              <p style="color: #7a6d62; font-size: 11px; margin: 0; font-family: Georgia, serif; line-height: 1.6;">
+                492 Bayfront Pl, Naples FL 34102
+              </p>
+              <p style="margin: 10px 0 0;">
+                <a href="https://cesoirnaples.com" style="color: #D4956E; font-size: 11px; text-decoration: none; font-family: Georgia, serif; border-bottom: 1px solid #D4956E33;">cesoirnaples.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
