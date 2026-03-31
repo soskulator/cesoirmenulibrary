@@ -562,7 +562,7 @@ function AllergyCheckContent() {
 
 function AllergyTrainingContent() {
   const { items: menuItems, isLoading } = useMenuItems();
-  const { modifications, isLoading: modsLoading } = useAllergenModifications();
+  const { ingredients: allIngredients, isLoading: ingredientsLoading } = useAllDishIngredients();
   const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['appetizers']);
