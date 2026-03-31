@@ -11,6 +11,7 @@ import { menuItems } from '@/data/menuData';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 import { useAllergenModifications } from '@/hooks/useAllergenModifications';
 import { useMenuItems } from '@/hooks/useMenuItems';
+import { useDishIngredients } from '@/hooks/useDishIngredients';
 import { 
   Check, 
   X, 
