@@ -12,11 +12,11 @@ const corsHeaders = {
 
 function escapeHtml(unsafe: string): string {
   return String(unsafe)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 interface ReminderRequest {
@@ -31,29 +31,52 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } =
+      await supabaseClient.auth.getClaims(token);
     if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const callerId = claimsData.claims.sub;
 
-    const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
-    const { data: roleData } = await supabaseAdmin.from('user_roles').select('role').eq('user_id', callerId).single();
-    if (!roleData || (roleData.role !== 'admin' && roleData.role !== 'lead_admin')) {
-      return new Response(JSON.stringify({ error: 'Forbidden - Admin access required' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+    const { data: roleData } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", callerId)
+      .single();
+    if (
+      !roleData ||
+      (roleData.role !== "admin" && roleData.role !== "lead_admin")
+    ) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden - Admin access required" }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     const { email, fullName, missingTests }: ReminderRequest = await req.json();
@@ -62,17 +85,24 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields: email and missingTests");
     }
 
-    const displayName = (fullName && fullName !== 'Unknown') ? escapeHtml(fullName) : null;
+    const displayName =
+      fullName && fullName !== "Unknown" ? escapeHtml(fullName) : null;
     const greeting = displayName ? `Hi ${displayName},` : "Hi there,";
-    const testList = missingTests.map(t => `
+    const testList = missingTests
+      .map(
+        (t) => `
       <tr>
-        <td style="padding: 10px 16px; font-size: 15px; color: #5a5249; font-family: Georgia, 'Times New Roman', serif; border-bottom: 1px solid #f0ebe6;">
-          <span style="color: #C06C46; margin-right: 8px;">&#9670;</span> ${escapeHtml(t)}
+        <td style="padding: 10px 16px; font-size: 14px; color: #4A3728; font-family: Georgia, 'Times New Roman', serif; border-bottom: 1px solid #EDE8E1;">
+          <span style="color: #8B5E3C; margin-right: 8px;">&#9670;</span> ${escapeHtml(t)}
         </td>
       </tr>
-    `).join("");
+    `
+      )
+      .join("");
 
-    console.log(`Sending test reminder to ${email} for tests: ${missingTests.join(", ")} (requested by admin ${callerId})`);
+    console.log(
+      `Sending test reminder to ${email} for tests: ${missingTests.join(", ")} (requested by admin ${callerId})`
+    );
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -85,14 +115,15 @@ const handler = async (req: Request): Promise<Response> => {
         to: [email],
         subject: "Reminder: Complete Your Required Training Tests",
         html: buildEmailHtml({
-          preheader: "You have outstanding training tests that need to be completed",
+          preheader:
+            "You have outstanding training tests that need to be completed",
           headline: "Training Reminder",
           body: `
-            <p style="color: #5a5249; line-height: 1.8; margin: 0 0 20px; font-size: 16px; font-family: Georgia, 'Times New Roman', serif;">${greeting}</p>
-            <p style="color: #5a5249; line-height: 1.8; margin: 0 0 24px; font-size: 16px; font-family: Georgia, 'Times New Roman', serif;">
+            <p style="color: #4A3728; line-height: 1.8; margin: 0 0 20px; font-size: 15px; font-family: Georgia, 'Times New Roman', serif;">${greeting}</p>
+            <p style="color: #4A3728; line-height: 1.8; margin: 0 0 24px; font-size: 15px; font-family: Georgia, 'Times New Roman', serif;">
               You have outstanding training tests that need to be completed. Please log in and finish the following:
             </p>
-            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid #e8e0d8; margin: 0 0 8px; overflow: hidden;">
+            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background: #FFFFFF; border: 1px solid #DDD4C8; margin: 0 0 8px;">
               ${testList}
             </table>
           `,
@@ -115,10 +146,10 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error in send-test-reminder function:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 };
 
@@ -128,6 +159,7 @@ serve(handler);
 
 interface EmailOptions {
   preheader: string;
+  recipientName?: string;
   headline: string;
   body: string;
   ctaText?: string;
@@ -137,87 +169,154 @@ interface EmailOptions {
 }
 
 function buildEmailHtml(opts: EmailOptions): string {
-  const cta = opts.ctaText && opts.ctaLink ? `
-    <div style="text-align: center; margin: 36px 0 0;">
-      <a href="${opts.ctaLink}" style="display: inline-block; background: linear-gradient(135deg, #C06C46 0%, #A8553A 100%); color: #ffffff; text-decoration: none; padding: 16px 52px; border-radius: 4px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-family: 'Helvetica Neue', Arial, sans-serif; box-shadow: 0 4px 16px rgba(192,108,70,0.3);">
-        ${opts.ctaText}
-      </a>
-    </div>
-  ` : '';
+  const cta =
+    opts.ctaText && opts.ctaLink
+      ? `
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 36px auto 0;">
+      <tr>
+        <td align="center" style="background-color: #8B5E3C; border-radius: 2px;">
+          <a href="${opts.ctaLink}"
+            style="display: inline-block; color: #F5EFE4; text-decoration: none; padding: 15px 48px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2.5px; font-family: 'Helvetica Neue', Arial, sans-serif; mso-padding-alt: 0; text-underline-color: #8B5E3C;">
+            <!--[if mso]>&nbsp;&nbsp;&nbsp;&nbsp;<![endif]-->${opts.ctaText}<!--[if mso]>&nbsp;&nbsp;&nbsp;&nbsp;<![endif]-->
+          </a>
+        </td>
+      </tr>
+    </table>
+  `
+      : "";
 
-  const fallback = opts.showFallbackLink && opts.ctaLink ? `
-    <div style="border-top: 1px solid #e8e0d8; margin: 36px 0 24px;"></div>
-    <p style="color: #9a9089; font-size: 12px; line-height: 1.6; margin: 0; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
-      If the button doesn't work, copy and paste this link into your browser:
-    </p>
-    <p style="margin: 8px 0 0; text-align: center;">
-      <a href="${opts.ctaLink}" style="color: #C06C46; font-size: 12px; word-break: break-all; font-family: 'Helvetica Neue', Arial, sans-serif;">${opts.ctaLink}</a>
-    </p>
-  ` : '';
+  const fallback =
+    opts.showFallbackLink && opts.ctaLink
+      ? `
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 32px;">
+      <tr>
+        <td style="border-top: 1px solid #DDD4C8; padding-top: 24px;">
+          <p style="color: #9A8880; font-size: 11px; line-height: 1.6; margin: 0 0 6px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
+            If the button does not work, copy and paste this link into your browser:
+          </p>
+          <p style="margin: 0; text-align: center;">
+            <a href="${opts.ctaLink}" style="color: #8B5E3C; font-size: 11px; word-break: break-all; font-family: 'Helvetica Neue', Arial, sans-serif; text-decoration: underline;">${opts.ctaLink}</a>
+          </p>
+        </td>
+      </tr>
+    </table>
+  `
+      : "";
 
-  const footnoteHtml = opts.footnote ? `
-    <p style="color: #9a9089; font-size: 12px; line-height: 1.5; margin: 24px 0 0; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
+  const footnoteHtml = opts.footnote
+    ? `
+    <p style="color: #9A8880; font-size: 11px; line-height: 1.6; margin: 24px 0 0; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif;">
       ${opts.footnote}
     </p>
-  ` : '';
+  `
+    : "";
 
-  return `<!DOCTYPE html>
-<html>
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Ce Soir</title>
-  <!--[if mso]><style>body,table,td{font-family:Georgia,serif!important}</style><![endif]-->
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <style>
+    table { border-collapse: collapse; }
+    td, th { font-family: Georgia, serif; }
+    .btn-fallback a { padding: 15px 48px !important; }
+  </style>
+  <![endif]-->
+  <style type="text/css">
+    body { margin: 0 !important; padding: 0 !important; background-color: #F0EBE3 !important; }
+    table { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+    @media only screen and (max-width: 620px) {
+      .email-container { width: 100% !important; }
+      .email-body-pad { padding: 32px 24px 24px !important; }
+      .email-header-pad { padding: 32px 24px 28px !important; }
+      .email-footer-pad { padding: 20px 24px !important; }
+      .wordmark { font-size: 26px !important; letter-spacing: 6px !important; }
+      .submark { font-size: 9px !important; }
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #1E1915; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
-  <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #1E1915;">
-    ${opts.preheader}&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+<body style="margin: 0; padding: 0; background-color: #F0EBE3;">
+
+  <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #F0EBE3; mso-hide: all;">
+    ${opts.preheader}&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
   </div>
-  <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%; background-color: #1E1915;">
+
+  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F0EBE3;">
     <tr>
       <td align="center" style="padding: 32px 16px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #FAF8F5; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.35);">
+        <table role="presentation" cellpadding="0" cellspacing="0" class="email-container" style="max-width: 600px; width: 100%;">
+
           <tr>
-            <td style="background-color: #2C241E; padding: 44px 40px 36px; text-align: center;">
-              <img src="https://cchhvuotfdxswpxwnxgv.supabase.co/storage/v1/object/public/email-assets/cesoir-logo.png?v=1" alt="Ce Soir" width="160" style="display: block; margin: 0 auto; max-width: 160px; height: auto;" />
+            <td class="email-header-pad" style="background-color: #1C1410; padding: 40px 48px 32px; text-align: center;">
+              <div class="wordmark" style="font-family: Georgia, 'Times New Roman', serif; font-size: 30px; font-weight: 400; letter-spacing: 8px; color: #C8956A; text-transform: uppercase; line-height: 1; mso-line-height-rule: exactly;">
+                CE SOIR
+              </div>
+              <div class="submark" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 4px; color: #6B5040; text-transform: uppercase; margin-top: 8px; mso-line-height-rule: exactly;">
+                NAPLES &nbsp;&#183;&nbsp; FLORIDA
+              </div>
             </td>
           </tr>
+
           <tr>
-            <td style="height: 3px; background: linear-gradient(90deg, #2C241E 0%, #C06C46 20%, #D4956E 50%, #C06C46 80%, #2C241E 100%);"></td>
+            <td style="background-color: #8B5E3C; height: 3px; font-size: 3px; line-height: 3px;">&nbsp;</td>
           </tr>
+
           <tr>
-            <td style="padding: 44px 40px 20px;">
-              <h1 style="color: #2C241E; margin: 0 0 8px; font-size: 30px; font-weight: 400; font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; text-align: center; letter-spacing: -0.5px;">
+            <td class="email-body-pad" style="background-color: #FAF8F4; padding: 44px 48px 32px;">
+
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px;">
+                <tr>
+                  <td style="width: 40%; height: 1px; background-color: #C8956A; opacity: 0.4; font-size: 0; line-height: 0;">&nbsp;</td>
+                  <td style="width: 20px; text-align: center; font-family: Georgia, serif; font-size: 14px; color: #8B5E3C; padding: 0 8px;">&#9670;</td>
+                  <td style="width: 40%; height: 1px; background-color: #C8956A; opacity: 0.4; font-size: 0; line-height: 0;">&nbsp;</td>
+                </tr>
+              </table>
+
+              <h1 style="color: #1C1410; margin: 0 0 28px; font-size: 28px; font-weight: 400; font-family: Georgia, 'Times New Roman', serif; text-align: center; letter-spacing: 1px; line-height: 1.3; mso-line-height-rule: exactly;">
                 ${opts.headline}
               </h1>
-              <div style="text-align: center; margin: 16px 0 32px;">
-                <span style="display: inline-block; width: 40px; height: 1px; background-color: #C06C46; vertical-align: middle;"></span>
-                <span style="display: inline-block; width: 6px; height: 6px; border: 1px solid #C06C46; border-radius: 50%; margin: 0 8px; vertical-align: middle;"></span>
-                <span style="display: inline-block; width: 40px; height: 1px; background-color: #C06C46; vertical-align: middle;"></span>
-              </div>
+
               ${opts.body}
               ${cta}
               ${fallback}
               ${footnoteHtml}
+
             </td>
           </tr>
+
           <tr>
-            <td style="background-color: #2C241E; padding: 28px 40px; text-align: center;">
-              <p style="color: #C06C46; font-size: 11px; margin: 0 0 6px; letter-spacing: 2px; text-transform: uppercase; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: 600;">
+            <td class="email-footer-pad" style="background-color: #1C1410; padding: 24px 48px; text-align: center;">
+              <p style="color: #8B5E3C; font-size: 10px; margin: 0 0 6px; letter-spacing: 3px; text-transform: uppercase; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: 600; mso-line-height-rule: exactly;">
                 Ce Soir Naples
               </p>
-              <p style="color: #7a6d62; font-size: 11px; margin: 0; font-family: Georgia, serif; line-height: 1.6;">
-                492 Bayfront Pl, Naples FL 34102
+              <p style="color: #5A4A3A; font-size: 11px; margin: 0 0 8px; font-family: Georgia, 'Times New Roman', serif; line-height: 1.6; mso-line-height-rule: exactly;">
+                492 Bayfront Pl, Naples, FL 34102
               </p>
-              <p style="margin: 10px 0 0;">
-                <a href="https://cesoirnaples.com" style="color: #D4956E; font-size: 11px; text-decoration: none; font-family: Georgia, serif; border-bottom: 1px solid #D4956E33;">cesoirnaples.com</a>
+              <p style="margin: 0;">
+                <a href="https://cesoirnaples.com" style="color: #8B5E3C; font-size: 11px; text-decoration: none; font-family: Georgia, 'Times New Roman', serif; border-bottom: 1px solid #8B5E3C;">
+                  cesoirnaples.com
+                </a>
               </p>
             </td>
           </tr>
+
         </table>
       </td>
     </tr>
   </table>
+
 </body>
 </html>`;
 }
