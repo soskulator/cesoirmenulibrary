@@ -310,7 +310,7 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4 flex-1 min-h-0 flex flex-col">
+      <CardContent className="space-y-4 flex-1 min-h-0 flex flex-col overflow-hidden">
         {/* Reference text */}
         <div className="rounded-lg bg-muted/50 border border-border p-3 flex-shrink-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
@@ -324,90 +324,92 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
         <Separator className="flex-shrink-0" />
 
         {/* Ingredient rows */}
-        <ScrollArea className="flex-1 min-h-[24rem] lg:min-h-0 lg:h-full">
-          <div className="space-y-3 pr-2 pb-2">
-            {ingredients.map((ing, idx) => (
-              <div
-                key={ing.tempId}
-                className="rounded-lg border border-border bg-card p-3 space-y-2"
-                draggable
-                onDragStart={() => setDragIdx(idx)}
-                onDragOver={e => e.preventDefault()}
-                onDrop={() => {
-                  if (dragIdx !== null && dragIdx !== idx) moveIngredient(dragIdx, idx);
-                  setDragIdx(null);
-                }}
-                onDragEnd={() => setDragIdx(null)}
-              >
-                {/* Row 1: drag handle, name, omit toggle, delete */}
-                <div className="flex items-center gap-2">
-                  <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab flex-shrink-0" />
-                  <Input
-                    value={ing.ingredient_name}
-                    onChange={e => updateIngredient(ing.tempId, { ingredient_name: e.target.value })}
-                    placeholder="Ingredient name"
-                    className="flex-1 h-8 text-sm"
-                  />
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <Switch
-                      checked={ing.is_omittable}
-                      onCheckedChange={val => updateIngredient(ing.tempId, { is_omittable: val })}
-                      className={cn(
-                        'data-[state=checked]:bg-jade data-[state=unchecked]:bg-destructive/60'
-                      )}
+        <div className="min-h-0 lg:flex-1">
+          <ScrollArea className="h-[26rem] md:h-[32rem] lg:h-full">
+            <div className="space-y-3 pr-2 pb-2">
+              {ingredients.map((ing, idx) => (
+                <div
+                  key={ing.tempId}
+                  className="rounded-lg border border-border bg-card p-3 space-y-2"
+                  draggable
+                  onDragStart={() => setDragIdx(idx)}
+                  onDragOver={e => e.preventDefault()}
+                  onDrop={() => {
+                    if (dragIdx !== null && dragIdx !== idx) moveIngredient(dragIdx, idx);
+                    setDragIdx(null);
+                  }}
+                  onDragEnd={() => setDragIdx(null)}
+                >
+                  {/* Row 1: drag handle, name, omit toggle, delete */}
+                  <div className="flex items-center gap-2">
+                    <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab flex-shrink-0" />
+                    <Input
+                      value={ing.ingredient_name}
+                      onChange={e => updateIngredient(ing.tempId, { ingredient_name: e.target.value })}
+                      placeholder="Ingredient name"
+                      className="flex-1 h-8 text-sm"
                     />
-                    <span className={cn(
-                      'text-[11px] font-medium w-16',
-                      ing.is_omittable ? 'text-jade' : 'text-destructive'
-                    )}>
-                      {ing.is_omittable ? 'Can Omit' : "Can't Omit"}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                    onClick={() => removeIngredient(ing.tempId)}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-
-                {/* Row 2: omit note (only if NOT omittable) */}
-                {!ing.is_omittable && (
-                  <Input
-                    value={ing.omit_note ?? ''}
-                    onChange={e => updateIngredient(ing.tempId, { omit_note: e.target.value })}
-                    placeholder="Why can't this be removed? (optional)"
-                    className="h-7 text-xs bg-destructive/5 border-destructive/20"
-                  />
-                )}
-
-                {/* Row 3: allergen chips */}
-                <div className="flex flex-wrap gap-1">
-                  {allergenChips.map(a => {
-                    const isActive = (ing.allergens ?? []).includes(a.id);
-                    return (
-                      <button
-                        key={a.id}
-                        type="button"
-                        onClick={() => toggleAllergen(ing.tempId, a.id)}
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <Switch
+                        checked={ing.is_omittable}
+                        onCheckedChange={val => updateIngredient(ing.tempId, { is_omittable: val })}
                         className={cn(
-                          'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium border transition-colors',
-                          isActive
-                            ? 'bg-copper/15 text-copper border-copper/30'
-                            : 'bg-muted/50 text-muted-foreground border-transparent hover:border-border'
+                          'data-[state=checked]:bg-jade data-[state=unchecked]:bg-destructive/60'
                         )}
-                      >
-                        {a.icon} {a.commonName.split('/')[0]}
-                      </button>
-                    );
-                  })}
+                      />
+                      <span className={cn(
+                        'text-[11px] font-medium w-16',
+                        ing.is_omittable ? 'text-jade' : 'text-destructive'
+                      )}>
+                        {ing.is_omittable ? 'Can Omit' : "Can't Omit"}
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                      onClick={() => removeIngredient(ing.tempId)}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+
+                  {/* Row 2: omit note (only if NOT omittable) */}
+                  {!ing.is_omittable && (
+                    <Input
+                      value={ing.omit_note ?? ''}
+                      onChange={e => updateIngredient(ing.tempId, { omit_note: e.target.value })}
+                      placeholder="Why can't this be removed? (optional)"
+                      className="h-7 text-xs bg-destructive/5 border-destructive/20"
+                    />
+                  )}
+
+                  {/* Row 3: allergen chips */}
+                  <div className="flex flex-wrap gap-1">
+                    {allergenChips.map(a => {
+                      const isActive = (ing.allergens ?? []).includes(a.id);
+                      return (
+                        <button
+                          key={a.id}
+                          type="button"
+                          onClick={() => toggleAllergen(ing.tempId, a.id)}
+                          className={cn(
+                            'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium border transition-colors',
+                            isActive
+                              ? 'bg-copper/15 text-copper border-copper/30'
+                              : 'bg-muted/50 text-muted-foreground border-transparent hover:border-border'
+                          )}
+                        >
+                          {a.icon} {a.commonName.split('/')[0]}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
 
         {/* Add + Save */}
         <div className="flex items-center gap-3 pt-2 flex-shrink-0">
