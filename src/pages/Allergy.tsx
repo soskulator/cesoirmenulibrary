@@ -953,10 +953,12 @@ function AllergyTrainingContent() {
               </CardContent>
             </Card>
 
-            {/* Admin-Defined Modification Notes */}
+            {/* Structured Ingredient Modification Guide */}
             {selectedDish && (() => {
-              const dishMods = modifications.filter(m => m.menu_item_id === selectedDish.id);
-              if (dishMods.length === 0) return null;
+              const dishIngs = ingredientsByDish[selectedDish.id];
+              if (!dishIngs || dishIngs.length === 0) return null;
+              const nonOmittable = dishIngs.filter(ing => !ing.is_omittable);
+              if (nonOmittable.length === 0) return null;
               return (
                 <Card className="border-copper/30">
                   <CardHeader className="pb-3">
@@ -966,25 +968,34 @@ function AllergyTrainingContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {dishMods.map(mod => {
-                      const allergen = getAllergenById(mod.allergen_type as AllergenType);
-                      return (
-                        <div key={mod.id || `${mod.menu_item_id}-${mod.allergen_type}`} className="flex items-start gap-3 p-2 rounded-md bg-muted/30">
-                          <span>{allergen?.icon || '⚠️'}</span>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-sm">{allergen?.name || mod.allergen_type}</span>
-                              <Badge variant={mod.can_remove ? 'sage' : 'destructive'} className="text-[10px]">
-                                {mod.can_remove ? 'Can Remove' : 'Cannot Remove'}
-                              </Badge>
-                            </div>
-                            {mod.substitution_notes && (
-                              <p className="text-xs text-muted-foreground mt-1">{mod.substitution_notes}</p>
-                            )}
+                    {nonOmittable.map(ing => (
+                      <div key={ing.id} className="flex items-start gap-3 p-2 rounded-md bg-muted/30">
+                        <span className="text-destructive text-sm mt-0.5">✗</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">{ing.ingredient_name}</span>
+                            <Badge variant="destructive" className="text-[10px]">
+                              Cannot Omit
+                            </Badge>
                           </div>
+                          {ing.omit_note && (
+                            <p className="text-xs text-muted-foreground mt-1 italic">{ing.omit_note}</p>
+                          )}
+                          {(ing.allergens ?? []).length > 0 && (
+                            <div className="flex gap-1 mt-1">
+                              {(ing.allergens ?? []).map(a => {
+                                const allergen = getAllergenById(a as AllergenType);
+                                return allergen ? (
+                                  <span key={a} className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                                    {allergen.icon} {allergen.name}
+                                  </span>
+                                ) : null;
+                              })}
+                            </div>
+                          )}
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </CardContent>
                 </Card>
               );
