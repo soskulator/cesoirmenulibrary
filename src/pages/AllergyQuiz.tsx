@@ -11,6 +11,7 @@ import { menuItems } from '@/data/menuData';
 import { useCategoryQuestions } from '@/hooks/useCategoryQuestions';
 import { useAllergenModifications } from '@/hooks/useAllergenModifications';
 import { useMenuItems } from '@/hooks/useMenuItems';
+import { useDishIngredients } from '@/hooks/useDishIngredients';
 import { 
   Check, 
   X, 
@@ -42,6 +43,7 @@ interface ModificationQuizQuestion {
   id: string;
   type: 'modification';
   dishName: string;
+  dishId: string;
   allergenName: string;
   allergenIcon: string;
   canRemove: boolean;
@@ -157,6 +159,7 @@ export default function AllergyQuizPage() {
           id: `mod-${m.id}`,
           type: 'modification' as const,
           dishName: item.name,
+          dishId: item.id,
           allergenName: allergenInfo.name,
           allergenIcon: allergenInfo.icon,
           canRemove: m.can_remove,
@@ -457,6 +460,9 @@ export default function AllergyQuizPage() {
                         </Button>
                       )}
                       {showAnswer && (
+                        <IngredientModNotes dishId={(currentQuestion as ModificationQuizQuestion).dishId} />
+                      )}
+                      {showAnswer && (
                         <div className="mt-4 flex gap-3">
                           <Button
                             variant="outline"
@@ -575,6 +581,10 @@ export default function AllergyQuizPage() {
                           </div>
                         </motion.div>
                       )}
+
+                      {showAnswer && (
+                        <IngredientModNotes dishId={(currentQuestion as AllergyQuizQuestion).dishId} />
+                      )}
                     </>
                   )}
                 </CardContent>
@@ -634,5 +644,32 @@ export default function AllergyQuizPage() {
         </div>
       </div>
     </Layout>
+  );
+}
+
+function IngredientModNotes({ dishId }: { dishId: string }) {
+  const { ingredients, isLoading } = useDishIngredients(dishId);
+
+  if (isLoading || ingredients.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      className="mt-3 p-3 rounded-lg border border-border/50 bg-muted/30"
+    >
+      <p className="text-xs font-semibold text-muted-foreground mb-2">Modification Notes</p>
+      <div className="space-y-1">
+        {ingredients.map(ing => (
+          <div key={ing.id} className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span>{ing.ingredient_name}</span>
+            <span className="text-[10px]">—</span>
+            <span className={ing.is_omittable ? 'text-jade' : 'text-destructive'}>
+              {ing.is_omittable ? 'Can Omit ✓' : 'Cannot Omit ✗'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }

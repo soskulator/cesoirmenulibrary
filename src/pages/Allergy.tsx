@@ -25,6 +25,7 @@ import {
 } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { useAllergenModifications } from '@/hooks/useAllergenModifications';
+import { useDishIngredients } from '@/hooks/useDishIngredients';
 import { getDishImage } from '@/data/dishImages';
 import { 
   AlertTriangle, 
@@ -442,22 +443,26 @@ function AllergyCheckContent() {
                             const mods = getModsForItem(item.id, matchingAllergens);
                             const removable = mods.filter(m => m?.can_remove && m?.substitution_notes?.trim());
                             const cannotRemove = mods.filter(m => !m?.can_remove && m?.substitution_notes?.trim());
-                            if (removable.length === 0 && cannotRemove.length === 0) return null;
                             return (
-                              <div className="mt-3 space-y-2">
-                                {removable.map((mod, i) => (
-                                  <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-jade/10 border border-jade/20">
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-jade mt-0.5 flex-shrink-0" />
-                                    <p className="text-xs text-jade-dark leading-relaxed">{mod?.substitution_notes}</p>
+                              <>
+                                {(removable.length > 0 || cannotRemove.length > 0) && (
+                                  <div className="mt-3 space-y-2">
+                                    {removable.map((mod, i) => (
+                                      <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-jade/10 border border-jade/20">
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-jade mt-0.5 flex-shrink-0" />
+                                        <p className="text-xs text-jade-dark leading-relaxed">{mod?.substitution_notes}</p>
+                                      </div>
+                                    ))}
+                                    {cannotRemove.map((mod, i) => (
+                                      <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-amber-50 border border-amber-200">
+                                        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
+                                        <p className="text-xs text-amber-700 leading-relaxed">{mod?.substitution_notes}</p>
+                                      </div>
+                                    ))}
                                   </div>
-                                ))}
-                                {cannotRemove.map((mod, i) => (
-                                  <div key={i} className="flex items-start gap-2 p-2 rounded-md bg-amber-50 border border-amber-200">
-                                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                                    <p className="text-xs text-amber-700 leading-relaxed">{mod?.substitution_notes}</p>
-                                  </div>
-                                ))}
-                              </div>
+                                )}
+                                <DishIngredientOmitContext itemId={item.id} selectedAllergens={matchingAllergens} />
+                              </>
                             );
                           })()}
                         </div>
@@ -998,6 +1003,48 @@ function AllergyTrainingContent() {
           </Card>
         )}
       </div>
+    </div>
+  );
+}
+
+// Small component to show dish_ingredients omittability context per allergen
+function DishIngredientOmitContext({ itemId, selectedAllergens }: { itemId: string; selectedAllergens: AllergenType[] }) {
+  const { ingredients, isLoading } = useDishIngredients(itemId);
+
+  if (isLoading || ingredients.length === 0) return null;
+
+  // Filter ingredients whose allergens array includes any of the selected allergens
+  const matching = ingredients.filter(ing =>
+    (ing.allergens ?? []).some(a => selectedAllergens.includes(a as AllergenType))
+  );
+
+  if (matching.length === 0) return null;
+
+  const anyOmittable = matching.some(ing => ing.is_omittable);
+
+  return (
+    <div className="mt-3 pt-2 border-t border-border/50">
+      <p className="text-[11px] font-semibold text-copper mb-1.5">Modifications available:</p>
+      <div className="space-y-1">
+        {matching.map(ing => (
+          <div key={ing.id} className="flex items-center gap-2 text-xs">
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium',
+                ing.is_omittable
+                  ? 'bg-jade/15 text-jade'
+                  : 'bg-destructive/10 text-destructive'
+              )}
+            >
+              {ing.is_omittable ? 'Can Omit' : 'Cannot Omit'}
+            </span>
+            <span className="text-muted-foreground">{ing.ingredient_name}</span>
+          </div>
+        ))}
+      </div>
+      {!anyOmittable && (
+        <p className="text-[11px] text-amber-600 mt-1.5">⚠️ No modifications available for this allergen</p>
+      )}
     </div>
   );
 }

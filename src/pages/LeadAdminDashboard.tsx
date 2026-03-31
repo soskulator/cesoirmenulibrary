@@ -24,6 +24,7 @@ import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
 import { PhotoGallery } from '@/components/admin/PhotoGallery';
 import { WeeklyFocusManager } from '@/components/admin/WeeklyFocusManager';
 import { AllergyManagement } from '@/components/admin/AllergyManagement';
+import { MenuIngredientEditor } from '@/components/admin/MenuIngredientEditor';
 import { 
   Crown,
   FileText,
@@ -88,7 +89,7 @@ export default function LeadAdminDashboard() {
   } = useCategories();
   
   // Menu Management state
-  const [activeTab, setActiveTab] = useState<'menu' | 'training' | 'schedule' | 'data'>('menu');
+  const [activeTab, setActiveTab] = useState<'menu' | 'ingredients' | 'training' | 'schedule' | 'data'>('menu');
   const [menuTab, setMenuTab] = useState<'food' | 'wines' | 'cocktails' | 'spirits'>('food');
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -413,12 +414,17 @@ export default function LeadAdminDashboard() {
           {/* ── Main Tabs ── */}
           <Tabs
             value={activeTab}
-            onValueChange={(v) => setActiveTab(v as 'menu' | 'training' | 'schedule' | 'data')}
+            onValueChange={(v) => setActiveTab(v as 'menu' | 'ingredients' | 'training' | 'schedule' | 'data')}
           >
-            <TabsList className="grid grid-cols-4 w-full mb-6 h-auto p-1">
+            <TabsList className="grid grid-cols-5 w-full mb-6 h-auto p-1">
               <TabsTrigger value="menu" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
                 <FolderOpen className="w-4 h-4" />
                 <span>Menu</span>
+              </TabsTrigger>
+              <TabsTrigger value="ingredients" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
+                <UtensilsCrossed className="w-4 h-4" />
+                <span className="hidden sm:inline">Menu Editor</span>
+                <span className="sm:hidden">Editor</span>
               </TabsTrigger>
               <TabsTrigger value="training" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
                 <BookOpen className="w-4 h-4" />
@@ -615,6 +621,11 @@ export default function LeadAdminDashboard() {
                 {/* Photo Gallery */}
                 <PhotoGallery menuItems={menuItems} onAssignPhoto={handleAssignPhoto} />
               </div>
+            </TabsContent>
+
+            {/* ════════════ MENU EDITOR TAB ════════════ */}
+            <TabsContent value="ingredients" className="space-y-6 mt-0">
+              <MenuIngredientEditor />
             </TabsContent>
 
             {/* ════════════ TRAINING TAB ════════════ */}
