@@ -25,6 +25,7 @@ import {
 } from '@/data/menuTypes';
 import { useMenuItems } from '@/hooks/useMenuItems';
 import { useAllergenModifications } from '@/hooks/useAllergenModifications';
+import { useDishIngredients } from '@/hooks/useDishIngredients';
 import { getDishImage } from '@/data/dishImages';
 import { 
   AlertTriangle, 
