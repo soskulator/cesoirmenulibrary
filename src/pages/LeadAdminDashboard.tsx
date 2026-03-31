@@ -623,6 +623,11 @@ export default function LeadAdminDashboard() {
               </div>
             </TabsContent>
 
+            {/* ════════════ MENU EDITOR TAB ════════════ */}
+            <TabsContent value="ingredients" className="space-y-6 mt-0">
+              <MenuIngredientEditor />
+            </TabsContent>
+
             {/* ════════════ TRAINING TAB ════════════ */}
             <TabsContent value="training" className="space-y-6 mt-0">
               <AllergyManagement categories={categories} />
