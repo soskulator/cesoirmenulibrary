@@ -52,6 +52,7 @@ interface TrainingIngredient {
   name: string;
   allergens: AllergenType[];
   removable: boolean;
+  omitNote?: string;
 }
 
 interface TrainingDish {
