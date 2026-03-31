@@ -77,6 +77,42 @@ export type Database = {
         }
         Relationships: []
       }
+      dish_ingredients: {
+        Row: {
+          allergens: string[] | null
+          created_at: string
+          id: string
+          ingredient_name: string
+          is_omittable: boolean
+          menu_item_id: string
+          omit_note: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          allergens?: string[] | null
+          created_at?: string
+          id?: string
+          ingredient_name: string
+          is_omittable?: boolean
+          menu_item_id: string
+          omit_note?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          allergens?: string[] | null
+          created_at?: string
+          id?: string
+          ingredient_name?: string
+          is_omittable?: boolean
+          menu_item_id?: string
+          omit_note?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       foh_test_answers: {
         Row: {
           admin_notes: string | null
