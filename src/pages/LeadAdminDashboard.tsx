@@ -24,6 +24,7 @@ import { MenuItemEditDialog } from '@/components/admin/MenuItemEditDialog';
 import { PhotoGallery } from '@/components/admin/PhotoGallery';
 import { WeeklyFocusManager } from '@/components/admin/WeeklyFocusManager';
 import { AllergyManagement } from '@/components/admin/AllergyManagement';
+import { MenuIngredientEditor } from '@/components/admin/MenuIngredientEditor';
 import { 
   Crown,
   FileText,
