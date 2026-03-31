@@ -215,3 +215,39 @@ export function FlashCard({
     </motion.div>
   );
 }
+
+function IngredientModifications({ itemId }: { itemId: string }) {
+  const { ingredients, isLoading } = useDishIngredients(itemId);
+
+  if (isLoading || ingredients.length === 0) return null;
+
+  return (
+    <div>
+      <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-copper mb-2" style={{ fontFamily: "'Source Serif Pro', Georgia, serif" }}>
+        Ingredient Modifications
+      </h3>
+      <div className="space-y-1.5">
+        {ingredients.map(ing => (
+          <div key={ing.id}>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium',
+                  ing.is_omittable
+                    ? 'bg-jade/15 text-jade border border-jade/20'
+                    : 'bg-destructive/10 text-destructive border border-destructive/20'
+                )}
+              >
+                {ing.is_omittable ? '🟢 Can Omit' : '🔴 Cannot Omit'}
+              </span>
+              <span className="text-sm font-medium text-foreground">{ing.ingredient_name}</span>
+            </div>
+            {ing.omit_note && (
+              <p className="text-xs italic text-muted-foreground ml-1 mt-0.5">{ing.omit_note}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
