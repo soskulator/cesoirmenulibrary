@@ -550,7 +550,7 @@ function AllergyCheckContent() {
         <PrintableAllergenMenu
           selectedAllergens={selectedAllergens}
           menuItems={menuItems}
-          modifications={modifications}
+          modifications={[]}
           categories={dbCategories}
         />
       )}
