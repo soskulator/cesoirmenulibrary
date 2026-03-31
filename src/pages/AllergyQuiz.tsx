@@ -43,6 +43,7 @@ interface ModificationQuizQuestion {
   id: string;
   type: 'modification';
   dishName: string;
+  dishId: string;
   allergenName: string;
   allergenIcon: string;
   canRemove: boolean;
