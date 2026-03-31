@@ -540,9 +540,11 @@ function AllergyCheckContent() {
                             </AnimatePresence>
                           </CollapsibleContent>
                           {hasMore && !isExpanded && (
-                            <p className="text-xs text-copper mt-2 cursor-pointer hover:underline">
-                              +{itemsWithThis.length - previewCount} more items
-                            </p>
+                            <CollapsibleTrigger asChild>
+                              <p className="text-xs text-copper mt-2 cursor-pointer hover:underline">
+                                +{itemsWithThis.length - previewCount} more items
+                              </p>
+                            </CollapsibleTrigger>
                           )}
                         </>
                       )}
