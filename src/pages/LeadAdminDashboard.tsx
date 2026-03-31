@@ -414,12 +414,17 @@ export default function LeadAdminDashboard() {
           {/* ── Main Tabs ── */}
           <Tabs
             value={activeTab}
-            onValueChange={(v) => setActiveTab(v as 'menu' | 'training' | 'schedule' | 'data')}
+            onValueChange={(v) => setActiveTab(v as 'menu' | 'ingredients' | 'training' | 'schedule' | 'data')}
           >
-            <TabsList className="grid grid-cols-4 w-full mb-6 h-auto p-1">
+            <TabsList className="grid grid-cols-5 w-full mb-6 h-auto p-1">
               <TabsTrigger value="menu" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
                 <FolderOpen className="w-4 h-4" />
                 <span>Menu</span>
+              </TabsTrigger>
+              <TabsTrigger value="ingredients" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
+                <UtensilsCrossed className="w-4 h-4" />
+                <span className="hidden sm:inline">Menu Editor</span>
+                <span className="sm:hidden">Editor</span>
               </TabsTrigger>
               <TabsTrigger value="training" className="flex flex-col sm:flex-row items-center gap-1 py-2 text-[11px] sm:text-sm">
                 <BookOpen className="w-4 h-4" />
