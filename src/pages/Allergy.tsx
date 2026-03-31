@@ -568,8 +568,41 @@ function AllergyTrainingContent() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['appetizers']);
   const [omittedIngredients, setOmittedIngredients] = useState<Set<string>>(new Set());
 
-  // Create training dishes from database menu items
-  const trainingDishes = useMemo(() => createTrainingDishes(menuItems), [menuItems]);
+  // Build ingredient lookup from dish_ingredients DB data
+  const ingredientsByDish = useMemo(() => {
+    const map: Record<string, DishIngredient[]> = {};
+    allIngredients.forEach(ing => {
+      if (!map[ing.menu_item_id]) map[ing.menu_item_id] = [];
+      map[ing.menu_item_id].push(ing);
+    });
+    return map;
+  }, [allIngredients]);
+
+  // Create training dishes, preferring structured dish_ingredients data
+  const trainingDishes = useMemo(() => {
+    return menuItems
+      .filter(item => foodCategories.includes(item.categoryId) && item.isPublished)
+      .map(item => {
+        const dbIngs = ingredientsByDish[item.id];
+        const ingredients: TrainingIngredient[] = dbIngs && dbIngs.length > 0
+          ? dbIngs.map(ing => ({
+              id: ing.id,
+              name: ing.ingredient_name,
+              allergens: (ing.allergens ?? []) as AllergenType[],
+              removable: ing.is_omittable,
+              omitNote: ing.is_omittable ? undefined : (ing.omit_note ?? undefined),
+            }))
+          : parseIngredients(item.ingredientsText, item.allergens);
+        return {
+          id: item.id,
+          name: item.name,
+          image: getDishImage(item.id, item.imageUrl) || '/placeholder.svg',
+          description: item.shortDescription,
+          categoryId: item.categoryId,
+          ingredients,
+        };
+      });
+  }, [menuItems, ingredientsByDish]);
   
   // Group dishes by category
   const dishesByCategory = useMemo(() => groupDishesByCategory(trainingDishes), [trainingDishes]);
