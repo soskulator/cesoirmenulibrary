@@ -4,6 +4,7 @@ import { MenuItem } from '@/data/menuTypes';
 import { getDishImage } from '@/data/dishImages';
 import { AllergenList } from './AllergenBadge';
 import { DietaryBadges } from './DietaryBadge';
+import { useDishIngredients } from '@/hooks/useDishIngredients';
 import { cn } from '@/lib/utils';
 
 interface FlashCardProps {
