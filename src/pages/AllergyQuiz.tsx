@@ -460,6 +460,9 @@ export default function AllergyQuizPage() {
                         </Button>
                       )}
                       {showAnswer && (
+                        <IngredientModNotes dishId={(currentQuestion as ModificationQuizQuestion).dishId} />
+                      )}
+                      {showAnswer && (
                         <div className="mt-4 flex gap-3">
                           <Button
                             variant="outline"
