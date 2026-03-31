@@ -201,6 +201,9 @@ export function FlashCard({
                 <p className="text-sm sm:text-base text-muted-foreground bg-muted/50 p-3 rounded-lg">{item.prepNotes}</p>
               </div>
             )}
+
+            {/* Ingredient Modifications */}
+            <IngredientModifications itemId={item.id} />
           </div>
 
           {/* Flip hint */}
