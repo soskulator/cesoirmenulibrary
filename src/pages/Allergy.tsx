@@ -944,7 +944,12 @@ function AllergyTrainingContent() {
                             />
                           </>
                         ) : (
-                          <span className="text-xs text-muted-foreground italic">Base ingredient</span>
+                          <div className="text-right">
+                            <span className="text-xs text-muted-foreground italic">Cannot omit</span>
+                            {ingredient.omitNote && (
+                              <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">{ingredient.omitNote}</p>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>
