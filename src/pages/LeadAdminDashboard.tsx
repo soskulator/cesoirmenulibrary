@@ -624,7 +624,7 @@ export default function LeadAdminDashboard() {
             </TabsContent>
 
             {/* ════════════ MENU EDITOR TAB ════════════ */}
-            <TabsContent value="ingredients" className="space-y-6 mt-0">
+            <TabsContent value="ingredients" className="mt-0">
               <MenuIngredientEditor />
             </TabsContent>
 
