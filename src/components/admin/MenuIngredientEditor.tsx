@@ -299,7 +299,7 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
   }
 
   return (
-    <Card className="flex flex-col min-h-[400px] lg:max-h-[calc(100vh-16rem)]">
+    <Card className="flex flex-col min-h-[400px] max-h-[calc(100vh-12rem)] md:max-h-[calc(100vh-14rem)] lg:max-h-[calc(100vh-16rem)]">
       <CardHeader className="pb-3 flex-shrink-0">
         <div className="flex items-center gap-3 flex-wrap">
           <CardTitle className="font-serif text-lg">{item.name}</CardTitle>
@@ -325,7 +325,7 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
 
         {/* Ingredient rows */}
         <div className="min-h-0 lg:flex-1">
-          <ScrollArea className="h-[26rem] md:h-[32rem] lg:h-full">
+          <ScrollArea className="h-[60vh] md:h-[55vh] lg:h-full">
             <div className="space-y-3 pr-2 pb-2">
               {ingredients.map((ing, idx) => (
                 <div
