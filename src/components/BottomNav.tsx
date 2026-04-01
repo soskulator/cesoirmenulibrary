@@ -23,17 +23,17 @@ export function BottomNav() {
   return (
     <>
       <HeaderSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} origin="bottom" />
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border h-16 md:h-20 lg:h-24 flex items-center justify-evenly px-2" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border h-16 md:h-20 flex items-center justify-around px-2 md:px-6" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {navItems.map((item) => {
           if (item.path === '__search__') {
             return (
               <button
                 key={item.path}
                 onClick={() => setSearchOpen(true)}
-                className="flex flex-col items-center gap-1 py-2 md:py-5 px-3 min-w-[52px] text-muted-foreground active:text-copper transition-colors"
+                className="flex flex-col items-center gap-1 py-2 px-3 min-w-[52px] text-muted-foreground active:text-copper transition-colors"
               >
-                <item.icon className="w-5 h-5 md:w-7 md:h-7" />
-                <span className="text-[10px] md:text-sm tracking-wide font-medium">{item.label}</span>
+                <item.icon className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="text-[10px] md:text-xs tracking-wide font-medium">{item.label}</span>
               </button>
             );
           }
@@ -44,12 +44,12 @@ export function BottomNav() {
               key={item.path}
               to={item.path}
               className={cn(
-                'flex flex-col items-center gap-1 py-2 md:py-5 px-3 min-w-[52px]',
+                'flex flex-col items-center gap-1 py-2 px-3 min-w-[52px]',
                 isActive ? 'text-copper' : 'text-muted-foreground'
               )}
             >
-              <item.icon className="w-5 h-5 md:w-7 md:h-7" />
-              <span className="text-[10px] md:text-sm tracking-wide font-medium">{item.label}</span>
+              <item.icon className="w-5 h-5 md:w-6 md:h-6" />
+              <span className="text-[10px] md:text-xs tracking-wide font-medium">{item.label}</span>
             </Link>
           );
         })}
