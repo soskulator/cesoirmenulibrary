@@ -324,8 +324,8 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
         <Separator className="flex-shrink-0" />
 
         {/* Ingredient rows */}
-        <div className="min-h-0 lg:flex-1">
-          <ScrollArea className="h-[60vh] md:h-[55vh] lg:h-[35vh]">
+        <div className="min-h-0 flex-1">
+          <ScrollArea className="h-full">
             <div className="space-y-3 pr-2 pb-2">
               {ingredients.map((ing, idx) => (
                 <div
