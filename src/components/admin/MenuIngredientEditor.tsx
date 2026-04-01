@@ -299,7 +299,7 @@ function IngredientEditorPanel({ item }: { item: { id: string; name: string; cat
   }
 
   return (
-    <Card className="flex flex-col min-h-[400px] max-h-[calc(100vh-12rem)] md:max-h-[calc(100vh-14rem)] lg:max-h-[calc(100vh-16rem)]">
+    <Card className="flex flex-col">
       <CardHeader className="pb-3 flex-shrink-0">
         <div className="flex items-center gap-3 flex-wrap">
           <CardTitle className="font-serif text-lg">{item.name}</CardTitle>
