@@ -95,7 +95,7 @@ const App = () => (
                   <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
                   <Route path="/allergy-quiz" element={<ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}><AllergyQuiz /></ProtectedRoute>} />
                   <Route path="/food-quiz" element={<ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}><FoodQuiz /></ProtectedRoute>} />
-                  <Route path="/foh-test" element={<ProtectedRoute requiredRole={[...ROLES.FOH_STAFF]}><FohTest /></ProtectedRoute>} />
+                  <Route path="/foh-test" element={<ProtectedRoute requiredRole={[...ROLES.FOH_STAFF, 'server_assistant']}><FohTest /></ProtectedRoute>} />
                   <Route path="/daily-focus" element={<ProtectedRoute><DailyFocus /></ProtectedRoute>} />
                   <Route path="/allergy" element={<ProtectedRoute><Allergy /></ProtectedRoute>} />
                   <Route path="/allergen-menu" element={<ProtectedRoute><AllergenMenu /></ProtectedRoute>} />
