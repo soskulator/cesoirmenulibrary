@@ -1,5 +1,8 @@
-import type { FohTestQuestion } from './menuTypes';
-import { serviceStaffQuestions, serverAssistantQuestions } from './fohTestData';
+import {
+  serviceStaffQuestions,
+  serverAssistantQuestions,
+  type FohTestQuestion,
+} from './fohTestData';
 
 export interface QuestionsValidationResult {
   ok: boolean;
