@@ -45,11 +45,36 @@ const defaultForm = {
 
 export function TestConfigurationsTab({ onManageQuestions }: Props) {
   const { configs, isLoading, fetchConfigs, createConfig, updateConfig } = useTestConfigs();
+  const { resyncFromStatic } = useFohTestQuestions();
   const { toast } = useToast();
   const [editing, setEditing] = useState<TestConfig | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ ...defaultForm });
   const [isSaving, setIsSaving] = useState(false);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+
+  const STATIC_BACKED: Record<string, 'service_staff' | 'server_assistant'> = {
+    service_staff: 'service_staff',
+    server_assistant: 'server_assistant',
+  };
+
+  const handleSyncNow = async (config: TestConfig) => {
+    const target = STATIC_BACKED[config.test_type];
+    if (!target) {
+      toast({
+        title: 'No static source',
+        description: `"${config.test_name}" is not backed by fohTestData.ts. Sync only applies to Server & Bartender and Server Assistant tests.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (!window.confirm(`Replace all "${config.test_name}" questions with the latest from fohTestData.ts? Any manual edits to that bank will be lost.`)) {
+      return;
+    }
+    setSyncingId(config.id);
+    await resyncFromStatic(target);
+    setSyncingId(null);
+  };
 
   useEffect(() => { fetchConfigs(); }, [fetchConfigs]);
 
