@@ -58,13 +58,13 @@ export default function DailyFocusPage() {
         if (data && data.menu_item_ids?.length > 0) {
           const items = data.menu_item_ids
             .map(id => menuItems.find(item => item.id === id))
-            .filter((item): item is MenuItem => item !== undefined);
+            .filter((item): item is MenuItem => item !== undefined && item.isPublished);
           setSavedFocusItems(items);
         }
         // If a cocktail_id is set, find it and override the auto-rotation
         if (data?.cocktail_id) {
           const cocktail = menuItems.find(i => i.id === data.cocktail_id);
-          if (cocktail) setSavedCocktail(cocktail);
+          if (cocktail && cocktail.isPublished) setSavedCocktail(cocktail);
         }
       } catch (error) {
         console.error('Error fetching saved focus:', error);
@@ -138,7 +138,7 @@ export default function DailyFocusPage() {
       if (data && data.menu_item_ids?.length > 0) {
         const items = data.menu_item_ids
           .map(id => menuItems.find(item => item.id === id))
-          .filter((item): item is MenuItem => item !== undefined);
+          .filter((item): item is MenuItem => item !== undefined && item.isPublished);
         setSavedFocusItems(items);
         setCustomFocusItems(null);
       } else {
@@ -148,7 +148,7 @@ export default function DailyFocusPage() {
 
       if (data?.cocktail_id) {
         const cocktail = menuItems.find(i => i.id === data.cocktail_id);
-        setSavedCocktail(cocktail || null);
+        setSavedCocktail(cocktail && cocktail.isPublished ? cocktail : null);
       } else {
         setSavedCocktail(null);
       }
