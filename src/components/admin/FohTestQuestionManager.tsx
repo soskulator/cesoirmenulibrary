@@ -173,6 +173,13 @@ export function FohTestQuestionManager() {
     setIsInitializing(false);
   };
 
+  const handleResync = async () => {
+    setIsResyncing(true);
+    await resyncFromStatic(activeTab);
+    setIsResyncing(false);
+    setConfirmResyncOpen(false);
+  };
+
   const updateOption = (index: number, value: string) => {
     const newOptions = [...formData.options];
     newOptions[index] = value;
