@@ -74,6 +74,9 @@ export default function QuizBuilder() {
             <TabsTrigger value="configs" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Test Configurations
             </TabsTrigger>
+            <TabsTrigger value="diagnostics" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Diagnostics
+            </TabsTrigger>
             {assignConfig && (
               <TabsTrigger value="assign" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 Assign Questions
