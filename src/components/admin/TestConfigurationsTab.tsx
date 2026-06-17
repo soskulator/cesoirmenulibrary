@@ -213,7 +213,7 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
                   </span>
                 </div>
               </div>
-              <div className="flex gap-2 pt-1">
+              <div className="flex flex-wrap gap-2 pt-1">
                 <Button variant="outline" size="sm" onClick={() => openEdit(config)}>
                   <Pencil className="w-3.5 h-3.5 mr-1.5" />
                   Edit
@@ -222,6 +222,23 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
                   <ListChecks className="w-3.5 h-3.5 mr-1.5" />
                   Manage Questions
                 </Button>
+                {STATIC_BACKED[config.test_type] && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSyncNow(config)}
+                    disabled={syncingId === config.id}
+                    className="border-jade/40 hover:bg-jade/10 hover:text-jade"
+                    title="Overwrite this test's questions with the latest from fohTestData.ts"
+                  >
+                    {syncingId === config.id ? (
+                      <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                    )}
+                    Sync Now
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
