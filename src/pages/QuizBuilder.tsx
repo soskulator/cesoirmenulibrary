@@ -92,6 +92,10 @@ export default function QuizBuilder() {
             <TestConfigurationsTab onManageQuestions={handleManageQuestions} />
           </TabsContent>
 
+          <TabsContent value="diagnostics">
+            <FohDiagnosticsPanel />
+          </TabsContent>
+
           {assignConfig && (
             <TabsContent value="assign">
               <AssignQuestionsTab
