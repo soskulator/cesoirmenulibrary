@@ -118,7 +118,7 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
     id: 10,
     question: "What is special about our Onion Soup?",
     type: 'short_answer',
-    correctAnswer: "24-hour oxtail broth with shallot crumble",
+    correctAnswer: "24-hour house-made veal broth (Cognac, Madeira, Port, and red wine), topped with broiled Provolone and Swiss and a shallot crumble.",
     category: 'menu',
     testType: 'service_staff'
   },
@@ -154,14 +154,6 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
     testType: 'service_staff'
   },
   {
-    id: 14,
-    question: "What is foie gras? Describe our foie gras terrine.",
-    type: 'short_answer',
-    correctAnswer: "Fatty duck liver. Slowly cooked in a mold for smooth, luxurious texture. Served with brûlée brioche, fig mostarda, port gelée, and pistachio pine nut crumble.",
-    category: 'menu',
-    testType: 'service_staff'
-  },
-  {
     id: 15,
     question: "What is gelée?",
     type: 'short_answer',
@@ -171,9 +163,9 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
   },
   {
     id: 16,
-    question: "How much lobster comes on each dish? (Lobster Salad and Lobster Spaghetti)",
+    question: "How much lobster comes on the Lobster Spaghetti?",
     type: 'short_answer',
-    correctAnswer: "Lobster Salad: whole lobster split and served in sauce and on top. Lobster Spaghetti: half lobster.",
+    correctAnswer: "A pound and a half (1½ lb) of Atlantic / cold-water lobster.",
     category: 'menu',
     testType: 'service_staff'
   },
@@ -182,14 +174,6 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
     question: "How many escargots are served per order?",
     type: 'short_answer',
     correctAnswer: "6-8 escargots",
-    category: 'menu',
-    testType: 'service_staff'
-  },
-  {
-    id: 18,
-    question: "How many clams come with the Linguine Vongole?",
-    type: 'short_answer',
-    correctAnswer: "12-16 clams",
     category: 'menu',
     testType: 'service_staff'
   },
@@ -205,15 +189,15 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
     id: 20,
     question: "If a guest cannot eat pork, can they have the duck confit? Explain.",
     type: 'short_answer',
-    correctAnswer: "No, because the dish contains pancetta, pork ragout, and sausage",
+    correctAnswer: "No — the dish contains pancetta and pork ragù.",
     category: 'menu',
     testType: 'service_staff'
   },
   {
     id: 21,
-    question: "What seafood is included in the Bouillabaisse, and how much of each?",
+    question: "What seafood is included in the Bouillabaisse?",
     type: 'short_answer',
-    correctAnswer: "Scallop, shrimp, lobster, seabass, mussels or clams",
+    correctAnswer: "Mussels, scallops, shrimp, and seabass — in a saffron lobster broth with Pernod, served with grilled bread.",
     category: 'menu',
     testType: 'service_staff'
   },
@@ -221,7 +205,7 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
     id: 22,
     question: "What cuts of meat do we carry? Include ounces and country of origin.",
     type: 'short_answer',
-    correctAnswer: "Australia Carrara Wagyu: Tenderloin (8oz), NY Strip (10oz, 14oz), Prime Porterhouse (32oz), Ribeye (16oz), Wagyu Tomahawk (38oz), Iberico Pluma Steak (14oz from Spain)",
+    correctAnswer: "Filet Mignon 7oz (Carrara Farms, Australia, MS7); New York Strip 14oz (Creekstone Prime, 21-day dry-aged); Ribeye 16oz (1855 Prime, 21-day); Porterhouse 32oz (Black Diamond Prime); Tomahawk 38oz (Australian Wagyu, Black Opal MS7); New York Strip 10oz & Frites (Creekstone Prime, 21-day); Iberico Pluma 14oz (Acorn Chasers, Spain).",
     category: 'menu',
     testType: 'service_staff'
   },
@@ -607,6 +591,182 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
     type: 'short_answer',
     correctAnswer: "Regular cubed ice, large format ice cubes/spheres for spirits",
     category: 'drinks',
+    testType: 'service_staff'
+  },
+  {
+    id: 70,
+    question: "If a guest is allergic to dairy, can they have the Hamachi Crudo? Explain.",
+    type: 'short_answer',
+    correctAnswer: "No — the hamachi is dressed in a buttermilk dressing, which contains dairy.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 71,
+    question: "What is our Hamachi Crudo dressed in?",
+    type: 'short_answer',
+    correctAnswer: "A buttermilk dressing of lime, orange, yuzu, honey, and ginger; finished with chili and basil oil and finger lime.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 72,
+    question: "Describe our Tuna Tartare.",
+    type: 'short_answer',
+    correctAnswer: "Sushi-grade tuna with watermelon radish, aji amarillo–guava sauce, toasted sesame, and crispy lotus root chips.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 73,
+    question: "Can a gluten-free guest have the Tuna Tartare? Explain.",
+    type: 'short_answer',
+    correctAnswer: "Yes — it contains no gluten; it's finished with crispy lotus root chips, not a fried tempura crunch.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 74,
+    question: "What is the signature sauce on our Tuna Tartare?",
+    type: 'short_answer',
+    correctAnswer: "Aji amarillo–guava sauce — tropical guava sweetness with fruity pepper heat.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 75,
+    question: "Which cheeses top our French Onion Soup?",
+    type: 'short_answer',
+    correctAnswer: "Provolone and Swiss.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 76,
+    question: "Which three fortified spirits are flambéed into our Lobster Bisque?",
+    type: 'short_answer',
+    correctAnswer: "Cognac, Madeira, and Port.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 77,
+    question: "What is the base of our Snapper Ceviche?",
+    type: 'short_answer',
+    correctAnswer: "A passionfruit ceviche broth with nectarine juice, ginger, green onion, basil, citrus peel, and Fresno chili; finished with micro cilantro, green onions, and ice buds.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 78,
+    question: "What sauce and vegetable feature in our Seared Scallops?",
+    type: 'short_answer',
+    correctAnswer: "Miso brown butter, with sunchokes served three ways (roasted, purée, and chips) and pan-roasted king mushrooms.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 79,
+    question: "What is our Escargot presented atop, and what finishes the dish?",
+    type: 'short_answer',
+    correctAnswer: "Josper-kissed bone marrow, finished with peppadew peppers and sauce vierge.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 80,
+    question: "What wine is our Charred Octopus braised in before grilling?",
+    type: 'short_answer',
+    correctAnswer: "Red wine.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 81,
+    question: "What is served with our Charred Octopus?",
+    type: 'short_answer',
+    correctAnswer: "Smoky romesco, chorizo, fingerling potatoes, and Niçoise olives.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 82,
+    question: "How is our Roasted Chicken prepared?",
+    type: 'short_answer',
+    correctAnswer: "A half chicken, 24-hour brined and dry-aged 12 hours; served with truffle chicken jus, smoky romesco, garlic confit, and roasted fingerling potatoes.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 83,
+    question: "If a guest has a tree-nut allergy, can they have the Roasted Chicken? Explain.",
+    type: 'short_answer',
+    correctAnswer: "Not as plated — the romesco contains almonds and hazelnuts. Check with the kitchen about omitting it.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 84,
+    question: "Where is our Rack of Lamb sourced from, and what is the cut?",
+    type: 'short_answer',
+    correctAnswer: "Australia — a 4-bone rack, about 1¼ lb of meat.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 85,
+    question: "What sauce and sides come with our Rack of Lamb?",
+    type: 'short_answer',
+    correctAnswer: "Veal jus, blistered cherry tomatoes, and lyonnaise potatoes.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 86,
+    question: "What sauce finishes our Chilean Sea Bass?",
+    type: 'short_answer',
+    correctAnswer: "Saffron-braised fennel beurre blanc.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 87,
+    question: "Beyond the fish, what proteins are on our Chilean Sea Bass, and what allergens do they involve?",
+    type: 'short_answer',
+    correctAnswer: "Veal demi (beef) and salmon roe (fish), over bomba rice and leek fondue — flag for beef and fish-roe sensitivities.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 88,
+    question: "What finishes the tomato relish on our Roasted Branzino?",
+    type: 'short_answer',
+    correctAnswer: "Fennel pollen and garlic oil.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 89,
+    question: "How is our Whole Dover Sole prepared and plated?",
+    type: 'short_answer',
+    correctAnswer: "Pan-seared with a warm sauce vierge (shallots, garlic, herbs, citrus, smoked olive oil, peppadews); served with bomba rice and green beans.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 90,
+    question: "What beans are in our Duck Confit Cassoulet, and how large is the duck leg?",
+    type: 'short_answer',
+    correctAnswer: "French navy beans, with an 8 oz duck confit leg.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 91,
+    question: "What is in our Caesar dressing?",
+    type: 'short_answer',
+    correctAnswer: "A house-made smoky dressing of grilled anchovies, egg yolks, garlic, Dijon, lemon, black pepper, and Parmesan, emulsified with olive oil.",
+    category: 'menu',
     testType: 'service_staff'
   }
 ];
