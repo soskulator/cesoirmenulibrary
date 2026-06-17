@@ -284,6 +284,7 @@ export function useFohTestQuestions(testType?: TestType) {
     isInitialized,
     fetchQuestions,
     initializeFromStatic,
+    resyncFromStatic,
     addQuestion,
     updateQuestion,
     deleteQuestion,
