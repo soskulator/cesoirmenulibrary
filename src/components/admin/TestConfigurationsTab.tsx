@@ -8,8 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Settings, Pencil, ListChecks, Loader2, Plus } from 'lucide-react';
+import { Settings, Pencil, ListChecks, Loader2, Plus, RefreshCw } from 'lucide-react';
 import { useTestConfigs, DIFFICULTIES, type TestConfig } from '@/hooks/useQuizQuestions';
+import { useFohTestQuestions } from '@/hooks/useFohTestQuestions';
 import { useToast } from '@/hooks/use-toast';
 
 const SUGGESTED_TEST_TYPES = [
@@ -44,11 +45,36 @@ const defaultForm = {
 
 export function TestConfigurationsTab({ onManageQuestions }: Props) {
   const { configs, isLoading, fetchConfigs, createConfig, updateConfig } = useTestConfigs();
+  const { resyncFromStatic } = useFohTestQuestions();
   const { toast } = useToast();
   const [editing, setEditing] = useState<TestConfig | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ ...defaultForm });
   const [isSaving, setIsSaving] = useState(false);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+
+  const STATIC_BACKED: Record<string, 'service_staff' | 'server_assistant'> = {
+    service_staff: 'service_staff',
+    server_assistant: 'server_assistant',
+  };
+
+  const handleSyncNow = async (config: TestConfig) => {
+    const target = STATIC_BACKED[config.test_type];
+    if (!target) {
+      toast({
+        title: 'No static source',
+        description: `"${config.test_name}" is not backed by fohTestData.ts. Sync only applies to Server & Bartender and Server Assistant tests.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (!window.confirm(`Replace all "${config.test_name}" questions with the latest from fohTestData.ts? Any manual edits to that bank will be lost.`)) {
+      return;
+    }
+    setSyncingId(config.id);
+    await resyncFromStatic(target);
+    setSyncingId(null);
+  };
 
   useEffect(() => { fetchConfigs(); }, [fetchConfigs]);
 
@@ -187,7 +213,7 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
                   </span>
                 </div>
               </div>
-              <div className="flex gap-2 pt-1">
+              <div className="flex flex-wrap gap-2 pt-1">
                 <Button variant="outline" size="sm" onClick={() => openEdit(config)}>
                   <Pencil className="w-3.5 h-3.5 mr-1.5" />
                   Edit
@@ -196,6 +222,23 @@ export function TestConfigurationsTab({ onManageQuestions }: Props) {
                   <ListChecks className="w-3.5 h-3.5 mr-1.5" />
                   Manage Questions
                 </Button>
+                {STATIC_BACKED[config.test_type] && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSyncNow(config)}
+                    disabled={syncingId === config.id}
+                    className="border-jade/40 hover:bg-jade/10 hover:text-jade"
+                    title="Overwrite this test's questions with the latest from fohTestData.ts"
+                  >
+                    {syncingId === config.id ? (
+                      <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                    )}
+                    Sync Now
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>

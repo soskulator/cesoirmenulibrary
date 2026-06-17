@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { QuestionBankTab } from '@/components/admin/QuestionBankTab';
 import { TestConfigurationsTab } from '@/components/admin/TestConfigurationsTab';
 import { AssignQuestionsTab } from '@/components/admin/AssignQuestionsTab';
+import { FohDiagnosticsPanel } from '@/components/admin/FohDiagnosticsPanel';
 import { type TestConfig } from '@/hooks/useQuizQuestions';
 
 export default function QuizBuilder() {
@@ -73,6 +74,9 @@ export default function QuizBuilder() {
             <TabsTrigger value="configs" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Test Configurations
             </TabsTrigger>
+            <TabsTrigger value="diagnostics" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Diagnostics
+            </TabsTrigger>
             {assignConfig && (
               <TabsTrigger value="assign" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 Assign Questions
@@ -86,6 +90,10 @@ export default function QuizBuilder() {
 
           <TabsContent value="configs">
             <TestConfigurationsTab onManageQuestions={handleManageQuestions} />
+          </TabsContent>
+
+          <TabsContent value="diagnostics">
+            <FohDiagnosticsPanel />
           </TabsContent>
 
           {assignConfig && (
