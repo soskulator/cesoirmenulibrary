@@ -667,9 +667,9 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
   },
   {
     id: 79,
-    question: "What is our Escargot presented atop, and what finishes the dish?",
+    question: "What is our Escargot, and what is it served with?",
     type: 'short_answer',
-    correctAnswer: "Josper-kissed bone marrow, finished with peppadew peppers and sauce vierge.",
+    correctAnswer: "Josper-kissed bone marrow (brined 12 hours) with French Burgundy snails cooked in shallots, bay leaf, thyme, rosemary, garlic, and olive oil; served with sauce vierge, grilled Andalusian bread, and veal demi.",
     category: 'menu',
     testType: 'service_staff'
   },
