@@ -222,6 +222,23 @@ export function FohTestQuestionManager() {
                 Sync
               </Button>
             )}
+            {isInitialized && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setConfirmResyncOpen(true)}
+                disabled={isLoading || isResyncing}
+                className="text-xs h-8 px-3"
+                title="Replace this test's questions with the latest from source code"
+              >
+                {isResyncing ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                ) : (
+                  <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                )}
+                Resync
+              </Button>
+            )}
             <Button 
               size="sm" 
               className="bg-copper hover:bg-copper/90 text-white text-xs h-8 px-3"
