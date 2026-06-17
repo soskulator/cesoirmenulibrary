@@ -54,10 +54,13 @@ export function FohTestQuestionManager() {
     isLoading,
     isInitialized,
     initializeFromStatic,
+    resyncFromStatic,
     addQuestion,
     updateQuestion,
     deleteQuestion,
   } = useFohTestQuestions();
+  const [isResyncing, setIsResyncing] = useState(false);
+  const [confirmResyncOpen, setConfirmResyncOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -170,6 +173,13 @@ export function FohTestQuestionManager() {
     setIsInitializing(false);
   };
 
+  const handleResync = async () => {
+    setIsResyncing(true);
+    await resyncFromStatic(activeTab);
+    setIsResyncing(false);
+    setConfirmResyncOpen(false);
+  };
+
   const updateOption = (index: number, value: string) => {
     const newOptions = [...formData.options];
     newOptions[index] = value;
@@ -210,6 +220,23 @@ export function FohTestQuestionManager() {
                   <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
                 )}
                 Sync
+              </Button>
+            )}
+            {isInitialized && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setConfirmResyncOpen(true)}
+                disabled={isLoading || isResyncing}
+                className="text-xs h-8 px-3"
+                title="Replace this test's questions with the latest from source code"
+              >
+                {isResyncing ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                ) : (
+                  <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                )}
+                Resync
               </Button>
             )}
             <Button 
@@ -498,6 +525,34 @@ export function FohTestQuestionManager() {
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
               ) : null}
               {editingQuestion ? 'Update' : 'Add'} Question
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Resync Dialog */}
+      <Dialog open={confirmResyncOpen} onOpenChange={setConfirmResyncOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Resync {activeTab === 'service_staff' ? 'Service Staff' : 'Server Assistant'} questions?</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-muted-foreground py-2 space-y-2">
+            <p>
+              This will <strong>delete all current {activeTab === 'service_staff' ? 'Service Staff' : 'Server Assistant'} questions</strong> in
+              the database and replace them with the latest version from the source code.
+            </p>
+            <p>
+              Any manual edits made in this panel for this test will be lost. Use this when menu items or answers
+              have been updated and you want the live quiz to match the source.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmResyncOpen(false)} disabled={isResyncing}>
+              Cancel
+            </Button>
+            <Button onClick={handleResync} disabled={isResyncing} className="bg-copper hover:bg-copper/90 text-white">
+              {isResyncing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+              Replace from source
             </Button>
           </DialogFooter>
         </DialogContent>

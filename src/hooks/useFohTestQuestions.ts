@@ -111,6 +111,59 @@ export function useFohTestQuestions(testType?: TestType) {
     }
   }, [fetchQuestions, toast]);
 
+  const resyncFromStatic = useCallback(async (targetTestType: TestType) => {
+    try {
+      setIsLoading(true);
+
+      const staticQuestions = targetTestType === 'server_assistant'
+        ? serverAssistantQuestions
+        : serviceStaffQuestions;
+
+      // Wipe existing questions for this test type so static is the source of truth
+      const { error: deleteError } = await supabase
+        .from('foh_test_questions')
+        .delete()
+        .eq('test_type', targetTestType);
+
+      if (deleteError) throw deleteError;
+
+      const dbQuestions = staticQuestions.map(q => ({
+        question: q.question,
+        type: q.type,
+        options: q.options || [],
+        correct_answer: q.correctAnswer,
+        correct_index: q.correctIndex ?? null,
+        category: q.category,
+        test_type: q.testType,
+        is_active: true,
+      }));
+
+      const { error: insertError } = await supabase
+        .from('foh_test_questions')
+        .insert(dbQuestions);
+
+      if (insertError) throw insertError;
+
+      toast({
+        title: 'Questions Resynced',
+        description: `${staticQuestions.length} ${targetTestType === 'server_assistant' ? 'Server Assistant' : 'Service Staff'} questions replaced from latest source.`,
+      });
+
+      await fetchQuestions();
+      return true;
+    } catch (error) {
+      console.error('Error resyncing questions:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to resync questions from source.',
+        variant: 'destructive',
+      });
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchQuestions, toast]);
+
   const addQuestion = useCallback(async (question: Omit<DbFohTestQuestion, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { error } = await supabase
@@ -231,6 +284,7 @@ export function useFohTestQuestions(testType?: TestType) {
     isInitialized,
     fetchQuestions,
     initializeFromStatic,
+    resyncFromStatic,
     addQuestion,
     updateQuestion,
     deleteQuestion,
