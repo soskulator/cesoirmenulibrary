@@ -529,6 +529,34 @@ export function FohTestQuestionManager() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Confirm Resync Dialog */}
+      <Dialog open={confirmResyncOpen} onOpenChange={setConfirmResyncOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Resync {activeTab === 'service_staff' ? 'Service Staff' : 'Server Assistant'} questions?</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-muted-foreground py-2 space-y-2">
+            <p>
+              This will <strong>delete all current {activeTab === 'service_staff' ? 'Service Staff' : 'Server Assistant'} questions</strong> in
+              the database and replace them with the latest version from the source code.
+            </p>
+            <p>
+              Any manual edits made in this panel for this test will be lost. Use this when menu items or answers
+              have been updated and you want the live quiz to match the source.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmResyncOpen(false)} disabled={isResyncing}>
+              Cancel
+            </Button>
+            <Button onClick={handleResync} disabled={isResyncing} className="bg-copper hover:bg-copper/90 text-white">
+              {isResyncing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+              Replace from source
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
