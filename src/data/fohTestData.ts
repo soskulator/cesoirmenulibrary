@@ -768,6 +768,86 @@ export const serviceStaffQuestions: FohTestQuestion[] = [
     correctAnswer: "A house-made smoky dressing of grilled anchovies, egg yolks, garlic, Dijon, lemon, black pepper, and Parmesan, emulsified with olive oil.",
     category: 'menu',
     testType: 'service_staff'
+  },
+  {
+    id: 92,
+    question: "What is our Côte de Porc, and how is it prepared?",
+    type: 'short_answer',
+    correctAnswer: "A 14 oz Kurobuta (Berkshire) pork chop, 24-hour brined and then dry-aged 12 hours.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 93,
+    question: "What is served with the Côte de Porc?",
+    type: 'short_answer',
+    correctAnswer: "Charred broccolini, truffle chicken jus, and lyonnaise potatoes with blistered cherry tomatoes, seared shallot, and sherry vinegar; finished with veal demi and chives.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 94,
+    question: "Describe our Seafood Linguine.",
+    type: 'short_answer',
+    correctAnswer: "Squid-ink linguini in a spicy fra diavolo sauce of mussels, tomato, garlic, Calabrian chili, white wine, and clam stock; served with two prawns and charred octopus, finished with butter.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 95,
+    question: "Which shellfish and mollusks are in the Seafood Linguine?",
+    type: 'short_answer',
+    correctAnswer: "Mussels, prawns, and octopus, plus clam stock in the sauce — flag for shellfish and mollusk allergies.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 96,
+    question: "Describe our Caviar Pasta.",
+    type: 'short_answer',
+    correctAnswer: "Spaghetti with three U10 seared scallops in a garlic-butter white wine sauce (white wine, garlic, butter, lemon juice, clam juice, caviar, and parsley), topped with a teaspoon of caviar.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 97,
+    question: "How many scallops are on the Caviar Pasta, and how many guests is it meant for?",
+    type: 'short_answer',
+    correctAnswer: "Three U10 scallops; it's a mid-course meant to share between 2–3 people.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 98,
+    question: "What is the Selection Lobster?",
+    type: 'short_answer',
+    correctAnswer: "One 1½ lb lobster, split in half and grilled, served with bisque sauce over the top and garnished with chives.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 99,
+    question: "What does a per-pound order of Selection Prawns include?",
+    type: 'short_answer',
+    correctAnswer: "Two U2 prawns, split in half and grilled whole, served with lobster bisque sauce and garnished with chives.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 100,
+    question: "What is in our Niçoise Salad?",
+    type: 'short_answer',
+    correctAnswer: "Blanched-then-chilled haricots verts, tobiko-seasoned tuna, cherry tomatoes, marinated niçoise olives, and hard-boiled egg, dressed with Dijon and finished with chives.",
+    category: 'menu',
+    testType: 'service_staff'
+  },
+  {
+    id: 101,
+    question: "If a guest is avoiding egg, what should you flag about the Niçoise Salad?",
+    type: 'short_answer',
+    correctAnswer: "It includes a hard-boiled egg and a Dijon dressing; it also contains tuna and tobiko (fish and fish roe).",
+    category: 'menu',
+    testType: 'service_staff'
   }
 ];
 
