@@ -8,8 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Settings, Pencil, ListChecks, Loader2, Plus } from 'lucide-react';
+import { Settings, Pencil, ListChecks, Loader2, Plus, RefreshCw } from 'lucide-react';
 import { useTestConfigs, DIFFICULTIES, type TestConfig } from '@/hooks/useQuizQuestions';
+import { useFohTestQuestions } from '@/hooks/useFohTestQuestions';
 import { useToast } from '@/hooks/use-toast';
 
 const SUGGESTED_TEST_TYPES = [
