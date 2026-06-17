@@ -54,10 +54,13 @@ export function FohTestQuestionManager() {
     isLoading,
     isInitialized,
     initializeFromStatic,
+    resyncFromStatic,
     addQuestion,
     updateQuestion,
     deleteQuestion,
   } = useFohTestQuestions();
+  const [isResyncing, setIsResyncing] = useState(false);
+  const [confirmResyncOpen, setConfirmResyncOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
