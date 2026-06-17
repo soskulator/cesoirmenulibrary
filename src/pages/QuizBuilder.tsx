@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { QuestionBankTab } from '@/components/admin/QuestionBankTab';
 import { TestConfigurationsTab } from '@/components/admin/TestConfigurationsTab';
 import { AssignQuestionsTab } from '@/components/admin/AssignQuestionsTab';
+import { FohDiagnosticsPanel } from '@/components/admin/FohDiagnosticsPanel';
 import { type TestConfig } from '@/hooks/useQuizQuestions';
 
 export default function QuizBuilder() {
