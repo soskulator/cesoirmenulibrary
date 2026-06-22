@@ -195,9 +195,13 @@ export function MenuItemEditDialog({
       }
     } else if (mode === 'add' && onAdd) {
       const { ...itemData } = formData;
+      const idPrefix = itemData.categoryId === 'cocktails'
+        ? (cocktailStyle === 'signature' ? 'signature-cocktail' : 'cocktail')
+        : undefined;
       const result = await onAdd({
         ...itemData,
         questions: [],
+        idPrefix,
       });
       if (result) {
         onOpenChange(false);
