@@ -134,9 +134,7 @@ export default function CocktailsPage() {
             {styleOrder.map((styleKey, styleIndex) => {
               const style = cocktailStyles[styleKey];
               const StyleIcon = style.icon;
-              const styleCocktails = style.ids
-                .map((id) => cocktails.find((c) => c.id === id))
-                .filter(Boolean);
+              const styleCocktails = cocktails.filter((c) => style.match(c.id));
 
               if (styleCocktails.length === 0) return null;
 
