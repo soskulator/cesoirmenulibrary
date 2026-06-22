@@ -12,31 +12,25 @@ import bayfrontSketch from '@/assets/bayfront-fountain-sketch.jpg';
 import { BeverageSplashModal } from '@/components/BeverageSplashModal';
 import { LazyImage } from '@/components/LazyImage';
 
-// Cocktail style classification
+// Cocktail style classification — driven by item id prefix.
+// Items with id starting with "signature-cocktail" are Signature; everything
+// else in the cocktails category is treated as Classic.
 const cocktailStyles = {
   classic: {
     title: 'Classic Cocktails',
     subtitle: 'Les Classiques',
     description: 'Time-honored recipes perfected over generations',
     icon: Clock,
-    ids: [
-      'cocktail-1', 'cocktail-2', 'cocktail-3', 'cocktail-4', 'cocktail-5',
-      'cocktail-6', 'cocktail-7', 'cocktail-8', 'cocktail-9', 'cocktail-10',
-      'cocktail-11', 'cocktail-12', 'cocktail-13', 'cocktail-14', 'cocktail-15'
-    ],
+    match: (id: string) => !id.startsWith('signature-cocktail'),
   },
   signature: {
     title: 'Signature Cocktails',
     subtitle: 'Nos Créations',
     description: 'Our bartenders\' unique interpretations and house specialties',
     icon: Star,
-    ids: [
-      'signature-cocktail-1', 'signature-cocktail-2', 'signature-cocktail-3',
-      'signature-cocktail-4', 'signature-cocktail-5', 'signature-cocktail-6',
-      'signature-cocktail-7'
-    ],
+    match: (id: string) => id.startsWith('signature-cocktail'),
   },
-};
+} as const;
 
 const styleOrder = ['classic', 'signature'] as const;
 
@@ -140,9 +134,7 @@ export default function CocktailsPage() {
             {styleOrder.map((styleKey, styleIndex) => {
               const style = cocktailStyles[styleKey];
               const StyleIcon = style.icon;
-              const styleCocktails = style.ids
-                .map((id) => cocktails.find((c) => c.id === id))
-                .filter(Boolean);
+              const styleCocktails = cocktails.filter((c) => style.match(c.id));
 
               if (styleCocktails.length === 0) return null;
 

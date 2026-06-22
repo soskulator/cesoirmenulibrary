@@ -28,9 +28,11 @@ interface MenuItemEditDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (id: string, updates: Partial<MenuItem>) => Promise<boolean>;
-  onAdd?: (item: Omit<MenuItem, 'id' | 'createdAt' | 'updatedAt'>) => Promise<MenuItem | null>;
+  onAdd?: (item: Omit<MenuItem, 'id' | 'createdAt' | 'updatedAt'> & { idPrefix?: string }) => Promise<MenuItem | null>;
   mode?: 'edit' | 'add';
 }
+
+type CocktailStyle = 'classic' | 'signature';
 
 const initialFormData = {
   name: '',
@@ -45,6 +47,10 @@ const initialFormData = {
   imageUrl: '/placeholder.svg',
 };
 
+const detectCocktailStyle = (id: string | undefined): CocktailStyle => {
+  return id?.startsWith('signature-cocktail') ? 'signature' : 'classic';
+};
+
 export function MenuItemEditDialog({ 
   item, 
   open, 
@@ -54,6 +60,7 @@ export function MenuItemEditDialog({
   mode = 'edit' 
 }: MenuItemEditDialogProps) {
   const [formData, setFormData] = useState(initialFormData);
+  const [cocktailStyle, setCocktailStyle] = useState<CocktailStyle>('signature');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -74,9 +81,11 @@ export function MenuItemEditDialog({
         isPublished: item.isPublished,
         imageUrl: item.imageUrl,
       });
+      setCocktailStyle(detectCocktailStyle(item.id));
       setPreviewUrl(item.imageUrl !== '/placeholder.svg' ? item.imageUrl : null);
     } else if (mode === 'add') {
       setFormData(initialFormData);
+      setCocktailStyle('signature');
       setPreviewUrl(null);
     }
   }, [item, mode, open]);
@@ -186,9 +195,13 @@ export function MenuItemEditDialog({
       }
     } else if (mode === 'add' && onAdd) {
       const { ...itemData } = formData;
+      const idPrefix = itemData.categoryId === 'cocktails'
+        ? (cocktailStyle === 'signature' ? 'signature-cocktail' : 'cocktail')
+        : undefined;
       const result = await onAdd({
         ...itemData,
         questions: [],
+        idPrefix,
       });
       if (result) {
         onOpenChange(false);
@@ -306,6 +319,31 @@ export function MenuItemEditDialog({
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Cocktail Style (only for cocktails category) */}
+            {formData.categoryId === 'cocktails' && (
+              <div className="space-y-2">
+                <Label htmlFor="cocktailStyle">Cocktail Style *</Label>
+                <Select
+                  value={cocktailStyle}
+                  onValueChange={(value) => setCocktailStyle(value as CocktailStyle)}
+                  disabled={isEdit}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="classic">⏱ Classic</SelectItem>
+                    <SelectItem value="signature">⭐ Signature</SelectItem>
+                  </SelectContent>
+                </Select>
+                {isEdit && (
+                  <p className="text-xs text-muted-foreground">
+                    Style is set at creation and cannot be changed here.
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Short Description */}
             <div className="space-y-2">

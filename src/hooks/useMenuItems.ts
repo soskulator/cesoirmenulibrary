@@ -121,12 +121,16 @@ export function useMenuItems() {
     }
   }, [fetchItems, toast]);
 
-  // Add a new menu item
-  const addItem = useCallback(async (item: Omit<MenuItem, 'id' | 'createdAt' | 'updatedAt'>) => {
+  // Add a new menu item (optionally with a specific id prefix, e.g. for cocktails)
+  const addItem = useCallback(async (
+    item: Omit<MenuItem, 'id' | 'createdAt' | 'updatedAt'> & { idPrefix?: string }
+  ) => {
     try {
-      const newId = `item-${Date.now()}`;
+      const { idPrefix, ...rest } = item;
+      const prefix = idPrefix || 'item';
+      const newId = `${prefix}-${Date.now()}`;
       const newItem: MenuItem = {
-        ...item,
+        ...rest,
         id: newId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -141,7 +145,7 @@ export function useMenuItems() {
       setItems(prev => [...prev, newItem]);
       toast({
         title: 'Item Added',
-        description: `${item.name} has been added to the menu.`,
+        description: `${rest.name} has been added to the menu.`,
       });
       return newItem;
     } catch (error: any) {
