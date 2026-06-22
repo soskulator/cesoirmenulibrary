@@ -320,6 +320,31 @@ export function MenuItemEditDialog({
               </Select>
             </div>
 
+            {/* Cocktail Style (only for cocktails category) */}
+            {formData.categoryId === 'cocktails' && (
+              <div className="space-y-2">
+                <Label htmlFor="cocktailStyle">Cocktail Style *</Label>
+                <Select
+                  value={cocktailStyle}
+                  onValueChange={(value) => setCocktailStyle(value as CocktailStyle)}
+                  disabled={isEdit}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="classic">⏱ Classic</SelectItem>
+                    <SelectItem value="signature">⭐ Signature</SelectItem>
+                  </SelectContent>
+                </Select>
+                {isEdit && (
+                  <p className="text-xs text-muted-foreground">
+                    Style is set at creation and cannot be changed here.
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Short Description */}
             <div className="space-y-2">
               <Label htmlFor="shortDescription">Short Description</Label>
